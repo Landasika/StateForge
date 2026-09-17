@@ -1,0 +1,22 @@
+# ANOTA 解释器与构建产物(~GB 级,artifact 另存)
+anota/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+
+# StateForge 运行时
+stateforge/**/cache/
+stateforge/**/llm/cache/
+*.db
+*.sqlite3
+
+# 实验结果(二进制/大文件,另行保存)
+exp/results/
+
+# 快照模板与 fuzz 产物
+tpl/
+crash-*
+corpus/

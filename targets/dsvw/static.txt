@@ -1,0 +1,1 @@
+static page content for benign path testcase
