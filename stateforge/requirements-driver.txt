@@ -1,0 +1,5 @@
+# 驱动侧(系统 python 3.13)依赖——分析/规划/评测进程,不进 ANOTA fork
+# 2026-09-17 核实系统自带:networkx 3.4.2 / httpx 0.28.1 / pydantic 2.11.7 / pytest
+networkx>=3.4
+httpx>=0.28
+pydantic>=2.11

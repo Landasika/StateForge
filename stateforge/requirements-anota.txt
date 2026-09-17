@@ -1,0 +1,25 @@
+# ANOTA 解释器(anota/ANOTA/ANOTA-interpreter/python, CPython 3.10.13 fork)内锁定栈
+# 2026-09-17 实装验证:全栈 import 通过 + atheris 2.0.12 无伤
+#
+# 注意(实测教训,勿回退):
+# - werkzeug 必须 <2.3:connexion 2.14.2 硬性依赖 werkzeug<2.3(计划原写 2.3.8 不可解);
+#   werkzeug==2.2.3 同时满足 flask 2.2.2(>=2.2.2)与 connexion(<2.3)
+# - atheris 必须 ==2.0.12 且显式 atheris.instrument_all()(SF0-T3 硬门禁配方)
+# - 先装本表再装 atheris;裸装 flask 会解析到 3.x
+
+flask==2.2.2
+werkzeug==2.2.3
+itsdangerous==2.1.2
+click==8.1.7
+jinja2==3.1.4
+markupsafe==2.1.2
+blinker==1.7
+connexion==2.14.2
+flask-sqlalchemy==3.0.3
+sqlalchemy==2.0.2
+PyJWT==2.6.0
+jsonschema==4.17.3
+PyYAML
+inflection
+networkx
+atheris==2.0.12

@@ -18,11 +18,11 @@
 - [ ] `sudo apt-get install -y clang`(Atheris 编译需要)
 - [ ] **ANOTA 内装,顺序重要——VAmPI 锁定栈优先**(单解释器只能有一个 flask 版本,vulnshop 兼容 2.2.2,故全环境统一 VAmPI 栈):
   ```
-  flask==2.2.2 werkzeug==2.3.8 itsdangerous==2.1.2 click==8.1.7 jinja2==3.1.4
+  flask==2.2.2 werkzeug==2.2.3 itsdangerous==2.1.2 click==8.1.7 jinja2==3.1.4
   markupsafe==2.1.2 blinker==1.7 connexion==2.14.2 flask-sqlalchemy==3.0.3
   sqlalchemy==2.0.2 PyJWT==2.6.0 jsonschema==4.17.3 PyYAML inflection networkx
   ```
-  werkzeug 必须 <3(flask 2.2 的 Header API 兼容);全部纯 Python 或有 cp310 wheel,无需 rustc。
+  ⚠️ **实装修正(2026-09-17)**:原表 werkzeug==2.3.8 与 connexion 2.14.2 冲突(其硬性依赖 werkzeug<2.3,ResolutionImpossible);修正为 **werkzeug==2.2.3**(2.2 线末版,满足 flask 2.2.2 的 ≥2.2.2)。全栈已在 ANOTA 内 import 验证 + atheris 2.0.12 无伤,锁定见 `stateforge/requirements-anota.txt`。pytest 9.1.1 亦已装入(anota 标记测试用)。
   ⚠️ 实测教训(2026-09-17):先裸装 `flask` 会解析到 3.1.3,须按上表**显式降级**;VAmPI 栈装完后再装 atheris。
 - [ ] **atheris 版本约束(实测)**:最新 atheris(2.3.x)用 `dis.Positions`(py3.11+ API),在 ANOTA(3.10.13 fork)上 import 即炸;须装 **2.1.x/2.2.x 线**(py3.10 兼容),逐版本回退 2.1.7 → 2.2.1 → 2.0.12
 - [ ] 驱动侧(系统 py3.13,已核实自带 networkx 3.4.2 / httpx 0.28.1 / pydantic 2.11.7)缺什么补什么
