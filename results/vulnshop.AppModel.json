@@ -1,0 +1,614 @@
+{
+  "app_root": "/home/landasika/icassp/stateforge/targets/vampi",
+  "framework": "connexion",
+  "endpoints": [
+    {
+      "func": "populate_db",
+      "route": "/createdb",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "6",
+      "line": 6
+    },
+    {
+      "func": "basic",
+      "route": "/",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "14",
+      "line": 14
+    },
+    {
+      "func": "get_all_users",
+      "route": "/users/v1",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [
+        "users"
+      ],
+      "file": "19",
+      "line": 19
+    },
+    {
+      "func": "debug",
+      "route": "/users/v1/_debug",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [
+        "users"
+      ],
+      "file": "24",
+      "line": 24
+    },
+    {
+      "func": "register_user",
+      "route": "/users/v1/register",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "username",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "password",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "email",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "username",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "request_data.admin",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "/home/landasika/icassp/stateforge/targets/vampi/openapi_specs/openapi3.yml",
+          "line": 61
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "52",
+      "line": 52
+    },
+    {
+      "func": "login_user",
+      "route": "/users/v1/login",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "username",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "password",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "password",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "password",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "username",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "password",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [
+        {
+          "var": "Session.authed_as",
+          "op": "set",
+          "value": null,
+          "key": "username",
+          "file": "/home/landasika/icassp/stateforge/targets/vampi/openapi_specs/openapi3.yml",
+          "line": 94
+        }
+      ],
+      "sinks": [],
+      "observes": [],
+      "file": "85",
+      "line": 85
+    },
+    {
+      "func": "me",
+      "route": "/me",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "Authorization",
+          "location": "header",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "/home/landasika/icassp/stateforge/targets/vampi/openapi_specs/openapi3.yml",
+          "line": 29
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "28",
+      "line": 28
+    },
+    {
+      "func": "get_by_username",
+      "route": "/users/v1/{username}",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "45",
+      "line": 45
+    },
+    {
+      "func": "delete_user",
+      "route": "/users/v1/{username}",
+      "methods": [
+        "DELETE"
+      ],
+      "params": [
+        {
+          "name": "Authorization",
+          "location": "header",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "/home/landasika/icassp/stateforge/targets/vampi/openapi_specs/openapi3.yml",
+          "line": 207
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "206",
+      "line": 206
+    },
+    {
+      "func": "update_email",
+      "route": "/users/v1/{username}/email",
+      "methods": [
+        "PUT"
+      ],
+      "params": [
+        {
+          "name": "email",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "Authorization",
+          "location": "header",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "email",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "email",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "email",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "email",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "/home/landasika/icassp/stateforge/targets/vampi/openapi_specs/openapi3.yml",
+          "line": 138
+        }
+      ],
+      "effects": [
+        {
+          "var": "User.email",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "/home/landasika/icassp/stateforge/targets/vampi/openapi_specs/openapi3.yml",
+          "line": 148
+        },
+        {
+          "var": "User.email",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "/home/landasika/icassp/stateforge/targets/vampi/openapi_specs/openapi3.yml",
+          "line": 164
+        }
+      ],
+      "sinks": [],
+      "observes": [],
+      "file": "132",
+      "line": 132
+    },
+    {
+      "func": "update_password",
+      "route": "/users/v1/{username}/password",
+      "methods": [
+        "PUT"
+      ],
+      "params": [
+        {
+          "name": "password",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "Authorization",
+          "location": "header",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "password",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "password",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "password",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "/home/landasika/icassp/stateforge/targets/vampi/openapi_specs/openapi3.yml",
+          "line": 181
+        }
+      ],
+      "effects": [
+        {
+          "var": "User.password",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "/home/landasika/icassp/stateforge/targets/vampi/openapi_specs/openapi3.yml",
+          "line": 195
+        },
+        {
+          "var": "User.password",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "/home/landasika/icassp/stateforge/targets/vampi/openapi_specs/openapi3.yml",
+          "line": 189
+        }
+      ],
+      "sinks": [],
+      "observes": [],
+      "file": "179",
+      "line": 179
+    },
+    {
+      "func": "get_all_books",
+      "route": "/books/v1",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [
+        "Books"
+      ],
+      "file": "12",
+      "line": 12
+    },
+    {
+      "func": "add_new_book",
+      "route": "/books/v1",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "book_title",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "secret",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "Authorization",
+          "location": "header",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "book_title",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "secret",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "book_title",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "/home/landasika/icassp/stateforge/targets/vampi/openapi_specs/openapi3.yml",
+          "line": 23
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "17",
+      "line": 17
+    },
+    {
+      "func": "get_by_title",
+      "route": "/books/v1/{book_title}",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "Authorization",
+          "location": "header",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "/home/landasika/icassp/stateforge/targets/vampi/openapi_specs/openapi3.yml",
+          "line": 46
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "45",
+      "line": 45
+    }
+  ],
+  "candidates": [
+    {
+      "var": "request_data.admin",
+      "entity": "request_data",
+      "attr": "admin",
+      "ops": [
+        "compare"
+      ],
+      "evidence": "if request_data[\"admin\"]",
+      "source": "condition",
+      "file": "/home/landasika/icassp/stateforge/targets/vampi/openapi_specs/openapi3.yml",
+      "line": 0
+    },
+    {
+      "var": "Session.authed_as",
+      "entity": "Session",
+      "attr": "authed_as",
+      "ops": [
+        "write",
+        "read"
+      ],
+      "evidence": "",
+      "source": "session_access",
+      "file": "/home/landasika/icassp/stateforge/targets/vampi/openapi_specs/openapi3.yml",
+      "line": 0
+    },
+    {
+      "var": "User.email",
+      "entity": "User",
+      "attr": "email",
+      "ops": [
+        "write"
+      ],
+      "evidence": "user.email = request_data.get('email')",
+      "source": "db_field",
+      "file": "/home/landasika/icassp/stateforge/targets/vampi/openapi_specs/openapi3.yml",
+      "line": 0
+    },
+    {
+      "var": "User.password",
+      "entity": "User",
+      "attr": "password",
+      "ops": [
+        "write"
+      ],
+      "evidence": "user.password = request_data.get('password')",
+      "source": "db_field",
+      "file": "/home/landasika/icassp/stateforge/targets/vampi/openapi_specs/openapi3.yml",
+      "line": 0
+    }
+  ],
+  "state_vars": [
+    {
+      "entity": "request_data",
+      "attr": "admin",
+      "kind": "db_column",
+      "domain": null,
+      "label": "authz",
+      "security_relevant": true,
+      "rationale": "[llm:claude-sonnet-5] Conditionally gating on an admin flag makes it an authorization privilege check. [select] 固定映射直入",
+      "anchors": []
+    },
+    {
+      "entity": "Session",
+      "attr": "authed_as",
+      "kind": "session",
+      "domain": null,
+      "label": "authn",
+      "security_relevant": true,
+      "rationale": "[llm:claude-sonnet-5] Session field recording whom the user is authenticated as is credential/identity state. [select] 固定映射直入",
+      "anchors": []
+    },
+    {
+      "entity": "User",
+      "attr": "email",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[llm:claude-sonnet-5] A user email field has no authentication, authorization, ownership, money, or lifecycle semantics. [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "User",
+      "attr": "password",
+      "kind": "db_column",
+      "domain": null,
+      "label": "authn",
+      "security_relevant": true,
+      "rationale": "[llm:claude-sonnet-5] Writing a password field is credential state management. [select] 固定映射直入",
+      "anchors": []
+    }
+  ],
+  "invariants": [],
+  "config_flags": {
+    "VULN": 1,
+    "ALIVE": 60
+  }
+}

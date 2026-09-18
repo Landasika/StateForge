@@ -1,0 +1,34 @@
+digraph SSTG {
+  rankdir=LR;
+  node [fontname="Helvetica"];
+  "GET /createdb" [shape=box];
+  "GET /" [shape=box];
+  "GET /users/v1" [shape=box];
+  "GET /users/v1/_debug" [shape=box];
+  "POST /users/v1/register" [shape=box];
+  "request_data.admin=True" [shape=ellipse, style=bold, color=red];
+  "POST /users/v1/login" [shape=box];
+  "Session.authed_as=<authed>" [shape=ellipse, style=bold, color=red];
+  "GET /me" [shape=box];
+  "GET /users/v1/{username}" [shape=box];
+  "DELETE /users/v1/{username}" [shape=box];
+  "PUT /users/v1/{username}/email" [shape=box];
+  "User.email=*" [shape=ellipse];
+  "PUT /users/v1/{username}/password" [shape=box];
+  "User.password=*" [shape=ellipse, style=bold, color=red];
+  "GET /books/v1" [shape=box];
+  "POST /books/v1" [shape=box];
+  "GET /books/v1/{book_title}" [shape=box];
+  "POST /users/v1/register" -> "request_data.admin=True" [style=dashed, label="requires"];
+  "POST /users/v1/login" -> "Session.authed_as=<authed>" [label="produces"];
+  "GET /me" -> "Session.authed_as=<authed>" [style=dashed, label="requires"];
+  "DELETE /users/v1/{username}" -> "Session.authed_as=<authed>" [style=dashed, label="requires"];
+  "PUT /users/v1/{username}/email" -> "Session.authed_as=<authed>" [style=dashed, label="requires"];
+  "PUT /users/v1/{username}/email" -> "User.email=*" [label="produces"];
+  "PUT /users/v1/{username}/email" -> "User.email=*" [label="produces"];
+  "PUT /users/v1/{username}/password" -> "Session.authed_as=<authed>" [style=dashed, label="requires"];
+  "PUT /users/v1/{username}/password" -> "User.password=*" [label="produces"];
+  "PUT /users/v1/{username}/password" -> "User.password=*" [label="produces"];
+  "POST /books/v1" -> "Session.authed_as=<authed>" [style=dashed, label="requires"];
+  "GET /books/v1/{book_title}" -> "Session.authed_as=<authed>" [style=dashed, label="requires"];
+}

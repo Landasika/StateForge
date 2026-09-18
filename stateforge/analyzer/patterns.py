@@ -207,9 +207,10 @@ class _EpEnv:
             self._cand("Session.authed_as", "read", bare, "session_access")
         elif bare == "jsonify":
             self._jsonify(call)
-        elif name.endswith(".get") and isinstance(call.func, ast.Attribute) and isinstance(
-            call.func.value, ast.Name
-        ) and call.func.value.id in self.json_bodies:
+        elif name.endswith(".get") and isinstance(call.func, ast.Attribute) and (
+            (isinstance(call.func.value, ast.Name) and call.func.value.id in self.json_bodies)
+            or _is_inline_json(call.func.value)
+        ):
             if call.args and isinstance(call.args[0], ast.Constant):
                 self.ep.params.append(Param(name=str(call.args[0].value), location="json"))
 
@@ -440,6 +441,15 @@ def _getenv_default(call: ast.Call) -> int:
             except (TypeError, ValueError):
                 return 0
     return 0
+
+
+def _is_inline_json(node) -> bool:
+    """(request.get_json(...) or {}).get / request.get_json(...).get 的链式形态。"""
+    if isinstance(node, ast.BoolOp):
+        return any(_is_inline_json(v) for v in node.values)
+    if isinstance(node, ast.Call):
+        return _call_name(node).endswith(".get_json")
+    return False
 
 
 def _bare_name(call: ast.Call) -> str:

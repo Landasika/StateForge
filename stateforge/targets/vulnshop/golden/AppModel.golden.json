@@ -273,6 +273,12 @@
           "location": "path",
           "py_type": "str",
           "value_domain": null
+        },
+        {
+          "name": "amount",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
         }
       ],
       "guards": [
@@ -485,6 +491,12 @@
         {
           "name": "uid",
           "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "role",
+          "location": "json",
           "py_type": "str",
           "value_domain": null
         }

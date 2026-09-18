@@ -1,0 +1,188 @@
+{
+  "generated_at": "2026-09-18 03:10:29",
+  "llm": true,
+  "targets": {
+    "vulnshop": {
+      "endpoints": 11,
+      "candidates": 6,
+      "state_vars": 6,
+      "security_relevant": {
+        "User.role": "authz",
+        "Session.authed_as": "authn",
+        "Order.status": "workflow",
+        "Order.paid_amount": "money",
+        "Coupon.used": "single_use",
+        "Order.user_id": "ownership"
+      },
+      "invariants": {
+        "User.role": {
+          "legal": [
+            [
+              "user",
+              "admin"
+            ]
+          ],
+          "one_way": []
+        },
+        "Order.status": {
+          "legal": [
+            [
+              "CREATED",
+              "CANCELLED"
+            ],
+            [
+              "CREATED",
+              "PAID"
+            ],
+            [
+              "PAID",
+              "SHIPPED"
+            ]
+          ],
+          "one_way": []
+        },
+        "Coupon.used": {
+          "legal": [
+            [
+              "False",
+              "True"
+            ]
+          ],
+          "one_way": [
+            "used"
+          ]
+        }
+      },
+      "sstg": {
+        "nodes": 21,
+        "edges": 33
+      },
+      "label_source": "llm:anthropic:claude-sonnet-5",
+      "relate": {
+        "source": "llm:anthropic:claude-sonnet-5",
+        "role_hierarchy": {
+          "admin": [
+            "user"
+          ]
+        },
+        "extra_transitions": [
+          {
+            "endpoint": "POST /orders/<int:oid>/pay",
+            "var": "Order.status",
+            "frm": "CREATED",
+            "to": "PAID"
+          },
+          {
+            "endpoint": "POST /orders/<int:oid>/ship",
+            "var": "Order.status",
+            "frm": "PAID",
+            "to": "SHIPPED"
+          },
+          {
+            "endpoint": "POST /orders/<int:oid>/cancel",
+            "var": "Order.status",
+            "frm": "CREATED",
+            "to": "CANCELLED"
+          }
+        ],
+        "cross_entity_invariants": [
+          {
+            "vars": [
+              "Order.status",
+              "Order.paid_amount"
+            ],
+            "rule": "If Order.status is SHIPPED, the order must have passed through PAID, so Order.paid_amount must be greater than 0."
+          },
+          {
+            "vars": [
+              "Order.status",
+              "Coupon.used"
+            ],
+            "rule": "Creating an order (Order.status=CREATED) requires and sets Coupon.used=1, so a coupon can back at most one order."
+          },
+          {
+            "vars": [
+              "Order.user_id",
+              "Session.authed_as"
+            ],
+            "rule": "Order actions (view, pay, ship, cancel) are only permitted when Order.user_id matches the session's authenticated user."
+          }
+        ],
+        "meta": {
+          "temperature": 0.0,
+          "prompt": "v1",
+          "model": "claude-sonnet-5"
+        }
+      },
+      "annotation_drafts": 9,
+      "annotation_compare": {
+        "handwritten_classes": [
+          "owner",
+          "pay_full",
+          "requires_state",
+          "role",
+          "single_use"
+        ],
+        "drafted_classes": [
+          "owner",
+          "pay_full",
+          "requires_state",
+          "role",
+          "single_use"
+        ],
+        "recall": 1.0,
+        "extra_drafted": []
+      },
+      "elapsed_s": 0.01
+    },
+    "vampi": {
+      "endpoints": 14,
+      "candidates": 4,
+      "state_vars": 4,
+      "security_relevant": {
+        "request_data.admin": "authz",
+        "Session.authed_as": "authn",
+        "User.password": "authn"
+      },
+      "invariants": {},
+      "sstg": {
+        "nodes": 18,
+        "edges": 12
+      },
+      "label_source": "llm:anthropic:claude-sonnet-5",
+      "relate": {
+        "source": "llm:anthropic:claude-sonnet-5",
+        "role_hierarchy": {
+          "admin": [
+            "user"
+          ]
+        },
+        "extra_transitions": [],
+        "cross_entity_invariants": [
+          {
+            "vars": [
+              "request_data.admin",
+              "Session.authed_as"
+            ],
+            "rule": "A user registered with request_data.admin truthy can authenticate as admin, so Session.authed_as may take the admin role only if such a user exists."
+          },
+          {
+            "vars": [
+              "Session.authed_as",
+              "User.password"
+            ],
+            "rule": "Session.authed_as must reference a user whose User.password matched at login; password changes keep the session authed until logout."
+          }
+        ],
+        "meta": {
+          "temperature": 0.0,
+          "prompt": "v1",
+          "model": "claude-sonnet-5"
+        }
+      },
+      "annotation_drafts": 0,
+      "annotation_compare": null,
+      "elapsed_s": 0.04
+    }
+  }
+}
