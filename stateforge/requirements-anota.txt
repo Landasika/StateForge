@@ -28,3 +28,8 @@ atheris==2.0.12
 pytest
 httpx
 pydantic
+
+# 第四靶 PyGoat(Django 4.2,2026-09-19 验证:migrate 全绿 + WSGI 200/302)
+# ⚠️ 装完 pygoat requirements 后必须恢复:weworkzeug==2.2.3(其依赖树会拉低到 2.1.2,破坏 flask 栈)
+# pip install -r <pygoat>/requirements.txt && pip install werkzeug==2.2.3
+# Django 族与 flask/SQLAlchemy 锁定栈零冲突,可共存

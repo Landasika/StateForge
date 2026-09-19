@@ -120,6 +120,7 @@ exploit │ 规划器:朝未访问 │ explore: fuzzer        │
 | T+8 | 评测:覆盖曲线主图 + TTD 主表 + 消融 | SF4 | 待做 | 4-5d |
 | T+9 | 快照调度四策略(评分含 δ·novelty) | SF5 | 待做 | 5-6d |
 | T+10 | ANOTA WATCH 运行时状态观测 | spike | **已验证+已改造(2026-09-19)**:BLOCK(obj,modes,key) 读写触发;C 补丁使消息可归因(0001);注解起草扩展待做 | 0.5d 余 |
+| T+13 | **第四靶 PyGoat 接入**(Django 适配器:URLconf/ORM/会话认证;ANOTA 已验证可启动) | SF0-EXT | 已验证可启动(2026-09-19);适配器待做。FlaskBB 否决(master 要 Flask≥3.1.3,旧版要 SA1.4,与锁定栈两头冲突) | 2-3d |
 
 依赖序:T+2/T+3 → T+1 → T+11 → T+12 → T+4/T+5/T+6/T+6b → T+7 → T+8 → T+9。
 
