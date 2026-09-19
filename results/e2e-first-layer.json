@@ -1,0 +1,106 @@
+{
+  "generated_at": "2026-09-19 08:09:03",
+  "llm": false,
+  "targets": {
+    "vulnshop": {
+      "endpoints": 11,
+      "candidates": 6,
+      "state_vars": 6,
+      "security_relevant": {
+        "User.role": "authz",
+        "Session.authed_as": "authn",
+        "Order.status": "workflow",
+        "Order.paid_amount": "money",
+        "Coupon.used": "single_use",
+        "Order.user_id": "ownership"
+      },
+      "invariants": {
+        "User.role": {
+          "legal": [
+            [
+              "user",
+              "admin"
+            ]
+          ],
+          "one_way": []
+        },
+        "Order.status": {
+          "legal": [
+            [
+              "CREATED",
+              "CANCELLED"
+            ],
+            [
+              "CREATED",
+              "PAID"
+            ],
+            [
+              "PAID",
+              "SHIPPED"
+            ]
+          ],
+          "one_way": []
+        },
+        "Coupon.used": {
+          "legal": [
+            [
+              "False",
+              "True"
+            ]
+          ],
+          "one_way": [
+            "used"
+          ]
+        }
+      },
+      "sstg": {
+        "nodes": 21,
+        "edges": 33
+      },
+      "label_source": "heuristic",
+      "relate": null,
+      "annotation_drafts": 9,
+      "annotation_compare": {
+        "handwritten_classes": [
+          "owner",
+          "pay_full",
+          "requires_state",
+          "role",
+          "single_use"
+        ],
+        "drafted_classes": [
+          "owner",
+          "pay_full",
+          "requires_state",
+          "role",
+          "single_use"
+        ],
+        "recall": 1.0,
+        "extra_drafted": []
+      },
+      "elapsed_s": 0.01
+    },
+    "vampi": {
+      "endpoints": 14,
+      "candidates": 9,
+      "state_vars": 9,
+      "security_relevant": {
+        "request_data.admin": "authz",
+        "User.password": "authn",
+        "User.admin": "authz",
+        "Session.authed_as": "authn",
+        "Book.user_id": "ownership"
+      },
+      "invariants": {},
+      "sstg": {
+        "nodes": 22,
+        "edges": 16
+      },
+      "label_source": "heuristic",
+      "relate": null,
+      "annotation_drafts": 0,
+      "annotation_compare": null,
+      "elapsed_s": 0.03
+    }
+  }
+}
