@@ -1,0 +1,267 @@
+% StateForge —— NDSS 论文初稿·中文版 (2026-09-19)
+% 编译:xelatex main-zh && xelatex main-zh(需 NDSS 官方 ndss.sty 放本目录;ctex 处理中文)
+% 与英文版 main.tex 内容对应;所有 \planned{} 为待实验数据填充位
+\documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{ndss}  % NDSS 官方模板样式
+\usepackage[UTF8]{ctex}
+\usepackage{amsmath,amssymb,graphicx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue]{hyperref}
+
+\newcommand{\planned}[1]{\textcolor{red}{【待填充:#1】}}
+\newcommand{\sys}{\textsc{StateForge}}
+
+\begin{document}
+
+\date{}
+\title{\Large \bf StateForge:面向深层 Web 漏洞挖掘的应用状态空间恢复与导航}
+\author{{\normalsize 匿名投稿}\\[-2mm]
+{\normalsize NDSS 评审稿,\today 编译}}
+\maketitle
+
+\begin{abstract}
+许多严重的 Web 应用漏洞——认证后远程代码执行(RCE)、存储型(二阶)注入、越权与工作流绕过链——并非被代码可达性门控,而是被\emph{应用状态}门控:只有认证建立、载荷被持久化、一次性标志翻转之后才会触发。按代码空间距离定向的 fuzzer 把预算花在"接近 sink 却进不了所需状态"的输入上,且须以人工预置状态;快照式 fuzzer 恢复状态的成本低廉,却既不建模状态也不对它定向。我们论证:这类"深层"漏洞真正的搜索空间是\textbf{状态空间},并给出在其上端到端运转的系统 \sys{}。\sys{}:(i)~用静态候选挖掘与\textbf{候选锚定的 LLM 语义提升}从源码恢复安全相关状态空间——LLM 只解释静态枚举的候选,不能发明状态或迁移;(ii)~在恢复出的图上同时驱动确定性反向规划(状态图距离)与模糊测试探索(\textbf{状态新颖度}作为覆盖信号);(iii)~以 fork 写时复制(COW)epoch 与位级文件数据库模板使状态构造廉价且可重复,检查点摆位本身也按状态性质调度。插桩解释器中的运行时注解同时定义违规目标与判定 oracle,将目标集与检测机制统一。初步结果:受控靶标上五类状态门控漏洞全部被规划链触达(10/10 目标×变体矩阵,含完全跳过支付的支付绕过链);两种执行器(常驻/快照)给出同一判定;恢复成本 ${\sim}0.7$\,ms 且与链深无关;LLM 标注与人工 ground truth 在 6/6 状态变量上一致,起草注解与手写策略 recall=1.0。完整三基线战役\planned{进行中}。
+\end{abstract}
+
+\section{引言}
+\label{sec:intro}
+
+Web 应用是有状态的机器。一次请求不只是调用代码——它\emph{转移}应用状态:行被创建、会话身份被建立、一次性标志翻转、工作流枚举前进、载荷被持久化以供后续消费。一大类严重漏洞被这类转移门控:
+
+\begin{itemize}
+\item \textbf{认证后 RCE}。命令执行或文件处理 sink 只对已认证主体生效;认证前的攻击面把它净化掉了。
+\item \textbf{二阶(存储型)注入}。一条请求存储的载荷(评论、资料字段)成为后续请求在危险使用点的输入;单看任何一条请求都无害。
+\item \textbf{状态机与一次性违例}。订单未付款即发货;优惠券二次兑换;任何人都可写的角色字段导致提权。
+\end{itemize}
+
+这些漏洞同时击败两族最先进的 Web fuzzer,结构性原因可概括为:\emph{代码距离不是状态距离}。
+
+\textbf{定向 fuzzer 倒在状态门的另一侧。}AFLGo~\cite{aflgo}--Predator~\cite{predator} 谱系的工具按代码空间中距目标位置的接近度排定输入优先级。对二阶漏洞,使用点在\emph{每个}请求中执行——其控制流距离近乎为零——而它在状态空间中的距离(载荷已存、会话有效)隔着若干次转移。代码定向的能量被花在接近 sink 却永远进不了所需状态的输入上。状态本身由人工预置:Predator 的评测向爬虫提供有效凭据~\cite{predator},其作者亦指出只在特定状态下显现的错误可能仍未检出。
+
+\textbf{快照 fuzzer 恢复状态却无法在其中导航。}Atropos~\cite{atropos} 在 epoch 内跨输入恢复快照以积累状态;我们独立复刻其进程级方案并验证了核心主张:二阶检出 = 使用点 oracle × 状态链,缺一不可。但若无状态空间模型,就没有方向信号:状态盲目积累,检查点按启发式摆放(如"登录后"),目标状态是否可达——以及\emph{为什么}不可达——是不可见的。
+
+\textbf{本文。}我们给出 \sys{},闭合"建模—定向—重置"之环(图~\ref{fig:overview}):
+
+\begin{enumerate}
+\item \textbf{语义状态恢复(\S\ref{sec:recovery})}。静态模式挖掘产出\emph{状态候选}——带代码锚点的未裁决事实。LLM 做\emph{候选锚定语义提升}:在枚举约束、schema 校验的输出下,把每个候选分类为六类安全语义之一(\texttt{authn}/\texttt{authz}/\texttt{ownership}/\texttt{money}/\texttt{workflow}/\texttt{single-use})并给出可审计理由。公开的确定性选择器将带标签候选接纳进\emph{安全状态迁移图}(SSTG),其合法迁移由代码中的守卫--效应配对导出。模型有生命周期:运行时校准;目标持续不可达时由 LLM 以"执行终裁的假设"参与修理。
+\item \textbf{状态空间定向与探索(\S\ref{sec:navigate})}。反向规划器开发已知图,朝目标状态构造参数化链(并按静态观察到的"旗标条件性前置"丢弃前置——攻击假设生成器)。fuzzer 以\emph{状态新颖度}为覆盖信号探索模型之外:epoch 末读回观测与已知状态原子求差;新原子奖励种子、修理图、提名检查点。方向、反馈、检查点评分全部位于状态空间。
+\item \textbf{状态感知快照执行(\S\ref{sec:snapshot})}。一条链 = 一个 epoch = 一个 fork 出的 COW 叶;位级文件数据库模板使磁盘与检查点页缓存精确一致。嵌套检查点让共享前缀的目标族从深度 $k$ 直接分叉;摆位由状态评分(安全相关性、前缀复用、重建成本、新颖度)调度。
+\item \textbf{注解即目标与 oracle(\S\ref{sec:annotations})}。插桩解释器中每个注解守卫位点同时是违规 oracle 与\emph{目标规格}——(状态门 × sink) 对。同一套注解驱动 B1 基线(仅 oracle)与 \sys{}(oracle+目标驱动构造),隔离状态层的贡献;注解可由恢复的状态机器起草(recall=1.0),目标集亦然。
+\end{enumerate}
+
+\textbf{贡献:}
+\begin{itemize}
+\item 将深层 Web 漏洞挖掘形式化为\emph{恢复出的应用状态空间}中的可达性问题,并给出按存储位置组织的五维状态空间定义(\S\ref{sec:formulation})。
+\item 候选锚定语义提升协议:LLM 被限定为解释静态枚举的事实——保住可解释性与可复现性——并嵌入"恢复→校准→修理"的模型生命周期(\S\ref{sec:recovery})。
+\item 在同一张图上统一确定性规划(开发,状态距离定向)与模糊测试(探索,状态新颖度反馈),取代代码距离作为方向信号(\S\ref{sec:navigate})。
+\item 基于状态性质、建于 fork COW 与位级数据库模板之上的快照调度(\S\ref{sec:snapshot})。
+\item 可运行的实现与初步证据:10/10 目标×变体可达性、双执行器同判定、亚毫秒级深度无关恢复、精确 epoch 隔离、标注/注解质量对齐 ground truth(\S\ref{sec:eval});完整三基线战役\planned{进行中}。
+\end{itemize}
+
+\section{背景与动机}
+\label{sec:motivation}
+
+\subsection{状态门控漏洞}
+本文用\emph{状态门控}指代触发条件是应用状态谓词(而非仅单条请求内容)的漏洞。三族锚定我们的研究。认证后 RCE 与注入:sink 在代码层对所有调用方可达,但净化或分发只把已认证主体路由进去。二阶注入:载荷跨请求越过持久化边界;攻击者的请求在存储时无害,消费请求在没有存储值时也无害。工作流与一次性违例:业务前置(先付后发;单次兑换)由状态检查强制,检查缺失即静默失效。
+
+\subsection{各工具家族缺什么}
+\textbf{覆盖制导与代码定向 fuzzing。}Witcher~\cite{witcher} 将覆盖反馈与注解式检查配对;Predator~\cite{predator} 以块距离定向、入口 URL 反向分析、分支导出参数语料、以及经选择性 PHP opcode 插桩的运行时补边来验证静态报告。二者都在代码空间运作。Predator 为反馈而增强解释器的做法有启发意义——我们的运行时基底同样是增强解释器(ANOTA 的插桩 CPython~\cite{anota}),但它产出\emph{语义}观测(注解事件、状态读回)而非块距离,且方向信号位于状态图。关键在于:Predator 的会话以有效凭据预置~\cite{predator},认证不是它的 fuzzer 所\emph{构造}的东西。SDFuzz~\cite{sdfuzz} 在内核场景按目标\emph{状态}驱动——概念上最近的亲戚——但其状态人工指定,我们从源码恢复应用语义状态。ChatAFL~\cite{chatafl} 用 LLM 辅助推断协议状态机并合成种子;我们的状态是应用语义级(数据库、工作流、会话),LLM 修图而非合成输入。
+
+\textbf{快照 fuzzing。}Atropos~\cite{atropos} 在 epoch 间恢复快照,并展示——我们的进程级移植亦证实——二阶检出等于使用点 oracle 与状态链的乘积:固定 oracle 时,逐输入恢复不检出而 epoch 级链化检出。但 Atropos 盲目积累状态:没有"存在哪些状态"的模型、没有朝向目标的距离信号、没有对不可达性的解释,检查点摆位靠启发式。\sys{} 补上的正是这些:SSTG 提供地图,规划器提供路线,新颖度反馈提供前沿,状态评分提供检查点策略。
+
+\subsection{动机实例}
+考虑受控应用的支付绕过缺陷。ship 端点内含检查 \texttt{if order["status"] != "PAID": 拒绝},外包一个运行时功能旗标(单源码、守卫/非守卫双变体)。代码定向 fuzzer 看到 ship 处理器距离近乎为零,朝它倾泻未认证请求——全部 401/409 被拒。触达缺陷需要四层深的状态链:\texttt{register}(产用户)$\to$\texttt{login}(产会话)$\to$\texttt{create}(产 \texttt{Order.status=CREATED},绑定对象号 $\theta$)$\to$\texttt{ship},附攻击假设"旗标条件前置缺席"。我们的规划器从恢复的 SSTG 恰好排出这条链——\emph{不含支付步骤}——由执行终裁:非守卫变体以 \texttt{paid\_amount=0} 到达 \texttt{SHIPPED}(命中),守卫变体在 ship 被阻断(409)。假设本身可机器生成:静态分析观察到前置的旗标条件性。问题不是这类链存不存在——而是谁能找到它们、以何种成本。
+
+\section{概述与问题形式化}
+\label{sec:formulation}
+
+\textbf{状态空间。}令 $V$ 为应用状态变量的安全相关投影。按\emph{存储位置}组织 $V$,因为存储决定可观测性与可控性:
+
+\begin{itemize}
+\item[(i)] \emph{会话/令牌态}:认证身份、角色声明、CSRF nonce。经身份端点观测;由客户端持凭据控制(符号对象到运行时对象的绑定 $\theta$)。
+\item[(ii)] \emph{持久数据态}:行存在性、枚举字段、一次性标志、\emph{存储的载荷}、所有权绑定。经读回端点观测;由动作写入、由数据库模板重置。
+\item[(iii)] \emph{配置态}:选择攻击面象限的功能旗标。静态可见;由变体选择。
+\item[(iv)] \emph{进程内存态}:全局变量、缓存、池。静态不可观测;由 fork COW 整体重置。
+\item[(v)] \emph{文件态}:应用写出的文件。由模板扩展重置(未来工作)。
+\end{itemize}
+
+我们建模 (i)--(iii)——静态可恢复的维度,包括域为载荷空间的污点值变量——并对 (iv)--(v) 整体重置:\emph{建模一切静态可恢复的状态,重置其余一切。}
+
+\textbf{动作、区域、深度。}一次 HTTP 请求是部分转移 $a: S \rightharpoonup S$。漏洞区域 $B \subseteq S$ 是状态门与 sink 的叉积(如 $\{\texttt{authed}\}\times\texttt{rce\_sink}$、$\{\texttt{payload\_stored}\}\times\texttt{use\_point}$),或非法迁移。\emph{深度} $d(B)$ 是从初态 $S_0$ 到 $B$ 的最少状态转移动作数。SSTG 是 $S$ 在安全相关原子上的 AND/OR 可导航投影;规划是路搜索;epoch 是状态回滚。
+
+\textbf{检出。}一个发现要求
+\begin{equation}
+\mathrm{Reach}(B) \;\wedge\; \mathrm{Violation}(\Phi),
+\end{equation}
+即某次执行到达 $B$ 且 oracle $\Phi$ 在 sink 处触发——我们的二阶测量正是该合取的实例。
+
+\textbf{威胁模型。}我们分析防御方可获得的服务端源码(白盒),针对应用在真实栈上的开发者引入的逻辑缺陷,并把注解 oracle 视为可信。发现确认要求可复现链;本稿不声称规模化 0-day 收集。
+
+\section{设计}
+\label{sec:design}
+
+图~\ref{fig:overview} 给出架构;\S\ref{sec:recovery}--\ref{sec:annotations} 详述各阶段及其设计理性。
+
+\begin{figure*}[t]
+\centering
+\begin{tikzpicture}[
+  font=\scriptsize,
+  box/.style={draw, rounded corners=2pt, align=center, inner sep=3pt, minimum height=1.9em},
+  phase/.style={draw, dashed, rounded corners=4pt, inner sep=5pt},
+  arr/.style={-{Stealth[length=2mm]}, thick},
+  fbk/.style={-{Stealth[length=2mm]}, thick, dashed}
+]
+% 阶段1:恢复
+\node[box, fill=blue!8] (ast) {源码};
+\node[box, fill=blue!8, right=4mm of ast] (cand) {AST 模式\\挖掘};
+\node[box, fill=blue!8, right=4mm of cand] (llm) {LLM 语义\\提升};
+\node[box, fill=blue!8, right=4mm of llm] (sel) {确定性\\选择器};
+\node[box, fill=blue!14, right=4mm of sel] (sstg) {SSTG};
+\draw[arr] (ast) -- (cand);
+\draw[arr] (cand) -- node[above, font=\tiny]{候选} (llm);
+\draw[arr] (llm) -- node[above, font=\tiny]{标签} (sel);
+\draw[arr] (sel) -- (sstg);
+\begin{pgfonlayer}{background}
+\node[phase, fit=(ast)(sstg), label={[font=\scriptsize\bfseries]above:1) 语义状态恢复(恢复 $\rightarrow$ 运行时校准 $\rightarrow$ LLM 修理)}] {};
+\end{pgfonlayer}
+
+% 阶段2:exploit / explore
+\node[box, fill=green!10, below left=10mm and -6mm of sstg] (planner) {反向规划器\\(状态距离定向)};
+\node[box, fill=orange!12, below right=10mm and -6mm of sstg] (fuzzer) {Fuzzer\\(状态新颖度反馈)};
+\draw[arr] (sstg.south west) ++(2mm,0) -- (planner.north) node[midway, left, font=\tiny]{已知图};
+\draw[arr] (sstg.south east) ++(-2mm,0) -- (fuzzer.north) node[midway, right, font=\tiny]{缺口};
+\node[font=\tiny, below=1mm of planner] {exploit:朝目标状态的链};
+\node[font=\tiny, below=1mm of fuzzer] {explore:参数词汇=分支字面量};
+
+% 阶段3:执行
+\node[box, fill=gray!10, below=17mm of $(planner)!0.5!(fuzzer)$] (epoch) {快照 epoch:一条链 = 一个 epoch(fork COW + DB 模板)};
+\draw[arr] (planner) -- (epoch);
+\draw[arr] (fuzzer) -- (epoch);
+
+% 阶段4:oracle
+\node[box, fill=red!8, below=6mm of epoch] (anota) {ANOTA 注解:目标 $+$ 违规 oracle};
+\draw[arr] (epoch) -- (anota);
+
+% 反馈
+\node[box, fill=blue!8, left=8mm of anota] (newst) {新状态原子\\(读回差集)};
+\draw[fbk] (anota.east) to[bend left=18] node[below, font=\tiny]{违规 $\rightarrow$ 发现} ++(28mm,0);
+\draw[fbk] (epoch.west) -- node[above, font=\tiny, sloped]{观测} (newst.east);
+\draw[fbk] (newst.north) to[bend right=15] node[left, font=\tiny]{新边 / 新目标 / 检查点} (sstg.south);
+\draw[fbk] (newst.south) to[bend left=25] node[below, font=\tiny]{卡住 $\rightarrow$ LLM 修理} ++(0,-6mm);
+\end{tikzpicture}
+\caption{\sys{} 方法总图。静态分析挖掘未裁决的候选事实;LLM 将其提升为安全语义;确定性选择器接纳进 SSTG。规划器按状态距离开发已知图,fuzzer 以状态新颖度反馈探索其外。链以快照 epoch 执行;运行时注解定义目标并判定违规;观测以新状态、新边、新目标、检查点与修理请求回流。}
+\label{fig:overview}
+\end{figure*}
+
+\subsection{语义状态恢复}
+\label{sec:recovery}
+框架感知的静态分析(Flask/SQLAlchemy/connexion/OpenAPI 适配器)挖掘\emph{状态候选}:(变量, 操作$\in$\{读,比较,写\}, 证据, 来源, file:line),覆盖常量 SQL 写、行下标比较、守卫形态、令牌产/消、响应构造、配置旗标与请求参数。\emph{候选锚定提升}进而让 LLM 解释——而非发现:每个候选获得六类枚举标签之一、一句理由与一个置信度,输出经 schema 校验,一次重试后降级规则标注;提示词版本化、响应磁盘缓存(可复现性与成本控制)。有界的 \emph{relate} pass 只对已接纳候选恢复关系事实(角色层级、静态配对看不见的迁移、跨实体不变式)。公开的确定性选择器把标签映射为接纳(workflow 还需值域 $\geq$2 个字面量);合法迁移由端点内守卫--效应配对导出——代码实现的迁移即 ground truth——参数化 SQL 遮蔽的写由线性序兜底。静态挖掘的盲区(如 \texttt{SET status=?})由\emph{软生产者}提名"观测该变量的 item 级端点",交运行时验证。
+
+\emph{设计理性。}把 LLM 限定在解释静态枚举的候选上,保住可解释性(每个决策是静态事实、可审计标签或公开规则)与可复现性(温度零、缓存、版本化),同时仍捕获规则不可得的语义("`level=3 意味着高级特权")。
+
+\subsection{状态空间定向与探索}
+\label{sec:navigate}
+规划器在 SSTG 上自目标原子反向链接,对收集到的动作做拓扑排序,并补全资源与认证依赖,产出参数化链($\theta$:令牌与对象号的符号槽,重放时由响应提取解析)。被静态观察到"条件于运行时旗标"的前置按构造丢弃——攻击假设生成器是静态且确定性的。fuzzer 在模型前沿与规划互补:在规划器给出的链结构内\emph{只变异参数区},词汇表 harvested 自静态已提取的分支条件字面量(规划器视为 \texttt{requires} 的同一批事实)。其覆盖信号是\emph{状态新颖度}:epoch 末读回观测与已知原子求差;新原子奖励种子、添加运行时已验证边、提名检查点。进展停滞时(覆盖缺口非空、目标距离不降、新颖度耗尽),LLM 修理步消费缺口报告,以假设形式提出缺失边或前置;执行终裁,提案及其结果构成审计日志。图的边因此携带来源:静态 / LLM 假设 / 运行时已验证。
+
+\emph{设计理性。}规划与 fuzz 是同一张图的开发与探索,不是两套系统:规划器管模型所知(随机撞不到的深链),fuzzer 管模型无法枚举之物(参数与载荷内容,如带语法的攻击串),修理弥合模型与应用的缝。
+
+\subsection{状态感知快照执行}
+\label{sec:snapshot}
+一条链 = 一个 epoch = 一个自检查点 fork 出的叶;冻结检查点永不服务流量。每次 fork 前恢复位级文件数据库模板,磁盘与检查点页缓存精确一致;被杀叶的 journal 直接 unlink(模板拷贝等价回滚)。恢复成本 ${\sim}0.7$\,ms 且与检查点深度无关;嵌套检查点让共享前缀的目标族从深度 $k$ 分叉;超时杀叶而检查点无损。检查点摆位由
+\begin{equation}
+\mathrm{Score}(s) = \alpha\,\mathrm{rel}(s) + \beta\,\mathrm{reuse}(s) + \gamma\tfrac{1}{1+\mathrm{cost}(s)} + \delta\,\mathrm{novelty}(s)
+\end{equation}
+调度,与 root-only、静态(登录后)、随机三策略对照消融。
+
+\subsection{注解即目标与 oracle}
+\label{sec:annotations}
+插桩解释器中每个注解守卫位点抛出携带策略名的可归因异常——即违规 oracle。同一位点又是\emph{目标规格}:(状态门 × sink) 对,其门从 SSTG 读出。基线 B1 只把注解当 oracle(凭据预置,对齐 Predator 的设置~\cite{predator});\sys{} 把它当 oracle \emph{加}目标。我们的注解起草器从恢复的状态机器生成守卫位点,在受控靶标上与手写策略 recall=1.0——目标集是可机器生成的。
+
+\section{实现}
+\label{sec:impl}
+\sys{} 约 5.3 千行 Python,两个进程族(\S\ref{sec:formulation} 威胁模型):分析、规划、评测跑系统解释器;靶标、快照监督与 fuzzing 跑 ANOTA 插桩 CPython~3.10~\cite{anota},两族经 AF\_UNIX socket 及描述符传递通信。fuzzing 引擎为 Atheris(libFuzzer 谱系),双模式:进程内(B1)与快照 epoch(B2)。靶标:\emph{vulnshop}(自建;五类植入的状态门控缺陷,单源码经运行时旗标出守卫/非守卫双变体,另设注解门控 RCE sink 承载认证后一族);VAmPI(路由定义于 OpenAPI 规范,检验框架适配器);DSVW(二阶链)。
+
+\section{评测}
+\label{sec:eval}
+\textbf{研究问题。}RQ1(恢复质量):恢复的状态、标签、迁移与起草注解是否对齐 ground truth?RQ2(可达性):规划链能否构造目标状态,守卫变体是否阻断?RQ3(战役):同等预算下状态层相对盲打与代码定向基线增加什么?RQ4(经济性):快照 epoch 代价几何?
+
+\textbf{设置。}每 goal 等预算(300 请求/10 分钟);指标:逐类 time-to-detection、requests-to-detection、检出数、误报、状态覆盖(新原子数)、restores/s、规划/绑定成功率、LLM 调用与成本。基线:B0 裸 fuzzer;B1 注解+代码覆盖+凭据预置;B2 \sys{} 全家;消融分别去掉规划器、新颖度反馈、LLM 修理,以及更换快照策略。
+
+\textbf{RQ1:恢复。}vulnshop 上 11/11 路由恢复;六个状态变量覆盖全部六类语义;迁移矩阵与手写期望一致(\texttt{CREATED}$\to$\{\texttt{PAID},\texttt{CANCELLED}\}、\texttt{PAID}$\to$\texttt{SHIPPED}、\texttt{used} 单向);golden 事实 diff 100\% 且零幻影。VAmPI 上 14/14 规范路由、71\% 状态写端点正确提取(遗漏:helper 间接的种子与删除,已记录)。LLM 标注与规则及人工 ground truth 在 6/6 变量上一致;\emph{relate} pass 补回了被参数化 SQL 遮蔽的迁移与角色层级。起草注解:对六条手写策略 recall=1.0、零多余类。
+
+\textbf{RQ2:可达性。}五类 goal × \{非守卫, 守卫\}:按设计 10/10。工作流绕过链完全跳过支付;支付绕过以十分之一金额到达 \texttt{PAID};优惠券二次兑换;跨用户读取成功;自我提权至 admin——每项经读回核验,每项在守卫变体被阻断或核验不通过。同一批链与判定经快照执行器复跑(全矩阵 2.4\,s)。epoch 隔离精确:写入随叶消亡;跨 epoch 重注册成功(数据库确已还原)而订单不持久。
+
+\textbf{RQ3:战役。}\planned{B0/B1/B2 逐类 TTD、请求数、检出、误报表;消融表($-$规划器、$-$新颖度、$-$LLM 修理、快照策略)。}
+
+\textbf{RQ4:经济性。}fork 恢复中位 ${\sim}0.7$\,ms、深度无关;带数据库模板端到端恢复 $>$500 次/秒;完整重启 ${\sim}65$\,ms(${\sim}77\times$);epoch 摊销随 epoch 规模改善单输入成本。\planned{战役规模吞吐与检查点树内存。}
+
+\textbf{伦理。}全部靶标本地运行于刻意脆弱的应用;注解与发现仅涉及被测应用。
+
+\section{讨论与局限}
+\label{sec:discussion}
+状态模型覆盖静态可恢复维度;进程内存被重置但不建模,文件态是未来工作。真实框架上的恢复深度(helper 间接写、动态分发)有界且已记录;软生产者与修理机制正是为这些缺口而生,其在自然与人工遮蔽图上的命中率属于战役一部分。LLM 被限定于标注与假设生成;尽管如此,对抗代码上的标签质量与跨模型版本的修理精度仍需计划中的敏感性分析。证据规模——两个主靶加 DSVW——是局限;第四靶在议。
+
+\section{相关工作}
+\label{sec:related}
+\textbf{Web fuzzing。}Witcher~\cite{witcher} 将覆盖反馈与检查式插桩配对;Predator~\cite{predator} 增加代码距离定向、入口 URL 反向分析、分支导出参数语料、以及经选择性 PHP opcode 插桩的运行时补边——方向在代码空间、状态人工预置。\sys{} 把方向信号移入状态空间,构造而非预置状态,并以运行时观测加 LLM 假设修理\emph{状态}图。一个悦目的对称:Predator 增强 PHP 解释器以取距离反馈;我们组合增强 CPython(ANOTA)以取语义 oracle 与目标定义。
+
+\textbf{快照与有状态 fuzzing。}Atropos~\cite{atropos} 与 Nyx~\cite{nyx} 恢复快照以积累状态;AFLNet 等协议 fuzzer 建模\emph{协议}状态。\sys{} 在进程级快照恢复之上增加应用语义状态模型、方向信号与状态评分的检查点调度。
+
+\textbf{定向 fuzzing。}AFLGo~\cite{aflgo} 及后继按调用图距离定向。SDFuzz~\cite{sdfuzz} 在内核中按人工指定的目标状态驱动;我们从 Web 源码恢复目标状态。ChatAFL~\cite{chatafl} 用 LLM 推断协议状态机并合成种子;我们的 LLM 提升静态候选并修理图——角色不同,可复现性姿态不同。
+
+\textbf{代码属性图与语义提升。}CPG~\cite{yamaguchi} 集成 AST/CFG/DDG,有结构而无应用语义;我们的 SA-PR 以 LLM 辅助的语义提升在静态枚举候选之上恢复安全相关状态。
+
+\section{结论}
+深层 Web 漏洞被应用状态而非代码可达性门控。\sys{} 从源码恢复安全相关状态空间(静态事实之上的候选锚定 LLM 提升),在其中驱动确定性规划与新颖度驱动的 fuzzing,并以状态评分的快照 epoch 使状态构造廉价可重复,运行时注解定义目标与判定。初步结果确立恢复质量、可达性与守卫变体正确阻断、执行器可互换性与快照经济性;基线战役量化端到端主张。
+
+\bibliographystyle{plain}
+\begin{thebibliography}{10}
+
+\bibitem{aflgo}
+M. B\"ohme, V.-T. Pham, M.-D. Nguyen, and A. Roychoudhury,
+``Directed greybox fuzzing,''
+in \emph{Proc. ACM SIGSAC CCS}, 2017.
+
+\bibitem{predator}
+C. Wang, W. Meng, C. Luo, and P. Li,
+``Predator: Directed web application fuzzing for efficient vulnerability validation,''
+in \emph{Proc. IEEE S\&P}, 2025.
+
+\bibitem{atropos}
+``Atropos: Stateful web application fuzzing with snapshot restoration,''
+in \emph{Proc. USENIX Security Symposium}, 2024.
+
+\bibitem{witcher}
+E. Trickel, B. Wang, A. Doup\'e, and Y. Shoshitaishvili,
+``Witcher: Discovering and understanding web application vulnerabilities via coverage-guided systematic fuzzing,''
+in \emph{Proc. NDSS}, 2023.
+
+\bibitem{sdfuzz}
+P. Li, Y. Chen, et al.,
+``SDFuzz: Target states driven directed fuzzing,''
+in \emph{Proc. USENIX Security Symposium}, 2024.
+
+\bibitem{chatafl}
+Y. Lyu, et al.,
+``ChatAFL: A protocol-aware fuzzing framework with LLMs for network protocol implementations,''
+in \emph{Proc. IEEE S\&P}, 2024.
+
+\bibitem{anota}
+``ANOTA: Annotation-based vulnerability detection with an instrumented Python interpreter,''
+in \emph{Proc. NDSS}, 2026.
+
+\bibitem{nyx}
+S. Schumilo, C. Spaar, et al.,
+``NYX: Greybox hypervisor fuzzing using fast snapshots and affine types,''
+in \emph{Proc. USENIX Security Symposium}, 2021.
+
+\bibitem{yamaguchi}
+F. Yamaguchi, N. Golde, D. Arp, and K. Rieck,
+``Modeling and discovering vulnerabilities with code property graphs,''
+in \emph{Proc. IEEE S\&P}, 2014.
+
+\end{thebibliography}
+
+\end{document}
