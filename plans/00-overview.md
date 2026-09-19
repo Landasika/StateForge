@@ -122,4 +122,6 @@ stateforge/
 
 ## 8. 文档索引
 
+**[design-v2-state-reachability.md](design-v2-state-reachability.md)(2026-09-19 起为问题层权威:状态可达性重定位 + 方法总图 + 评测设计;论文初稿 `papers/draft/main.tex`,目标 NDSS)**
+
 [SF0-foundation.md](SF0-foundation.md) · [SF1-analyzer.md](SF1-analyzer.md) · [SF2-fuzz-executor.md](SF2-fuzz-executor.md) · [SF3-planner.md](SF3-planner.md) · [SF4-oracle-eval.md](SF4-oracle-eval.md) · [SF5-snapshot-policy.md](SF5-snapshot-policy.md) · [SF6-llm-lifting.md](SF6-llm-lifting.md) · [e2e-test-plan.md](e2e-test-plan.md) · [tech-plan-v1.md](tech-plan-v1.md)(上游方案存档)
