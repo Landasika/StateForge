@@ -64,7 +64,13 @@ class ReplayExecutor:
                 result.reason = f"blocked at {step.action} → {resp.status_code}"
                 return result
         if checker is not None:
-            return checker(result, ctx, self)
+            from stateforge.planner.checkers import verify_request
+
+            vreq = verify_request(segment.goal, ctx)
+            verify = (None, {}) if vreq is None else self.get(
+                vreq["route"], vreq.get("headers", {}).get("Authorization", "").replace("Bearer ", "") or None
+            )
+            return checker(result, ctx, verify)
         result.hit = True  # 无 checker:链走通即达
         result.reason = "chain completed"
         return result

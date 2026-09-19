@@ -23,3 +23,8 @@ PyYAML
 inflection
 networkx
 atheris==2.0.12
+# 测试进程附加(2026-09-19):anota 标记测试在 ANOTA 内跑 planner/snapshot 链
+# 监督进程(supervisor.py)仍守 stdlib+werkzeug 约束,不依赖下列包
+pytest
+httpx
+pydantic
