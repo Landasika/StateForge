@@ -85,6 +85,8 @@ stateforge/
 | SF5 快照调度(创新3) | [SF5-snapshot-policy.md](SF5-snapshot-policy.md) | 5-6d | 四策略消融:检查点↓≥50% 覆盖不降,重放↓≥70% |
 | SF6 语义提升(创新1:State Recovery) | [SF6-llm-lifting.md](SF6-llm-lifting.md) | 5.5-7.5d | 逐候选标注 P/R + 规则 vs LLM vs 人工 gold 三方对标表 |
 
+**执行顺序修订(2026-09-19,决策 B)**:SF0 ✅ → SF1 ✅ → **SF3(先行,已 core 达成)** → SF2 → SF4 → SF5 → SF6(核心已提前完成,余三方对标实验)。理由:最大研究风险 = "源码→模型→计划→执行→到达"主链,最早证明;SF2-T3 replay 执行器已随 SF3 提前实现(httpx 双传输:WSGI 进程内/真 HTTP 直跑);SF2 剩余部分(fuzz harness/快照工程化/覆盖反馈 spike)在主链证明后进行。
+
 合计 35-46 人日 ≈ **8-10 周**(与"2-3 个月原型"一致)。
 
 ## 6. 关键决策记录(ADR)
