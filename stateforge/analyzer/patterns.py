@@ -146,6 +146,11 @@ class EndpointExtractor(ast.NodeVisitor):
         env = _EpEnv(self.file, ep, self.candidates, self.config_flags)
         for stmt in ast.walk(func):
             env.visit_node(stmt)
+        # 端点内事实去重(vuln/fixed 双分支常产生同形 Effect/Precondition)
+        ep.effects = _dedup_by(ep.effects, key=lambda e: (e.var, e.op, e.value, e.key))
+        ep.preconditions = _dedup_by(
+            ep.preconditions, key=lambda p: (p.var, p.op, p.value, p.key)
+        )
         return env
 
 
@@ -241,20 +246,24 @@ class _EpEnv:
             var = _normalize_var(row, attr)
             op = {ast.Eq: "eq", ast.NotEq: "ne", ast.In: "in"}.get(type(comp.ops[0]))
             if op:
-                self.ep.preconditions.append(Precondition(
-                    var=var, op=op, value=litv, file=self.file,
-                    line=getattr(comp, "lineno", 0),
-                ))
+                # 前置条件只对已知实体的状态原子成立;request_data[...] 是请求体
+                # 可选旗标(如 VAmPI register 的 admin),不是"执行前置"——只留候选
+                if _var_entity_known(var):
+                    self.ep.preconditions.append(Precondition(
+                        var=var, op=op, value=litv, file=self.file,
+                        line=getattr(comp, "lineno", 0),
+                    ))
                 self._cand(var, "compare", f'{var} {op} "{litv}"', "condition")
         # ownership 比对:row["user_id"] vs user["id"]
         a, b = _subscript_parts(left), _subscript_parts(right)
         if a and b:
             var = _normalize_var(*a)
             self._cand(var, "compare", f'{a[0]}["{a[1]}"] vs {b[0]}["{b[1]}"]', "ownership_binding")
-            self.ep.preconditions.append(Precondition(
-                var=var, op="eq", key=f'{b[0]}.{b[1]}', file=self.file,
-                line=getattr(comp, "lineno", 0),
-            ))
+            if _var_entity_known(var):
+                self.ep.preconditions.append(Precondition(
+                    var=var, op="eq", key=f'{b[0]}.{b[1]}', file=self.file,
+                    line=getattr(comp, "lineno", 0),
+                ))
 
     # ---- R4 守卫:if 旗标/枚举/布尔 真值测试
     def _if(self, node: ast.If) -> None:
@@ -265,9 +274,12 @@ class _EpEnv:
             row, attr = sub
             var = _normalize_var(row, attr)
             op = "falsy" if negated else "truthy"
-            self.ep.preconditions.append(Precondition(
-                var=var, op=op, file=self.file, line=node.lineno,
-            ))
+            # request_data[...] 等请求体真值测试只留候选,不产前置(register 的
+            # 可选 admin 旗标不是"执行要求")
+            if _var_entity_known(var):
+                self.ep.preconditions.append(Precondition(
+                    var=var, op=op, file=self.file, line=node.lineno,
+                ))
             self._cand(var, "compare", f'if {"not " if negated else ""}{row}["{attr}"]', "condition")
         # owner/role 守卫(含旗标分支内)
         for comp in [n for n in ast.walk(node) if isinstance(n, ast.Compare)]:
@@ -335,7 +347,8 @@ class _EpEnv:
                 line=getattr(node, "lineno", 0),
             ))
             self._cand(var, "write", ast.unparse(node)[:60], "db_field")
-        # ORM 构造:newBook = Book(book_title=..., secret=...) → 每字面 kwarg 一条 Effect
+        # ORM 构造:newBook = Book(book_title=..., secret=...) → 每 kwarg 一条 Effect
+        # (常量带值;request 取值 value=None —— 捕获 VAmPI register/books 的写事实)
         _ENTITY_BLACKLIST = {"Response", "Request", "Flask", "Blueprint", "App"}
         if (
             len(node.targets) == 1
@@ -347,13 +360,19 @@ class _EpEnv:
         ):
             entity = node.value.func.id
             for kw in node.value.keywords:
-                if isinstance(kw.value, ast.Constant):
-                    var = f"{entity}.{kw.arg}"
-                    self.ep.effects.append(Effect(
-                        var=var, op="set", value=str(kw.value.value),
-                        file=self.file, line=getattr(node, "lineno", 0),
-                    ))
-                    self._cand(var, "write", ast.unparse(node)[:60], "db_field")
+                if kw.arg is None:
+                    continue
+                value = (
+                    str(kw.value.value)
+                    if isinstance(kw.value, ast.Constant)
+                    else None
+                )
+                var = f"{entity}.{kw.arg}"
+                self.ep.effects.append(Effect(
+                    var=var, op="set", value=value,
+                    file=self.file, line=getattr(node, "lineno", 0),
+                ))
+                self._cand(var, "write", ast.unparse(node)[:60], "db_field")
 
     # ---- 候选登记(跨端点去重:self.cands 为文件级共享列表)
     def _cand(self, var: str, op: str, evidence: str, source: CandidateSource) -> None:
@@ -450,6 +469,24 @@ def _is_inline_json(node) -> bool:
     if isinstance(node, ast.Call):
         return _call_name(node).endswith(".get_json")
     return False
+
+
+_KNOWN_ENTITIES = {"Order", "Coupon", "User", "Book", "Session"}
+
+
+def _var_entity_known(var: str) -> bool:
+    return var.partition(".")[0] in _KNOWN_ENTITIES
+
+
+def _dedup_by(items: list, key) -> list:
+    seen: set = set()
+    out = []
+    for it in items:
+        k = key(it)
+        if k not in seen:
+            seen.add(k)
+            out.append(it)
+    return out
 
 
 def _bare_name(call: ast.Call) -> str:

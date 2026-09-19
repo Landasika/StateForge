@@ -40,11 +40,35 @@
     },
     {
       "kind": "state",
-      "var": "request_data.admin",
-      "value": "True",
+      "var": "User.username",
+      "value": "*",
+      "security_relevant": false,
+      "label": "irrelevant",
+      "id": "User.username=*"
+    },
+    {
+      "kind": "state",
+      "var": "User.password",
+      "value": "*",
+      "security_relevant": true,
+      "label": "authn",
+      "id": "User.password=*"
+    },
+    {
+      "kind": "state",
+      "var": "User.email",
+      "value": "*",
+      "security_relevant": false,
+      "label": "irrelevant",
+      "id": "User.email=*"
+    },
+    {
+      "kind": "state",
+      "var": "User.admin",
+      "value": "*",
       "security_relevant": true,
       "label": "authz",
-      "id": "request_data.admin=True"
+      "id": "User.admin=*"
     },
     {
       "kind": "action",
@@ -90,27 +114,11 @@
       "id": "PUT /users/v1/{username}/email"
     },
     {
-      "kind": "state",
-      "var": "User.email",
-      "value": "*",
-      "security_relevant": false,
-      "label": "irrelevant",
-      "id": "User.email=*"
-    },
-    {
       "kind": "action",
       "func": "update_password",
       "file": "179",
       "line": 179,
       "id": "PUT /users/v1/{username}/password"
-    },
-    {
-      "kind": "state",
-      "var": "User.password",
-      "value": "*",
-      "security_relevant": true,
-      "label": "authn",
-      "id": "User.password=*"
     },
     {
       "kind": "action",
@@ -127,6 +135,30 @@
       "id": "POST /books/v1"
     },
     {
+      "kind": "state",
+      "var": "Book.book_title",
+      "value": "*",
+      "security_relevant": false,
+      "label": "irrelevant",
+      "id": "Book.book_title=*"
+    },
+    {
+      "kind": "state",
+      "var": "Book.secret_content",
+      "value": "*",
+      "security_relevant": false,
+      "label": "irrelevant",
+      "id": "Book.secret_content=*"
+    },
+    {
+      "kind": "state",
+      "var": "Book.user_id",
+      "value": "*",
+      "security_relevant": true,
+      "label": "ownership",
+      "id": "Book.user_id=*"
+    },
+    {
       "kind": "action",
       "func": "get_by_title",
       "file": "45",
@@ -136,10 +168,31 @@
   ],
   "edges": [
     {
-      "kind": "requires",
-      "op": "truthy",
+      "kind": "produces",
+      "op": "set",
       "source": "POST /users/v1/register",
-      "target": "request_data.admin=True",
+      "target": "User.username=*",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /users/v1/register",
+      "target": "User.password=*",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /users/v1/register",
+      "target": "User.email=*",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /users/v1/register",
+      "target": "User.admin=*",
       "key": 0
     },
     {
@@ -178,13 +231,6 @@
       "key": 0
     },
     {
-      "kind": "produces",
-      "op": "set",
-      "source": "PUT /users/v1/{username}/email",
-      "target": "User.email=*",
-      "key": 1
-    },
-    {
       "kind": "requires",
       "op": "truthy",
       "source": "PUT /users/v1/{username}/password",
@@ -197,19 +243,33 @@
       "source": "PUT /users/v1/{username}/password",
       "target": "User.password=*",
       "key": 0
-    },
-    {
-      "kind": "produces",
-      "op": "set",
-      "source": "PUT /users/v1/{username}/password",
-      "target": "User.password=*",
-      "key": 1
     },
     {
       "kind": "requires",
       "op": "truthy",
       "source": "POST /books/v1",
       "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /books/v1",
+      "target": "Book.book_title=*",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /books/v1",
+      "target": "Book.secret_content=*",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /books/v1",
+      "target": "Book.user_id=*",
       "key": 0
     },
     {
