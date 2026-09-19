@@ -107,6 +107,24 @@ class Endpoint(BaseModel):
     line: int = 0
 
 
+class PlanStep(BaseModel):
+    """一步动作:端点 + 参数槽(?var 引用绑定,@fresh 自造)。"""
+
+    action: str                       # "POST /auth/register"
+    json: dict[str, str] = Field(default_factory=dict)
+    path: dict[str, str] = Field(default_factory=dict)      # 路径参数(已代入或 ?var)
+    headers: dict[str, str] = Field(default_factory=dict)   # 如 Authorization: Bearer ?token
+    extract: dict[str, str] = Field(default_factory=dict)   # 响应键 → ?var
+
+
+class PlanSegment(BaseModel):
+    """一条规划链 = 一个 epoch(二阶乘积律的工程落地)。"""
+
+    goal: str
+    steps: list[PlanStep] = Field(default_factory=list)
+    notes: list[str] = Field(default_factory=list)          # 规划期备注(soft producer 等)
+
+
 class Invariant(BaseModel):
     """同实体状态原子间的合法迁移(静态 guard→effect 配对推导,ADR-0009)。"""
 

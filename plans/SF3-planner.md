@@ -1,6 +1,9 @@
 # SF3 —— 规划层:目标状态反向规划 + 运行期参数绑定
 
-> 状态:待启动 | 工期:5-7 天 | 依赖:SF1(状态图),SF2(执行器,联调时) | 上游:[00-overview.md](00-overview.md)
+> 状态:**核心达成(2026-09-19,决策 B 先行)** | 工期:5-7 天 | 依赖:SF1(状态图),SF2-T3(执行器,已提前实现) | 上游:[00-overview.md](00-overview.md)
+> 进度:T1 GoalSpec ✅ T2 反向 BFS+拓扑排序 ✅ T3 绑定(@fresh/?var/嵌入式槽/响应提取)✅ T5 直跑联调 ✅(ANOTA 子进程服务 + httpx 真 HTTP;10/10 格阵:vuln 全 hit / fixed 全阻断)
+> 实装补充:soft-producer 兜底(参数化 SQL 盲区:pay 的 status=? 由"观测+item 级端点"启发 + 运行时 verify 裁决);drop_requires 攻击假设模式;资源/认证链完备化规则
+> 未竟:T4 规划链→fuzz 词汇表(随 SF2);20/20 重复阵;VAmPI goal 套件;replan 环(观察偏离触发,含 Gap 形式化——R2 押后项)
 
 ## 1. 目标
 
