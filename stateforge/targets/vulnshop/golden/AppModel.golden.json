@@ -42,7 +42,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/vulnshop/app.py",
+          "line": 137
+        }
+      ],
       "effects": [
         {
           "var": "User.role",
@@ -92,7 +101,7 @@
           "value": null,
           "key": "username",
           "file": "stateforge/targets/vulnshop/app.py",
-          "line": 161
+          "line": 153
         }
       ],
       "sinks": [],
@@ -118,7 +127,7 @@
           "value": null,
           "key": null,
           "file": "stateforge/targets/vulnshop/app.py",
-          "line": 165
+          "line": 164
         }
       ],
       "effects": [],
@@ -154,20 +163,20 @@
       "guards": [],
       "preconditions": [
         {
-          "var": "Session.authed_as",
-          "op": "truthy",
-          "value": null,
-          "key": null,
-          "file": "stateforge/targets/vulnshop/app.py",
-          "line": 172
-        },
-        {
           "var": "Coupon.used",
           "op": "truthy",
           "value": null,
           "key": null,
           "file": "stateforge/targets/vulnshop/app.py",
           "line": 196
+        },
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/vulnshop/app.py",
+          "line": 171
         }
       ],
       "effects": [
@@ -232,20 +241,20 @@
       ],
       "preconditions": [
         {
-          "var": "Session.authed_as",
-          "op": "truthy",
-          "value": null,
-          "key": null,
-          "file": "stateforge/targets/vulnshop/app.py",
-          "line": 219
-        },
-        {
           "var": "Order.user_id",
           "op": "eq",
           "value": null,
           "key": "user.id",
           "file": "stateforge/targets/vulnshop/app.py",
           "line": 226
+        },
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/vulnshop/app.py",
+          "line": 218
         }
       ],
       "effects": [],
@@ -292,20 +301,20 @@
       ],
       "preconditions": [
         {
-          "var": "Session.authed_as",
-          "op": "truthy",
-          "value": null,
-          "key": null,
-          "file": "stateforge/targets/vulnshop/app.py",
-          "line": 240
-        },
-        {
           "var": "Order.user_id",
           "op": "eq",
           "value": null,
           "key": "user.id",
           "file": "stateforge/targets/vulnshop/app.py",
           "line": 247
+        },
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/vulnshop/app.py",
+          "line": 239
         }
       ],
       "effects": [],
@@ -351,14 +360,6 @@
       ],
       "preconditions": [
         {
-          "var": "Session.authed_as",
-          "op": "truthy",
-          "value": null,
-          "key": null,
-          "file": "stateforge/targets/vulnshop/app.py",
-          "line": 264
-        },
-        {
           "var": "Order.user_id",
           "op": "eq",
           "value": null,
@@ -373,6 +374,14 @@
           "key": null,
           "file": "stateforge/targets/vulnshop/app.py",
           "line": 273
+        },
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/vulnshop/app.py",
+          "line": 263
         }
       ],
       "effects": [
@@ -419,20 +428,20 @@
       ],
       "preconditions": [
         {
-          "var": "Session.authed_as",
-          "op": "truthy",
-          "value": null,
-          "key": null,
-          "file": "stateforge/targets/vulnshop/app.py",
-          "line": 280
-        },
-        {
           "var": "Order.user_id",
           "op": "eq",
           "value": null,
           "key": "user.id",
           "file": "stateforge/targets/vulnshop/app.py",
           "line": 287
+        },
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/vulnshop/app.py",
+          "line": 279
         }
       ],
       "effects": [
@@ -469,7 +478,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/vulnshop/app.py",
+          "line": 293
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [
@@ -512,20 +530,20 @@
       ],
       "preconditions": [
         {
-          "var": "Session.authed_as",
-          "op": "truthy",
-          "value": null,
-          "key": null,
-          "file": "stateforge/targets/vulnshop/app.py",
-          "line": 303
-        },
-        {
           "var": "User.role",
           "op": "ne",
           "value": "admin",
           "key": null,
           "file": "stateforge/targets/vulnshop/app.py",
           "line": 307
+        },
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/vulnshop/app.py",
+          "line": 302
         }
       ],
       "effects": [],
@@ -541,6 +559,18 @@
   ],
   "candidates": [
     {
+      "var": "db",
+      "entity": "db",
+      "attr": null,
+      "ops": [
+        "write"
+      ],
+      "evidence": "conn = db()",
+      "source": "call",
+      "file": "stateforge/targets/vulnshop/app.py",
+      "line": 0
+    },
+    {
       "var": "User.role",
       "entity": "User",
       "attr": "role",
@@ -550,19 +580,6 @@
       ],
       "evidence": "execute(INSERT INTO users(username, password, role) VALUES(?, ?, 'us...)",
       "source": "db_field",
-      "file": "stateforge/targets/vulnshop/app.py",
-      "line": 0
-    },
-    {
-      "var": "Session.authed_as",
-      "entity": "Session",
-      "attr": "authed_as",
-      "ops": [
-        "write",
-        "read"
-      ],
-      "evidence": "make_token",
-      "source": "session_access",
       "file": "stateforge/targets/vulnshop/app.py",
       "line": 0
     },
@@ -605,6 +622,18 @@
       "line": 0
     },
     {
+      "var": "get_order_or_none",
+      "entity": "get_order_or_none",
+      "attr": null,
+      "ops": [
+        "write"
+      ],
+      "evidence": "order = get_order_or_none(oid)",
+      "source": "call",
+      "file": "stateforge/targets/vulnshop/app.py",
+      "line": 0
+    },
+    {
       "var": "Order.user_id",
       "entity": "Order",
       "attr": "user_id",
@@ -615,9 +644,32 @@
       "source": "ownership_binding",
       "file": "stateforge/targets/vulnshop/app.py",
       "line": 0
+    },
+    {
+      "var": "Session.authed_as",
+      "entity": "Session",
+      "attr": "authed_as",
+      "ops": [
+        "write",
+        "read"
+      ],
+      "evidence": "auth baseline: observes/effects",
+      "source": "session_access",
+      "file": "",
+      "line": 0
     }
   ],
   "state_vars": [
+    {
+      "entity": "db",
+      "attr": "",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:conn = db() [select] irrelevant 出局",
+      "anchors": []
+    },
     {
       "entity": "User",
       "attr": "role",
@@ -629,16 +681,6 @@
       "label": "authz",
       "security_relevant": true,
       "rationale": "[rule] 角色/权限判定变量;证据:execute(INSERT INTO users(username, password, role) VALUES(?, ?, 'us...) [select] 固定映射直入",
-      "anchors": []
-    },
-    {
-      "entity": "Session",
-      "attr": "authed_as",
-      "kind": "session",
-      "domain": null,
-      "label": "authn",
-      "security_relevant": true,
-      "rationale": "[rule] 认证链变量(token/session);证据:make_token [select] 固定映射直入",
       "anchors": []
     },
     {
@@ -681,6 +723,16 @@
       "anchors": []
     },
     {
+      "entity": "get_order_or_none",
+      "attr": "",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:order = get_order_or_none(oid) [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
       "entity": "Order",
       "attr": "user_id",
       "kind": "db_column",
@@ -688,6 +740,16 @@
       "label": "ownership",
       "security_relevant": true,
       "rationale": "[rule] 实体所有者绑定;证据:order[\"user_id\"] vs user[\"id\"] [select] 固定映射直入",
+      "anchors": []
+    },
+    {
+      "entity": "Session",
+      "attr": "authed_as",
+      "kind": "session",
+      "domain": null,
+      "label": "authn",
+      "security_relevant": true,
+      "rationale": "[rule] 认证链变量(token/session);证据:auth baseline: observes/effects [select] 固定映射直入",
       "anchors": []
     }
   ],

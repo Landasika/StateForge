@@ -203,17 +203,6 @@ class EndpointExtractor(ast.NodeVisitor):
         env = _EpEnv(self.file, ep, self.candidates, self.config_flags)
         for stmt in ast.walk(func):
             env.visit_node(stmt)
-        # login_required 装饰器(Django/Flask-Login 通用)→ 认证前置 + 守卫
-        for dec in getattr(func, "decorator_list", []):
-            dname = dec.id if isinstance(dec, ast.Name) else (
-                dec.attr if isinstance(dec, ast.Attribute) else None)
-            if dname and "login_required" in dname:
-                ep.preconditions.append(Precondition(
-                    var="Session.authed_as", op="truthy",
-                    file=self.file, line=func.lineno))
-                ep.guards.append(Guard(
-                    kind="token", present=True, detail="login_required",
-                    file=self.file, line=func.lineno))
         # 端点内事实去重(vuln/fixed 双分支常产生同形 Effect/Precondition)
         ep.effects = _dedup_by(ep.effects, key=lambda e: (e.var, e.op, e.value, e.key))
         ep.preconditions = _dedup_by(
@@ -245,13 +234,7 @@ class _EpEnv:
                 if isinstance(sub, ast.Call):
                     self._jsonify(sub)
 
-    # ---- R2 SQL / R5 token / R6 jsonify / R8 body.get / sink
-    _AUTHN_PRODUCE = {"make_token", "encode_auth_token", "jwt_encode",
-                      "login", "login_user"}               # Django auth / Flask-Login
-    _AUTHN_REQUIRE = {"current_user", "token_validator", "decode_auth_token",
-                      "require_user"}
-    _AUTHN_CLEAR = {"logout", "logout_user"}
-
+    # ---- R2 SQL / R6 jsonify / R8 body.get / sink(纯语法:零名字规则)
     def _call(self, call: ast.Call) -> None:
         name = _call_name(call)
         bare = _bare_name(call)
@@ -269,40 +252,6 @@ class _EpEnv:
                     kind="sql_build", file=self.file, line=getattr(call, "lineno", 0),
                     snippet=ast.dump(call.args[0])[:120],
                 ))
-        elif bare in self._AUTHN_PRODUCE or _any_name(call) in self._AUTHN_PRODUCE:
-            self.ep.effects.append(Effect(
-                var="Session.authed_as", op="set", key="username",
-                file=self.file, line=getattr(call, "lineno", 0),
-            ))
-            self._cand("Session.authed_as", "write", bare, "session_access")
-        elif bare in self._AUTHN_CLEAR or _any_name(call) in self._AUTHN_CLEAR:
-            self.ep.effects.append(Effect(
-                var="Session.authed_as", op="clear",
-                file=self.file, line=getattr(call, "lineno", 0),
-            ))
-        elif (isinstance(call.func, ast.Attribute) and call.func.attr == "create"
-              and isinstance(call.func.value, ast.Attribute)
-              and call.func.value.attr == "objects"
-              and isinstance(call.func.value.value, ast.Name)):
-            # Django ORM:User.objects.create(username=.., role=..) → 逐 kwarg 一条 Effect
-            entity = call.func.value.value.id
-            for kw in call.keywords:
-                if kw.arg is None:
-                    continue
-                value = (str(kw.value.value) if isinstance(kw.value, ast.Constant)
-                         else None)
-                var = f"{entity}.{kw.arg}"
-                self.ep.effects.append(Effect(
-                    var=var, op="set", value=value, file=self.file,
-                    line=getattr(call, "lineno", 0),
-                ))
-                self._cand(var, "write", ast.unparse(call)[:60], "db_field")
-        elif bare in self._AUTHN_REQUIRE or _any_name(call) in self._AUTHN_REQUIRE:
-            self.ep.preconditions.append(Precondition(
-                var="Session.authed_as", op="truthy", file=self.file,
-                line=getattr(call, "lineno", 0),
-            ))
-            self._cand("Session.authed_as", "read", bare, "session_access")
         elif bare == "jsonify":
             self._jsonify(call)
         elif name.endswith(".get") and isinstance(call.func, ast.Attribute) and (
@@ -327,7 +276,7 @@ class _EpEnv:
                 pass
         self.ep.observes.extend(k for k in keys if k not in self.ep.observes)
 
-    # ---- R3 比较:行下标 vs 常量
+    # ---- R3 比较:行下标 vs 常量(纯语法:下标比较即前置+候选,实体归标注层裁决)
     def _compare(self, comp: ast.Compare) -> None:
         left, right = comp.left, comp.comparators[0] if len(comp.comparators) == 1 else None
         if right is None:
@@ -339,49 +288,33 @@ class _EpEnv:
             var = _normalize_var(row, attr)
             op = {ast.Eq: "eq", ast.NotEq: "ne", ast.In: "in"}.get(type(comp.ops[0]))
             if op:
-                # 前置条件只对已知实体的状态原子成立;request_data[...] 是请求体
-                # 可选旗标(如 VAmPI register 的 admin),不是"执行前置"——只留候选
-                if _var_entity_known(var):
-                    self.ep.preconditions.append(Precondition(
-                        var=var, op=op, value=litv, file=self.file,
-                        line=getattr(comp, "lineno", 0),
-                    ))
+                self.ep.preconditions.append(Precondition(
+                    var=var, op=op, value=litv, file=self.file,
+                    line=getattr(comp, "lineno", 0),
+                ))
                 self._cand(var, "compare", f'{var} {op} "{litv}"', "condition")
         # ownership 比对:row["user_id"] vs user["id"]
         a, b = _subscript_parts(left), _subscript_parts(right)
         if a and b:
             var = _normalize_var(*a)
             self._cand(var, "compare", f'{a[0]}["{a[1]}"] vs {b[0]}["{b[1]}"]', "ownership_binding")
-            if _var_entity_known(var):
-                self.ep.preconditions.append(Precondition(
-                    var=var, op="eq", key=f'{b[0]}.{b[1]}', file=self.file,
-                    line=getattr(comp, "lineno", 0),
-                ))
+            self.ep.preconditions.append(Precondition(
+                var=var, op="eq", key=f'{b[0]}.{b[1]}', file=self.file,
+                line=getattr(comp, "lineno", 0),
+            ))
 
-    # ---- R4 守卫:if 旗标/枚举/布尔 真值测试
+    # ---- R4 守卫:if 旗标/枚举/布尔 真值测试(纯语法:下标真值即前置)
     def _if(self, node: ast.If) -> None:
         test = node.test
         negated = isinstance(test, ast.UnaryOp) and isinstance(test.op, ast.Not)
         inner = test.operand if negated else test
-        # request.user / is_authenticated(Django & Flask-Login)→ 认证前置
-        for attr in ast.walk(test):
-            if isinstance(attr, ast.Attribute) and attr.attr in (
-                    "is_authenticated", "user"):
-                self.ep.preconditions.append(Precondition(
-                    var="Session.authed_as", op="truthy",
-                    file=self.file, line=node.lineno))
-                self._cand("Session.authed_as", "read", "request.user", "session_access")
-                break
         if (sub := _subscript_parts(inner)):
             row, attr = sub
             var = _normalize_var(row, attr)
             op = "falsy" if negated else "truthy"
-            # request_data[...] 等请求体真值测试只留候选,不产前置(register 的
-            # 可选 admin 旗标不是"执行要求")
-            if _var_entity_known(var):
-                self.ep.preconditions.append(Precondition(
-                    var=var, op=op, file=self.file, line=node.lineno,
-                ))
+            self.ep.preconditions.append(Precondition(
+                var=var, op=op, file=self.file, line=node.lineno,
+            ))
             self._cand(var, "compare", f'if {"not " if negated else ""}{row}["{attr}"]', "condition")
         # owner/role 守卫(含旗标分支内)
         for comp in [n for n in ast.walk(node) if isinstance(n, ast.Compare)]:
@@ -424,7 +357,9 @@ class _EpEnv:
             if (g.kind, g.detail) not in {(x.kind, x.detail) for x in self.ep.guards}:
                 self.ep.guards.append(g)
 
-    # ---- R8:body = request.get_json(...) [or {}]
+    # ---- 调用形状(语法):x = f(...) → 候选(函数名,op=write,source=call)
+    # 不是白名单:只看"赋值左侧是名字、右侧是调用"这一语法形状。
+    # f 是 make_token 还是 save_file 由标注层裁决。
     def _assign(self, node: ast.Assign) -> None:
         if (
             len(node.targets) == 1
@@ -435,30 +370,45 @@ class _EpEnv:
                 value = value.values[0]
             if isinstance(value, ast.Call) and _call_name(value).endswith(".get_json"):
                 self.json_bodies.add(node.targets[0].id)
-        # ORM 属性写:user.password = <expr> → Effect(仅已知行变量映射实体)
+            # 调用形状:tok = make_token(...) → 候选 "make_token" (write, call)
+            if isinstance(value, ast.Call) and isinstance(value.func, ast.Name):
+                self._cand(value.func.id, "write",
+                           ast.unparse(node)[:60], "call")
+        # 属性写:user.password = <expr> → Effect(纯语法:任意 obj.attr 赋值,
+        # 实体归标注层裁决——噪声候选由 LLM/选择器标 irrelevant)
         if (
             len(node.targets) == 1
             and isinstance(node.targets[0], ast.Attribute)
             and isinstance(node.targets[0].value, ast.Name)
-            and node.targets[0].value.id in _ROW_ENTITY
         ):
             attr_node = node.targets[0]
-            var = _normalize_var(attr_node.value.id, attr_node.attr)
+            var = f"{attr_node.value.id}.{attr_node.attr}"
             self.ep.effects.append(Effect(
                 var=var, op="set", file=self.file,
                 line=getattr(node, "lineno", 0),
             ))
             self._cand(var, "write", ast.unparse(node)[:60], "db_field")
-        # ORM 构造:newBook = Book(book_title=..., secret=...) → 每 kwarg 一条 Effect
-        # (常量带值;request 取值 value=None —— 捕获 VAmPI register/books 的写事实)
-        _ENTITY_BLACKLIST = {"Response", "Request", "Flask", "Blueprint", "App"}
+        # 下标写:container["key"] = value → Effect(session["k"]=v / data["k"]=v)
+        if (
+            len(node.targets) == 1
+            and isinstance(node.targets[0], ast.Subscript)
+            and isinstance(node.targets[0].slice, ast.Constant)
+            and isinstance(node.targets[0].value, ast.Name)
+        ):
+            t = node.targets[0]
+            var = f"{t.value.id}.{t.slice.value}"
+            self.ep.effects.append(Effect(
+                var=var, op="set", file=self.file, line=getattr(node, "lineno", 0),
+            ))
+            self._cand(var, "write", ast.unparse(node)[:60], "session_access")
+        # 构造:X(...) with kwargs → 每 kwarg 一条 Effect
+        # (纯语法:大写开头即构造形态;Response 等噪声候选由标注层标 irrelevant)
         if (
             len(node.targets) == 1
             and isinstance(node.targets[0], ast.Name)
             and isinstance(node.value, ast.Call)
             and isinstance(node.value.func, ast.Name)
             and node.value.func.id[:1].isupper()
-            and node.value.func.id not in _ENTITY_BLACKLIST
         ):
             entity = node.value.func.id
             for kw in node.value.keywords:

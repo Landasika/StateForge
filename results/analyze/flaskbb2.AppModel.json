@@ -11,16 +11,7 @@
       "params": [],
       "guards": [],
       "preconditions": [],
-      "effects": [
-        {
-          "var": "Session.authed_as",
-          "op": "clear",
-          "value": null,
-          "key": null,
-          "file": "stateforge/targets/flaskbb2/flaskbb/auth/views.py",
-          "line": 71
-        }
-      ],
+      "effects": [],
       "sinks": [],
       "observes": [],
       "file": "stateforge/targets/flaskbb2/flaskbb/auth/views.py",
@@ -49,17 +40,17 @@
       ],
       "params": [],
       "guards": [],
-      "preconditions": [],
-      "effects": [
+      "preconditions": [
         {
           "var": "Session.authed_as",
-          "op": "set",
+          "op": "truthy",
           "value": null,
-          "key": "username",
+          "key": null,
           "file": "stateforge/targets/flaskbb2/flaskbb/auth/views.py",
-          "line": 98
+          "line": 90
         }
       ],
+      "effects": [],
       "sinks": [],
       "observes": [],
       "file": "stateforge/targets/flaskbb2/flaskbb/auth/views.py",
@@ -88,7 +79,16 @@
       ],
       "params": [],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/auth/views.py",
+          "line": 120
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -118,7 +118,16 @@
       ],
       "params": [],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/auth/views.py",
+          "line": 159
+        }
+      ],
       "effects": [
         {
           "var": "UserRegistrationInfo.username",
@@ -174,7 +183,16 @@
       ],
       "params": [],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/auth/views.py",
+          "line": 202
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -189,7 +207,16 @@
       ],
       "params": [],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/auth/views.py",
+          "line": 205
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -211,7 +238,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/auth/views.py",
+          "line": 233
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -233,7 +269,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/auth/views.py",
+          "line": 238
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -263,7 +308,16 @@
       ],
       "params": [],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/auth/views.py",
+          "line": 285
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -293,7 +347,16 @@
       ],
       "params": [],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/auth/views.py",
+          "line": 360
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -409,7 +472,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 383
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -465,7 +537,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 383
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -537,8 +618,50 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
-      "effects": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 905
+        }
+      ],
+      "effects": [
+        {
+          "var": "forumsread.last_read",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 921
+        },
+        {
+          "var": "forumsread.cleared",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 922
+        },
+        {
+          "var": "forumsread.user",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 944
+        },
+        {
+          "var": "forumsread.forum",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 945
+        }
+      ],
       "sinks": [],
       "observes": [],
       "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
@@ -565,8 +688,50 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
-      "effects": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 905
+        }
+      ],
+      "effects": [
+        {
+          "var": "forumsread.last_read",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 921
+        },
+        {
+          "var": "forumsread.cleared",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 922
+        },
+        {
+          "var": "forumsread.user",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 944
+        },
+        {
+          "var": "forumsread.forum",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 945
+        }
+      ],
       "sinks": [],
       "observes": [],
       "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
@@ -587,7 +752,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 267
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -609,7 +783,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 276
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -637,7 +820,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 267
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -665,7 +857,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 276
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -687,7 +888,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 309
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -709,7 +919,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 318
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -737,7 +956,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 309
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -765,7 +993,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 318
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -780,7 +1017,16 @@
       ],
       "params": [],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 624
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -795,7 +1041,16 @@
       ],
       "params": [],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 648
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -817,7 +1072,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 860
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -839,7 +1103,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 573
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -861,7 +1134,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 586
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -883,7 +1165,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 887
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -905,7 +1196,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 608
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -927,7 +1227,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 611
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -949,8 +1258,26 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
-      "effects": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 142
+        }
+      ],
+      "effects": [
+        {
+          "var": "url_kwargs.slug",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 158
+        }
+      ],
       "sinks": [],
       "observes": [],
       "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
@@ -979,7 +1306,16 @@
       ],
       "params": [],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 732
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -1001,7 +1337,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 757
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -1029,7 +1374,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 757
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -1051,8 +1405,26 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
-      "effects": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 819
+        }
+      ],
+      "effects": [
+        {
+          "var": "topic.important",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 821
+        }
+      ],
       "sinks": [],
       "observes": [],
       "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
@@ -1079,8 +1451,26 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
-      "effects": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 819
+        }
+      ],
+      "effects": [
+        {
+          "var": "topic.important",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 821
+        }
+      ],
       "sinks": [],
       "observes": [],
       "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
@@ -1101,8 +1491,26 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
-      "effects": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 777
+        }
+      ],
+      "effects": [
+        {
+          "var": "topic.locked",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 779
+        }
+      ],
       "sinks": [],
       "observes": [],
       "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
@@ -1129,8 +1537,26 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
-      "effects": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 777
+        }
+      ],
+      "effects": [
+        {
+          "var": "topic.locked",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 779
+        }
+      ],
       "sinks": [],
       "observes": [],
       "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
@@ -1157,7 +1583,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 528
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -1185,7 +1620,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 541
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -1219,7 +1663,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 528
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -1253,7 +1706,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 541
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -1275,7 +1737,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 528
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -1297,7 +1768,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 541
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -1325,7 +1805,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 528
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -1353,7 +1842,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 541
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -1382,7 +1880,7 @@
           "value": null,
           "key": null,
           "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
-          "line": 190
+          "line": 178
         }
       ],
       "effects": [],
@@ -1406,7 +1904,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 231
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -1441,7 +1948,7 @@
           "value": null,
           "key": null,
           "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
-          "line": 190
+          "line": 178
         }
       ],
       "effects": [],
@@ -1471,7 +1978,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 231
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -1493,8 +2009,26 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
-      "effects": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 840
+        }
+      ],
+      "effects": [
+        {
+          "var": "topic.important",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 842
+        }
+      ],
       "sinks": [],
       "observes": [],
       "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
@@ -1521,8 +2055,26 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
-      "effects": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 840
+        }
+      ],
+      "effects": [
+        {
+          "var": "topic.important",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 842
+        }
+      ],
       "sinks": [],
       "observes": [],
       "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
@@ -1543,8 +2095,26 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
-      "effects": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 798
+        }
+      ],
+      "effects": [
+        {
+          "var": "topic.locked",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 800
+        }
+      ],
       "sinks": [],
       "observes": [],
       "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
@@ -1571,8 +2141,26 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
-      "effects": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 798
+        }
+      ],
+      "effects": [
+        {
+          "var": "topic.locked",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 800
+        }
+      ],
       "sinks": [],
       "observes": [],
       "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
@@ -1593,7 +2181,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 983
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -1621,7 +2218,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 983
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -1643,7 +2249,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 1003
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -1671,7 +2286,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 1003
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -1686,7 +2310,16 @@
       ],
       "params": [],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 685
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -1701,7 +2334,16 @@
       ],
       "params": [],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 710
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -1753,7 +2395,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 1013
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -1781,7 +2432,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 1013
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -1803,7 +2463,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 1030
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -1831,7 +2500,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 1030
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -1853,7 +2531,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 1046
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -1875,7 +2562,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 1076
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -1890,7 +2586,16 @@
       ],
       "params": [],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 1096
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -1912,7 +2617,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+          "line": 1096
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -1942,7 +2656,16 @@
       ],
       "params": [],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 868
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -1964,7 +2687,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 934
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -2008,7 +2740,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 905
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -2038,7 +2779,16 @@
       ],
       "params": [],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 805
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -2082,7 +2832,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 805
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -2104,7 +2863,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 835
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -2148,7 +2916,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 757
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -2193,7 +2970,16 @@
       ],
       "params": [],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 591
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -2221,7 +3007,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 654
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -2243,7 +3038,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 654
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -2287,7 +3091,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 623
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -2324,8 +3137,26 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
-      "effects": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 1259
+        }
+      ],
+      "effects": [
+        {
+          "var": "plugin.enabled",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 1270
+        }
+      ],
       "sinks": [],
       "observes": [],
       "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
@@ -2346,8 +3177,26 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
-      "effects": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 1224
+        }
+      ],
+      "effects": [
+        {
+          "var": "plugin.enabled",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 1235
+        }
+      ],
       "sinks": [],
       "observes": [],
       "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
@@ -2368,7 +3217,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 1314
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -2390,7 +3248,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 1293
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -2433,7 +3300,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 1079
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -2455,7 +3331,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 1079
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -2483,8 +3368,34 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
-      "effects": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 1002
+        }
+      ],
+      "effects": [
+        {
+          "var": "report.zapped_by",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 1046
+        },
+        {
+          "var": "report.zapped",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 1047
+        }
+      ],
       "sinks": [],
       "observes": [],
       "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
@@ -2505,8 +3416,34 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
-      "effects": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 1002
+        }
+      ],
+      "effects": [
+        {
+          "var": "report.zapped_by",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 1046
+        },
+        {
+          "var": "report.zapped",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 1047
+        }
+      ],
       "sinks": [],
       "observes": [],
       "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
@@ -2565,7 +3502,16 @@
       ],
       "params": [],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 110
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -2609,7 +3555,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 110
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -2653,7 +3608,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 110
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -2668,7 +3632,16 @@
       ],
       "params": [],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 345
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -2683,7 +3656,16 @@
       ],
       "params": [],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 350
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -2698,7 +3680,16 @@
       ],
       "params": [],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 375
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -2713,7 +3704,16 @@
       ],
       "params": [],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 389
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -2735,7 +3735,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 426
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -2763,7 +3772,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 426
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -2785,7 +3803,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 287
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -2813,7 +3840,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 287
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -2835,7 +3871,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 197
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -2857,10 +3902,19 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 229
+        }
+      ],
       "effects": [
         {
-          "var": "User.primary_group_id",
+          "var": "user.primary_group_id",
           "op": "set",
           "value": null,
           "key": null,
@@ -2868,7 +3922,7 @@
           "line": 259
         },
         {
-          "var": "User.password",
+          "var": "user.password",
           "op": "set",
           "value": null,
           "key": null,
@@ -2896,7 +3950,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 498
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -2924,7 +3987,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 498
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -2939,7 +4011,16 @@
       ],
       "params": [],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 151
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -2954,7 +4035,16 @@
       ],
       "params": [],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+          "line": 163
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -2999,7 +4089,16 @@
       ],
       "params": [],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/user/views.py",
+          "line": 116
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -3014,7 +4113,16 @@
       ],
       "params": [],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/user/views.py",
+          "line": 119
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -3044,7 +4152,16 @@
       ],
       "params": [],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/user/views.py",
+          "line": 51
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -3059,7 +4176,16 @@
       ],
       "params": [],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/user/views.py",
+          "line": 82
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -3074,7 +4200,16 @@
       ],
       "params": [],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/user/views.py",
+          "line": 85
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -3089,7 +4224,16 @@
       ],
       "params": [],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/user/views.py",
+          "line": 150
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -3104,7 +4248,16 @@
       ],
       "params": [],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/user/views.py",
+          "line": 153
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -3126,7 +4279,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/user/views.py",
+          "line": 188
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -3148,7 +4310,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/user/views.py",
+          "line": 180
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -3170,7 +4341,16 @@
         }
       ],
       "guards": [],
-      "preconditions": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/flaskbb2/flaskbb/user/views.py",
+          "line": 196
+        }
+      ],
       "effects": [],
       "sinks": [],
       "observes": [],
@@ -3180,14 +4360,14 @@
   ],
   "candidates": [
     {
-      "var": "Session.authed_as",
-      "entity": "Session",
-      "attr": "authed_as",
+      "var": "UserRegistrationInfo",
+      "entity": "UserRegistrationInfo",
+      "attr": null,
       "ops": [
         "write"
       ],
-      "evidence": "login_user",
-      "source": "session_access",
+      "evidence": "registration_info = UserRegistrationInfo(username=form.usern",
+      "source": "call",
       "file": "stateforge/targets/flaskbb2/flaskbb/auth/views.py",
       "line": 0
     },
@@ -3252,20 +4432,296 @@
       "line": 0
     },
     {
-      "var": "Session.authed_as",
-      "entity": "Session",
-      "attr": "authed_as",
+      "var": "url_for",
+      "entity": "url_for",
+      "attr": null,
       "ops": [
-        "read"
+        "write"
       ],
-      "evidence": "request.user",
+      "evidence": "mod_forum_url = url_for('forum.manage_forum', forum_id=forum",
+      "source": "call",
+      "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+      "line": 0
+    },
+    {
+      "var": "do_topic_action",
+      "entity": "do_topic_action",
+      "attr": null,
+      "ops": [
+        "write"
+      ],
+      "evidence": "changed = do_topic_action(topics=tmp_topics, user=real(curre",
+      "source": "call",
+      "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+      "line": 0
+    },
+    {
+      "var": "forumsread.last_read",
+      "entity": "forumsread",
+      "attr": "last_read",
+      "ops": [
+        "write"
+      ],
+      "evidence": "forumsread.last_read = time_utcnow()",
+      "source": "db_field",
+      "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+      "line": 0
+    },
+    {
+      "var": "forumsread.cleared",
+      "entity": "forumsread",
+      "attr": "cleared",
+      "ops": [
+        "write"
+      ],
+      "evidence": "forumsread.cleared = time_utcnow()",
+      "source": "db_field",
+      "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+      "line": 0
+    },
+    {
+      "var": "ForumsRead",
+      "entity": "ForumsRead",
+      "attr": null,
+      "ops": [
+        "write"
+      ],
+      "evidence": "forumsread = ForumsRead()",
+      "source": "call",
+      "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+      "line": 0
+    },
+    {
+      "var": "forumsread.user",
+      "entity": "forumsread",
+      "attr": "user",
+      "ops": [
+        "write"
+      ],
+      "evidence": "forumsread.user = real(current_user)",
+      "source": "db_field",
+      "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+      "line": 0
+    },
+    {
+      "var": "forumsread.forum",
+      "entity": "forumsread",
+      "attr": "forum",
+      "ops": [
+        "write"
+      ],
+      "evidence": "forumsread.forum = forum_instance",
+      "source": "db_field",
+      "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+      "line": 0
+    },
+    {
+      "var": "int",
+      "entity": "int",
+      "attr": null,
+      "ops": [
+        "write"
+      ],
+      "evidence": "page = int(math.ceil(post_in_topic / float(flaskbb_config['P",
+      "source": "call",
+      "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+      "line": 0
+    },
+    {
+      "var": "url_kwargs.slug",
+      "entity": "url_kwargs",
+      "attr": "slug",
+      "ops": [
+        "write"
+      ],
+      "evidence": "url_kwargs['slug'] = post.topic.slug",
       "source": "session_access",
       "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
       "line": 0
     },
     {
-      "var": "User.primary_group_id",
-      "entity": "User",
+      "var": "topic.important",
+      "entity": "topic",
+      "attr": "important",
+      "ops": [
+        "write"
+      ],
+      "evidence": "topic.important = True",
+      "source": "db_field",
+      "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+      "line": 0
+    },
+    {
+      "var": "topic.locked",
+      "entity": "topic",
+      "attr": "locked",
+      "ops": [
+        "write"
+      ],
+      "evidence": "topic.locked = True",
+      "source": "db_field",
+      "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+      "line": 0
+    },
+    {
+      "var": "len",
+      "entity": "len",
+      "attr": null,
+      "ops": [
+        "write"
+      ],
+      "evidence": "online_users = len(get_online_users())",
+      "source": "call",
+      "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+      "line": 0
+    },
+    {
+      "var": "get_online_users",
+      "entity": "get_online_users",
+      "attr": null,
+      "ops": [
+        "write"
+      ],
+      "evidence": "online_users = get_online_users()",
+      "source": "call",
+      "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+      "line": 0
+    },
+    {
+      "var": "make_renderer",
+      "entity": "make_renderer",
+      "attr": null,
+      "ops": [
+        "write"
+      ],
+      "evidence": "renderer = make_renderer(render_classes)",
+      "source": "call",
+      "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+      "line": 0
+    },
+    {
+      "var": "renderer",
+      "entity": "renderer",
+      "attr": null,
+      "ops": [
+        "write"
+      ],
+      "evidence": "preview = renderer(text)",
+      "source": "call",
+      "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
+      "line": 0
+    },
+    {
+      "var": "AddGroupForm",
+      "entity": "AddGroupForm",
+      "attr": null,
+      "ops": [
+        "write"
+      ],
+      "evidence": "form = AddGroupForm()",
+      "source": "call",
+      "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+      "line": 0
+    },
+    {
+      "var": "EditGroupForm",
+      "entity": "EditGroupForm",
+      "attr": null,
+      "ops": [
+        "write"
+      ],
+      "evidence": "form = EditGroupForm(group)",
+      "source": "call",
+      "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+      "line": 0
+    },
+    {
+      "var": "plugin.enabled",
+      "entity": "plugin",
+      "attr": "enabled",
+      "ops": [
+        "write"
+      ],
+      "evidence": "plugin.enabled = False",
+      "source": "db_field",
+      "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+      "line": 0
+    },
+    {
+      "var": "validate_plugin",
+      "entity": "validate_plugin",
+      "attr": null,
+      "ops": [
+        "write"
+      ],
+      "evidence": "plugin_module = validate_plugin(name)",
+      "source": "call",
+      "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+      "line": 0
+    },
+    {
+      "var": "report.zapped_by",
+      "entity": "report",
+      "attr": "zapped_by",
+      "ops": [
+        "write"
+      ],
+      "evidence": "report.zapped_by = current_user.id",
+      "source": "db_field",
+      "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+      "line": 0
+    },
+    {
+      "var": "report.zapped",
+      "entity": "report",
+      "attr": "zapped",
+      "ops": [
+        "write"
+      ],
+      "evidence": "report.zapped = time_utcnow()",
+      "source": "db_field",
+      "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+      "line": 0
+    },
+    {
+      "var": "populate_settings_form",
+      "entity": "populate_settings_form",
+      "attr": null,
+      "ops": [
+        "write"
+      ],
+      "evidence": "form = populate_settings_form(form, old_settings)",
+      "source": "call",
+      "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+      "line": 0
+    },
+    {
+      "var": "populate_settings_dict",
+      "entity": "populate_settings_dict",
+      "attr": null,
+      "ops": [
+        "write"
+      ],
+      "evidence": "new_settings = populate_settings_dict(form, old_settings)",
+      "source": "call",
+      "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+      "line": 0
+    },
+    {
+      "var": "EditUserForm",
+      "entity": "EditUserForm",
+      "attr": null,
+      "ops": [
+        "write"
+      ],
+      "evidence": "form = EditUserForm(user)",
+      "source": "call",
+      "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+      "line": 0
+    },
+    {
+      "var": "user.primary_group_id",
+      "entity": "user",
       "attr": "primary_group_id",
       "ops": [
         "write"
@@ -3276,8 +4732,8 @@
       "line": 0
     },
     {
-      "var": "User.password",
-      "entity": "User",
+      "var": "user.password",
+      "entity": "user",
       "attr": "password",
       "ops": [
         "write"
@@ -3286,17 +4742,42 @@
       "source": "db_field",
       "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
       "line": 0
+    },
+    {
+      "var": "len",
+      "entity": "len",
+      "attr": null,
+      "ops": [
+        "write"
+      ],
+      "evidence": "online_users = len(get_online_users())",
+      "source": "call",
+      "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
+      "line": 0
+    },
+    {
+      "var": "Session.authed_as",
+      "entity": "Session",
+      "attr": "authed_as",
+      "ops": [
+        "write",
+        "read"
+      ],
+      "evidence": "auth baseline: observes/effects",
+      "source": "session_access",
+      "file": "",
+      "line": 0
     }
   ],
   "state_vars": [
     {
-      "entity": "Session",
-      "attr": "authed_as",
-      "kind": "session",
+      "entity": "UserRegistrationInfo",
+      "attr": "",
+      "kind": "db_column",
       "domain": null,
-      "label": "authn",
-      "security_relevant": true,
-      "rationale": "[rule] 认证链变量(token/session);证据:login_user [select] 固定映射直入",
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:registration_info = UserRegistrationInfo(username=form.usern [select] irrelevant 出局",
       "anchors": []
     },
     {
@@ -3352,7 +4833,247 @@
       "anchors": []
     },
     {
-      "entity": "User",
+      "entity": "url_for",
+      "attr": "",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:mod_forum_url = url_for('forum.manage_forum', forum_id=forum [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "do_topic_action",
+      "attr": "",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:changed = do_topic_action(topics=tmp_topics, user=real(curre [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "forumsread",
+      "attr": "last_read",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:forumsread.last_read = time_utcnow() [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "forumsread",
+      "attr": "cleared",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:forumsread.cleared = time_utcnow() [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "ForumsRead",
+      "attr": "",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:forumsread = ForumsRead() [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "forumsread",
+      "attr": "user",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:forumsread.user = real(current_user) [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "forumsread",
+      "attr": "forum",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:forumsread.forum = forum_instance [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "int",
+      "attr": "",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:page = int(math.ceil(post_in_topic / float(flaskbb_config['P [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "url_kwargs",
+      "attr": "slug",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:url_kwargs['slug'] = post.topic.slug [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "topic",
+      "attr": "important",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:topic.important = True [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "topic",
+      "attr": "locked",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:topic.locked = True [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "len",
+      "attr": "",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:online_users = len(get_online_users()) [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "get_online_users",
+      "attr": "",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:online_users = get_online_users() [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "make_renderer",
+      "attr": "",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:renderer = make_renderer(render_classes) [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "renderer",
+      "attr": "",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:preview = renderer(text) [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "AddGroupForm",
+      "attr": "",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:form = AddGroupForm() [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "EditGroupForm",
+      "attr": "",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:form = EditGroupForm(group) [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "plugin",
+      "attr": "enabled",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:plugin.enabled = False [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "validate_plugin",
+      "attr": "",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:plugin_module = validate_plugin(name) [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "report",
+      "attr": "zapped_by",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:report.zapped_by = current_user.id [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "report",
+      "attr": "zapped",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:report.zapped = time_utcnow() [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "populate_settings_form",
+      "attr": "",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:form = populate_settings_form(form, old_settings) [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "populate_settings_dict",
+      "attr": "",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:new_settings = populate_settings_dict(form, old_settings) [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "EditUserForm",
+      "attr": "",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:form = EditUserForm(user) [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "user",
       "attr": "primary_group_id",
       "kind": "db_column",
       "domain": null,
@@ -3362,13 +5083,23 @@
       "anchors": []
     },
     {
-      "entity": "User",
+      "entity": "user",
       "attr": "password",
       "kind": "db_column",
       "domain": null,
       "label": "authn",
       "security_relevant": true,
       "rationale": "[rule] 认证链变量(token/session);证据:user.password = form.password.data [select] 固定映射直入",
+      "anchors": []
+    },
+    {
+      "entity": "Session",
+      "attr": "authed_as",
+      "kind": "session",
+      "domain": null,
+      "label": "authn",
+      "security_relevant": true,
+      "rationale": "[rule] 认证链变量(token/session);证据:auth baseline: observes/effects [select] 固定映射直入",
       "anchors": []
     }
   ],

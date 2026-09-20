@@ -11,14 +11,6 @@
       "id": "GET /logout"
     },
     {
-      "kind": "state",
-      "var": "Session.authed_as",
-      "value": "*",
-      "security_relevant": true,
-      "label": "authn",
-      "id": "Session.authed_as=<authed>"
-    },
-    {
       "kind": "action",
       "func": "get",
       "file": "stateforge/targets/flaskbb2/flaskbb/auth/views.py",
@@ -31,6 +23,14 @@
       "file": "stateforge/targets/flaskbb2/flaskbb/auth/views.py",
       "line": 90,
       "id": "POST /login"
+    },
+    {
+      "kind": "state",
+      "var": "Session.authed_as",
+      "value": "<authed>",
+      "security_relevant": true,
+      "label": "authn",
+      "id": "Session.authed_as=<authed>"
     },
     {
       "kind": "action",
@@ -227,6 +227,38 @@
       "id": "POST /<int:forum_id>/markread"
     },
     {
+      "kind": "state",
+      "var": "forumsread.last_read",
+      "value": "*",
+      "security_relevant": false,
+      "label": "irrelevant",
+      "id": "forumsread.last_read=*"
+    },
+    {
+      "kind": "state",
+      "var": "forumsread.cleared",
+      "value": "*",
+      "security_relevant": false,
+      "label": "irrelevant",
+      "id": "forumsread.cleared=*"
+    },
+    {
+      "kind": "state",
+      "var": "forumsread.user",
+      "value": "*",
+      "security_relevant": false,
+      "label": "irrelevant",
+      "id": "forumsread.user=*"
+    },
+    {
+      "kind": "state",
+      "var": "forumsread.forum",
+      "value": "*",
+      "security_relevant": false,
+      "label": "irrelevant",
+      "id": "forumsread.forum=*"
+    },
+    {
       "kind": "action",
       "func": "post",
       "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
@@ -353,6 +385,14 @@
       "id": "GET /post/<int:post_id>"
     },
     {
+      "kind": "state",
+      "var": "url_kwargs.slug",
+      "value": "*",
+      "security_relevant": false,
+      "label": "irrelevant",
+      "id": "url_kwargs.slug=*"
+    },
+    {
       "kind": "action",
       "func": "get",
       "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
@@ -388,6 +428,14 @@
       "id": "POST /topic/<int:topic_id>/highlight"
     },
     {
+      "kind": "state",
+      "var": "topic.important",
+      "value": "*",
+      "security_relevant": false,
+      "label": "irrelevant",
+      "id": "topic.important=*"
+    },
+    {
       "kind": "action",
       "func": "post",
       "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
@@ -400,6 +448,14 @@
       "file": "stateforge/targets/flaskbb2/flaskbb/forum/views.py",
       "line": 777,
       "id": "POST /topic/<int:topic_id>/lock"
+    },
+    {
+      "kind": "state",
+      "var": "topic.locked",
+      "value": "*",
+      "security_relevant": false,
+      "label": "irrelevant",
+      "id": "topic.locked=*"
     },
     {
       "kind": "action",
@@ -780,6 +836,14 @@
       "id": "POST /plugins/<path:name>/disable"
     },
     {
+      "kind": "state",
+      "var": "plugin.enabled",
+      "value": "*",
+      "security_relevant": false,
+      "label": "irrelevant",
+      "id": "plugin.enabled=*"
+    },
+    {
       "kind": "action",
       "func": "post",
       "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
@@ -827,6 +891,22 @@
       "file": "stateforge/targets/flaskbb2/flaskbb/management/views.py",
       "line": 1002,
       "id": "POST /reports/<int:report_id>/markread"
+    },
+    {
+      "kind": "state",
+      "var": "report.zapped_by",
+      "value": "*",
+      "security_relevant": false,
+      "label": "irrelevant",
+      "id": "report.zapped_by=*"
+    },
+    {
+      "kind": "state",
+      "var": "report.zapped",
+      "value": "*",
+      "security_relevant": false,
+      "label": "irrelevant",
+      "id": "report.zapped=*"
     },
     {
       "kind": "action",
@@ -963,19 +1043,19 @@
     },
     {
       "kind": "state",
-      "var": "User.primary_group_id",
+      "var": "user.primary_group_id",
       "value": "*",
       "security_relevant": false,
       "label": "irrelevant",
-      "id": "User.primary_group_id=*"
+      "id": "user.primary_group_id=*"
     },
     {
       "kind": "state",
-      "var": "User.password",
+      "var": "user.password",
       "value": "*",
       "security_relevant": true,
       "label": "authn",
-      "id": "User.password=*"
+      "id": "user.password=*"
     },
     {
       "kind": "action",
@@ -1092,18 +1172,25 @@
   ],
   "edges": [
     {
-      "kind": "produces",
-      "op": "clear",
-      "source": "GET /logout",
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /login",
       "target": "Session.authed_as=<authed>",
       "key": 0
     },
     {
-      "kind": "produces",
-      "op": "set",
-      "source": "POST /login",
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /reauth",
       "target": "Session.authed_as=<authed>",
-      "key": "username"
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /register",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
     },
     {
       "kind": "produces",
@@ -1143,7 +1230,399 @@
     {
       "kind": "requires",
       "op": "truthy",
+      "source": "GET /reset-password",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /reset-password",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "GET /reset-password/<token>",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /reset-password/<token>",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /activate",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /activate/confirm",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /forum/<int:forum_id>/edit",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /forum/<int:forum_id>-<slug>/edit",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /<int:forum_id>/markread",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /<int:forum_id>/markread",
+      "target": "forumsread.last_read=*",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /<int:forum_id>/markread",
+      "target": "forumsread.cleared=*",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /<int:forum_id>/markread",
+      "target": "forumsread.user=*",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /<int:forum_id>/markread",
+      "target": "forumsread.forum=*",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /<int:forum_id>-<slug>/markread",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /<int:forum_id>-<slug>/markread",
+      "target": "forumsread.last_read=*",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /<int:forum_id>-<slug>/markread",
+      "target": "forumsread.cleared=*",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /<int:forum_id>-<slug>/markread",
+      "target": "forumsread.user=*",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /<int:forum_id>-<slug>/markread",
+      "target": "forumsread.forum=*",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "GET /<int:forum_id>/topic/new",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /<int:forum_id>/topic/new",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "GET /<int:forum_id>-<slug>/topic/new",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /<int:forum_id>-<slug>/topic/new",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "GET /topic/<int:topic_id>/edit",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /topic/<int:topic_id>/edit",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "GET /topic/<int:topic_id>-<slug>/edit",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /topic/<int:topic_id>-<slug>/edit",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "GET /memberlist",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /memberlist",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /post/<int:post_id>/delete",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "GET /post/<int:post_id>/edit",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /post/<int:post_id>/edit",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "GET /post/<int:post_id>/raw",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "GET /post/<int:post_id>/report",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /post/<int:post_id>/report",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "GET /post/<int:post_id>",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "GET /post/<int:post_id>",
+      "target": "url_kwargs.slug=*",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /search",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /topic/<int:topic_id>/delete",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /topic/<int:topic_id>-<slug>/delete",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /topic/<int:topic_id>/highlight",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /topic/<int:topic_id>/highlight",
+      "target": "topic.important=*",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /topic/<int:topic_id>-<slug>/highlight",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /topic/<int:topic_id>-<slug>/highlight",
+      "target": "topic.important=*",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /topic/<int:topic_id>/lock",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /topic/<int:topic_id>/lock",
+      "target": "topic.locked=*",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /topic/<int:topic_id>-<slug>/lock",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /topic/<int:topic_id>-<slug>/lock",
+      "target": "topic.locked=*",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "GET /topic/<int:topic_id>/post/<int:post_id>/reply",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /topic/<int:topic_id>/post/<int:post_id>/reply",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "GET /topic/<int:topic_id>-<slug>/post/<int:post_id>/reply",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /topic/<int:topic_id>-<slug>/post/<int:post_id>/reply",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "GET /topic/<int:topic_id>/post/new",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /topic/<int:topic_id>/post/new",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "GET /topic/<int:topic_id>-<slug>/post/new",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /topic/<int:topic_id>-<slug>/post/new",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
       "source": "GET /topic/<int:topic_id>",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /topic/<int:topic_id>",
       "target": "Session.authed_as=<authed>",
       "key": 0
     },
@@ -1155,17 +1634,542 @@
       "key": 0
     },
     {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /topic/<int:topic_id>-<slug>",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /topic/<int:topic_id>/trivialize",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
       "kind": "produces",
       "op": "set",
+      "source": "POST /topic/<int:topic_id>/trivialize",
+      "target": "topic.important=*",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /topic/<int:topic_id>-<slug>/trivialize",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /topic/<int:topic_id>-<slug>/trivialize",
+      "target": "topic.important=*",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /topic/<int:topic_id>/unlock",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /topic/<int:topic_id>/unlock",
+      "target": "topic.locked=*",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /topic/<int:topic_id>-<slug>/unlock",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /topic/<int:topic_id>-<slug>/unlock",
+      "target": "topic.locked=*",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /topictracker/<int:topic_id>/add",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /topictracker/<int:topic_id>-<slug>/add",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /topictracker/<int:topic_id>/delete",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /topictracker/<int:topic_id>-<slug>/delete",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "GET /topictracker",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /topictracker",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /topic/<int:topic_id>/hide",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /topic/<int:topic_id>-<slug>/hide",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /topic/<int:topic_id>/unhide",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /topic/<int:topic_id>-<slug>/unhide",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /post/<int:post_id>/hide",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /post/<int:post_id>/unhide",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /markdown",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /markdown/<path:mode>",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /category/add",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /category/<int:category_id>/delete",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /category/<int:category_id>/edit",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /forums/add",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /forums/<int:category_id>/add",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /forums/<int:forum_id>/delete",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /forums/<int:forum_id>/edit",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /groups/add",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /groups/<int:group_id>/delete",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /groups/delete",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /groups/<int:group_id>/edit",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /plugins/<path:name>/disable",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /plugins/<path:name>/disable",
+      "target": "plugin.enabled=*",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /plugins/<path:name>/enable",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /plugins/<path:name>/enable",
+      "target": "plugin.enabled=*",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /plugins/<path:name>/install",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /plugins/<path:name>/uninstall",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /reports/<int:report_id>/delete",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /reports/delete",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /reports/<int:report_id>/markread",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /reports/<int:report_id>/markread",
+      "target": "report.zapped_by=*",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /reports/<int:report_id>/markread",
+      "target": "report.zapped=*",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /reports/markread",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /reports/markread",
+      "target": "report.zapped_by=*",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /reports/markread",
+      "target": "report.zapped=*",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /settings",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /settings/<path:slug>",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /settings/plugin/<path:plugin>",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "GET /users/add",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /users/add",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "GET /users/banned",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /users/banned",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /users/ban",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /users/<int:user_id>/ban",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /users/delete",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /users/<int:user_id>/delete",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "GET /users/<int:user_id>/edit",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
       "source": "POST /users/<int:user_id>/edit",
-      "target": "User.primary_group_id=*",
+      "target": "Session.authed_as=<authed>",
       "key": 0
     },
     {
       "kind": "produces",
       "op": "set",
       "source": "POST /users/<int:user_id>/edit",
-      "target": "User.password=*",
+      "target": "user.primary_group_id=*",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /users/<int:user_id>/edit",
+      "target": "user.password=*",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /users/unban",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /users/<int:user_id>/unban",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "GET /users",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /users",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "GET /settings/email",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /settings/email",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /settings/general",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "GET /settings/password",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /settings/password",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "GET /settings/user-details",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /settings/user-details",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "GET /<username>/posts",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "GET /<username>/topics",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "GET /<username>",
+      "target": "Session.authed_as=<authed>",
       "key": 0
     }
   ]

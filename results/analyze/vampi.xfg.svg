@@ -1,0 +1,17 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='480' height='302' font-family='Helvetica,Arial,sans-serif'>
+<text x='20' y='28' font-size='17' font-weight='bold'>vampi G_xfg (function-level)</text>
+<defs><marker id='a' markerWidth='9' markerHeight='9' refX='8' refY='3' orient='auto'><path d='M0,0 L9,3 L0,6 z' fill='#555'/></marker></defs>
+<rect x='0' y='40' width='190' height='46' rx='7' fill='#ffffff' stroke='#5577cc' stroke-width='1.2'/>
+<text x='10' y='58' font-size='12' fill='#111'>custom_problem_handler</text>
+<text x='10' y='74' font-size='10' fill='#a33'>项目函数</text>
+<rect x='0' y='156' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#bbbbbb' stroke-width='1.2'/>
+<text x='10' y='174' font-size='12' fill='#111'>flask.jsonify</text>
+<text x='10' y='190' font-size='10' fill='#a33'>库函数(叶)</text>
+<rect x='250' y='156' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#bbbbbb' stroke-width='1.2'/>
+<text x='260' y='174' font-size='12' fill='#111'>&lt;builtin&gt;.getattr</text>
+<text x='260' y='190' font-size='10' fill='#a33'>库函数(叶)</text>
+<line x1='95.0' y1='86' x2='95.0' y2='156' stroke='#aaa' marker-end='url(#a)' stroke-width='1.4'/>
+<text x='95.0' y='121.0' font-size='10' fill='#aaa'>ext×1</text>
+<path d='M95.0,86 C180.0,86 180.0,156 345.0,156' fill='none' stroke='#aaa' marker-end='url(#a)' stroke-width='1.4'/>
+<text x='220.0' y='121.0' font-size='10' fill='#aaa'>ext×1</text>
+</svg>

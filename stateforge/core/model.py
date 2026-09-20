@@ -20,7 +20,7 @@ HttpMethod = Literal["GET", "POST", "PUT", "DELETE", "PATCH"]
 StateLabel = Literal[
     "authn", "authz", "ownership", "money", "workflow", "single_use", "irrelevant"
 ]
-CandidateSource = Literal["session_access", "db_field", "condition", "ownership_binding"]
+CandidateSource = Literal["session_access", "db_field", "condition", "ownership_binding", "call"]
 
 
 class Param(BaseModel):

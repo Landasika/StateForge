@@ -10,6 +10,7 @@ from __future__ import annotations
 from collections import defaultdict
 from pathlib import Path
 
+from stateforge.analyzer.auth_baseline import apply_auth_baseline
 from stateforge.analyzer.flask_adapter import extract_flask
 from stateforge.analyzer.openapi_adapter import extract_connexion
 from stateforge.analyzer.selector import select
@@ -29,6 +30,9 @@ def analyze(target_dir: str | Path, framework: str = "flask") -> AppModel:
     else:
         raise ValueError(f"unknown framework: {framework}")
 
+    # auth 基线(标注层,非挖掘):在标注前补 Session.authed_as 候选,
+    # 使其能进入 label → select 流程;LLM relate 的 auth_chains 是正式通道
+    apply_auth_baseline(model)
     model.state_vars = label_rule_based(model.candidates, _domains(model))
     model.state_vars = select(model.state_vars)
     model.invariants = derive_invariants(model)

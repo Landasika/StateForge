@@ -11,19 +11,19 @@
       "id": "GET <str:challenge>"
     },
     {
+      "kind": "action",
+      "func": "home",
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 69,
+      "id": "GET "
+    },
+    {
       "kind": "state",
       "var": "Session.authed_as",
       "value": "<authed>",
       "security_relevant": true,
       "label": "authn",
       "id": "Session.authed_as=<authed>"
-    },
-    {
-      "kind": "action",
-      "func": "home",
-      "file": "stateforge/targets/pygoat/pygoat/urls.py",
-      "line": 69,
-      "id": "GET "
     },
     {
       "kind": "action",
@@ -117,22 +117,6 @@
       "id": "GET xxe_see"
     },
     {
-      "kind": "state",
-      "var": "comments.name",
-      "value": "System",
-      "security_relevant": false,
-      "label": "irrelevant",
-      "id": "comments.name=System"
-    },
-    {
-      "kind": "state",
-      "var": "comments.comment",
-      "value": "Default comment for XXE lab",
-      "security_relevant": false,
-      "label": "irrelevant",
-      "id": "comments.comment=Default comment for XXE lab"
-    },
-    {
       "kind": "action",
       "func": "xxe_parse",
       "file": "stateforge/targets/pygoat/pygoat/urls.py",
@@ -152,30 +136,6 @@
       "file": "stateforge/targets/pygoat/pygoat/urls.py",
       "line": 279,
       "id": "GET auth_lab/signup"
-    },
-    {
-      "kind": "state",
-      "var": "authLogin.name",
-      "value": "*",
-      "security_relevant": false,
-      "label": "irrelevant",
-      "id": "authLogin.name=*"
-    },
-    {
-      "kind": "state",
-      "var": "authLogin.username",
-      "value": "*",
-      "security_relevant": false,
-      "label": "irrelevant",
-      "id": "authLogin.username=*"
-    },
-    {
-      "kind": "state",
-      "var": "authLogin.password",
-      "value": "*",
-      "security_relevant": true,
-      "label": "authn",
-      "id": "authLogin.password=*"
     },
     {
       "kind": "action",
@@ -232,6 +192,14 @@
       "file": "stateforge/targets/pygoat/pygoat/urls.py",
       "line": 397,
       "id": "GET robots.txt"
+    },
+    {
+      "kind": "state",
+      "var": "response.Content-Type",
+      "value": "*",
+      "security_relevant": false,
+      "label": "irrelevant",
+      "id": "response.Content-Type=*"
     },
     {
       "kind": "action",
@@ -309,6 +277,14 @@
       "file": "stateforge/targets/pygoat/pygoat/urls.py",
       "line": 1090,
       "id": "GET sec_mis_lab3"
+    },
+    {
+      "kind": "state",
+      "var": "payload.user",
+      "value": "admin",
+      "security_relevant": false,
+      "label": "irrelevant",
+      "id": "payload.user=admin"
     },
     {
       "kind": "action",
@@ -493,22 +469,6 @@
       "id": "GET ssti/lab"
     },
     {
-      "kind": "state",
-      "var": "Blogs.author",
-      "value": "*",
-      "security_relevant": false,
-      "label": "irrelevant",
-      "id": "Blogs.author=*"
-    },
-    {
-      "kind": "state",
-      "var": "Blogs.blog_id",
-      "value": "*",
-      "security_relevant": false,
-      "label": "irrelevant",
-      "id": "Blogs.blog_id=*"
-    },
-    {
       "kind": "action",
       "func": "ssti_view_blog",
       "file": "stateforge/targets/pygoat/pygoat/urls.py",
@@ -544,6 +504,14 @@
       "id": "GET cryptographic_failure/lab3"
     },
     {
+      "kind": "state",
+      "var": "response.status_code",
+      "value": "*",
+      "security_relevant": false,
+      "label": "workflow",
+      "id": "response.status_code=*"
+    },
+    {
       "kind": "action",
       "func": "auth_failure",
       "file": "stateforge/targets/pygoat/pygoat/urls.py",
@@ -559,43 +527,43 @@
     },
     {
       "kind": "state",
-      "var": "User.is_locked",
+      "var": "user.is_locked",
       "value": "*",
       "security_relevant": false,
       "label": "irrelevant",
-      "id": "User.is_locked=*"
+      "id": "user.is_locked=*"
     },
     {
       "kind": "state",
-      "var": "User.last_login",
+      "var": "user.last_login",
       "value": "*",
       "security_relevant": false,
       "label": "irrelevant",
-      "id": "User.last_login=*"
+      "id": "user.last_login=*"
     },
     {
       "kind": "state",
-      "var": "User.failattempt",
+      "var": "user.failattempt",
       "value": "*",
       "security_relevant": false,
       "label": "irrelevant",
-      "id": "User.failattempt=*"
+      "id": "user.failattempt=*"
     },
     {
       "kind": "state",
-      "var": "User.is_active",
+      "var": "user.is_active",
       "value": "*",
       "security_relevant": false,
       "label": "irrelevant",
-      "id": "User.is_active=*"
+      "id": "user.is_active=*"
     },
     {
       "kind": "state",
-      "var": "User.lockout_cooldown",
+      "var": "user.lockout_cooldown",
       "value": "*",
       "security_relevant": false,
       "label": "irrelevant",
-      "id": "User.lockout_cooldown=*"
+      "id": "user.lockout_cooldown=*"
     },
     {
       "kind": "action",
@@ -603,22 +571,6 @@
       "file": "stateforge/targets/pygoat/pygoat/urls.py",
       "line": 1179,
       "id": "GET auth_failure/lab3"
-    },
-    {
-      "kind": "state",
-      "var": "AF_session_id.session_id",
-      "value": "*",
-      "security_relevant": true,
-      "label": "authn",
-      "id": "AF_session_id.session_id=*"
-    },
-    {
-      "kind": "state",
-      "var": "AF_session_id.user",
-      "value": "*",
-      "security_relevant": true,
-      "label": "authn",
-      "id": "AF_session_id.user=*"
     },
     {
       "kind": "action",
@@ -894,6 +846,14 @@
       "id": "GET mitre/9/lab/api/<str:recipent>/<int:amount>"
     },
     {
+      "kind": "state",
+      "var": "recipent.balance",
+      "value": "*",
+      "security_relevant": true,
+      "label": "money",
+      "id": "recipent.balance=*"
+    },
+    {
       "kind": "action",
       "func": "mitre_lab_25_api",
       "file": "stateforge/targets/pygoat/pygoat/urls.py",
@@ -940,13 +900,6 @@
     {
       "kind": "requires",
       "op": "truthy",
-      "source": "GET <str:challenge>",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
       "source": "GET ",
       "target": "Session.authed_as=<authed>",
       "key": 0
@@ -961,940 +914,170 @@
     {
       "kind": "requires",
       "op": "truthy",
-      "source": "GET xss",
+      "source": "GET auth",
       "target": "Session.authed_as=<authed>",
       "key": 0
     },
     {
       "kind": "requires",
       "op": "truthy",
-      "source": "GET xss",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET xssL",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET xssL",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET xssL2",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET xssL2",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET xssL3",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET xssL3",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET xssL1",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET xssL1",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET sql",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET sql",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET sql_lab",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET sql_lab",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET sql_lab1",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET sql_lab1",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET insec_des",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET insec_des",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET insec_des_lab",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET insec_des_lab",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET xxe",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET xxe",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET xxe_lab",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET xxe_lab",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET xxe_see",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET xxe_see",
+      "source": "GET auth",
       "target": "Session.authed_as=<authed>",
       "key": 1
     },
     {
       "kind": "produces",
       "op": "set",
-      "source": "GET xxe_see",
-      "target": "comments.name=System",
-      "key": 0
-    },
-    {
-      "kind": "produces",
-      "op": "set",
-      "source": "GET xxe_see",
-      "target": "comments.name=System",
-      "key": 1
-    },
-    {
-      "kind": "produces",
-      "op": "set",
-      "source": "GET xxe_see",
-      "target": "comments.comment=Default comment for XXE lab",
-      "key": 0
-    },
-    {
-      "kind": "produces",
-      "op": "set",
-      "source": "GET xxe_see",
-      "target": "comments.comment=Default comment for XXE lab",
-      "key": 1
-    },
-    {
-      "kind": "produces",
-      "op": "set",
-      "source": "GET auth_lab/signup",
-      "target": "authLogin.name=*",
-      "key": 0
-    },
-    {
-      "kind": "produces",
-      "op": "set",
-      "source": "GET auth_lab/signup",
-      "target": "authLogin.name=*",
-      "key": 1
-    },
-    {
-      "kind": "produces",
-      "op": "set",
-      "source": "GET auth_lab/signup",
-      "target": "authLogin.username=*",
-      "key": 0
-    },
-    {
-      "kind": "produces",
-      "op": "set",
-      "source": "GET auth_lab/signup",
-      "target": "authLogin.username=*",
-      "key": 1
-    },
-    {
-      "kind": "produces",
-      "op": "set",
-      "source": "GET auth_lab/signup",
-      "target": "authLogin.password=*",
-      "key": 0
-    },
-    {
-      "kind": "produces",
-      "op": "set",
-      "source": "GET auth_lab/signup",
-      "target": "authLogin.password=*",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET ba",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET ba",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET ba_lab",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET ba_lab",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET data_exp",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET data_exp",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET data_exp_lab",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET data_exp_lab",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
       "source": "GET robots.txt",
-      "target": "Session.authed_as=<authed>",
+      "target": "response.Content-Type=*",
       "key": 0
     },
     {
-      "kind": "requires",
-      "op": "truthy",
+      "kind": "produces",
+      "op": "set",
       "source": "GET robots.txt",
-      "target": "Session.authed_as=<authed>",
+      "target": "response.Content-Type=*",
       "key": 1
     },
     {
       "kind": "requires",
-      "op": "truthy",
-      "source": "GET cmd",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET cmd",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET cmd_lab",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET cmd_lab",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET cmd_lab2",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET cmd_lab2",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET bau",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET bau",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET bau_lab",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET bau_lab",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET sec_mis",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET sec_mis",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET sec_mis_lab",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET sec_mis_lab",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
+      "op": "eq",
       "source": "GET sec_mis_lab3",
-      "target": "Session.authed_as=<authed>",
+      "target": "payload.user=admin",
       "key": 0
     },
     {
       "kind": "requires",
-      "op": "truthy",
+      "op": "eq",
       "source": "GET sec_mis_lab3",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET a9",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET a9",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET a9_lab",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET a9_lab",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET a9_lab2",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET a9_lab2",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET a10",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET a10",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET a10_lab",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET a10_lab",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET insecure-design",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET insecure-design",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET insecure-design_lab",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET insecure-design_lab",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET broken_access_control",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET broken_access_control",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET broken_access_lab_1",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET broken_access_lab_1",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET broken_access_lab_2",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET broken_access_lab_2",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET broken_access_lab_3",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET broken_access_lab_3",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET broken_access_control/secret",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET broken_access_control/secret",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET ssrf",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET ssrf",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET ssrf_discussion",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET ssrf_discussion",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET ssrf_lab",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET ssrf_lab",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET injection",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET injection",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET injection_sql_lab",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET injection_sql_lab",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET api/ssrf",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET api/ssrf",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET ssti",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET ssti",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET ssti/lab",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET ssti/lab",
-      "target": "Session.authed_as=<authed>",
+      "target": "payload.user=admin",
       "key": 1
     },
     {
       "kind": "produces",
       "op": "set",
-      "source": "GET ssti/lab",
-      "target": "Blogs.author=*",
+      "source": "GET debug",
+      "target": "response.Content-Type=*",
       "key": 0
     },
     {
       "kind": "produces",
       "op": "set",
-      "source": "GET ssti/lab",
-      "target": "Blogs.author=*",
+      "source": "GET debug",
+      "target": "response.Content-Type=*",
       "key": 1
     },
     {
       "kind": "produces",
       "op": "set",
-      "source": "GET ssti/lab",
-      "target": "Blogs.blog_id=*",
-      "key": 0
-    },
-    {
-      "kind": "produces",
-      "op": "set",
-      "source": "GET ssti/lab",
-      "target": "Blogs.blog_id=*",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET ssti/blog/<str:blog_id>",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET ssti/blog/<str:blog_id>",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET cryptographic_failure",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET cryptographic_failure",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET cryptographic_failure/lab",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET cryptographic_failure/lab",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET cryptographic_failure/lab2",
-      "target": "Session.authed_as=<authed>",
-      "key": 0
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET cryptographic_failure/lab2",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "requires",
-      "op": "truthy",
       "source": "GET cryptographic_failure/lab3",
-      "target": "Session.authed_as=<authed>",
+      "target": "response.status_code=*",
       "key": 0
     },
     {
-      "kind": "requires",
-      "op": "truthy",
+      "kind": "produces",
+      "op": "set",
       "source": "GET cryptographic_failure/lab3",
-      "target": "Session.authed_as=<authed>",
-      "key": 1
-    },
-    {
-      "kind": "produces",
-      "op": "set",
-      "source": "GET auth_failure/lab2/admin12983gfugef81e8yeryepanel",
-      "target": "User.is_locked=*",
-      "key": 0
-    },
-    {
-      "kind": "produces",
-      "op": "set",
-      "source": "GET auth_failure/lab2/admin12983gfugef81e8yeryepanel",
-      "target": "User.is_locked=*",
-      "key": 1
-    },
-    {
-      "kind": "produces",
-      "op": "set",
-      "source": "GET auth_failure/lab2/admin12983gfugef81e8yeryepanel",
-      "target": "User.last_login=*",
-      "key": 0
-    },
-    {
-      "kind": "produces",
-      "op": "set",
-      "source": "GET auth_failure/lab2/admin12983gfugef81e8yeryepanel",
-      "target": "User.last_login=*",
-      "key": 1
-    },
-    {
-      "kind": "produces",
-      "op": "set",
-      "source": "GET auth_failure/lab2/admin12983gfugef81e8yeryepanel",
-      "target": "User.failattempt=*",
-      "key": 0
-    },
-    {
-      "kind": "produces",
-      "op": "set",
-      "source": "GET auth_failure/lab2/admin12983gfugef81e8yeryepanel",
-      "target": "User.failattempt=*",
-      "key": 1
-    },
-    {
-      "kind": "produces",
-      "op": "set",
-      "source": "GET auth_failure/lab2/admin12983gfugef81e8yeryepanel",
-      "target": "User.is_active=*",
-      "key": 0
-    },
-    {
-      "kind": "produces",
-      "op": "set",
-      "source": "GET auth_failure/lab2/admin12983gfugef81e8yeryepanel",
-      "target": "User.is_active=*",
-      "key": 1
-    },
-    {
-      "kind": "produces",
-      "op": "set",
-      "source": "GET auth_failure/lab2/admin12983gfugef81e8yeryepanel",
-      "target": "User.lockout_cooldown=*",
-      "key": 0
-    },
-    {
-      "kind": "produces",
-      "op": "set",
-      "source": "GET auth_failure/lab2/admin12983gfugef81e8yeryepanel",
-      "target": "User.lockout_cooldown=*",
-      "key": 1
-    },
-    {
-      "kind": "produces",
-      "op": "set",
-      "source": "GET auth_failure/lab3",
-      "target": "AF_session_id.session_id=*",
-      "key": 0
-    },
-    {
-      "kind": "produces",
-      "op": "set",
-      "source": "GET auth_failure/lab3",
-      "target": "AF_session_id.session_id=*",
-      "key": 1
-    },
-    {
-      "kind": "produces",
-      "op": "set",
-      "source": "GET auth_failure/lab3",
-      "target": "AF_session_id.user=*",
-      "key": 0
-    },
-    {
-      "kind": "produces",
-      "op": "set",
-      "source": "GET auth_failure/lab3",
-      "target": "AF_session_id.user=*",
+      "target": "response.status_code=*",
       "key": 1
     },
     {
       "kind": "requires",
       "op": "truthy",
-      "source": "GET 2021/discussion/A9/target",
+      "source": "GET auth_failure/lab2/admin12983gfugef81e8yeryepanel",
       "target": "Session.authed_as=<authed>",
       "key": 0
     },
     {
       "kind": "requires",
       "op": "truthy",
-      "source": "GET 2021/discussion/A9/target",
+      "source": "GET auth_failure/lab2/admin12983gfugef81e8yeryepanel",
       "target": "Session.authed_as=<authed>",
       "key": 1
     },
     {
       "kind": "produces",
       "op": "set",
-      "source": "GET register",
-      "target": "Session.authed_as=<authed>",
-      "key": "username"
+      "source": "GET auth_failure/lab2/admin12983gfugef81e8yeryepanel",
+      "target": "user.is_locked=*",
+      "key": 0
     },
     {
-      "kind": "requires",
-      "op": "truthy",
-      "source": "GET challenge/<str:challenge>",
-      "target": "Session.authed_as=<authed>",
+      "kind": "produces",
+      "op": "set",
+      "source": "GET auth_failure/lab2/admin12983gfugef81e8yeryepanel",
+      "target": "user.is_locked=*",
+      "key": 1
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "GET auth_failure/lab2/admin12983gfugef81e8yeryepanel",
+      "target": "user.last_login=*",
       "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "GET auth_failure/lab2/admin12983gfugef81e8yeryepanel",
+      "target": "user.last_login=*",
+      "key": 1
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "GET auth_failure/lab2/admin12983gfugef81e8yeryepanel",
+      "target": "user.failattempt=*",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "GET auth_failure/lab2/admin12983gfugef81e8yeryepanel",
+      "target": "user.failattempt=*",
+      "key": 1
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "GET auth_failure/lab2/admin12983gfugef81e8yeryepanel",
+      "target": "user.is_active=*",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "GET auth_failure/lab2/admin12983gfugef81e8yeryepanel",
+      "target": "user.is_active=*",
+      "key": 1
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "GET auth_failure/lab2/admin12983gfugef81e8yeryepanel",
+      "target": "user.lockout_cooldown=*",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "GET auth_failure/lab2/admin12983gfugef81e8yeryepanel",
+      "target": "user.lockout_cooldown=*",
+      "key": 1
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "GET mitre/9/lab/api/<str:recipent>/<int:amount>",
+      "target": "recipent.balance=*",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "GET mitre/9/lab/api/<str:recipent>/<int:amount>",
+      "target": "recipent.balance=*",
+      "key": 1
     }
   ]
 }
