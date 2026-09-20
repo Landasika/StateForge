@@ -110,3 +110,42 @@ def test_xfg_export_dot(tmp_path, model):
     xfg_to_dot(xfg, out)
     text = out.read_text()
     assert "digraph XFG" in text and "ship" in text
+
+
+# ---------------------------------------------------------------- v2:基于调用图
+
+
+def test_xfg_on_callgraph_expands_helpers(model):
+    """基于②(调用图)添加①:项目内函数(含非端点 helper)全部展开为 CFG。"""
+    xfg = build_xfg(model, callgraph_path=VULNSHOP / "golden" / "callgraph.json")
+    kinds = {}
+    for _n, d in xfg.nodes(data=True):
+        kinds[d.get("kind")] = kinds.get(d.get("kind"), 0) + 1
+    assert kinds.get("action") == 11
+    assert kinds.get("block", 0) + kinds.get("branch", 0) >= kinds.get("block", 0) > 0
+    # helper 函数(非端点)也进了图:init_database 的块存在
+    helper_blocks = [n for n, d in xfg.nodes(data=True)
+                     if "init_database" in str(d.get("func", ""))]
+    assert helper_blocks, "helper 函数未展开"
+
+
+def test_xfg_call_edges_sink_to_blocks(model):
+    """② 的调用边下沉到块级:caller 中含调用语句的块 → callee 入口块。"""
+    xfg = build_xfg(model, callgraph_path=VULNSHOP / "golden" / "callgraph.json")
+    call_edges = [(u, v, d) for u, v, d in xfg.edges(data=True)
+                  if d.get("kind") in ("call", "call-ext")]
+    assert call_edges, "无调用边"
+    # 库函数是叶子(ext):sqlite3/hmac 等不展开
+    ext_nodes = [n for n, d in xfg.nodes(data=True) if d.get("kind") == "ext"]
+    assert any("sqlite3" in n or "flask" in n for n in ext_nodes)
+    # ship 调用了项目内函数 get_order_or_none → call 边指向其入口
+    target_entries = [v for u, v, d in call_edges
+                      if d["kind"] == "call" and "get_order_or_none" in v]
+    assert any(xfg.nodes[v].get("kind") == "entry" for v in target_entries)
+
+
+def test_xfg_state_links_preserved(model):
+    """跨端点共享状态虚边在调用图骨架上仍然保留。"""
+    xfg = build_xfg(model, callgraph_path=VULNSHOP / "golden" / "callgraph.json")
+    state_links = [e for e in xfg.edges(data=True) if e[2].get("kind") == "state-link"]
+    assert state_links

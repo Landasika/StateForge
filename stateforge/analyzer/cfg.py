@@ -151,32 +151,139 @@ def attach_anchors(cfg: nx.DiGraph, ep: Endpoint) -> nx.DiGraph:
     return cfg
 
 
-def build_xfg(model: AppModel) -> nx.MultiDiGraph:
-    """G_xfg:动作节点 + 各端点 CFG 子图 + 跨端点共享状态虚边。"""
+def load_callgraph(path: str | Path) -> dict[str, list[str]]:
+    """PyCG JSON:模块限定函数名 → 被调函数列表。"""
+    import json
+
+    return json.loads(Path(path).read_text(encoding="utf-8"))
+
+
+def _module_map(app_root: str | Path) -> dict[str, Path]:
+    """项目内 .py 文件 → 点分模块名(沿 __init__.py 向上走)。"""
+    skip = {"tests", "__pycache__", "golden", "probes", "database"}
+    out: dict[str, Path] = {}
+    for py in sorted(Path(app_root).rglob("*.py")):
+        if any(part in skip for part in py.parts) or py.name in ("adapter.py", "serve.py"):
+            continue
+        parts = [py.with_suffix("").name]
+        parent = py.parent
+        while (parent / "__init__.py").exists():
+            parts.append(parent.name)
+            parent = parent.parent
+        out[".".join(reversed(parts))] = py
+    return out
+
+
+def _block_calls_name(stmts: list, name: str) -> bool:
+    """块内语句(含嵌套)是否调用了名为 name 的函数(裸名或属性名)。"""
+    for stmt in stmts:
+        for node in ast.walk(stmt):
+            if isinstance(node, ast.Call):
+                f = node.func
+                if (isinstance(f, ast.Name) and f.id == name) or (
+                    isinstance(f, ast.Attribute) and f.attr == name
+                ):
+                    return True
+    return False
+
+
+def _canon(g: str, mod2file: dict[str, Path]) -> tuple[str | None, str]:
+    """PyCG 限定名 → (最长已知模块前缀, 末名)。嵌套函数(app.create_app.f)→(app 模块, f)。"""
+    parts = g.split(".")
+    for i in range(len(parts) - 1, 0, -1):
+        mod = ".".join(parts[:i])
+        if mod in mod2file:
+            return mod, parts[-1]
+    return None, parts[-1]
+
+
+def build_xfg(model: AppModel, callgraph_path: str | Path | None = None) -> nx.MultiDiGraph:
+    """G_xfg v2(基于②添加①):PyCG 调用图为骨架,项目函数展开为过程内 CFG,
+    库函数为 ext 叶子;调用边下沉到含调用语句的块;锚点钉块;跨端点状态虚边。
+
+    callgraph_path=None → 退化为端点级装配(旧行为,无调用链)。
+    """
     xfg = nx.MultiDiGraph()
-    writes: dict[str, list[tuple[str, str]]] = {}    # var → [(endpoint, block)]
-    reads: dict[str, list[tuple[str, str]]] = {}
+    cg = load_callgraph(callgraph_path) if callgraph_path else {}
+    mod2file = _module_map(model.app_root)
+    file2mod = {str(p.resolve()): m for m, p in mod2file.items()}
 
-    for i, ep in enumerate(model.endpoints):
-        action = f"{ep.methods[0]} {ep.route}"
+    # ---- 展开项目函数(端点函数必展;调用图覆盖到的项目函数也展)
+    endpoint_of_func: dict[str, tuple[str, Endpoint]] = {}
+    for ep in model.endpoints:
+        mod = file2mod.get(str(Path(ep.file).resolve()), None)
+        if mod:
+            endpoint_of_func[f"{mod}.{ep.func}"] = (f"{ep.methods[0]} {ep.route}", ep)
+
+    expanded: dict[str, nx.DiGraph] = {}
+    canon_keys = {_canon(g, mod2file) for g in cg}      # 嵌套函数名规范化后的键集合
+    for mod, fpath in mod2file.items():
+        tree = _module(str(fpath))
+        for node in ast.walk(tree):
+            if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                continue
+            qualified = f"{mod}.{node.name}"
+            is_endpoint = qualified in endpoint_of_func
+            in_cg = (mod, node.name) in canon_keys
+            if not (is_endpoint or in_cg):
+                continue
+            cfg_n = build_cfg(node, prefix="", file=str(fpath))
+            if is_endpoint:
+                attach_anchors(cfg_n, endpoint_of_func[qualified][1])
+            for n, d in cfg_n.nodes(data=True):
+                xfg.add_node(f"{qualified}::{n}", **d, func_id=qualified)
+            for u, v, d in cfg_n.edges(data=True):
+                xfg.add_edge(f"{qualified}::{u}", f"{qualified}::{v}",
+                             kind="cfg", cond=d.get("cond"))
+            entry = next((n for n in cfg_n.nodes
+                          if cfg_n.nodes[n].get("kind") == "entry"), None)
+            expanded[qualified] = cfg_n
+            if entry:
+                xfg.nodes[f"{qualified}::{entry}"].setdefault("kind", "entry")
+
+    # ---- 端点动作节点 → 处理器入口
+    for qualified, (action, ep) in endpoint_of_func.items():
         xfg.add_node(action, kind="action", func=ep.func, file=ep.file)
-        cfg = build_cfg(ep, prefix=f"e{i}.")
-        attach_anchors(cfg, ep)
-        for n, d in cfg.nodes(data=True):
-            xfg.add_node(f"{action}|{n}", **d, endpoint=action)
-        # action → entry 边
-        entries = [n for n in cfg.nodes if cfg.nodes[n].get("kind") == "entry"]
-        for e in entries:
-            xfg.add_edge(action, f"{action}|{e}", kind="entry-edge")
-        for u, v, d in cfg.edges(data=True):
-            xfg.add_edge(f"{action}|{u}", f"{action}|{v}", kind="cfg", cond=d.get("cond"))
-            for a in cfg.nodes[u].get("anchors", []) + cfg.nodes[v].get("anchors", []):
-                if a["kind"] == "eff":
-                    writes.setdefault(a["var"], []).append((action, f"{action}|{u}"))
-                elif a["kind"] == "pre":
-                    reads.setdefault(a["var"], []).append((action, f"{action}|{u}"))
+        cfg_n = expanded.get(qualified)
+        if cfg_n is not None:
+            for n in cfg_n.nodes:
+                if cfg_n.nodes[n].get("kind") == "entry":
+                    xfg.add_edge(action, f"{qualified}::{n}", kind="entry-edge")
 
-    # 跨端点状态虚边:同变量的写锚块 → 读锚块(不同端点)
+    # ---- ② 的调用边下沉到块级(嵌套函数名规范化后匹配)
+    for caller_cg, callees in cg.items():
+        cmod, cname = _canon(caller_cg, mod2file)
+        cfg_c = expanded.get(f"{cmod}.{cname}") if cmod else None
+        if cfg_c is None:
+            continue                                   # 外部 caller 的边不入图
+        for g in callees:
+            gmod, gname = _canon(g, mod2file)
+            target_cfg = expanded.get(f"{gmod}.{gname}") if gmod else None
+            if target_cfg is not None:
+                target = next((f"{gmod}.{gname}::{n}" for n in target_cfg
+                               if target_cfg.nodes[n].get("kind") == "entry"), None)
+                kind = "call"
+            else:
+                target = g                             # 库函数/未知:叶子
+                xfg.add_node(g, kind="ext")
+                kind = "call-ext"
+            if target is None:
+                continue
+            sites = [f"{cmod}.{cname}::{b}" for b, d in cfg_c.nodes(data=True)
+                     if _block_calls_name(d.get("stmts", []), gname)]
+            for s in sites or [f"{cmod}.{cname}::{next(iter(cfg_c.nodes))}"]:
+                xfg.add_edge(s, target, kind=kind, callee=g)
+
+    # ---- 跨端点状态虚边(同变量:写锚块 → 读锚块)
+    writes: dict[str, list[tuple[str, str]]] = {}
+    reads: dict[str, list[tuple[str, str]]] = {}
+    for n, d in xfg.nodes(data=True):
+        for a in d.get("anchors", []):
+            ref = (d.get("func_id"), n)
+            if a["kind"] == "eff":
+                writes.setdefault(a["var"], []).append(ref)
+            elif a["kind"] == "pre":
+                reads.setdefault(a["var"], []).append(ref)
     for var in set(writes) & set(reads):
         for (wa, wb), (ra, rb) in itertools.product(writes[var], reads[var]):
             if wa != ra:
@@ -191,6 +298,10 @@ def xfg_to_dot(xfg: nx.MultiDiGraph, path: str | Path) -> None:
             lines.append(f'  "{n}" [shape=box, style=bold];')
         elif d.get("kind") in ("branch",):
             lines.append(f'  "{n}" [shape=diamond];')
+        elif d.get("kind") == "ext":
+            lines.append(f'  "{n}" [shape=rect, style=filled, fillcolor=gray90];')
+        elif d.get("kind") == "entry":
+            lines.append(f'  "{n}" [shape=circle];')
         elif d.get("kind") == "block":
             marked = ' color=red' if d.get("anchors") else ""
             lines.append(f'  "{n}" [shape=rect{marked}];')
@@ -204,7 +315,11 @@ def xfg_to_dot(xfg: nx.MultiDiGraph, path: str | Path) -> None:
         elif kind == "state-link":
             attr = f' [style=dashed, color=blue, label="{d.get("var")}"]'
         elif kind == "entry-edge":
-            attr = ' [style=bold]'
+            attr = " [style=bold]"
+        elif kind == "call":
+            attr = f' [color=purple, label="call"]'
+        elif kind == "call-ext":
+            attr = ' [color=gray, style=dotted]'
         else:
             attr = ""
         lines.append(f'  "{u}" -> "{v}"{attr};')
