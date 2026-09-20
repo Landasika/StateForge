@@ -1,0 +1,49 @@
+{% if edit_mode %}
+    {% set title = _("Edit Post") %}
+{% else %}
+    {% set title = _("New Post") %}
+{% endif %}
+
+{% set page_title = title %}
+{% set active_forum_nav=True %}
+
+{% extends theme("layout.html") %}
+
+{% block content %}
+{% from theme("_macros/form.html") import render_field, render_editor_field, render_submit_field %}
+
+<div class="page-view">
+    <ol class="breadcrumb flaskbb-breadcrumb bg-light">
+        <li class="breadcrumb-item"><a href="{{ url_for('forum.index') }}">{% trans %}Forum{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ topic.forum.url }}">{{ topic.forum.title }}</a></li>
+        <li class="breadcrumb-item"><a href="{{ topic.url }}">{{ topic.title }}</a></li>
+        <li class="breadcrumb-item active">
+            {{ title }}
+        </li>
+    </ol>
+
+    <form class="form-horizontal" role="form" method="post">
+        {{ form.hidden_tag() }}
+        <div class="card page">
+            <div class="card-header page-header">
+                {{ title }}
+            </div>
+
+            <div class="card-body page-body">
+
+                <div class="row p-3">
+                    {{ run_hook("flaskbb_tpl_form_new_post_before", form=form) }}
+
+                    {{ render_editor_field(form.content, rows=6) }}
+                    {{ render_field(form.track_topic) }}
+
+                    {{ run_hook("flaskbb_tpl_form_new_post_after", form=form) }}
+
+                    {{ render_field(form.submit) }}
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

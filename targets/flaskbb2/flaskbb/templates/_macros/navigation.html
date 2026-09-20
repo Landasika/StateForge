@@ -1,0 +1,83 @@
+{% macro is_active(endpoint, active='') %}
+    {%- if endpoint == request.endpoint or endpoint == active or active == True -%}
+        active
+    {%- endif -%}
+{% endmacro %}
+
+
+{% macro topnav(endpoint, name, icon='', id='', active='') %}
+<li {% if id %}id="{{ id }}"{% endif %} class="nav-item">
+    <a class="nav-link {{ is_active(endpoint, active) }}" href="{{ url_for(endpoint) }}">
+        {% if icon %}<i class="{{ icon }}"></i> {% endif %}{{ name }}
+    </a>
+</li>
+{% endmacro %}
+
+
+{% macro topnavitems(items) %}
+{% for item in items %}
+    {% if item.content_type == NavigationContentType.link %}
+    {{ topnav(item.endpoint, item.name, item.icon, '', item.active) }}
+    {% else %}
+    {# custom markup provided #}
+    {{ item|safe }}
+    {% endif %}
+{% endfor %}
+{% endmacro %}
+
+
+{% macro navlink(endpoint, name, icon='', active='', urlforkwargs=None) %}
+<li class="nav-item">
+    <a class="nav-link {{ is_active(endpoint, active) }}" href="{% if urlforkwargs %}{{ url_for(endpoint, **urlforkwargs) }}{% else %}{{ url_for(endpoint) }}{% endif %}">
+        {% if icon %}<i class="{{ icon }}"></i> {% endif %} {{ name }}
+    </a>
+</li>
+{% endmacro %}
+
+
+{% macro externalnavlink(uri, name, icon='') %}
+<li class="nav-item">
+    <a class="nav-link" href="{{uri}}">{% if icon %}<i class="{{ icon }}"></i> {% endif %} {{ name }}</a>
+</li>
+{% endmacro %}
+
+
+{% macro navtext(text, icon="", cls="") %}
+<li {%- if cls -%}class="{{ cls }}"{%- endif -%}><a href="#">{% if icon %}<i class="{{ icon }}"></i> {% endif %}{{ text }}</a></li>
+{% endmacro %}
+
+
+{% macro navheader(text, icon="", cls="nav-header") %}
+{{ navtext(text, icon, cls) }}
+{% endmacro %}
+
+
+{% macro navdivider() %}
+<li class="nav-divider"></li>
+{% endmacro %}
+
+
+{% macro sidebar(items, extra_class="") %}
+{% if items %}
+<ul class="nav {% if extra_class %}{{ extra_class }}{% endif %}">
+    {{ sidebaritems(items) }}
+</ul>
+{% endif %}
+{% endmacro %}
+
+
+{% macro sidebaritems(items) %}
+{% for item in items %}
+    {% if item.content_type == NavigationContentType.link %}
+    {{ navlink(item.endpoint, item.name, item.icon, item.active, item.urlforkwargs) }}
+    {% elif item.content_type == NavigationContentType.external_link %}
+    {{ externalnavlink(item.uri, item.name, item.icon) }}
+    {% elif item.content_type == NavigationContentType.header %}
+    {{ navheader(item.text, cls="sidenav-header") }}
+    {% elif item.content_type == NavigationContentType.divider %}
+    {{ navdivider() }}
+    {% else %}
+    {# skip unknown #}
+    {% endif %}
+{% endfor %}
+{% endmacro %}

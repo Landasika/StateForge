@@ -1,0 +1,13 @@
+{% set page_title = _("Server Error") %}
+
+{% extends theme("layout.html") %}
+{% block content %}
+
+<div class="card page">
+    <div class="card-body">
+        <h1 class="card-title">{% trans %}500 - Server Error{% endtrans %}</h1>
+        <p class="card-text">{% trans %}Something went wrong!{% endtrans %}</p>
+    </div>
+</div>
+
+{% endblock %}

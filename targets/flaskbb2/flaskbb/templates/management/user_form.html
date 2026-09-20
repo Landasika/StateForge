@@ -1,0 +1,65 @@
+{% set page_title = title %}
+{% set active = "management.users" %}
+
+{% extends theme("management/management_layout.html") %}
+
+{% block breadcrumb %}
+<ol class="breadcrumb flaskbb-breadcrumb">
+    <li class="breadcrumb-item"><a href="{{ url_for('forum.index') }}">{% trans %}Forum{% endtrans %}</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('management.overview') }}">{% trans %}Management{% endtrans %}</a></li>
+    <li class="breadcrumb-item active">{% trans %}Manage Users{% endtrans %}</li>
+</ol>
+{% endblock %}
+
+{% block management_content %}
+{%- from theme('_macros/pagination.html') import render_pagination -%}
+{%- from theme('_macros/navigation.html') import navlink with context -%}
+{%- from theme('_macros/form.html') import horizontal_field -%}
+
+
+<div class="col-md-3 settings-col">
+    <div class="nav-sidebar">
+        <ul class="nav">
+            {{ navlink('management.users', _("Manage Users")) }}
+            {{ navlink('management.banned_users', _('Banned Users')) }}
+
+            {% if current_user|is_admin %}
+                {{ navlink('management.add_user', _("Add User")) }}
+            {% endif %}
+        </ul>
+    </div>
+</div><!--/.col-md-3 -->
+
+<div class="col-md-9 settings-col with-left-border">
+    <div class="card settings">
+        <div class="card-header settings-header">
+            <span class="fa fa-user-plus"></span> {{ title }}
+        </div>
+        <div class="card-body settings-body">
+            <form class="row p-3" role="form" method="post">
+                {{ form.hidden_tag() }}
+
+                {{ run_hook('flaskbb_tpl_form_user_details_before', form=form) }}
+
+                {{ horizontal_field(form.username) }}
+                {{ horizontal_field(form.email) }}
+                {{ horizontal_field(form.password) }}
+                {{ horizontal_field(form.birthday, div_class="row col-5", class="form-select", surrounded_div="col-4") }}
+                {{ horizontal_field(form.gender) }}
+                {{ horizontal_field(form.location) }}
+                {{ horizontal_field(form.website) }}
+                {{ horizontal_field(form.avatar) }}
+                {{ horizontal_field(form.primary_group) }}
+                {{ horizontal_field(form.secondary_groups) }}
+                {{ horizontal_field(form.activated, div_class="offset-3 col-4") }}
+                {{ horizontal_field(form.signature, rows=4, div_class="col-sm-8") }}
+                {{ horizontal_field(form.notes, rows=8, div_class="col-sm-8") }}
+
+                {{ run_hook('flaskbb_tpl_form_user_details_after', form=form) }}
+
+                {{ horizontal_field(form.submit, div_class="offset-3 col-4") }}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
