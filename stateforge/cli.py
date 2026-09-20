@@ -118,9 +118,68 @@ def _domains(model: AppModel) -> dict[str, list[str]]:
     return dict(values)
 
 
+def analyze_cmd(target: str, framework: str, name: str | None, out: str) -> int:
+    """对任意真实项目跑静态分析:AppModel + SSTG + XFG(+自动 PyCG 调用图)。"""
+    import subprocess
+
+    from stateforge.analyzer.cfg import build_xfg, xfg_to_dot
+    from stateforge.analyzer.svg import render_function_xfg
+
+    outdir = Path(out)
+    outdir.mkdir(parents=True, exist_ok=True)
+    tag = name or Path(target).name
+
+    # 调用图:优先现成 fixture;否则尽力用 ANOTA 侧 PyCG 生成(嵌套入口逐个试)
+    cg_path = outdir / f"{tag}.callgraph.json"
+    if not cg_path.exists():
+        anota_py = ROOT / "anota" / "ANOTA" / "ANOTA-interpreter" / "python"
+        entries = sorted(p for p in Path(target).rglob("*.py")
+                         if p.name in ("app.py", "config.py", "__init__.py", "factory.py")
+                         or "views" in p.name or "routes" in p.name)[:12]
+        ok = []
+        for e in entries:
+            tmp = outdir / "_cg_part.json"
+            r = subprocess.run([str(anota_py), "-m", "PyCG", str(e), "-o", str(tmp)],
+                               capture_output=True, timeout=120)
+            if r.returncode == 0 and tmp.exists():
+                ok.append(json.loads(tmp.read_text()))
+                tmp.unlink()
+        if ok:
+            merged: dict = {}
+            for part in ok:
+                for k, v in part.items():
+                    merged.setdefault(k, []).extend(x for x in v if x not in merged[k])
+            cg_path.write_text(json.dumps(merged))
+            print(f"[callgraph] merged {len(ok)} entries -> {len(merged)} nodes")
+
+    model = analyze(Path(target), framework)
+    model.to_json(outdir / f"{tag}.AppModel.json")
+    sstg = build_sstg(model)
+    to_json(sstg, outdir / f"{tag}.stategraph.json")
+    to_dot(sstg, outdir / f"{tag}.stategraph.dot")
+    xfg = build_xfg(model, callgraph_path=cg_path if cg_path.exists() else None)
+    xfg_to_dot(xfg, outdir / f"{tag}.xfg.dot")
+    render_function_xfg(xfg, outdir / f"{tag}.xfg.svg", f"{tag} G_xfg (function-level)")
+
+    sec = [sv for sv in model.state_vars if sv.security_relevant]
+    print(f"[{tag}] endpoints={len(model.endpoints)} candidates={len(model.candidates)} "
+          f"state_vars={len(model.state_vars)} sec={len(sec)} "
+          f"sstg={sstg.number_of_nodes()}n xfg={xfg.number_of_nodes()}n")
+    for sv in sec[:20]:
+        print(f"   SEC {sv.var:32s} {sv.label}")
+    print(f"[out] {outdir}")
+    return 0
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("command", choices=["e2e"])
+    ap.add_argument("command", choices=["e2e", "analyze"])
     ap.add_argument("--no-llm", action="store_true")
+    ap.add_argument("target", nargs="?", help="analyze:项目目录")
+    ap.add_argument("--framework", default="flask", choices=["flask", "connexion"])
+    ap.add_argument("--name")
+    ap.add_argument("--out", default="results/analyze")
     args = ap.parse_args()
-    raise SystemExit(e2e(use_llm=not args.no_llm))
+    if args.command == "e2e":
+        raise SystemExit(e2e(use_llm=not args.no_llm))
+    raise SystemExit(analyze_cmd(args.target, args.framework, args.name, args.out))

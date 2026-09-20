@@ -4,7 +4,7 @@
   调用名分派识别,未做通用过程间分析;T5 单层内联推后——今天用 idioms 捷径覆盖)
 - 参数化 SQL 的动态赋值不可见(`SET status=?`)——迁移由"无入边值按首现序
   回填"的线性序兜底补全(已写入 analyzer.derive_invariants)
-- Jinja 模板内逻辑不分析;动态分发(getattr/dict→func)与 class-based view 跳过
+- Jinja 模板内逻辑不分析;动态分发(getattr/dict→func)跳过。**class-based view/register_view 式路由已支持**(2026-09-20,FlaskBB 实测 147 端点);但 Flask-Login(login_user/current_user)与 SQLAlchemy Model 类字段习语未覆盖——真实项目的语义密度取决于习语表扩充
 - VAmPI 的 SQLAlchemy 查询链只识别 `X.attr = <expr>` 写与构造器字面 kwargs;
   `db.session.add` 的非常量参数不产 Effect
 - 路径转换器缺失由 planner `@probe` 兜底(SF3)

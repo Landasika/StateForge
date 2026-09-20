@@ -102,21 +102,78 @@ def parse_sql_effects(sql: str) -> list[tuple[str, str, str | None]]:
 
 
 class EndpointExtractor(ast.NodeVisitor):
-    """对单文件做路由级提取;结果汇集到 self.endpoints / self.candidates。"""
+    """对单文件做路由级提取;结果汇集到 self.endpoints / self.candidates。
+
+  路由习语三族:
+    ① 装饰器式     @app.post("/x") / @bp.route("/x", methods=[...])
+    ② 注册式       register_view(bp, routes=["/x"], view_func=View.as_view("x"))
+    ③ url_rule 式  bp.add_url_rule("/x", view_func=f)
+  ②③ 是真实项目(FlaskBB 等)的主流;类视图提取 get/post 全部方法。
+  """
 
     def __init__(self, file: str, config_flags: dict[str, int] | None = None):
         self.file = file
         self.endpoints: list[Endpoint] = []
         self.candidates: list[StateCandidate] = []
         self.config_flags: dict[str, int] = config_flags if config_flags is not None else {}
+        self._funcs: dict[str, ast.FunctionDef] = {}
+        self._classes: dict[str, ast.ClassDef] = {}
 
     # ---- 顶层:模块内所有 FunctionDef(含工厂函数内的嵌套路由)
     def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
+        self._funcs.setdefault(node.name, node)
         for route, methods in _route_of(node):
             self._extract_endpoint(node, route, methods)
         self.generic_visit(node)
 
     visit_AsyncFunctionDef = visit_FunctionDef
+
+    def visit_ClassDef(self, node: ast.ClassDef) -> None:
+        self._classes.setdefault(node.name, node)
+        self.generic_visit(node)
+
+    # ---- 注册式/url_rule 式路由
+    def visit_Call(self, call: ast.Call) -> None:
+        name = _any_name(call)
+        if name in ("register_view", "add_url_rule"):
+            kws = {k.arg: k.value for k in call.keywords if k.arg}
+            routes = _literal_list(kws.get("routes")) or (
+                [_lit(call.args[1])] if name == "add_url_rule" and len(call.args) > 1
+                and _lit(call.args[1]) else [])
+            vf = kws.get("view_func") or (call.args[2] if len(call.args) > 2 else None)
+            targets = self._view_targets(vf)
+            for route in routes:
+                for methods, fdef in targets:
+                    ep = Endpoint(func=fdef.name if fdef else str(route),
+                                  route=route, methods=methods,
+                                  file=self.file,
+                                  line=(fdef.lineno if fdef else getattr(call, "lineno", 0)),
+                                  params=_path_params(route))
+                    if fdef is not None:
+                        self._extract_endpoint_into(fdef, route, methods, ep)
+                    self.endpoints.append(ep)
+        self.generic_visit(call)
+
+    def _view_targets(self, vf) -> list[tuple[list[HttpMethod], ast.FunctionDef | None]]:
+        """view_func → [(methods, 函数节点)];类视图展开 get/post 方法。"""
+        if vf is None:
+            return [(["GET"], None)]  # type: ignore[list-item]
+        cls_name = None
+        if isinstance(vf, ast.Call) and isinstance(vf.func, ast.Attribute) \
+                and vf.func.attr == "as_view" and isinstance(vf.func.value, ast.Name):
+            cls_name = vf.func.value.id
+        elif isinstance(vf, ast.Name):
+            fname = vf.id
+            if fname in self._funcs:
+                return [(["GET"], self._funcs[fname])]  # type: ignore[list-item]
+        if cls_name and cls_name in self._classes:
+            out = []
+            for m in ("get", "post", "put", "delete"):
+                for sub in ast.walk(self._classes[cls_name]):
+                    if isinstance(sub, ast.FunctionDef) and sub.name == m:
+                        out.append(([m.upper()], sub))  # type: ignore[list-item]
+            return out or [(["GET"], None)]  # type: ignore[list-item]
+        return [(["GET"], None)]  # type: ignore[list-item]
 
     # ---- 模块级旗标 R7
     def visit_Assign(self, node: ast.Assign) -> None:
@@ -408,6 +465,13 @@ def _route_of(node: ast.FunctionDef) -> list[tuple[str, list[HttpMethod]]]:
                         ]
                 out.append((dec.args[0].value, methods))
     return out
+
+
+def _literal_list(node) -> list[str]:
+    if isinstance(node, (ast.List, ast.Tuple)):
+        return [e.value for e in node.elts if isinstance(e, ast.Constant)
+                and isinstance(e.value, str)]
+    return []
 
 
 def _path_params(route: str) -> list[Param]:

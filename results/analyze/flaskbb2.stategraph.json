@@ -1,0 +1,1136 @@
+{
+  "directed": true,
+  "multigraph": true,
+  "graph": {},
+  "nodes": [
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 70,
+      "id": "GET /logout"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 87,
+      "id": "GET /login"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 90,
+      "id": "POST /login"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 115,
+      "id": "GET /reauth"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 120,
+      "id": "POST /reauth"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 156,
+      "id": "GET /register"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 159,
+      "id": "POST /register"
+    },
+    {
+      "kind": "state",
+      "var": "UserRegistrationInfo.username",
+      "value": "*",
+      "security_relevant": false,
+      "label": "irrelevant",
+      "id": "UserRegistrationInfo.username=*"
+    },
+    {
+      "kind": "state",
+      "var": "UserRegistrationInfo.password",
+      "value": "*",
+      "security_relevant": true,
+      "label": "authn",
+      "id": "UserRegistrationInfo.password=*"
+    },
+    {
+      "kind": "state",
+      "var": "UserRegistrationInfo.group",
+      "value": "4",
+      "security_relevant": false,
+      "label": "irrelevant",
+      "id": "UserRegistrationInfo.group=4"
+    },
+    {
+      "kind": "state",
+      "var": "UserRegistrationInfo.email",
+      "value": "*",
+      "security_relevant": false,
+      "label": "irrelevant",
+      "id": "UserRegistrationInfo.email=*"
+    },
+    {
+      "kind": "state",
+      "var": "UserRegistrationInfo.language",
+      "value": "*",
+      "security_relevant": false,
+      "label": "irrelevant",
+      "id": "UserRegistrationInfo.language=*"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 202,
+      "id": "GET /reset-password"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 205,
+      "id": "POST /reset-password"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 233,
+      "id": "GET /reset-password/<token>"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 238,
+      "id": "POST /reset-password/<token>"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 280,
+      "id": "GET /activate"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 285,
+      "id": "POST /activate"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 354,
+      "id": "GET /activate/confirm"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 360,
+      "id": "POST /activate/confirm"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 313,
+      "id": "GET /activate/confirm/<token>"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 87,
+      "id": "GET /category/<int:category_id>"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 87,
+      "id": "GET /category/<int:category_id>-<slug>"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 354,
+      "id": "GET /forum/<int:forum_id>/edit"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 383,
+      "id": "POST /forum/<int:forum_id>/edit"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 354,
+      "id": "GET /forum/<int:forum_id>-<slug>/edit"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 383,
+      "id": "POST /forum/<int:forum_id>-<slug>/edit"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 107,
+      "id": "GET /forum/<int:forum_id>"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 107,
+      "id": "GET /forum/<int:forum_id>-<slug>"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 905,
+      "id": "POST /<int:forum_id>/markread"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 905,
+      "id": "POST /<int:forum_id>-<slug>/markread"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 267,
+      "id": "GET /<int:forum_id>/topic/new"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 276,
+      "id": "POST /<int:forum_id>/topic/new"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 267,
+      "id": "GET /<int:forum_id>-<slug>/topic/new"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 276,
+      "id": "POST /<int:forum_id>-<slug>/topic/new"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 309,
+      "id": "GET /topic/<int:topic_id>/edit"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 318,
+      "id": "POST /topic/<int:topic_id>/edit"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 309,
+      "id": "GET /topic/<int:topic_id>-<slug>/edit"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 318,
+      "id": "POST /topic/<int:topic_id>-<slug>/edit"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 624,
+      "id": "GET /memberlist"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 648,
+      "id": "POST /memberlist"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 860,
+      "id": "POST /post/<int:post_id>/delete"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 573,
+      "id": "GET /post/<int:post_id>/edit"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 586,
+      "id": "POST /post/<int:post_id>/edit"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 887,
+      "id": "GET /post/<int:post_id>/raw"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 608,
+      "id": "GET /post/<int:post_id>/report"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 611,
+      "id": "POST /post/<int:post_id>/report"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 142,
+      "id": "GET /post/<int:post_id>"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 729,
+      "id": "GET /search"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 732,
+      "id": "POST /search"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 757,
+      "id": "POST /topic/<int:topic_id>/delete"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 757,
+      "id": "POST /topic/<int:topic_id>-<slug>/delete"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 819,
+      "id": "POST /topic/<int:topic_id>/highlight"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 819,
+      "id": "POST /topic/<int:topic_id>-<slug>/highlight"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 777,
+      "id": "POST /topic/<int:topic_id>/lock"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 777,
+      "id": "POST /topic/<int:topic_id>-<slug>/lock"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 528,
+      "id": "GET /topic/<int:topic_id>/post/<int:post_id>/reply"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 541,
+      "id": "POST /topic/<int:topic_id>/post/<int:post_id>/reply"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 528,
+      "id": "GET /topic/<int:topic_id>-<slug>/post/<int:post_id>/reply"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 541,
+      "id": "POST /topic/<int:topic_id>-<slug>/post/<int:post_id>/reply"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 528,
+      "id": "GET /topic/<int:topic_id>/post/new"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 541,
+      "id": "POST /topic/<int:topic_id>/post/new"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 528,
+      "id": "GET /topic/<int:topic_id>-<slug>/post/new"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 541,
+      "id": "POST /topic/<int:topic_id>-<slug>/post/new"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 178,
+      "id": "GET /topic/<int:topic_id>"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 231,
+      "id": "POST /topic/<int:topic_id>"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 178,
+      "id": "GET /topic/<int:topic_id>-<slug>"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 231,
+      "id": "POST /topic/<int:topic_id>-<slug>"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 840,
+      "id": "POST /topic/<int:topic_id>/trivialize"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 840,
+      "id": "POST /topic/<int:topic_id>-<slug>/trivialize"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 798,
+      "id": "POST /topic/<int:topic_id>/unlock"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 798,
+      "id": "POST /topic/<int:topic_id>-<slug>/unlock"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 983,
+      "id": "POST /topictracker/<int:topic_id>/add"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 983,
+      "id": "POST /topictracker/<int:topic_id>-<slug>/add"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 1003,
+      "id": "POST /topictracker/<int:topic_id>/delete"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 1003,
+      "id": "POST /topictracker/<int:topic_id>-<slug>/delete"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 685,
+      "id": "GET /topictracker"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 710,
+      "id": "POST /topictracker"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 1152,
+      "id": "GET /"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 960,
+      "id": "GET /who-is-online"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 1013,
+      "id": "POST /topic/<int:topic_id>/hide"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 1013,
+      "id": "POST /topic/<int:topic_id>-<slug>/hide"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 1030,
+      "id": "POST /topic/<int:topic_id>/unhide"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 1030,
+      "id": "POST /topic/<int:topic_id>-<slug>/unhide"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 1046,
+      "id": "POST /post/<int:post_id>/hide"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 1076,
+      "id": "POST /post/<int:post_id>/unhide"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 1096,
+      "id": "POST /markdown"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 1096,
+      "id": "POST /markdown/<path:mode>"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 861,
+      "id": "GET /category/add"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 868,
+      "id": "POST /category/add"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 934,
+      "id": "POST /category/<int:category_id>/delete"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 894,
+      "id": "GET /category/<int:category_id>/edit"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 905,
+      "id": "POST /category/<int:category_id>/edit"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 792,
+      "id": "GET /forums/add"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 805,
+      "id": "POST /forums/add"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 792,
+      "id": "GET /forums/<int:category_id>/add"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 805,
+      "id": "POST /forums/<int:category_id>/add"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 835,
+      "id": "POST /forums/<int:forum_id>/delete"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 741,
+      "id": "GET /forums/<int:forum_id>/edit"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 757,
+      "id": "POST /forums/<int:forum_id>/edit"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 723,
+      "id": "GET /forums"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 584,
+      "id": "GET /groups/add"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 591,
+      "id": "POST /groups/add"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 654,
+      "id": "POST /groups/<int:group_id>/delete"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 654,
+      "id": "POST /groups/delete"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 616,
+      "id": "GET /groups/<int:group_id>/edit"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 623,
+      "id": "POST /groups/<int:group_id>/edit"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 560,
+      "id": "GET /groups"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 1259,
+      "id": "POST /plugins/<path:name>/disable"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 1224,
+      "id": "POST /plugins/<path:name>/enable"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 1314,
+      "id": "POST /plugins/<path:name>/install"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 1293,
+      "id": "POST /plugins/<path:name>/uninstall"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 1207,
+      "id": "GET /plugins"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 1079,
+      "id": "POST /reports/<int:report_id>/delete"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 1079,
+      "id": "POST /reports/delete"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 1002,
+      "id": "POST /reports/<int:report_id>/markread"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 1002,
+      "id": "POST /reports/markread"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 980,
+      "id": "GET /reports/unread"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 959,
+      "id": "GET /reports"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 90,
+      "id": "GET /settings"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 110,
+      "id": "POST /settings"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 90,
+      "id": "GET /settings/<path:slug>"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 110,
+      "id": "POST /settings/<path:slug>"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 90,
+      "id": "GET /settings/plugin/<path:plugin>"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 110,
+      "id": "POST /settings/plugin/<path:plugin>"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 345,
+      "id": "GET /users/add"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 350,
+      "id": "POST /users/add"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 375,
+      "id": "GET /users/banned"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 389,
+      "id": "POST /users/banned"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 426,
+      "id": "POST /users/ban"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 426,
+      "id": "POST /users/<int:user_id>/ban"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 287,
+      "id": "POST /users/delete"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 287,
+      "id": "POST /users/<int:user_id>/delete"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 197,
+      "id": "GET /users/<int:user_id>/edit"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 229,
+      "id": "POST /users/<int:user_id>/edit"
+    },
+    {
+      "kind": "state",
+      "var": "User.primary_group_id",
+      "value": "*",
+      "security_relevant": false,
+      "label": "irrelevant",
+      "id": "User.primary_group_id=*"
+    },
+    {
+      "kind": "state",
+      "var": "User.password",
+      "value": "*",
+      "security_relevant": true,
+      "label": "authn",
+      "id": "User.password=*"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 498,
+      "id": "POST /users/unban"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 498,
+      "id": "POST /users/<int:user_id>/unban"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 151,
+      "id": "GET /users"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 163,
+      "id": "POST /users"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 1127,
+      "id": "GET /celerystatus"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/user/views.py",
+      "line": 116,
+      "id": "GET /settings/email"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/user/views.py",
+      "line": 119,
+      "id": "POST /settings/email"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/user/views.py",
+      "line": 48,
+      "id": "GET /settings/general"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/user/views.py",
+      "line": 51,
+      "id": "POST /settings/general"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/user/views.py",
+      "line": 82,
+      "id": "GET /settings/password"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/user/views.py",
+      "line": 85,
+      "id": "POST /settings/password"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/user/views.py",
+      "line": 150,
+      "id": "GET /settings/user-details"
+    },
+    {
+      "kind": "action",
+      "func": "post",
+      "file": "/tmp/flaskbb2/flaskbb/user/views.py",
+      "line": 153,
+      "id": "POST /settings/user-details"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/user/views.py",
+      "line": 188,
+      "id": "GET /<username>/posts"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/user/views.py",
+      "line": 180,
+      "id": "GET /<username>/topics"
+    },
+    {
+      "kind": "action",
+      "func": "get",
+      "file": "/tmp/flaskbb2/flaskbb/user/views.py",
+      "line": 196,
+      "id": "GET /<username>"
+    }
+  ],
+  "edges": [
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /register",
+      "target": "UserRegistrationInfo.username=*",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /register",
+      "target": "UserRegistrationInfo.password=*",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /register",
+      "target": "UserRegistrationInfo.group=4",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /register",
+      "target": "UserRegistrationInfo.email=*",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /register",
+      "target": "UserRegistrationInfo.language=*",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /users/<int:user_id>/edit",
+      "target": "User.primary_group_id=*",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /users/<int:user_id>/edit",
+      "target": "User.password=*",
+      "key": 0
+    }
+  ]
+}

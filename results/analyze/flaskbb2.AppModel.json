@@ -1,0 +1,3307 @@
+{
+  "app_root": "/tmp/flaskbb2",
+  "framework": "flask",
+  "endpoints": [
+    {
+      "func": "get",
+      "route": "/logout",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 70
+    },
+    {
+      "func": "get",
+      "route": "/login",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 87
+    },
+    {
+      "func": "post",
+      "route": "/login",
+      "methods": [
+        "POST"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 90
+    },
+    {
+      "func": "get",
+      "route": "/reauth",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 115
+    },
+    {
+      "func": "post",
+      "route": "/reauth",
+      "methods": [
+        "POST"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 120
+    },
+    {
+      "func": "get",
+      "route": "/register",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 156
+    },
+    {
+      "func": "post",
+      "route": "/register",
+      "methods": [
+        "POST"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [
+        {
+          "var": "UserRegistrationInfo.username",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+          "line": 162
+        },
+        {
+          "var": "UserRegistrationInfo.password",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+          "line": 162
+        },
+        {
+          "var": "UserRegistrationInfo.group",
+          "op": "set",
+          "value": "4",
+          "key": null,
+          "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+          "line": 162
+        },
+        {
+          "var": "UserRegistrationInfo.email",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+          "line": 162
+        },
+        {
+          "var": "UserRegistrationInfo.language",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+          "line": 162
+        }
+      ],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 159
+    },
+    {
+      "func": "get",
+      "route": "/reset-password",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 202
+    },
+    {
+      "func": "post",
+      "route": "/reset-password",
+      "methods": [
+        "POST"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 205
+    },
+    {
+      "func": "get",
+      "route": "/reset-password/<token>",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "token",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 233
+    },
+    {
+      "func": "post",
+      "route": "/reset-password/<token>",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "token",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 238
+    },
+    {
+      "func": "get",
+      "route": "/activate",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 280
+    },
+    {
+      "func": "post",
+      "route": "/activate",
+      "methods": [
+        "POST"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 285
+    },
+    {
+      "func": "get",
+      "route": "/activate/confirm",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 354
+    },
+    {
+      "func": "post",
+      "route": "/activate/confirm",
+      "methods": [
+        "POST"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 360
+    },
+    {
+      "func": "get",
+      "route": "/activate/confirm/<token>",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "token",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 313
+    },
+    {
+      "func": "get",
+      "route": "/category/<int:category_id>",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "category_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 87
+    },
+    {
+      "func": "get",
+      "route": "/category/<int:category_id>-<slug>",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "category_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "slug",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 87
+    },
+    {
+      "func": "get",
+      "route": "/forum/<int:forum_id>/edit",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "forum_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 354
+    },
+    {
+      "func": "post",
+      "route": "/forum/<int:forum_id>/edit",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "forum_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 383
+    },
+    {
+      "func": "get",
+      "route": "/forum/<int:forum_id>-<slug>/edit",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "forum_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "slug",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 354
+    },
+    {
+      "func": "post",
+      "route": "/forum/<int:forum_id>-<slug>/edit",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "forum_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "slug",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 383
+    },
+    {
+      "func": "get",
+      "route": "/forum/<int:forum_id>",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "forum_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 107
+    },
+    {
+      "func": "get",
+      "route": "/forum/<int:forum_id>-<slug>",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "forum_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "slug",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 107
+    },
+    {
+      "func": "post",
+      "route": "/<int:forum_id>/markread",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "forum_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 905
+    },
+    {
+      "func": "post",
+      "route": "/<int:forum_id>-<slug>/markread",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "forum_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "slug",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 905
+    },
+    {
+      "func": "get",
+      "route": "/<int:forum_id>/topic/new",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "forum_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 267
+    },
+    {
+      "func": "post",
+      "route": "/<int:forum_id>/topic/new",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "forum_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 276
+    },
+    {
+      "func": "get",
+      "route": "/<int:forum_id>-<slug>/topic/new",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "forum_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "slug",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 267
+    },
+    {
+      "func": "post",
+      "route": "/<int:forum_id>-<slug>/topic/new",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "forum_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "slug",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 276
+    },
+    {
+      "func": "get",
+      "route": "/topic/<int:topic_id>/edit",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "topic_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 309
+    },
+    {
+      "func": "post",
+      "route": "/topic/<int:topic_id>/edit",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "topic_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 318
+    },
+    {
+      "func": "get",
+      "route": "/topic/<int:topic_id>-<slug>/edit",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "topic_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "slug",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 309
+    },
+    {
+      "func": "post",
+      "route": "/topic/<int:topic_id>-<slug>/edit",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "topic_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "slug",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 318
+    },
+    {
+      "func": "get",
+      "route": "/memberlist",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 624
+    },
+    {
+      "func": "post",
+      "route": "/memberlist",
+      "methods": [
+        "POST"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 648
+    },
+    {
+      "func": "post",
+      "route": "/post/<int:post_id>/delete",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "post_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 860
+    },
+    {
+      "func": "get",
+      "route": "/post/<int:post_id>/edit",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "post_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 573
+    },
+    {
+      "func": "post",
+      "route": "/post/<int:post_id>/edit",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "post_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 586
+    },
+    {
+      "func": "get",
+      "route": "/post/<int:post_id>/raw",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "post_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 887
+    },
+    {
+      "func": "get",
+      "route": "/post/<int:post_id>/report",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "post_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 608
+    },
+    {
+      "func": "post",
+      "route": "/post/<int:post_id>/report",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "post_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 611
+    },
+    {
+      "func": "get",
+      "route": "/post/<int:post_id>",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "post_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 142
+    },
+    {
+      "func": "get",
+      "route": "/search",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 729
+    },
+    {
+      "func": "post",
+      "route": "/search",
+      "methods": [
+        "POST"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 732
+    },
+    {
+      "func": "post",
+      "route": "/topic/<int:topic_id>/delete",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "topic_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 757
+    },
+    {
+      "func": "post",
+      "route": "/topic/<int:topic_id>-<slug>/delete",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "topic_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "slug",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 757
+    },
+    {
+      "func": "post",
+      "route": "/topic/<int:topic_id>/highlight",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "topic_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 819
+    },
+    {
+      "func": "post",
+      "route": "/topic/<int:topic_id>-<slug>/highlight",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "topic_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "slug",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 819
+    },
+    {
+      "func": "post",
+      "route": "/topic/<int:topic_id>/lock",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "topic_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 777
+    },
+    {
+      "func": "post",
+      "route": "/topic/<int:topic_id>-<slug>/lock",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "topic_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "slug",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 777
+    },
+    {
+      "func": "get",
+      "route": "/topic/<int:topic_id>/post/<int:post_id>/reply",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "topic_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "post_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 528
+    },
+    {
+      "func": "post",
+      "route": "/topic/<int:topic_id>/post/<int:post_id>/reply",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "topic_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "post_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 541
+    },
+    {
+      "func": "get",
+      "route": "/topic/<int:topic_id>-<slug>/post/<int:post_id>/reply",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "topic_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "slug",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "post_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 528
+    },
+    {
+      "func": "post",
+      "route": "/topic/<int:topic_id>-<slug>/post/<int:post_id>/reply",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "topic_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "slug",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "post_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 541
+    },
+    {
+      "func": "get",
+      "route": "/topic/<int:topic_id>/post/new",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "topic_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 528
+    },
+    {
+      "func": "post",
+      "route": "/topic/<int:topic_id>/post/new",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "topic_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 541
+    },
+    {
+      "func": "get",
+      "route": "/topic/<int:topic_id>-<slug>/post/new",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "topic_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "slug",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 528
+    },
+    {
+      "func": "post",
+      "route": "/topic/<int:topic_id>-<slug>/post/new",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "topic_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "slug",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 541
+    },
+    {
+      "func": "get",
+      "route": "/topic/<int:topic_id>",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "topic_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 178
+    },
+    {
+      "func": "post",
+      "route": "/topic/<int:topic_id>",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "topic_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 231
+    },
+    {
+      "func": "get",
+      "route": "/topic/<int:topic_id>-<slug>",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "topic_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "slug",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 178
+    },
+    {
+      "func": "post",
+      "route": "/topic/<int:topic_id>-<slug>",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "topic_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "slug",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 231
+    },
+    {
+      "func": "post",
+      "route": "/topic/<int:topic_id>/trivialize",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "topic_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 840
+    },
+    {
+      "func": "post",
+      "route": "/topic/<int:topic_id>-<slug>/trivialize",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "topic_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "slug",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 840
+    },
+    {
+      "func": "post",
+      "route": "/topic/<int:topic_id>/unlock",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "topic_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 798
+    },
+    {
+      "func": "post",
+      "route": "/topic/<int:topic_id>-<slug>/unlock",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "topic_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "slug",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 798
+    },
+    {
+      "func": "post",
+      "route": "/topictracker/<int:topic_id>/add",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "topic_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 983
+    },
+    {
+      "func": "post",
+      "route": "/topictracker/<int:topic_id>-<slug>/add",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "topic_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "slug",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 983
+    },
+    {
+      "func": "post",
+      "route": "/topictracker/<int:topic_id>/delete",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "topic_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 1003
+    },
+    {
+      "func": "post",
+      "route": "/topictracker/<int:topic_id>-<slug>/delete",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "topic_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "slug",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 1003
+    },
+    {
+      "func": "get",
+      "route": "/topictracker",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 685
+    },
+    {
+      "func": "post",
+      "route": "/topictracker",
+      "methods": [
+        "POST"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 710
+    },
+    {
+      "func": "get",
+      "route": "/",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 52
+    },
+    {
+      "func": "get",
+      "route": "/who-is-online",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 960
+    },
+    {
+      "func": "post",
+      "route": "/topic/<int:topic_id>/hide",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "topic_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 1013
+    },
+    {
+      "func": "post",
+      "route": "/topic/<int:topic_id>-<slug>/hide",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "topic_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "slug",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 1013
+    },
+    {
+      "func": "post",
+      "route": "/topic/<int:topic_id>/unhide",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "topic_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 1030
+    },
+    {
+      "func": "post",
+      "route": "/topic/<int:topic_id>-<slug>/unhide",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "topic_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "slug",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 1030
+    },
+    {
+      "func": "post",
+      "route": "/post/<int:post_id>/hide",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "post_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 1046
+    },
+    {
+      "func": "post",
+      "route": "/post/<int:post_id>/unhide",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "post_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 1076
+    },
+    {
+      "func": "post",
+      "route": "/markdown",
+      "methods": [
+        "POST"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 1096
+    },
+    {
+      "func": "post",
+      "route": "/markdown/<path:mode>",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "mode",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "line": 1096
+    },
+    {
+      "func": "get",
+      "route": "/category/add",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 861
+    },
+    {
+      "func": "post",
+      "route": "/category/add",
+      "methods": [
+        "POST"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 868
+    },
+    {
+      "func": "post",
+      "route": "/category/<int:category_id>/delete",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "category_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 934
+    },
+    {
+      "func": "get",
+      "route": "/category/<int:category_id>/edit",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "category_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 894
+    },
+    {
+      "func": "post",
+      "route": "/category/<int:category_id>/edit",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "category_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 905
+    },
+    {
+      "func": "get",
+      "route": "/forums/add",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 792
+    },
+    {
+      "func": "post",
+      "route": "/forums/add",
+      "methods": [
+        "POST"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 805
+    },
+    {
+      "func": "get",
+      "route": "/forums/<int:category_id>/add",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "category_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 792
+    },
+    {
+      "func": "post",
+      "route": "/forums/<int:category_id>/add",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "category_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 805
+    },
+    {
+      "func": "post",
+      "route": "/forums/<int:forum_id>/delete",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "forum_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 835
+    },
+    {
+      "func": "get",
+      "route": "/forums/<int:forum_id>/edit",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "forum_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 741
+    },
+    {
+      "func": "post",
+      "route": "/forums/<int:forum_id>/edit",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "forum_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 757
+    },
+    {
+      "func": "get",
+      "route": "/forums",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 723
+    },
+    {
+      "func": "get",
+      "route": "/groups/add",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 584
+    },
+    {
+      "func": "post",
+      "route": "/groups/add",
+      "methods": [
+        "POST"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 591
+    },
+    {
+      "func": "post",
+      "route": "/groups/<int:group_id>/delete",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "group_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "ids",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 654
+    },
+    {
+      "func": "post",
+      "route": "/groups/delete",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "ids",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 654
+    },
+    {
+      "func": "get",
+      "route": "/groups/<int:group_id>/edit",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "group_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 616
+    },
+    {
+      "func": "post",
+      "route": "/groups/<int:group_id>/edit",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "group_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 623
+    },
+    {
+      "func": "get",
+      "route": "/groups",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 560
+    },
+    {
+      "func": "post",
+      "route": "/plugins/<path:name>/disable",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "name",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 1259
+    },
+    {
+      "func": "post",
+      "route": "/plugins/<path:name>/enable",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "name",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 1224
+    },
+    {
+      "func": "post",
+      "route": "/plugins/<path:name>/install",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "name",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 1314
+    },
+    {
+      "func": "post",
+      "route": "/plugins/<path:name>/uninstall",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "name",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 1293
+    },
+    {
+      "func": "get",
+      "route": "/plugins",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 1207
+    },
+    {
+      "func": "post",
+      "route": "/reports/<int:report_id>/delete",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "report_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "ids",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 1079
+    },
+    {
+      "func": "post",
+      "route": "/reports/delete",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "ids",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 1079
+    },
+    {
+      "func": "post",
+      "route": "/reports/<int:report_id>/markread",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "report_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "ids",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 1002
+    },
+    {
+      "func": "post",
+      "route": "/reports/markread",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "ids",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 1002
+    },
+    {
+      "func": "get",
+      "route": "/reports/unread",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 980
+    },
+    {
+      "func": "get",
+      "route": "/reports",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 959
+    },
+    {
+      "func": "get",
+      "route": "/settings",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 90
+    },
+    {
+      "func": "post",
+      "route": "/settings",
+      "methods": [
+        "POST"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 110
+    },
+    {
+      "func": "get",
+      "route": "/settings/<path:slug>",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "slug",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 90
+    },
+    {
+      "func": "post",
+      "route": "/settings/<path:slug>",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "slug",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 110
+    },
+    {
+      "func": "get",
+      "route": "/settings/plugin/<path:plugin>",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "plugin",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 90
+    },
+    {
+      "func": "post",
+      "route": "/settings/plugin/<path:plugin>",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "plugin",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 110
+    },
+    {
+      "func": "get",
+      "route": "/users/add",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 345
+    },
+    {
+      "func": "post",
+      "route": "/users/add",
+      "methods": [
+        "POST"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 350
+    },
+    {
+      "func": "get",
+      "route": "/users/banned",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 375
+    },
+    {
+      "func": "post",
+      "route": "/users/banned",
+      "methods": [
+        "POST"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 389
+    },
+    {
+      "func": "post",
+      "route": "/users/ban",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "ids",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 426
+    },
+    {
+      "func": "post",
+      "route": "/users/<int:user_id>/ban",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "user_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "ids",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 426
+    },
+    {
+      "func": "post",
+      "route": "/users/delete",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "ids",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 287
+    },
+    {
+      "func": "post",
+      "route": "/users/<int:user_id>/delete",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "user_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "ids",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 287
+    },
+    {
+      "func": "get",
+      "route": "/users/<int:user_id>/edit",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "user_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 197
+    },
+    {
+      "func": "post",
+      "route": "/users/<int:user_id>/edit",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "user_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [
+        {
+          "var": "User.primary_group_id",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+          "line": 259
+        },
+        {
+          "var": "User.password",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+          "line": 263
+        }
+      ],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 229
+    },
+    {
+      "func": "post",
+      "route": "/users/unban",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "ids",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 498
+    },
+    {
+      "func": "post",
+      "route": "/users/<int:user_id>/unban",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "user_id",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "ids",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 498
+    },
+    {
+      "func": "get",
+      "route": "/users",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 151
+    },
+    {
+      "func": "post",
+      "route": "/users",
+      "methods": [
+        "POST"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 163
+    },
+    {
+      "func": "get",
+      "route": "/celerystatus",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 1127
+    },
+    {
+      "func": "get",
+      "route": "/",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 1152
+    },
+    {
+      "func": "get",
+      "route": "/settings/email",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/user/views.py",
+      "line": 116
+    },
+    {
+      "func": "post",
+      "route": "/settings/email",
+      "methods": [
+        "POST"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/user/views.py",
+      "line": 119
+    },
+    {
+      "func": "get",
+      "route": "/settings/general",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/user/views.py",
+      "line": 48
+    },
+    {
+      "func": "post",
+      "route": "/settings/general",
+      "methods": [
+        "POST"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/user/views.py",
+      "line": 51
+    },
+    {
+      "func": "get",
+      "route": "/settings/password",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/user/views.py",
+      "line": 82
+    },
+    {
+      "func": "post",
+      "route": "/settings/password",
+      "methods": [
+        "POST"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/user/views.py",
+      "line": 85
+    },
+    {
+      "func": "get",
+      "route": "/settings/user-details",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/user/views.py",
+      "line": 150
+    },
+    {
+      "func": "post",
+      "route": "/settings/user-details",
+      "methods": [
+        "POST"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/user/views.py",
+      "line": 153
+    },
+    {
+      "func": "get",
+      "route": "/<username>/posts",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "username",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/user/views.py",
+      "line": 188
+    },
+    {
+      "func": "get",
+      "route": "/<username>/topics",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "username",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/user/views.py",
+      "line": 180
+    },
+    {
+      "func": "get",
+      "route": "/<username>",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "username",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "/tmp/flaskbb2/flaskbb/user/views.py",
+      "line": 196
+    }
+  ],
+  "candidates": [
+    {
+      "var": "UserRegistrationInfo.username",
+      "entity": "UserRegistrationInfo",
+      "attr": "username",
+      "ops": [
+        "write"
+      ],
+      "evidence": "registration_info = UserRegistrationInfo(username=form.usern",
+      "source": "db_field",
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 0
+    },
+    {
+      "var": "UserRegistrationInfo.password",
+      "entity": "UserRegistrationInfo",
+      "attr": "password",
+      "ops": [
+        "write"
+      ],
+      "evidence": "registration_info = UserRegistrationInfo(username=form.usern",
+      "source": "db_field",
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 0
+    },
+    {
+      "var": "UserRegistrationInfo.group",
+      "entity": "UserRegistrationInfo",
+      "attr": "group",
+      "ops": [
+        "write"
+      ],
+      "evidence": "registration_info = UserRegistrationInfo(username=form.usern",
+      "source": "db_field",
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 0
+    },
+    {
+      "var": "UserRegistrationInfo.email",
+      "entity": "UserRegistrationInfo",
+      "attr": "email",
+      "ops": [
+        "write"
+      ],
+      "evidence": "registration_info = UserRegistrationInfo(username=form.usern",
+      "source": "db_field",
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 0
+    },
+    {
+      "var": "UserRegistrationInfo.language",
+      "entity": "UserRegistrationInfo",
+      "attr": "language",
+      "ops": [
+        "write"
+      ],
+      "evidence": "registration_info = UserRegistrationInfo(username=form.usern",
+      "source": "db_field",
+      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "line": 0
+    },
+    {
+      "var": "User.primary_group_id",
+      "entity": "User",
+      "attr": "primary_group_id",
+      "ops": [
+        "write"
+      ],
+      "evidence": "user.primary_group_id = form.primary_group.data.id",
+      "source": "db_field",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 0
+    },
+    {
+      "var": "User.password",
+      "entity": "User",
+      "attr": "password",
+      "ops": [
+        "write"
+      ],
+      "evidence": "user.password = form.password.data",
+      "source": "db_field",
+      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "line": 0
+    }
+  ],
+  "state_vars": [
+    {
+      "entity": "UserRegistrationInfo",
+      "attr": "username",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:registration_info = UserRegistrationInfo(username=form.usern [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "UserRegistrationInfo",
+      "attr": "password",
+      "kind": "db_column",
+      "domain": null,
+      "label": "authn",
+      "security_relevant": true,
+      "rationale": "[rule] 认证链变量(token/session);证据:registration_info = UserRegistrationInfo(username=form.usern [select] 固定映射直入",
+      "anchors": []
+    },
+    {
+      "entity": "UserRegistrationInfo",
+      "attr": "group",
+      "kind": "db_column",
+      "domain": [
+        "4"
+      ],
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:registration_info = UserRegistrationInfo(username=form.usern [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "UserRegistrationInfo",
+      "attr": "email",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:registration_info = UserRegistrationInfo(username=form.usern [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "UserRegistrationInfo",
+      "attr": "language",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:registration_info = UserRegistrationInfo(username=form.usern [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "User",
+      "attr": "primary_group_id",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:user.primary_group_id = form.primary_group.data.id [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "User",
+      "attr": "password",
+      "kind": "db_column",
+      "domain": null,
+      "label": "authn",
+      "security_relevant": true,
+      "rationale": "[rule] 认证链变量(token/session);证据:user.password = form.password.data [select] 固定映射直入",
+      "anchors": []
+    }
+  ],
+  "invariants": [],
+  "config_flags": {}
+}
