@@ -2,6 +2,7 @@ digraph SSTG {
   rankdir=LR;
   node [fontname="Helvetica"];
   "GET /logout" [shape=box];
+  "Session.authed_as=<authed>" [shape=ellipse, style=bold, color=red];
   "GET /login" [shape=box];
   "POST /login" [shape=box];
   "GET /reauth" [shape=box];
@@ -154,11 +155,15 @@ digraph SSTG {
   "GET /<username>/posts" [shape=box];
   "GET /<username>/topics" [shape=box];
   "GET /<username>" [shape=box];
+  "GET /logout" -> "Session.authed_as=<authed>" [label="produces"];
+  "POST /login" -> "Session.authed_as=<authed>" [label="produces"];
   "POST /register" -> "UserRegistrationInfo.username=*" [label="produces"];
   "POST /register" -> "UserRegistrationInfo.password=*" [label="produces"];
   "POST /register" -> "UserRegistrationInfo.group=4" [label="produces"];
   "POST /register" -> "UserRegistrationInfo.email=*" [label="produces"];
   "POST /register" -> "UserRegistrationInfo.language=*" [label="produces"];
+  "GET /topic/<int:topic_id>" -> "Session.authed_as=<authed>" [style=dashed, label="requires"];
+  "GET /topic/<int:topic_id>-<slug>" -> "Session.authed_as=<authed>" [style=dashed, label="requires"];
   "POST /users/<int:user_id>/edit" -> "User.primary_group_id=*" [label="produces"];
   "POST /users/<int:user_id>/edit" -> "User.password=*" [label="produces"];
 }

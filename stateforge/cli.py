@@ -159,7 +159,7 @@ if __name__ == "__main__":
     ap.add_argument("command", choices=["e2e", "analyze"])
     ap.add_argument("--no-llm", action="store_true")
     ap.add_argument("target", nargs="?", help="analyze:项目目录")
-    ap.add_argument("--framework", default="flask", choices=["flask", "connexion"])
+    ap.add_argument("--framework", default="flask", choices=["flask", "connexion", "django"])
     ap.add_argument("--name")
     ap.add_argument("--out", default="results/analyze")
     args = ap.parse_args()

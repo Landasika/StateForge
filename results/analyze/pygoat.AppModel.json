@@ -1,0 +1,5039 @@
+{
+  "app_root": "stateforge/targets/pygoat",
+  "framework": "django",
+  "endpoints": [
+    {
+      "func": "DoItFast",
+      "route": "<str:challenge>",
+      "methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 13
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/challenge/urls.py",
+      "line": 12
+    },
+    {
+      "func": "home",
+      "route": "",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 70
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 69
+    },
+    {
+      "func": "xss",
+      "route": "xss",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 88
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 87
+    },
+    {
+      "func": "xss_lab",
+      "route": "xssL",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 94
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 93
+    },
+    {
+      "func": "xss_lab2",
+      "route": "xssL2",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 107
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 106
+    },
+    {
+      "func": "xss_lab3",
+      "route": "xssL3",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 123
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 122
+    },
+    {
+      "func": "xss_lab",
+      "route": "xssL1",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 94
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 93
+    },
+    {
+      "func": "sql",
+      "route": "sql",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 141
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 140
+    },
+    {
+      "func": "sql_lab",
+      "route": "sql_lab",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 148
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 147
+    },
+    {
+      "func": "sql_lab",
+      "route": "sql_lab1",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 148
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 147
+    },
+    {
+      "func": "insec_des",
+      "route": "insec_des",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 194
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 193
+    },
+    {
+      "func": "insec_des_lab",
+      "route": "insec_des_lab",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 206
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 205
+    },
+    {
+      "func": "xxe",
+      "route": "xxe",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 227
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 226
+    },
+    {
+      "func": "xxe_lab",
+      "route": "xxe_lab",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 234
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 233
+    },
+    {
+      "func": "xxe_see",
+      "route": "xxe_see",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 241
+        }
+      ],
+      "effects": [
+        {
+          "var": "comments.name",
+          "op": "set",
+          "value": "System",
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 245
+        },
+        {
+          "var": "comments.comment",
+          "op": "set",
+          "value": "Default comment for XXE lab",
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 245
+        }
+      ],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 240
+    },
+    {
+      "func": "xxe_parse",
+      "route": "xxe_parse",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 256
+    },
+    {
+      "func": "auth_lab",
+      "route": "auth_lab",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 276
+    },
+    {
+      "func": "auth_lab_signup",
+      "route": "auth_lab/signup",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [
+        {
+          "var": "authLogin.name",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 287
+        },
+        {
+          "var": "authLogin.username",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 287
+        },
+        {
+          "var": "authLogin.password",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 287
+        }
+      ],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 279
+    },
+    {
+      "func": "auth_lab_login",
+      "route": "auth_lab/login",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 299
+    },
+    {
+      "func": "auth_lab_logout",
+      "route": "auth_lab/logout",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 327
+    },
+    {
+      "func": "auth_home",
+      "route": "auth",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 272
+    },
+    {
+      "func": "ba",
+      "route": "ba",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 337
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 336
+    },
+    {
+      "func": "ba_lab",
+      "route": "ba_lab",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 343
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 342
+    },
+    {
+      "func": "data_exp",
+      "route": "data_exp",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 387
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 386
+    },
+    {
+      "func": "data_exp_lab",
+      "route": "data_exp_lab",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 393
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 392
+    },
+    {
+      "func": "robots",
+      "route": "robots.txt",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 398
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 397
+    },
+    {
+      "func": "error",
+      "route": "500error",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 403
+    },
+    {
+      "func": "cmd",
+      "route": "cmd",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 410
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 409
+    },
+    {
+      "func": "cmd_lab",
+      "route": "cmd_lab",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 416
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 415
+    },
+    {
+      "func": "cmd_lab2",
+      "route": "cmd_lab2",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 454
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 453
+    },
+    {
+      "func": "bau",
+      "route": "bau",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 474
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 473
+    },
+    {
+      "func": "bau_lab",
+      "route": "bau_lab",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 480
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 479
+    },
+    {
+      "func": "login_otp",
+      "route": "login_otp",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 489
+    },
+    {
+      "func": "Otp",
+      "route": "otp",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 493
+    },
+    {
+      "func": "sec_mis",
+      "route": "sec_mis",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 524
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 523
+    },
+    {
+      "func": "sec_mis_lab",
+      "route": "sec_mis_lab",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 530
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 529
+    },
+    {
+      "func": "sec_misconfig_lab3",
+      "route": "sec_mis_lab3",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 1091
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 1090
+    },
+    {
+      "func": "secret",
+      "route": "secret",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 535
+    },
+    {
+      "func": "a9",
+      "route": "a9",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 546
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 545
+    },
+    {
+      "func": "a9_lab",
+      "route": "a9_lab",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 552
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 551
+    },
+    {
+      "func": "a9_lab2",
+      "route": "a9_lab2",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 575
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 574
+    },
+    {
+      "func": "get_version",
+      "route": "get_version",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 570
+    },
+    {
+      "func": "a10",
+      "route": "a10",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 615
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 614
+    },
+    {
+      "func": "a10_lab",
+      "route": "a10_lab",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 620
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 619
+    },
+    {
+      "func": "a10_lab2",
+      "route": "a10_lab_2",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 645
+    },
+    {
+      "func": "debug",
+      "route": "debug",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 636
+    },
+    {
+      "func": "insec_desgine",
+      "route": "insecure-design",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 683
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 682
+    },
+    {
+      "func": "insec_desgine_lab",
+      "route": "insecure-design_lab",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 689
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 688
+    },
+    {
+      "func": "a1_broken_access",
+      "route": "broken_access_control",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 740
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 739
+    },
+    {
+      "func": "a1_broken_access_lab_1",
+      "route": "broken_access_lab_1",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 748
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 747
+    },
+    {
+      "func": "a1_broken_access_lab_2",
+      "route": "broken_access_lab_2",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 784
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 783
+    },
+    {
+      "func": "a1_broken_access_lab_3",
+      "route": "broken_access_lab_3",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 823
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 822
+    },
+    {
+      "func": "a1_broken_access_lab3_secret",
+      "route": "broken_access_control/secret",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 838
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 837
+    },
+    {
+      "func": "ssrf",
+      "route": "ssrf",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 913
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 912
+    },
+    {
+      "func": "ssrf_discussion",
+      "route": "ssrf_discussion",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 936
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 935
+    },
+    {
+      "func": "ssrf_lab",
+      "route": "ssrf_lab",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 919
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 918
+    },
+    {
+      "func": "ssrf_lab2",
+      "route": "ssrf_lab2",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 956
+    },
+    {
+      "func": "ssrf_target",
+      "route": "ssrf_target",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 942
+    },
+    {
+      "func": "injection",
+      "route": "injection",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 848
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 847
+    },
+    {
+      "func": "injection_sql_lab",
+      "route": "injection_sql_lab",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 856
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 855
+    },
+    {
+      "func": "ssrf_code_checker",
+      "route": "api/ssrf",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 24
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 23
+    },
+    {
+      "func": "ssti",
+      "route": "ssti",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 970
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 969
+    },
+    {
+      "func": "ssti_lab",
+      "route": "ssti/lab",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 976
+        }
+      ],
+      "effects": [
+        {
+          "var": "Blogs.author",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 991
+        },
+        {
+          "var": "Blogs.blog_id",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 991
+        }
+      ],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 975
+    },
+    {
+      "func": "ssti_view_blog",
+      "route": "ssti/blog/<str:blog_id>",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 1004
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 1003
+    },
+    {
+      "func": "crypto_failure",
+      "route": "cryptographic_failure",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 1013
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 1012
+    },
+    {
+      "func": "crypto_failure_lab",
+      "route": "cryptographic_failure/lab",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 1019
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 1018
+    },
+    {
+      "func": "crypto_failure_lab2",
+      "route": "cryptographic_failure/lab2",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 1035
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 1034
+    },
+    {
+      "func": "crypto_failure_lab3",
+      "route": "cryptographic_failure/lab3",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 1050
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 1049
+    },
+    {
+      "func": "auth_failure",
+      "route": "auth_failure",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 1114
+    },
+    {
+      "func": "auth_failure_lab2",
+      "route": "auth_failure/lab2/admin12983gfugef81e8yeryepanel",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [
+        {
+          "var": "User.is_locked",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 1139
+        },
+        {
+          "var": "User.last_login",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 1140
+        },
+        {
+          "var": "User.failattempt",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 1141
+        },
+        {
+          "var": "User.is_active",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 1149
+        },
+        {
+          "var": "User.lockout_cooldown",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 1152
+        }
+      ],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 1122
+    },
+    {
+      "func": "auth_failure_lab3",
+      "route": "auth_failure/lab3",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [
+        {
+          "var": "AF_session_id.session_id",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 1201
+        },
+        {
+          "var": "AF_session_id.user",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 1201
+        }
+      ],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 1179
+    },
+    {
+      "func": "software_and_data_integrity_failure",
+      "route": "2021/A8",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 1214
+    },
+    {
+      "func": "software_and_data_integrity_failure_lab2",
+      "route": "2021/A8/lab2",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 1220
+    },
+    {
+      "func": "software_and_data_integrity_failure_lab3",
+      "route": "2021/A8/lab3",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 1230
+    },
+    {
+      "func": "A9_discussion",
+      "route": "2021/discussion/A9",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 609
+    },
+    {
+      "func": "log_function_checker",
+      "route": "2021/discussion/A9/api",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 61
+    },
+    {
+      "func": "log_function_target",
+      "route": "2021/discussion/A9/target",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 24
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 8
+    },
+    {
+      "func": "A7_discussion",
+      "route": "2021/discussion/A7",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 1209
+    },
+    {
+      "func": "A7_disscussion_api",
+      "route": "2021/discussion/A7/api",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 94
+    },
+    {
+      "func": "A6_discussion",
+      "route": "2021/discussion/A6",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 1236
+    },
+    {
+      "func": "A6_disscussion_api",
+      "route": "2021/discussion/A6/api",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 113
+    },
+    {
+      "func": "A6_disscussion_api_2",
+      "route": "2021/discussion/A6/api2",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 126
+    },
+    {
+      "func": "mitre_top1",
+      "route": "mitre/1",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 25
+    },
+    {
+      "func": "mitre_top2",
+      "route": "mitre/2",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 30
+    },
+    {
+      "func": "mitre_top3",
+      "route": "mitre/3",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 35
+    },
+    {
+      "func": "mitre_top4",
+      "route": "mitre/4",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 40
+    },
+    {
+      "func": "mitre_top5",
+      "route": "mitre/5",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 45
+    },
+    {
+      "func": "mitre_top6",
+      "route": "mitre/6",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 50
+    },
+    {
+      "func": "mitre_top7",
+      "route": "mitre/7",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 55
+    },
+    {
+      "func": "mitre_top8",
+      "route": "mitre/8",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 60
+    },
+    {
+      "func": "mitre_top9",
+      "route": "mitre/9",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 65
+    },
+    {
+      "func": "mitre_top10",
+      "route": "mitre/10",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 70
+    },
+    {
+      "func": "mitre_top11",
+      "route": "mitre/11",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 75
+    },
+    {
+      "func": "mitre_top12",
+      "route": "mitre/12",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 80
+    },
+    {
+      "func": "mitre_top13",
+      "route": "mitre/13",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 85
+    },
+    {
+      "func": "mitre_top14",
+      "route": "mitre/14",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 90
+    },
+    {
+      "func": "mitre_top15",
+      "route": "mitre/15",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 95
+    },
+    {
+      "func": "mitre_top16",
+      "route": "mitre/16",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 100
+    },
+    {
+      "func": "mitre_top17",
+      "route": "mitre/17",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 105
+    },
+    {
+      "func": "mitre_top18",
+      "route": "mitre/18",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 110
+    },
+    {
+      "func": "mitre_top19",
+      "route": "mitre/19",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 115
+    },
+    {
+      "func": "mitre_top20",
+      "route": "mitre/20",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 121
+    },
+    {
+      "func": "mitre_top21",
+      "route": "mitre/21",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 127
+    },
+    {
+      "func": "mitre_top22",
+      "route": "mitre/22",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 133
+    },
+    {
+      "func": "mitre_top23",
+      "route": "mitre/23",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 139
+    },
+    {
+      "func": "mitre_top24",
+      "route": "mitre/24",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 145
+    },
+    {
+      "func": "mitre_top25",
+      "route": "mitre/25",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 150
+    },
+    {
+      "func": "csrf_lab_login",
+      "route": "mitre/9/lab/login",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 155
+    },
+    {
+      "func": "csrf_transfer_monei",
+      "route": "mitre/9/lab/transaction",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 178
+    },
+    {
+      "func": "csrf_transfer_monei_api",
+      "route": "mitre/9/lab/api/<str:recipent>/<int:amount>",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "amount",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 191
+    },
+    {
+      "func": "mitre_lab_25_api",
+      "route": "mitre/25/lab/api",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 215
+    },
+    {
+      "func": "mitre_lab_25",
+      "route": "mitre/25/lab",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 225
+    },
+    {
+      "func": "mitre_lab_17",
+      "route": "mitre/17/lab",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 229
+    },
+    {
+      "func": "mitre_lab_17_api",
+      "route": "mitre/17/lab/api",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/introduction/urls.py",
+      "line": 238
+    },
+    {
+      "func": "home",
+      "route": "",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 70
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 69
+    },
+    {
+      "func": "xss",
+      "route": "xss",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 88
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 87
+    },
+    {
+      "func": "xss_lab",
+      "route": "xssL",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 94
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 93
+    },
+    {
+      "func": "xss_lab2",
+      "route": "xssL2",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 107
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 106
+    },
+    {
+      "func": "xss_lab3",
+      "route": "xssL3",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 123
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 122
+    },
+    {
+      "func": "xss_lab",
+      "route": "xssL1",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 94
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 93
+    },
+    {
+      "func": "sql",
+      "route": "sql",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 141
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 140
+    },
+    {
+      "func": "sql_lab",
+      "route": "sql_lab",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 148
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 147
+    },
+    {
+      "func": "sql_lab",
+      "route": "sql_lab1",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 148
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 147
+    },
+    {
+      "func": "insec_des",
+      "route": "insec_des",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 194
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 193
+    },
+    {
+      "func": "insec_des_lab",
+      "route": "insec_des_lab",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 206
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 205
+    },
+    {
+      "func": "xxe",
+      "route": "xxe",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 227
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 226
+    },
+    {
+      "func": "xxe_lab",
+      "route": "xxe_lab",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 234
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 233
+    },
+    {
+      "func": "xxe_see",
+      "route": "xxe_see",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 241
+        }
+      ],
+      "effects": [
+        {
+          "var": "comments.name",
+          "op": "set",
+          "value": "System",
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 245
+        },
+        {
+          "var": "comments.comment",
+          "op": "set",
+          "value": "Default comment for XXE lab",
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 245
+        }
+      ],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 240
+    },
+    {
+      "func": "xxe_parse",
+      "route": "xxe_parse",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 256
+    },
+    {
+      "func": "auth_lab",
+      "route": "auth_lab",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 276
+    },
+    {
+      "func": "auth_lab_signup",
+      "route": "auth_lab/signup",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [
+        {
+          "var": "authLogin.name",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 287
+        },
+        {
+          "var": "authLogin.username",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 287
+        },
+        {
+          "var": "authLogin.password",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 287
+        }
+      ],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 279
+    },
+    {
+      "func": "auth_lab_login",
+      "route": "auth_lab/login",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 299
+    },
+    {
+      "func": "auth_lab_logout",
+      "route": "auth_lab/logout",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 327
+    },
+    {
+      "func": "auth_home",
+      "route": "auth",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 272
+    },
+    {
+      "func": "ba",
+      "route": "ba",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 337
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 336
+    },
+    {
+      "func": "ba_lab",
+      "route": "ba_lab",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 343
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 342
+    },
+    {
+      "func": "data_exp",
+      "route": "data_exp",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 387
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 386
+    },
+    {
+      "func": "data_exp_lab",
+      "route": "data_exp_lab",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 393
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 392
+    },
+    {
+      "func": "robots",
+      "route": "robots.txt",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 398
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 397
+    },
+    {
+      "func": "error",
+      "route": "500error",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 403
+    },
+    {
+      "func": "cmd",
+      "route": "cmd",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 410
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 409
+    },
+    {
+      "func": "cmd_lab",
+      "route": "cmd_lab",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 416
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 415
+    },
+    {
+      "func": "cmd_lab2",
+      "route": "cmd_lab2",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 454
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 453
+    },
+    {
+      "func": "bau",
+      "route": "bau",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 474
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 473
+    },
+    {
+      "func": "bau_lab",
+      "route": "bau_lab",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 480
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 479
+    },
+    {
+      "func": "login_otp",
+      "route": "login_otp",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 489
+    },
+    {
+      "func": "Otp",
+      "route": "otp",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 493
+    },
+    {
+      "func": "sec_mis",
+      "route": "sec_mis",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 524
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 523
+    },
+    {
+      "func": "sec_mis_lab",
+      "route": "sec_mis_lab",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 530
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 529
+    },
+    {
+      "func": "sec_misconfig_lab3",
+      "route": "sec_mis_lab3",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 1091
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 1090
+    },
+    {
+      "func": "secret",
+      "route": "secret",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 535
+    },
+    {
+      "func": "a9",
+      "route": "a9",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 546
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 545
+    },
+    {
+      "func": "a9_lab",
+      "route": "a9_lab",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 552
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 551
+    },
+    {
+      "func": "a9_lab2",
+      "route": "a9_lab2",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 575
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 574
+    },
+    {
+      "func": "get_version",
+      "route": "get_version",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 570
+    },
+    {
+      "func": "a10",
+      "route": "a10",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 615
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 614
+    },
+    {
+      "func": "a10_lab",
+      "route": "a10_lab",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 620
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 619
+    },
+    {
+      "func": "a10_lab2",
+      "route": "a10_lab_2",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 645
+    },
+    {
+      "func": "debug",
+      "route": "debug",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 636
+    },
+    {
+      "func": "insec_desgine",
+      "route": "insecure-design",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 683
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 682
+    },
+    {
+      "func": "insec_desgine_lab",
+      "route": "insecure-design_lab",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 689
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 688
+    },
+    {
+      "func": "a1_broken_access",
+      "route": "broken_access_control",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 740
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 739
+    },
+    {
+      "func": "a1_broken_access_lab_1",
+      "route": "broken_access_lab_1",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 748
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 747
+    },
+    {
+      "func": "a1_broken_access_lab_2",
+      "route": "broken_access_lab_2",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 784
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 783
+    },
+    {
+      "func": "a1_broken_access_lab_3",
+      "route": "broken_access_lab_3",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 823
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 822
+    },
+    {
+      "func": "a1_broken_access_lab3_secret",
+      "route": "broken_access_control/secret",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 838
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 837
+    },
+    {
+      "func": "ssrf",
+      "route": "ssrf",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 913
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 912
+    },
+    {
+      "func": "ssrf_discussion",
+      "route": "ssrf_discussion",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 936
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 935
+    },
+    {
+      "func": "ssrf_lab",
+      "route": "ssrf_lab",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 919
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 918
+    },
+    {
+      "func": "ssrf_lab2",
+      "route": "ssrf_lab2",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 956
+    },
+    {
+      "func": "ssrf_target",
+      "route": "ssrf_target",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 942
+    },
+    {
+      "func": "injection",
+      "route": "injection",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 848
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 847
+    },
+    {
+      "func": "injection_sql_lab",
+      "route": "injection_sql_lab",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 856
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 855
+    },
+    {
+      "func": "ssrf_code_checker",
+      "route": "api/ssrf",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 24
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 23
+    },
+    {
+      "func": "ssti",
+      "route": "ssti",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 970
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 969
+    },
+    {
+      "func": "ssti_lab",
+      "route": "ssti/lab",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 976
+        }
+      ],
+      "effects": [
+        {
+          "var": "Blogs.author",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 991
+        },
+        {
+          "var": "Blogs.blog_id",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 991
+        }
+      ],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 975
+    },
+    {
+      "func": "ssti_view_blog",
+      "route": "ssti/blog/<str:blog_id>",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 1004
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 1003
+    },
+    {
+      "func": "crypto_failure",
+      "route": "cryptographic_failure",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 1013
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 1012
+    },
+    {
+      "func": "crypto_failure_lab",
+      "route": "cryptographic_failure/lab",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 1019
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 1018
+    },
+    {
+      "func": "crypto_failure_lab2",
+      "route": "cryptographic_failure/lab2",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 1035
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 1034
+    },
+    {
+      "func": "crypto_failure_lab3",
+      "route": "cryptographic_failure/lab3",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 1050
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 1049
+    },
+    {
+      "func": "auth_failure",
+      "route": "auth_failure",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 1114
+    },
+    {
+      "func": "auth_failure_lab2",
+      "route": "auth_failure/lab2/admin12983gfugef81e8yeryepanel",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [
+        {
+          "var": "User.is_locked",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 1139
+        },
+        {
+          "var": "User.last_login",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 1140
+        },
+        {
+          "var": "User.failattempt",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 1141
+        },
+        {
+          "var": "User.is_active",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 1149
+        },
+        {
+          "var": "User.lockout_cooldown",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 1152
+        }
+      ],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 1122
+    },
+    {
+      "func": "auth_failure_lab3",
+      "route": "auth_failure/lab3",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [
+        {
+          "var": "AF_session_id.session_id",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 1201
+        },
+        {
+          "var": "AF_session_id.user",
+          "op": "set",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 1201
+        }
+      ],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 1179
+    },
+    {
+      "func": "software_and_data_integrity_failure",
+      "route": "2021/A8",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 1214
+    },
+    {
+      "func": "software_and_data_integrity_failure_lab2",
+      "route": "2021/A8/lab2",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 1220
+    },
+    {
+      "func": "software_and_data_integrity_failure_lab3",
+      "route": "2021/A8/lab3",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 1230
+    },
+    {
+      "func": "A9_discussion",
+      "route": "2021/discussion/A9",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 609
+    },
+    {
+      "func": "log_function_checker",
+      "route": "2021/discussion/A9/api",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 61
+    },
+    {
+      "func": "log_function_target",
+      "route": "2021/discussion/A9/target",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 24
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 8
+    },
+    {
+      "func": "A7_discussion",
+      "route": "2021/discussion/A7",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 1209
+    },
+    {
+      "func": "A7_disscussion_api",
+      "route": "2021/discussion/A7/api",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 94
+    },
+    {
+      "func": "A6_discussion",
+      "route": "2021/discussion/A6",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 1236
+    },
+    {
+      "func": "A6_disscussion_api",
+      "route": "2021/discussion/A6/api",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 113
+    },
+    {
+      "func": "A6_disscussion_api_2",
+      "route": "2021/discussion/A6/api2",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 126
+    },
+    {
+      "func": "mitre_top1",
+      "route": "mitre/1",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 25
+    },
+    {
+      "func": "mitre_top2",
+      "route": "mitre/2",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 30
+    },
+    {
+      "func": "mitre_top3",
+      "route": "mitre/3",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 35
+    },
+    {
+      "func": "mitre_top4",
+      "route": "mitre/4",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 40
+    },
+    {
+      "func": "mitre_top5",
+      "route": "mitre/5",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 45
+    },
+    {
+      "func": "mitre_top6",
+      "route": "mitre/6",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 50
+    },
+    {
+      "func": "mitre_top7",
+      "route": "mitre/7",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 55
+    },
+    {
+      "func": "mitre_top8",
+      "route": "mitre/8",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 60
+    },
+    {
+      "func": "mitre_top9",
+      "route": "mitre/9",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 65
+    },
+    {
+      "func": "mitre_top10",
+      "route": "mitre/10",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 70
+    },
+    {
+      "func": "mitre_top11",
+      "route": "mitre/11",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 75
+    },
+    {
+      "func": "mitre_top12",
+      "route": "mitre/12",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 80
+    },
+    {
+      "func": "mitre_top13",
+      "route": "mitre/13",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 85
+    },
+    {
+      "func": "mitre_top14",
+      "route": "mitre/14",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 90
+    },
+    {
+      "func": "mitre_top15",
+      "route": "mitre/15",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 95
+    },
+    {
+      "func": "mitre_top16",
+      "route": "mitre/16",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 100
+    },
+    {
+      "func": "mitre_top17",
+      "route": "mitre/17",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 105
+    },
+    {
+      "func": "mitre_top18",
+      "route": "mitre/18",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 110
+    },
+    {
+      "func": "mitre_top19",
+      "route": "mitre/19",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 115
+    },
+    {
+      "func": "mitre_top20",
+      "route": "mitre/20",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 121
+    },
+    {
+      "func": "mitre_top21",
+      "route": "mitre/21",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 127
+    },
+    {
+      "func": "mitre_top22",
+      "route": "mitre/22",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 133
+    },
+    {
+      "func": "mitre_top23",
+      "route": "mitre/23",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 139
+    },
+    {
+      "func": "mitre_top24",
+      "route": "mitre/24",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 145
+    },
+    {
+      "func": "mitre_top25",
+      "route": "mitre/25",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 150
+    },
+    {
+      "func": "csrf_lab_login",
+      "route": "mitre/9/lab/login",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 155
+    },
+    {
+      "func": "csrf_transfer_monei",
+      "route": "mitre/9/lab/transaction",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 178
+    },
+    {
+      "func": "csrf_transfer_monei_api",
+      "route": "mitre/9/lab/api/<str:recipent>/<int:amount>",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "amount",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 191
+    },
+    {
+      "func": "mitre_lab_25_api",
+      "route": "mitre/25/lab/api",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 215
+    },
+    {
+      "func": "mitre_lab_25",
+      "route": "mitre/25/lab",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 225
+    },
+    {
+      "func": "mitre_lab_17",
+      "route": "mitre/17/lab",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 229
+    },
+    {
+      "func": "mitre_lab_17_api",
+      "route": "mitre/17/lab/api",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 238
+    },
+    {
+      "func": "register",
+      "route": "register",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [
+        {
+          "var": "Session.authed_as",
+          "op": "set",
+          "value": null,
+          "key": "username",
+          "file": "stateforge/targets/pygoat",
+          "line": 51
+        }
+      ],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 46
+    },
+    {
+      "func": "DoItFast",
+      "route": "challenge/<str:challenge>",
+      "methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/pygoat",
+          "line": 13
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [],
+      "file": "stateforge/targets/pygoat/pygoat/urls.py",
+      "line": 12
+    }
+  ],
+  "candidates": [
+    {
+      "var": "Session.authed_as",
+      "entity": "Session",
+      "attr": "authed_as",
+      "ops": [
+        "read",
+        "write"
+      ],
+      "evidence": "request.user",
+      "source": "session_access",
+      "file": "stateforge/targets/pygoat",
+      "line": 0
+    },
+    {
+      "var": "comments.name",
+      "entity": "comments",
+      "attr": "name",
+      "ops": [
+        "write"
+      ],
+      "evidence": "comments.objects.create(name='System', comment='Default comm",
+      "source": "db_field",
+      "file": "stateforge/targets/pygoat",
+      "line": 0
+    },
+    {
+      "var": "comments.comment",
+      "entity": "comments",
+      "attr": "comment",
+      "ops": [
+        "write"
+      ],
+      "evidence": "comments.objects.create(name='System', comment='Default comm",
+      "source": "db_field",
+      "file": "stateforge/targets/pygoat",
+      "line": 0
+    },
+    {
+      "var": "authLogin.name",
+      "entity": "authLogin",
+      "attr": "name",
+      "ops": [
+        "write"
+      ],
+      "evidence": "authLogin.objects.create(name=name, username=user_name, pass",
+      "source": "db_field",
+      "file": "stateforge/targets/pygoat",
+      "line": 0
+    },
+    {
+      "var": "authLogin.username",
+      "entity": "authLogin",
+      "attr": "username",
+      "ops": [
+        "write"
+      ],
+      "evidence": "authLogin.objects.create(name=name, username=user_name, pass",
+      "source": "db_field",
+      "file": "stateforge/targets/pygoat",
+      "line": 0
+    },
+    {
+      "var": "authLogin.password",
+      "entity": "authLogin",
+      "attr": "password",
+      "ops": [
+        "write"
+      ],
+      "evidence": "authLogin.objects.create(name=name, username=user_name, pass",
+      "source": "db_field",
+      "file": "stateforge/targets/pygoat",
+      "line": 0
+    },
+    {
+      "var": "payload.user",
+      "entity": "payload",
+      "attr": "user",
+      "ops": [
+        "compare"
+      ],
+      "evidence": "payload.user eq \"admin\"",
+      "source": "condition",
+      "file": "stateforge/targets/pygoat",
+      "line": 0
+    },
+    {
+      "var": "Blogs.author",
+      "entity": "Blogs",
+      "attr": "author",
+      "ops": [
+        "write"
+      ],
+      "evidence": "Blogs.objects.create(author=request.user, blog_id=id)",
+      "source": "db_field",
+      "file": "stateforge/targets/pygoat",
+      "line": 0
+    },
+    {
+      "var": "Blogs.blog_id",
+      "entity": "Blogs",
+      "attr": "blog_id",
+      "ops": [
+        "write"
+      ],
+      "evidence": "Blogs.objects.create(author=request.user, blog_id=id)",
+      "source": "db_field",
+      "file": "stateforge/targets/pygoat",
+      "line": 0
+    },
+    {
+      "var": "User.is_locked",
+      "entity": "User",
+      "attr": "is_locked",
+      "ops": [
+        "write"
+      ],
+      "evidence": "user.is_locked = False",
+      "source": "db_field",
+      "file": "stateforge/targets/pygoat",
+      "line": 0
+    },
+    {
+      "var": "User.last_login",
+      "entity": "User",
+      "attr": "last_login",
+      "ops": [
+        "write"
+      ],
+      "evidence": "user.last_login = datetime.datetime.now()",
+      "source": "db_field",
+      "file": "stateforge/targets/pygoat",
+      "line": 0
+    },
+    {
+      "var": "User.failattempt",
+      "entity": "User",
+      "attr": "failattempt",
+      "ops": [
+        "write"
+      ],
+      "evidence": "user.failattempt = 0",
+      "source": "db_field",
+      "file": "stateforge/targets/pygoat",
+      "line": 0
+    },
+    {
+      "var": "User.is_active",
+      "entity": "User",
+      "attr": "is_active",
+      "ops": [
+        "write"
+      ],
+      "evidence": "user.is_active = False",
+      "source": "db_field",
+      "file": "stateforge/targets/pygoat",
+      "line": 0
+    },
+    {
+      "var": "User.lockout_cooldown",
+      "entity": "User",
+      "attr": "lockout_cooldown",
+      "ops": [
+        "write"
+      ],
+      "evidence": "user.lockout_cooldown = datetime.datetime.now() + datetime.t",
+      "source": "db_field",
+      "file": "stateforge/targets/pygoat",
+      "line": 0
+    },
+    {
+      "var": "AF_session_id.session_id",
+      "entity": "AF_session_id",
+      "attr": "session_id",
+      "ops": [
+        "write"
+      ],
+      "evidence": "AF_session_id.objects.create(session_id=token, user=USER_A7_",
+      "source": "db_field",
+      "file": "stateforge/targets/pygoat",
+      "line": 0
+    },
+    {
+      "var": "AF_session_id.user",
+      "entity": "AF_session_id",
+      "attr": "user",
+      "ops": [
+        "write"
+      ],
+      "evidence": "AF_session_id.objects.create(session_id=token, user=USER_A7_",
+      "source": "db_field",
+      "file": "stateforge/targets/pygoat",
+      "line": 0
+    }
+  ],
+  "state_vars": [
+    {
+      "entity": "Session",
+      "attr": "authed_as",
+      "kind": "session",
+      "domain": null,
+      "label": "authn",
+      "security_relevant": true,
+      "rationale": "[rule] 认证链变量(token/session);证据:request.user [select] 固定映射直入",
+      "anchors": []
+    },
+    {
+      "entity": "comments",
+      "attr": "name",
+      "kind": "db_column",
+      "domain": [
+        "System"
+      ],
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:comments.objects.create(name='System', comment='Default comm [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "comments",
+      "attr": "comment",
+      "kind": "db_column",
+      "domain": [
+        "Default comment for XXE lab"
+      ],
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:comments.objects.create(name='System', comment='Default comm [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "authLogin",
+      "attr": "name",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:authLogin.objects.create(name=name, username=user_name, pass [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "authLogin",
+      "attr": "username",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:authLogin.objects.create(name=name, username=user_name, pass [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "authLogin",
+      "attr": "password",
+      "kind": "db_column",
+      "domain": null,
+      "label": "authn",
+      "security_relevant": true,
+      "rationale": "[rule] 认证链变量(token/session);证据:authLogin.objects.create(name=name, username=user_name, pass [select] 固定映射直入",
+      "anchors": []
+    },
+    {
+      "entity": "payload",
+      "attr": "user",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:payload.user eq \"admin\" [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "Blogs",
+      "attr": "author",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:Blogs.objects.create(author=request.user, blog_id=id) [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "Blogs",
+      "attr": "blog_id",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:Blogs.objects.create(author=request.user, blog_id=id) [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "User",
+      "attr": "is_locked",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:user.is_locked = False [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "User",
+      "attr": "last_login",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:user.last_login = datetime.datetime.now() [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "User",
+      "attr": "failattempt",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:user.failattempt = 0 [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "User",
+      "attr": "is_active",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:user.is_active = False [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "User",
+      "attr": "lockout_cooldown",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[rule] 无六类关键词命中;证据:user.lockout_cooldown = datetime.datetime.now() + datetime.t [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "AF_session_id",
+      "attr": "session_id",
+      "kind": "db_column",
+      "domain": null,
+      "label": "authn",
+      "security_relevant": true,
+      "rationale": "[rule] 认证链变量(token/session);证据:AF_session_id.objects.create(session_id=token, user=USER_A7_ [select] 固定映射直入",
+      "anchors": []
+    },
+    {
+      "entity": "AF_session_id",
+      "attr": "user",
+      "kind": "db_column",
+      "domain": null,
+      "label": "authn",
+      "security_relevant": true,
+      "rationale": "[rule] 认证链变量(token/session);证据:AF_session_id.objects.create(session_id=token, user=USER_A7_ [select] 固定映射直入",
+      "anchors": []
+    }
+  ],
+  "invariants": [],
+  "config_flags": {}
+}

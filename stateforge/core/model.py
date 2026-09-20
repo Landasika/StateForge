@@ -142,7 +142,7 @@ class AppModel(BaseModel):
     """SA-PR v1:分析产物的根。"""
 
     app_root: str
-    framework: Literal["flask", "connexion"]
+    framework: Literal["flask", "connexion", "django"]
     endpoints: list[Endpoint] = Field(default_factory=list)
     candidates: list[StateCandidate] = Field(default_factory=list)
     state_vars: list[StateVar] = Field(default_factory=list)

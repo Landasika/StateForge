@@ -203,6 +203,17 @@ class EndpointExtractor(ast.NodeVisitor):
         env = _EpEnv(self.file, ep, self.candidates, self.config_flags)
         for stmt in ast.walk(func):
             env.visit_node(stmt)
+        # login_required 装饰器(Django/Flask-Login 通用)→ 认证前置 + 守卫
+        for dec in getattr(func, "decorator_list", []):
+            dname = dec.id if isinstance(dec, ast.Name) else (
+                dec.attr if isinstance(dec, ast.Attribute) else None)
+            if dname and "login_required" in dname:
+                ep.preconditions.append(Precondition(
+                    var="Session.authed_as", op="truthy",
+                    file=self.file, line=func.lineno))
+                ep.guards.append(Guard(
+                    kind="token", present=True, detail="login_required",
+                    file=self.file, line=func.lineno))
         # 端点内事实去重(vuln/fixed 双分支常产生同形 Effect/Precondition)
         ep.effects = _dedup_by(ep.effects, key=lambda e: (e.var, e.op, e.value, e.key))
         ep.preconditions = _dedup_by(
@@ -235,8 +246,11 @@ class _EpEnv:
                     self._jsonify(sub)
 
     # ---- R2 SQL / R5 token / R6 jsonify / R8 body.get / sink
-    _AUTHN_PRODUCE = {"make_token", "encode_auth_token", "jwt_encode"}
-    _AUTHN_REQUIRE = {"current_user", "token_validator", "decode_auth_token", "require_user"}
+    _AUTHN_PRODUCE = {"make_token", "encode_auth_token", "jwt_encode",
+                      "login", "login_user"}               # Django auth / Flask-Login
+    _AUTHN_REQUIRE = {"current_user", "token_validator", "decode_auth_token",
+                      "require_user"}
+    _AUTHN_CLEAR = {"logout", "logout_user"}
 
     def _call(self, call: ast.Call) -> None:
         name = _call_name(call)
@@ -261,6 +275,28 @@ class _EpEnv:
                 file=self.file, line=getattr(call, "lineno", 0),
             ))
             self._cand("Session.authed_as", "write", bare, "session_access")
+        elif bare in self._AUTHN_CLEAR or _any_name(call) in self._AUTHN_CLEAR:
+            self.ep.effects.append(Effect(
+                var="Session.authed_as", op="clear",
+                file=self.file, line=getattr(call, "lineno", 0),
+            ))
+        elif (isinstance(call.func, ast.Attribute) and call.func.attr == "create"
+              and isinstance(call.func.value, ast.Attribute)
+              and call.func.value.attr == "objects"
+              and isinstance(call.func.value.value, ast.Name)):
+            # Django ORM:User.objects.create(username=.., role=..) → 逐 kwarg 一条 Effect
+            entity = call.func.value.value.id
+            for kw in call.keywords:
+                if kw.arg is None:
+                    continue
+                value = (str(kw.value.value) if isinstance(kw.value, ast.Constant)
+                         else None)
+                var = f"{entity}.{kw.arg}"
+                self.ep.effects.append(Effect(
+                    var=var, op="set", value=value, file=self.file,
+                    line=getattr(call, "lineno", 0),
+                ))
+                self._cand(var, "write", ast.unparse(call)[:60], "db_field")
         elif bare in self._AUTHN_REQUIRE or _any_name(call) in self._AUTHN_REQUIRE:
             self.ep.preconditions.append(Precondition(
                 var="Session.authed_as", op="truthy", file=self.file,
@@ -327,6 +363,15 @@ class _EpEnv:
         test = node.test
         negated = isinstance(test, ast.UnaryOp) and isinstance(test.op, ast.Not)
         inner = test.operand if negated else test
+        # request.user / is_authenticated(Django & Flask-Login)→ 认证前置
+        for attr in ast.walk(test):
+            if isinstance(attr, ast.Attribute) and attr.attr in (
+                    "is_authenticated", "user"):
+                self.ep.preconditions.append(Precondition(
+                    var="Session.authed_as", op="truthy",
+                    file=self.file, line=node.lineno))
+                self._cand("Session.authed_as", "read", "request.user", "session_access")
+                break
         if (sub := _subscript_parts(inner)):
             row, attr = sub
             var = _normalize_var(row, attr)

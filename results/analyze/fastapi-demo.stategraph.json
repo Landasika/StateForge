@@ -1,0 +1,38 @@
+{
+  "directed": true,
+  "multigraph": true,
+  "graph": {},
+  "nodes": [
+    {
+      "kind": "action",
+      "func": "read_order",
+      "file": "/tmp/fastapi_demo/app.py",
+      "line": 6,
+      "id": "GET /orders/{oid}"
+    },
+    {
+      "kind": "action",
+      "func": "pay_order",
+      "file": "/tmp/fastapi_demo/app.py",
+      "line": 10,
+      "id": "POST /orders/{oid}/pay"
+    },
+    {
+      "kind": "state",
+      "var": "Order.status",
+      "value": "PAID",
+      "security_relevant": false,
+      "label": "workflow",
+      "id": "Order.status=PAID"
+    }
+  ],
+  "edges": [
+    {
+      "kind": "requires",
+      "op": "ne",
+      "source": "POST /orders/{oid}/pay",
+      "target": "Order.status=PAID",
+      "key": 0
+    }
+  ]
+}

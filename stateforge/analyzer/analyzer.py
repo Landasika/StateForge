@@ -23,6 +23,9 @@ def analyze(target_dir: str | Path, framework: str = "flask") -> AppModel:
         model = extract_flask(target_dir)
     elif framework == "connexion":
         model = extract_connexion(target_dir)
+    elif framework == "django":
+        from stateforge.analyzer.django_adapter import extract_django
+        model = extract_django(target_dir)
     else:
         raise ValueError(f"unknown framework: {framework}")
 
