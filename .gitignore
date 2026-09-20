@@ -20,3 +20,5 @@ exp/results/
 tpl/
 crash-*
 corpus/
+.pycg-callgraph.json
+.pycg-*.json

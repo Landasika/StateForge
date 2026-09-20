@@ -1,4 +1,4 @@
-<svg xmlns='http://www.w3.org/2000/svg' width='6980' height='302' font-family='Helvetica,Arial,sans-serif'>
+<svg xmlns='http://www.w3.org/2000/svg' width='3730' height='302' font-family='Helvetica,Arial,sans-serif'>
 <text x='20' y='28' font-size='17' font-weight='bold'>flaskbb2 G_xfg (function-level)</text>
 <defs><marker id='a' markerWidth='9' markerHeight='9' refX='8' refY='3' orient='auto'><path d='M0,0 L9,3 L0,6 z' fill='#555'/></marker></defs>
 <rect x='0' y='40' width='190' height='46' rx='7' fill='#ffffff' stroke='#5577cc' stroke-width='1.2'/>
@@ -17,91 +17,52 @@
 <text x='1010' y='58' font-size='12' fill='#111'>post</text>
 <text x='1010' y='74' font-size='10' fill='#a33'>项目函数</text>
 <rect x='1250' y='40' width='190' height='46' rx='7' fill='#ffffff' stroke='#5577cc' stroke-width='1.2'/>
-<text x='1260' y='58' font-size='12' fill='#111'>remove_zombie_plugins_from_db</text>
+<text x='1260' y='58' font-size='12' fill='#111'>get</text>
 <text x='1260' y='74' font-size='10' fill='#a33'>项目函数</text>
 <rect x='1500' y='40' width='190' height='46' rx='7' fill='#ffffff' stroke='#5577cc' stroke-width='1.2'/>
-<text x='1510' y='58' font-size='12' fill='#111'>get</text>
+<text x='1510' y='58' font-size='12' fill='#111'>post</text>
 <text x='1510' y='74' font-size='10' fill='#a33'>项目函数</text>
-<rect x='1750' y='40' width='190' height='46' rx='7' fill='#ffffff' stroke='#5577cc' stroke-width='1.2'/>
-<text x='1760' y='58' font-size='12' fill='#111'>post</text>
-<text x='1760' y='74' font-size='10' fill='#a33'>项目函数</text>
-<rect x='2000' y='40' width='190' height='46' rx='7' fill='#ffffff' stroke='#5577cc' stroke-width='1.2'/>
-<text x='2010' y='58' font-size='12' fill='#111'>redirect_or_next</text>
-<text x='2010' y='74' font-size='10' fill='#a33'>项目函数</text>
-<rect x='2250' y='40' width='190' height='46' rx='7' fill='#ffffff' stroke='#5577cc' stroke-width='1.2'/>
-<text x='2260' y='58' font-size='12' fill='#111'>render_template</text>
-<text x='2260' y='74' font-size='10' fill='#a33'>项目函数</text>
-<rect x='2500' y='40' width='190' height='46' rx='7' fill='#ffffff' stroke='#5577cc' stroke-width='1.2'/>
-<text x='2510' y='58' font-size='12' fill='#111'>mark_online</text>
-<text x='2510' y='74' font-size='10' fill='#a33'>项目函数</text>
-<rect x='2750' y='40' width='190' height='46' rx='7' fill='#ffffff' stroke='#5577cc' stroke-width='1.2'/>
-<text x='2760' y='58' font-size='12' fill='#111'>time_utcnow</text>
-<text x='2760' y='74' font-size='10' fill='#a33'>项目函数</text>
-<rect x='3000' y='40' width='190' height='46' rx='7' fill='#ffffff' stroke='#5577cc' stroke-width='1.2'/>
-<text x='3010' y='58' font-size='12' fill='#111'>format_timedelta</text>
-<text x='3010' y='74' font-size='10' fill='#a33'>项目函数</text>
-<rect x='3250' y='40' width='190' height='46' rx='7' fill='#ffffff' stroke='#5577cc' stroke-width='1.2'/>
-<text x='3260' y='58' font-size='12' fill='#111'>get_alembic_locations</text>
-<text x='3260' y='74' font-size='10' fill='#a33'>项目函数</text>
-<rect x='3500' y='40' width='190' height='46' rx='7' fill='#ffffff' stroke='#5577cc' stroke-width='1.2'/>
-<text x='3510' y='58' font-size='12' fill='#111'>get_available_languages</text>
-<text x='3510' y='74' font-size='10' fill='#a33'>项目函数</text>
-<rect x='3750' y='40' width='190' height='46' rx='7' fill='#ffffff' stroke='#5577cc' stroke-width='1.2'/>
-<text x='3760' y='58' font-size='12' fill='#111'>app_config_from_env</text>
-<text x='3760' y='74' font-size='10' fill='#a33'>项目函数</text>
-<rect x='4000' y='40' width='190' height='46' rx='7' fill='#ffffff' stroke='#5577cc' stroke-width='1.2'/>
-<text x='4010' y='58' font-size='12' fill='#111'>get_flaskbb_config</text>
-<text x='4010' y='74' font-size='10' fill='#a33'>项目函数</text>
-<rect x='4250' y='40' width='190' height='46' rx='7' fill='#ffffff' stroke='#5577cc' stroke-width='1.2'/>
-<text x='4260' y='58' font-size='12' fill='#111'>enforce_recaptcha</text>
-<text x='4260' y='74' font-size='10' fill='#a33'>项目函数</text>
-<rect x='4500' y='40' width='190' height='46' rx='7' fill='#ffffff' stroke='#5577cc' stroke-width='1.2'/>
-<text x='4510' y='58' font-size='12' fill='#111'>register_view</text>
-<text x='4510' y='74' font-size='10' fill='#a33'>项目函数</text>
-<rect x='4750' y='40' width='190' height='46' rx='7' fill='#ffffff' stroke='#5577cc' stroke-width='1.2'/>
-<text x='4760' y='58' font-size='12' fill='#111'>permission_with_identity</text>
-<text x='4760' y='74' font-size='10' fill='#a33'>项目函数</text>
-<rect x='5000' y='40' width='190' height='46' rx='7' fill='#d6f5d6' stroke='#2e8b57' stroke-width='1.2'/>
-<text x='5010' y='58' font-size='12' fill='#111'>GET /activate/confirm/&lt;token&gt</text>
-<text x='5010' y='74' font-size='10' fill='#a33'>端点动作</text>
-<rect x='5250' y='40' width='190' height='46' rx='7' fill='#d6f5d6' stroke='#2e8b57' stroke-width='1.2'/>
-<text x='5260' y='58' font-size='12' fill='#111'>POST /activate/confirm</text>
-<text x='5260' y='74' font-size='10' fill='#a33'>端点动作</text>
-<rect x='5500' y='40' width='190' height='46' rx='7' fill='#d6f5d6' stroke='#2e8b57' stroke-width='1.2'/>
-<text x='5510' y='58' font-size='12' fill='#111'>GET /who-is-online</text>
-<text x='5510' y='74' font-size='10' fill='#a33'>端点动作</text>
-<rect x='5750' y='40' width='190' height='46' rx='7' fill='#d6f5d6' stroke='#2e8b57' stroke-width='1.2'/>
-<text x='5760' y='58' font-size='12' fill='#111'>POST /markdown/&lt;path:mode&gt;</text>
-<text x='5760' y='74' font-size='10' fill='#a33'>端点动作</text>
-<rect x='6000' y='40' width='190' height='46' rx='7' fill='#d6f5d6' stroke='#2e8b57' stroke-width='1.2'/>
-<text x='6010' y='58' font-size='12' fill='#111'>GET /</text>
-<text x='6010' y='74' font-size='10' fill='#a33'>端点动作</text>
-<rect x='6250' y='40' width='190' height='46' rx='7' fill='#d6f5d6' stroke='#2e8b57' stroke-width='1.2'/>
-<text x='6260' y='58' font-size='12' fill='#111'>POST /users</text>
-<text x='6260' y='74' font-size='10' fill='#a33'>端点动作</text>
-<rect x='6500' y='40' width='190' height='46' rx='7' fill='#d6f5d6' stroke='#2e8b57' stroke-width='1.2'/>
-<text x='6510' y='58' font-size='12' fill='#111'>GET /&lt;username&gt;</text>
-<text x='6510' y='74' font-size='10' fill='#a33'>端点动作</text>
-<rect x='6750' y='40' width='190' height='46' rx='7' fill='#d6f5d6' stroke='#2e8b57' stroke-width='1.2'/>
-<text x='6760' y='58' font-size='12' fill='#111'>POST /settings/user-details</text>
-<text x='6760' y='74' font-size='10' fill='#a33'>端点动作</text>
+<rect x='1750' y='40' width='190' height='46' rx='7' fill='#d6f5d6' stroke='#2e8b57' stroke-width='1.2'/>
+<text x='1760' y='58' font-size='12' fill='#111'>GET /activate/confirm/&lt;token&gt</text>
+<text x='1760' y='74' font-size='10' fill='#a33'>端点动作</text>
+<rect x='2000' y='40' width='190' height='46' rx='7' fill='#d6f5d6' stroke='#2e8b57' stroke-width='1.2'/>
+<text x='2010' y='58' font-size='12' fill='#111'>POST /activate/confirm</text>
+<text x='2010' y='74' font-size='10' fill='#a33'>端点动作</text>
+<rect x='2250' y='40' width='190' height='46' rx='7' fill='#d6f5d6' stroke='#2e8b57' stroke-width='1.2'/>
+<text x='2260' y='58' font-size='12' fill='#111'>GET /who-is-online</text>
+<text x='2260' y='74' font-size='10' fill='#a33'>端点动作</text>
+<rect x='2500' y='40' width='190' height='46' rx='7' fill='#d6f5d6' stroke='#2e8b57' stroke-width='1.2'/>
+<text x='2510' y='58' font-size='12' fill='#111'>POST /markdown/&lt;path:mode&gt;</text>
+<text x='2510' y='74' font-size='10' fill='#a33'>端点动作</text>
+<rect x='2750' y='40' width='190' height='46' rx='7' fill='#d6f5d6' stroke='#2e8b57' stroke-width='1.2'/>
+<text x='2760' y='58' font-size='12' fill='#111'>GET /</text>
+<text x='2760' y='74' font-size='10' fill='#a33'>端点动作</text>
+<rect x='3000' y='40' width='190' height='46' rx='7' fill='#d6f5d6' stroke='#2e8b57' stroke-width='1.2'/>
+<text x='3010' y='58' font-size='12' fill='#111'>POST /users</text>
+<text x='3010' y='74' font-size='10' fill='#a33'>端点动作</text>
+<rect x='3250' y='40' width='190' height='46' rx='7' fill='#d6f5d6' stroke='#2e8b57' stroke-width='1.2'/>
+<text x='3260' y='58' font-size='12' fill='#111'>GET /&lt;username&gt;</text>
+<text x='3260' y='74' font-size='10' fill='#a33'>端点动作</text>
+<rect x='3500' y='40' width='190' height='46' rx='7' fill='#d6f5d6' stroke='#2e8b57' stroke-width='1.2'/>
+<text x='3510' y='58' font-size='12' fill='#111'>POST /settings/user-details</text>
+<text x='3510' y='74' font-size='10' fill='#a33'>端点动作</text>
 <rect x='0' y='156' width='190' height='46' rx='7' fill='#ffffff' stroke='#5577cc' stroke-width='1.2'/>
 <text x='10' y='174' font-size='12' fill='#111'>get</text>
 <text x='10' y='190' font-size='10' fill='#a33'>项目函数</text>
-<path d='M5095.0,86 C2635.0,86 2635.0,156 95.0,156' fill='none' stroke='#2e8b57' marker-end='url(#a)' stroke-width='1.4'/>
-<text x='2595.0' y='121.0' font-size='10' fill='#2e8b57'>entry</text>
-<path d='M5345.0,86 C2760.0,86 2760.0,40 95.0,40' fill='none' stroke='#2e8b57' marker-end='url(#a)' stroke-width='1.4'/>
-<text x='2720.0' y='63.0' font-size='10' fill='#2e8b57'>entry</text>
-<path d='M5595.0,86 C3010.0,86 3010.0,40 345.0,40' fill='none' stroke='#2e8b57' marker-end='url(#a)' stroke-width='1.4'/>
-<text x='2970.0' y='63.0' font-size='10' fill='#2e8b57'>entry</text>
-<path d='M5845.0,86 C3260.0,86 3260.0,40 595.0,40' fill='none' stroke='#2e8b57' marker-end='url(#a)' stroke-width='1.4'/>
-<text x='3220.0' y='63.0' font-size='10' fill='#2e8b57'>entry</text>
-<path d='M6095.0,86 C3510.0,86 3510.0,40 845.0,40' fill='none' stroke='#2e8b57' marker-end='url(#a)' stroke-width='1.4'/>
-<text x='3470.0' y='63.0' font-size='10' fill='#2e8b57'>entry</text>
-<path d='M6345.0,86 C3760.0,86 3760.0,40 1095.0,40' fill='none' stroke='#2e8b57' marker-end='url(#a)' stroke-width='1.4'/>
-<text x='3720.0' y='63.0' font-size='10' fill='#2e8b57'>entry</text>
-<path d='M6595.0,86 C4135.0,86 4135.0,40 1595.0,40' fill='none' stroke='#2e8b57' marker-end='url(#a)' stroke-width='1.4'/>
-<text x='4095.0' y='63.0' font-size='10' fill='#2e8b57'>entry</text>
-<path d='M6845.0,86 C4385.0,86 4385.0,40 1845.0,40' fill='none' stroke='#2e8b57' marker-end='url(#a)' stroke-width='1.4'/>
-<text x='4345.0' y='63.0' font-size='10' fill='#2e8b57'>entry</text>
+<path d='M1845.0,86 C1010.0,86 1010.0,156 95.0,156' fill='none' stroke='#2e8b57' marker-end='url(#a)' stroke-width='1.4'/>
+<text x='970.0' y='121.0' font-size='10' fill='#2e8b57'>entry</text>
+<path d='M2095.0,86 C1135.0,86 1135.0,40 95.0,40' fill='none' stroke='#2e8b57' marker-end='url(#a)' stroke-width='1.4'/>
+<text x='1095.0' y='63.0' font-size='10' fill='#2e8b57'>entry</text>
+<path d='M2345.0,86 C1385.0,86 1385.0,40 345.0,40' fill='none' stroke='#2e8b57' marker-end='url(#a)' stroke-width='1.4'/>
+<text x='1345.0' y='63.0' font-size='10' fill='#2e8b57'>entry</text>
+<path d='M2595.0,86 C1635.0,86 1635.0,40 595.0,40' fill='none' stroke='#2e8b57' marker-end='url(#a)' stroke-width='1.4'/>
+<text x='1595.0' y='63.0' font-size='10' fill='#2e8b57'>entry</text>
+<path d='M2845.0,86 C1885.0,86 1885.0,40 845.0,40' fill='none' stroke='#2e8b57' marker-end='url(#a)' stroke-width='1.4'/>
+<text x='1845.0' y='63.0' font-size='10' fill='#2e8b57'>entry</text>
+<path d='M3095.0,86 C2135.0,86 2135.0,40 1095.0,40' fill='none' stroke='#2e8b57' marker-end='url(#a)' stroke-width='1.4'/>
+<text x='2095.0' y='63.0' font-size='10' fill='#2e8b57'>entry</text>
+<path d='M3345.0,86 C2385.0,86 2385.0,40 1345.0,40' fill='none' stroke='#2e8b57' marker-end='url(#a)' stroke-width='1.4'/>
+<text x='2345.0' y='63.0' font-size='10' fill='#2e8b57'>entry</text>
+<path d='M3595.0,86 C2635.0,86 2635.0,40 1595.0,40' fill='none' stroke='#2e8b57' marker-end='url(#a)' stroke-width='1.4'/>
+<text x='2595.0' y='63.0' font-size='10' fill='#2e8b57'>entry</text>
 </svg>

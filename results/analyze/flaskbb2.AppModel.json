@@ -1,5 +1,5 @@
 {
-  "app_root": "/tmp/flaskbb2",
+  "app_root": "targets/flaskbb2",
   "framework": "flask",
   "endpoints": [
     {
@@ -14,7 +14,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "file": "targets/flaskbb2/flaskbb/auth/views.py",
       "line": 70
     },
     {
@@ -29,7 +29,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "file": "targets/flaskbb2/flaskbb/auth/views.py",
       "line": 87
     },
     {
@@ -44,7 +44,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "file": "targets/flaskbb2/flaskbb/auth/views.py",
       "line": 90
     },
     {
@@ -59,7 +59,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "file": "targets/flaskbb2/flaskbb/auth/views.py",
       "line": 115
     },
     {
@@ -74,7 +74,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "file": "targets/flaskbb2/flaskbb/auth/views.py",
       "line": 120
     },
     {
@@ -89,7 +89,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "file": "targets/flaskbb2/flaskbb/auth/views.py",
       "line": 156
     },
     {
@@ -107,7 +107,7 @@
           "op": "set",
           "value": null,
           "key": null,
-          "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+          "file": "targets/flaskbb2/flaskbb/auth/views.py",
           "line": 162
         },
         {
@@ -115,7 +115,7 @@
           "op": "set",
           "value": null,
           "key": null,
-          "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+          "file": "targets/flaskbb2/flaskbb/auth/views.py",
           "line": 162
         },
         {
@@ -123,7 +123,7 @@
           "op": "set",
           "value": "4",
           "key": null,
-          "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+          "file": "targets/flaskbb2/flaskbb/auth/views.py",
           "line": 162
         },
         {
@@ -131,7 +131,7 @@
           "op": "set",
           "value": null,
           "key": null,
-          "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+          "file": "targets/flaskbb2/flaskbb/auth/views.py",
           "line": 162
         },
         {
@@ -139,13 +139,13 @@
           "op": "set",
           "value": null,
           "key": null,
-          "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+          "file": "targets/flaskbb2/flaskbb/auth/views.py",
           "line": 162
         }
       ],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "file": "targets/flaskbb2/flaskbb/auth/views.py",
       "line": 159
     },
     {
@@ -160,7 +160,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "file": "targets/flaskbb2/flaskbb/auth/views.py",
       "line": 202
     },
     {
@@ -175,7 +175,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "file": "targets/flaskbb2/flaskbb/auth/views.py",
       "line": 205
     },
     {
@@ -197,7 +197,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "file": "targets/flaskbb2/flaskbb/auth/views.py",
       "line": 233
     },
     {
@@ -219,7 +219,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "file": "targets/flaskbb2/flaskbb/auth/views.py",
       "line": 238
     },
     {
@@ -234,7 +234,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "file": "targets/flaskbb2/flaskbb/auth/views.py",
       "line": 280
     },
     {
@@ -249,7 +249,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "file": "targets/flaskbb2/flaskbb/auth/views.py",
       "line": 285
     },
     {
@@ -264,7 +264,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "file": "targets/flaskbb2/flaskbb/auth/views.py",
       "line": 354
     },
     {
@@ -279,7 +279,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "file": "targets/flaskbb2/flaskbb/auth/views.py",
       "line": 360
     },
     {
@@ -301,7 +301,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "file": "targets/flaskbb2/flaskbb/auth/views.py",
       "line": 313
     },
     {
@@ -323,7 +323,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 87
     },
     {
@@ -351,7 +351,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 87
     },
     {
@@ -373,7 +373,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 354
     },
     {
@@ -395,7 +395,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 383
     },
     {
@@ -423,7 +423,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 354
     },
     {
@@ -451,7 +451,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 383
     },
     {
@@ -473,7 +473,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 107
     },
     {
@@ -501,7 +501,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 107
     },
     {
@@ -523,7 +523,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 905
     },
     {
@@ -551,7 +551,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 905
     },
     {
@@ -573,7 +573,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 267
     },
     {
@@ -595,7 +595,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 276
     },
     {
@@ -623,7 +623,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 267
     },
     {
@@ -651,7 +651,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 276
     },
     {
@@ -673,7 +673,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 309
     },
     {
@@ -695,7 +695,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 318
     },
     {
@@ -723,7 +723,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 309
     },
     {
@@ -751,7 +751,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 318
     },
     {
@@ -766,7 +766,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 624
     },
     {
@@ -781,7 +781,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 648
     },
     {
@@ -803,7 +803,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 860
     },
     {
@@ -825,7 +825,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 573
     },
     {
@@ -847,7 +847,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 586
     },
     {
@@ -869,7 +869,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 887
     },
     {
@@ -891,7 +891,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 608
     },
     {
@@ -913,7 +913,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 611
     },
     {
@@ -935,7 +935,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 142
     },
     {
@@ -950,7 +950,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 729
     },
     {
@@ -965,7 +965,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 732
     },
     {
@@ -987,7 +987,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 757
     },
     {
@@ -1015,7 +1015,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 757
     },
     {
@@ -1037,7 +1037,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 819
     },
     {
@@ -1065,7 +1065,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 819
     },
     {
@@ -1087,7 +1087,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 777
     },
     {
@@ -1115,7 +1115,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 777
     },
     {
@@ -1143,7 +1143,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 528
     },
     {
@@ -1171,7 +1171,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 541
     },
     {
@@ -1205,7 +1205,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 528
     },
     {
@@ -1239,7 +1239,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 541
     },
     {
@@ -1261,7 +1261,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 528
     },
     {
@@ -1283,7 +1283,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 541
     },
     {
@@ -1311,7 +1311,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 528
     },
     {
@@ -1339,7 +1339,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 541
     },
     {
@@ -1361,7 +1361,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 178
     },
     {
@@ -1383,7 +1383,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 231
     },
     {
@@ -1411,7 +1411,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 178
     },
     {
@@ -1439,7 +1439,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 231
     },
     {
@@ -1461,7 +1461,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 840
     },
     {
@@ -1489,7 +1489,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 840
     },
     {
@@ -1511,7 +1511,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 798
     },
     {
@@ -1539,7 +1539,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 798
     },
     {
@@ -1561,7 +1561,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 983
     },
     {
@@ -1589,7 +1589,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 983
     },
     {
@@ -1611,7 +1611,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 1003
     },
     {
@@ -1639,7 +1639,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 1003
     },
     {
@@ -1654,7 +1654,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 685
     },
     {
@@ -1669,7 +1669,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 710
     },
     {
@@ -1684,7 +1684,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 52
     },
     {
@@ -1699,7 +1699,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 960
     },
     {
@@ -1721,7 +1721,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 1013
     },
     {
@@ -1749,7 +1749,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 1013
     },
     {
@@ -1771,7 +1771,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 1030
     },
     {
@@ -1799,7 +1799,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 1030
     },
     {
@@ -1821,7 +1821,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 1046
     },
     {
@@ -1843,7 +1843,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 1076
     },
     {
@@ -1858,7 +1858,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 1096
     },
     {
@@ -1880,7 +1880,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/forum/views.py",
+      "file": "targets/flaskbb2/flaskbb/forum/views.py",
       "line": 1096
     },
     {
@@ -1895,7 +1895,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 861
     },
     {
@@ -1910,7 +1910,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 868
     },
     {
@@ -1932,7 +1932,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 934
     },
     {
@@ -1954,7 +1954,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 894
     },
     {
@@ -1976,7 +1976,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 905
     },
     {
@@ -1991,7 +1991,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 792
     },
     {
@@ -2006,7 +2006,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 805
     },
     {
@@ -2028,7 +2028,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 792
     },
     {
@@ -2050,7 +2050,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 805
     },
     {
@@ -2072,7 +2072,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 835
     },
     {
@@ -2094,7 +2094,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 741
     },
     {
@@ -2116,7 +2116,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 757
     },
     {
@@ -2131,7 +2131,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 723
     },
     {
@@ -2146,7 +2146,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 584
     },
     {
@@ -2161,7 +2161,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 591
     },
     {
@@ -2189,7 +2189,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 654
     },
     {
@@ -2211,7 +2211,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 654
     },
     {
@@ -2233,7 +2233,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 616
     },
     {
@@ -2255,7 +2255,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 623
     },
     {
@@ -2270,7 +2270,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 560
     },
     {
@@ -2292,7 +2292,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 1259
     },
     {
@@ -2314,7 +2314,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 1224
     },
     {
@@ -2336,7 +2336,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 1314
     },
     {
@@ -2358,7 +2358,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 1293
     },
     {
@@ -2373,7 +2373,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 1207
     },
     {
@@ -2401,7 +2401,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 1079
     },
     {
@@ -2423,7 +2423,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 1079
     },
     {
@@ -2451,7 +2451,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 1002
     },
     {
@@ -2473,7 +2473,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 1002
     },
     {
@@ -2488,7 +2488,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 980
     },
     {
@@ -2503,7 +2503,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 959
     },
     {
@@ -2518,7 +2518,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 90
     },
     {
@@ -2533,7 +2533,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 110
     },
     {
@@ -2555,7 +2555,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 90
     },
     {
@@ -2577,7 +2577,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 110
     },
     {
@@ -2599,7 +2599,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 90
     },
     {
@@ -2621,7 +2621,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 110
     },
     {
@@ -2636,7 +2636,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 345
     },
     {
@@ -2651,7 +2651,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 350
     },
     {
@@ -2666,7 +2666,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 375
     },
     {
@@ -2681,7 +2681,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 389
     },
     {
@@ -2703,7 +2703,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 426
     },
     {
@@ -2731,7 +2731,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 426
     },
     {
@@ -2753,7 +2753,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 287
     },
     {
@@ -2781,7 +2781,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 287
     },
     {
@@ -2803,7 +2803,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 197
     },
     {
@@ -2828,7 +2828,7 @@
           "op": "set",
           "value": null,
           "key": null,
-          "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+          "file": "targets/flaskbb2/flaskbb/management/views.py",
           "line": 259
         },
         {
@@ -2836,13 +2836,13 @@
           "op": "set",
           "value": null,
           "key": null,
-          "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+          "file": "targets/flaskbb2/flaskbb/management/views.py",
           "line": 263
         }
       ],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 229
     },
     {
@@ -2864,7 +2864,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 498
     },
     {
@@ -2892,7 +2892,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 498
     },
     {
@@ -2907,7 +2907,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 151
     },
     {
@@ -2922,7 +2922,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 163
     },
     {
@@ -2937,7 +2937,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 1127
     },
     {
@@ -2952,7 +2952,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 1152
     },
     {
@@ -2967,7 +2967,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/user/views.py",
+      "file": "targets/flaskbb2/flaskbb/user/views.py",
       "line": 116
     },
     {
@@ -2982,7 +2982,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/user/views.py",
+      "file": "targets/flaskbb2/flaskbb/user/views.py",
       "line": 119
     },
     {
@@ -2997,7 +2997,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/user/views.py",
+      "file": "targets/flaskbb2/flaskbb/user/views.py",
       "line": 48
     },
     {
@@ -3012,7 +3012,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/user/views.py",
+      "file": "targets/flaskbb2/flaskbb/user/views.py",
       "line": 51
     },
     {
@@ -3027,7 +3027,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/user/views.py",
+      "file": "targets/flaskbb2/flaskbb/user/views.py",
       "line": 82
     },
     {
@@ -3042,7 +3042,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/user/views.py",
+      "file": "targets/flaskbb2/flaskbb/user/views.py",
       "line": 85
     },
     {
@@ -3057,7 +3057,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/user/views.py",
+      "file": "targets/flaskbb2/flaskbb/user/views.py",
       "line": 150
     },
     {
@@ -3072,7 +3072,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/user/views.py",
+      "file": "targets/flaskbb2/flaskbb/user/views.py",
       "line": 153
     },
     {
@@ -3094,7 +3094,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/user/views.py",
+      "file": "targets/flaskbb2/flaskbb/user/views.py",
       "line": 188
     },
     {
@@ -3116,7 +3116,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/user/views.py",
+      "file": "targets/flaskbb2/flaskbb/user/views.py",
       "line": 180
     },
     {
@@ -3138,7 +3138,7 @@
       "effects": [],
       "sinks": [],
       "observes": [],
-      "file": "/tmp/flaskbb2/flaskbb/user/views.py",
+      "file": "targets/flaskbb2/flaskbb/user/views.py",
       "line": 196
     }
   ],
@@ -3152,7 +3152,7 @@
       ],
       "evidence": "registration_info = UserRegistrationInfo(username=form.usern",
       "source": "db_field",
-      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "file": "targets/flaskbb2/flaskbb/auth/views.py",
       "line": 0
     },
     {
@@ -3164,7 +3164,7 @@
       ],
       "evidence": "registration_info = UserRegistrationInfo(username=form.usern",
       "source": "db_field",
-      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "file": "targets/flaskbb2/flaskbb/auth/views.py",
       "line": 0
     },
     {
@@ -3176,7 +3176,7 @@
       ],
       "evidence": "registration_info = UserRegistrationInfo(username=form.usern",
       "source": "db_field",
-      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "file": "targets/flaskbb2/flaskbb/auth/views.py",
       "line": 0
     },
     {
@@ -3188,7 +3188,7 @@
       ],
       "evidence": "registration_info = UserRegistrationInfo(username=form.usern",
       "source": "db_field",
-      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "file": "targets/flaskbb2/flaskbb/auth/views.py",
       "line": 0
     },
     {
@@ -3200,7 +3200,7 @@
       ],
       "evidence": "registration_info = UserRegistrationInfo(username=form.usern",
       "source": "db_field",
-      "file": "/tmp/flaskbb2/flaskbb/auth/views.py",
+      "file": "targets/flaskbb2/flaskbb/auth/views.py",
       "line": 0
     },
     {
@@ -3212,7 +3212,7 @@
       ],
       "evidence": "user.primary_group_id = form.primary_group.data.id",
       "source": "db_field",
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 0
     },
     {
@@ -3224,7 +3224,7 @@
       ],
       "evidence": "user.password = form.password.data",
       "source": "db_field",
-      "file": "/tmp/flaskbb2/flaskbb/management/views.py",
+      "file": "targets/flaskbb2/flaskbb/management/views.py",
       "line": 0
     }
   ],

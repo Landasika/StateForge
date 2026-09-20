@@ -188,12 +188,22 @@ def _block_calls_name(stmts: list, name: str) -> bool:
 
 
 def _canon(g: str, mod2file: dict[str, Path]) -> tuple[str | None, str]:
-    """PyCG 限定名 → (最长已知模块前缀, 末名)。嵌套函数(app.create_app.f)→(app 模块, f)。"""
+    """PyCG 限定名 → (已知模块, 末名)。嵌套函数(app.create_app.f)→(app 模块, f)。
+
+    两种匹配:①前缀精确;②后缀匹配(≥2 段防歧义)——桥接器与模块图的计算根
+    不一致时(PyCG 从 targets/ 跑出 vulnshop.app.*,_module_map 上溯出
+    stateforge.targets.vulnshop.app),后缀匹配把二者对上。
+    """
     parts = g.split(".")
     for i in range(len(parts) - 1, 0, -1):
         mod = ".".join(parts[:i])
         if mod in mod2file:
             return mod, parts[-1]
+    node_mod, name = ".".join(parts[:-1]), parts[-1]
+    if "." in node_mod:
+        for m in mod2file:
+            if m.endswith("." + node_mod):
+                return m, name
     return None, parts[-1]
 
 

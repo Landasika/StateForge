@@ -120,37 +120,20 @@ def _domains(model: AppModel) -> dict[str, list[str]]:
 
 def analyze_cmd(target: str, framework: str, name: str | None, out: str) -> int:
     """对任意真实项目跑静态分析:AppModel + SSTG + XFG(+自动 PyCG 调用图)。"""
-    import subprocess
-
     from stateforge.analyzer.cfg import build_xfg, xfg_to_dot
+    from stateforge.analyzer.pycg_bridge import build_callgraph
     from stateforge.analyzer.svg import render_function_xfg
 
     outdir = Path(out)
     outdir.mkdir(parents=True, exist_ok=True)
     tag = name or Path(target).name
 
-    # 调用图:优先现成 fixture;否则尽力用 ANOTA 侧 PyCG 生成(嵌套入口逐个试)
+    # 调用图:pycg_bridge(入口探测→隔离执行→合并→缓存),缺口如实报告
+    cg, gaps = build_callgraph(target)
     cg_path = outdir / f"{tag}.callgraph.json"
-    if not cg_path.exists():
-        anota_py = ROOT / "anota" / "ANOTA" / "ANOTA-interpreter" / "python"
-        entries = sorted(p for p in Path(target).rglob("*.py")
-                         if p.name in ("app.py", "config.py", "__init__.py", "factory.py")
-                         or "views" in p.name or "routes" in p.name)[:12]
-        ok = []
-        for e in entries:
-            tmp = outdir / "_cg_part.json"
-            r = subprocess.run([str(anota_py), "-m", "PyCG", str(e), "-o", str(tmp)],
-                               capture_output=True, timeout=120)
-            if r.returncode == 0 and tmp.exists():
-                ok.append(json.loads(tmp.read_text()))
-                tmp.unlink()
-        if ok:
-            merged: dict = {}
-            for part in ok:
-                for k, v in part.items():
-                    merged.setdefault(k, []).extend(x for x in v if x not in merged[k])
-            cg_path.write_text(json.dumps(merged))
-            print(f"[callgraph] merged {len(ok)} entries -> {len(merged)} nodes")
+    cg_path.write_text(json.dumps(cg))
+    if cg:
+        print(f"[callgraph] {len(cg)} nodes" + (f"; gaps: {gaps}" if gaps else ""))
 
     model = analyze(Path(target), framework)
     model.to_json(outdir / f"{tag}.AppModel.json")
