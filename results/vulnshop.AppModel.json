@@ -665,7 +665,7 @@
       "domain": null,
       "label": "authz",
       "security_relevant": true,
-      "rationale": "[rule] 角色/权限判定变量;证据:if request_data[\"admin\"] [select] 固定映射直入",
+      "rationale": "[llm:claude-sonnet-5] Request-supplied admin flag used in a conditional governs privilege state. [select] 固定映射直入",
       "anchors": []
     },
     {
@@ -673,9 +673,9 @@
       "attr": "username",
       "kind": "db_column",
       "domain": null,
-      "label": "irrelevant",
-      "security_relevant": false,
-      "rationale": "[rule] 无六类关键词命中;证据:user = User(username=request_data['username'], password=requ [select] irrelevant 出局",
+      "label": "authn",
+      "security_relevant": true,
+      "rationale": "[llm:claude-sonnet-5] Username stored on the user record is part of the credential identity. [select] 固定映射直入",
       "anchors": []
     },
     {
@@ -685,7 +685,7 @@
       "domain": null,
       "label": "authn",
       "security_relevant": true,
-      "rationale": "[rule] 认证链变量(token/session);证据:user = User(username=request_data['username'], password=requ [select] 固定映射直入",
+      "rationale": "[llm:claude-sonnet-5] Password is a core authentication credential field. [select] 固定映射直入",
       "anchors": []
     },
     {
@@ -693,9 +693,9 @@
       "attr": "email",
       "kind": "db_column",
       "domain": null,
-      "label": "irrelevant",
-      "security_relevant": false,
-      "rationale": "[rule] 无六类关键词命中;证据:user = User(username=request_data['username'], password=requ [select] irrelevant 出局",
+      "label": "authn",
+      "security_relevant": true,
+      "rationale": "[llm:claude-sonnet-5] Email on the user record serves as identity/credential state. [select] 固定映射直入",
       "anchors": []
     },
     {
@@ -705,7 +705,7 @@
       "domain": null,
       "label": "authz",
       "security_relevant": true,
-      "rationale": "[rule] 角色/权限判定变量;证据:user = User(username=request_data['username'], password=requ [select] 固定映射直入",
+      "rationale": "[llm:claude-sonnet-5] Admin flag on the user record is a role/permission attribute. [select] 固定映射直入",
       "anchors": []
     },
     {
@@ -715,7 +715,7 @@
       "domain": null,
       "label": "authn",
       "security_relevant": true,
-      "rationale": "[rule] 认证链变量(token/session);证据: [select] 固定映射直入",
+      "rationale": "[llm:claude-sonnet-5] Session field tracking the authenticated identity is session auth state. [select] 固定映射直入",
       "anchors": []
     },
     {
@@ -725,7 +725,7 @@
       "domain": null,
       "label": "irrelevant",
       "security_relevant": false,
-      "rationale": "[rule] 无六类关键词命中;证据:newBook = Book(book_title=request_data.get('book_title'), se [select] irrelevant 出局",
+      "rationale": "[llm:claude-sonnet-5] Plain descriptive entity attribute with no security semantics. [select] irrelevant 出局",
       "anchors": []
     },
     {
@@ -735,7 +735,7 @@
       "domain": null,
       "label": "irrelevant",
       "security_relevant": false,
-      "rationale": "[rule] 无六类关键词命中;证据:newBook = Book(book_title=request_data.get('book_title'), se [select] irrelevant 出局",
+      "rationale": "[llm:claude-sonnet-5] Sensitive payload data but not auth, authz, ownership, money, or lifecycle state. [select] irrelevant 出局",
       "anchors": []
     },
     {
@@ -745,7 +745,7 @@
       "domain": null,
       "label": "ownership",
       "security_relevant": true,
-      "rationale": "[rule] 实体所有者绑定;证据:newBook = Book(book_title=request_data.get('book_title'), se [select] 固定映射直入",
+      "rationale": "[llm:claude-sonnet-5] user_id links the book to its owning user, an ownership binding. [select] 固定映射直入",
       "anchors": []
     }
   ],

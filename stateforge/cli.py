@@ -63,6 +63,12 @@ def e2e(use_llm: bool = True) -> int:
         to_json(sstg, RESULTS / f"{name}.stategraph.json")
         to_dot(sstg, RESULTS / f"{name}.stategraph.dot")
 
+        # G_xfg v2(基于调用图添加过程内 CFG;无 fixture 自动退化为端点级)
+        from stateforge.analyzer.cfg import build_xfg, xfg_to_dot
+        cg_fixture = Path(root) / "golden" / "callgraph.json"
+        xfg = build_xfg(model, callgraph_path=cg_fixture if cg_fixture.exists() else None)
+        xfg_to_dot(xfg, RESULTS / f"{name}.xfg.dot")
+
         # ANOTA 注解起草
         drafts = draft_annotations(model)
         cmp_result = None
@@ -79,6 +85,9 @@ def e2e(use_llm: bool = True) -> int:
             "invariants": {i.var: {"legal": i.legal_transitions, "one_way": i.one_way}
                            for i in model.invariants},
             "sstg": {"nodes": sstg.number_of_nodes(), "edges": sstg.number_of_edges()},
+            "xfg": {"nodes": xfg.number_of_nodes(), "edges": xfg.number_of_edges(),
+                    "call_edges": sum(1 for _, _, d in xfg.edges(data=True)
+                                      if d.get("kind") == "call")},
             "label_source": (llm_lift.source if llm_lift else "heuristic"),
             "relate": (llm_lift.model_dump(exclude={"label_log"}) if llm_lift else None),
             "annotation_drafts": len(drafts),

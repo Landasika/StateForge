@@ -6,9 +6,9 @@ digraph SSTG {
   "GET /users/v1" [shape=box];
   "GET /users/v1/_debug" [shape=box];
   "POST /users/v1/register" [shape=box];
-  "User.username=*" [shape=ellipse];
+  "User.username=*" [shape=ellipse, style=bold, color=red];
   "User.password=*" [shape=ellipse, style=bold, color=red];
-  "User.email=*" [shape=ellipse];
+  "User.email=*" [shape=ellipse, style=bold, color=red];
   "User.admin=*" [shape=ellipse, style=bold, color=red];
   "POST /users/v1/login" [shape=box];
   "Session.authed_as=<authed>" [shape=ellipse, style=bold, color=red];

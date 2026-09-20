@@ -42,8 +42,8 @@
       "kind": "state",
       "var": "User.username",
       "value": "*",
-      "security_relevant": false,
-      "label": "irrelevant",
+      "security_relevant": true,
+      "label": "authn",
       "id": "User.username=*"
     },
     {
@@ -58,8 +58,8 @@
       "kind": "state",
       "var": "User.email",
       "value": "*",
-      "security_relevant": false,
-      "label": "irrelevant",
+      "security_relevant": true,
+      "label": "authn",
       "id": "User.email=*"
     },
     {
