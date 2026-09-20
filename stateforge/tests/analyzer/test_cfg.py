@@ -149,3 +149,47 @@ def test_xfg_state_links_preserved(model):
     xfg = build_xfg(model, callgraph_path=VULNSHOP / "golden" / "callgraph.json")
     state_links = [e for e in xfg.edges(data=True) if e[2].get("kind") == "state-link"]
     assert state_links
+
+
+# ------------------------------------------------- 数据流层:def-use + 参数源传播
+
+from stateforge.analyzer.cfg import (
+    anchor_param_influence,
+    block_gates,
+    reaching_definitions,
+)
+
+
+def test_reaching_definitions_merge():
+    src = "def f(x):\n    a = 1\n    if x:\n        a = 2\n    return a\n"
+    g = _cfg_of(src)
+    rd = reaching_definitions(g)
+    # return 块的 a 的定义可来自两个 def 块(may 分析)
+    ret = next(n for n, d in g.nodes(data=True)
+               if d.get("terminal") and "a" in str(d["stmts"]))
+    in_defs = rd["in"][ret]
+    a_defs = {loc for (name, loc) in in_defs if name == "a"}
+    assert len(a_defs) >= 2
+
+
+def test_param_influence_coupon_to_used(model):
+    """orders 的 coupon_code 参数 → Coupon.used 锚(请求源→锚点传播,含传递)。"""
+    ep = next(e for e in model.endpoints if e.route == "/orders")
+    g = build_cfg(ep)
+    attach_anchors(g, ep)
+    infl = anchor_param_influence(g, ep)
+    pairs = {(p, a["var"]) for p, anchors in infl.items() for a in anchors}
+    assert ("coupon_code", "Coupon.used") in pairs
+
+
+def test_block_gates_ship_update(model):
+    """ship 的 UPDATE 块:PAID 门是条件性守卫(非必经支配者),may 语义应捕获。"""
+    ep = next(e for e in model.endpoints if "ship" in e.route)
+    g = build_cfg(ep)
+    attach_anchors(g, ep)
+    gates = block_gates(g)
+    upd = next(n for n, d in g.nodes(data=True)
+               if any(a["kind"] == "eff" and a["var"] == "Order.status" for a in d["anchors"]))
+    gate_vars = {a["var"] for a in gates.get(upd, [])}
+    assert "Order.status" in gate_vars       # PAID 门(条件性,may 捕获)
+    assert "Session.authed_as" in gate_vars  # 认证门

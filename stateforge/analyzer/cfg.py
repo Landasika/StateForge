@@ -59,8 +59,8 @@ def build_cfg(func: ast.FunctionDef | Endpoint, prefix: str = "",
 
     def new_block(kind: str, stmts: list) -> str:
         bid = f"{prefix}{kind[0]}{next(counter)}"
-        lines = (min([func.lineno] + [s.lineno for s in stmts]),
-                 max([func.lineno] + [s.lineno for s in stmts]))
+        linenos = [s.lineno for s in stmts] or [func.lineno]
+        lines = (min(linenos), max(linenos))
         g.add_node(bid, kind=kind, stmts=stmts, lines=lines, file=file, func=fname,
                    anchors=[])
         return bid
@@ -289,6 +289,184 @@ def build_xfg(model: AppModel, callgraph_path: str | Path | None = None) -> nx.M
             if wa != ra:
                 xfg.add_edge(wb, rb, kind="state-link", var=var)
     return xfg
+
+
+# ---------------------------------------------------------------- 数据流层(T+11)
+
+def _block_defs(stmts: list) -> set[str]:
+    """块内定义的名字(Assign/AnnAssign/AugAssign 目标、For 目标)。"""
+    out: set[str] = set()
+    for s in stmts:
+        targets: list = []
+        if isinstance(s, (ast.Assign, ast.AnnAssign, ast.AugAssign, ast.For, ast.AsyncFor)):
+            targets = s.targets if isinstance(s, ast.Assign) else [s.target]
+        for t in targets:
+            if isinstance(t, ast.Name):
+                out.add(t.id)
+            elif isinstance(t, (ast.Tuple, ast.List)):
+                out.update(e.id for e in t.elts if isinstance(e, ast.Name))
+    return out
+
+
+def _block_uses(stmts: list) -> set[str]:
+    """块内读取的名字(Name 载荷;近似不含定义点自读)。"""
+    out: set[str] = set()
+    for s in stmts:
+        for node in ast.walk(s):
+            if isinstance(node, ast.Name) and isinstance(node.ctx, ast.Load):
+                out.add(node.id)
+    return out
+
+
+def reaching_definitions(g: nx.DiGraph) -> dict:
+    """经典 may 到达定值:in[b] = ∪ out[pred];out[b] = in[b] 覆盖后并入本块定义。"""
+    defs = {n: _block_defs(d.get("stmts", [])) for n, d in g.nodes(data=True)}
+    live: dict[str, set] = {n: set() for n in g.nodes}
+    out: dict[str, set] = {}
+    changed = True
+    while changed:
+        changed = False
+        for n in g.nodes:
+            new_in: set = set()
+            for p in g.predecessors(n):
+                for name, where in out.get(p, set()):
+                    if name not in defs[n]:
+                        new_in.add((name, where))
+            new_out = new_in | {(name, n) for name in defs[n]}
+            if new_in != live[n] or new_out != out.get(n, set()):
+                live[n], out[n] = changed_flag = new_in, new_out  # noqa: F841
+                changed = True
+    return {"in": live, "out": out}
+
+
+def _stmt_text(stmt) -> str:
+    try:
+        return ast.unparse(stmt)
+    except Exception:  # noqa: BLE001
+        return ""
+
+
+def _block_text_at(d: dict, line: int | None = None) -> str:
+    stmts = d.get("stmts", [])
+    if line is not None:
+        stmts = [s for s in stmts if getattr(s, "lineno", None) == line] or stmts
+    return "; ".join(_stmt_text(s) for s in stmts)
+
+
+def _param_source_vars(g: nx.DiGraph, param_names: list[str]) -> set[str]:
+    """请求源变量集:直接从参数提取定义的变量,经赋值链传播(不动点)。"""
+    import re as _re
+
+    def stmt_defines_from(s, p: str) -> str | None:
+        """语句若把 p(参数)定义进某变量,返回该变量名。"""
+        if not isinstance(s, (ast.Assign, ast.AnnAssign)):
+            return None
+        targets = s.targets if isinstance(s, ast.Assign) else [s.target]
+        names = [t.id for t in targets if isinstance(t, ast.Name)]
+        if not names:
+            return None
+        text = _stmt_text(s)
+        # 直接形态:amount = body.get("amount") / request_data["amount"]
+        if _re.search(rf"['\"]{ _re.escape(p)}['\"]|\b{_re.escape(p)}\b", text):
+            return names[0]
+        return None
+
+    sources: set[str] = set()
+    changed = True
+    while changed:
+        changed = False
+        for _n, d in g.nodes(data=True):
+            for s in d.get("stmts", []):
+                text = _stmt_text(s)
+                for p in param_names:
+                    var = stmt_defines_from(s, p)
+                    if var and var not in sources:
+                        sources.add(var)
+                        changed = True
+                # 传播:RHS 提及源变量的赋值,其目标也是源
+                if isinstance(s, (ast.Assign, ast.AnnAssign)):
+                    targets = s.targets if isinstance(s, ast.Assign) else [s.target]
+                    names = [t.id for t in targets if isinstance(t, ast.Name)]
+                    if names and any(_re.search(rf"\b{v}\b", text) for v in sources
+                                     if v not in names) and names[0] not in sources:
+                        # 目标名出现在 RHS 之外(它本身就是目标),用 RHS 文本判断
+                        rhs = text.split("=", 1)[-1] if "=" in text else text
+                        if any(_re.search(rf"\b{v}\b", rhs) for v in sources if v != names[0]):
+                            sources.add(names[0])
+                            changed = True
+    return sources
+
+
+def anchor_param_influence(g: nx.DiGraph, ep) -> dict[str, list[dict]]:
+    """参数 → 其影响的锚点(直接出现在锚语句,或经到达定值的定义链)。"""
+    import re as _re
+
+    params = [p.name for p in ep.params if p.location in ("json", "query")]
+    if not params:
+        return {}
+    sources = _param_source_vars(g, params)
+    rd = reaching_definitions(g)["in"]
+    result: dict[str, list[dict]] = {}
+    for n, d in g.nodes(data=True):
+        for anchor in d.get("anchors", []):
+            text = _block_text_at(d, anchor.get("line"))
+            used = _block_uses(d.get("stmts", []))
+            # 到达该块的定义文本(传递源)
+            def_texts = " ; ".join(
+                _block_text_at(g.nodes[where]) for (name, where) in rd.get(n, set())
+            )
+            combined = f"{text} ; {def_texts}"
+            for p in params:
+                direct = _re.search(rf"['\"]{p}['\"]|\b{p}\b", text)
+                transitive = any(_re.search(rf"\b{v}\b", combined) for v in sources)
+                if (direct and p in sources | set(params)) or (transitive and p in sources):
+                    result.setdefault(p, []).append(anchor)
+    return result
+
+
+def block_gates(g: nx.DiGraph) -> dict[str, list[dict]]:
+    """块级门条件(may 语义):**某条**入口→b 路径上可能拦截的 pre/guard 锚。
+
+    为什么不是支配者(must):状态门常是条件性的(如 `if GUARDS:` 包住的检查)——
+    守卫分支并非必经,但它仍是"可能挡住这块代码的门"。查询语义
+    "哪道门可能挡着这个未覆盖区域"要的正是 may。
+    """
+    nodes = [n for n in g.nodes if g.nodes[n].get("kind") != "missing"]
+    if not nodes:
+        return {}
+    entry = next((n for n in nodes if g.nodes[n].get("kind") == "entry"), nodes[0])
+    forward: set = set()
+
+    def _fr(n, seen):
+        if n in seen:
+            return
+        seen.add(n)
+        for s in g.successors(n):
+            _fr(s, seen)
+
+    _fr(entry, forward)
+    gates: dict[str, list[dict]] = {}
+    for b in nodes:
+        if b not in forward:
+            continue
+        # 反向可达(含多前驱汇合)∩ 正向可达 - 自身 = 某条入口→b 路径上的块
+        rr: set = set()
+        stack = [b]
+        while stack:
+            n = stack.pop()
+            for p in g.predecessors(n):
+                if p not in rr:
+                    rr.add(p)
+                    stack.append(p)
+        path_blocks = (rr & forward) - {b}
+        anchors = []
+        for m in path_blocks:
+            for a in g.nodes[m].get("anchors", []):
+                if a["kind"] in ("pre", "guard"):
+                    anchors.append(a)
+        if anchors:
+            gates[b] = anchors
+    return gates
 
 
 def xfg_to_dot(xfg: nx.MultiDiGraph, path: str | Path) -> None:
