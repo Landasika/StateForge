@@ -36,7 +36,7 @@ Web 应用是有状态的机器。一次请求不只是调用代码——它\emp
 \item \textbf{状态机与一次性违例}。订单未付款即发货;优惠券二次兑换;任何人都可写的角色字段导致提权。
 \end{itemize}
 
-这些漏洞同时击败两族最先进的 Web fuzzer,结构性原因可概括为:\emph{代码距离不是状态距离}。
+这些漏洞同时击败两族最先进的 Web fuzzer,结构性原因可概括为:\emph{代码距离不是状态距离}。这个难度有实证而非修辞:近期测量报告,超过两个状态准备请求的攻击上,最先进基线全部失败——即使配上必要载荷~\cite{ariadne}。
 
 \textbf{定向 fuzzer 倒在状态门的另一侧。}AFLGo~\cite{aflgo}--Predator~\cite{predator} 谱系的工具按代码空间中距目标位置的接近度排定输入优先级。对二阶漏洞,使用点在\emph{每个}请求中执行——其控制流距离近乎为零——而它在状态空间中的距离(载荷已存、会话有效)隔着若干次转移。代码定向的能量被花在接近 sink 却永远进不了所需状态的输入上。状态本身由人工预置:Predator 的评测向爬虫提供有效凭据~\cite{predator},其作者亦指出只在特定状态下显现的错误可能仍未检出。
 
@@ -69,7 +69,7 @@ Web 应用是有状态的机器。一次请求不只是调用代码——它\emp
 \subsection{各工具家族缺什么}
 \textbf{覆盖制导与代码定向 fuzzing。}Witcher~\cite{witcher} 将覆盖反馈与注解式检查配对;Predator~\cite{predator} 以块距离定向、入口 URL 反向分析、分支导出参数语料、以及经选择性 PHP opcode 插桩的运行时补边来验证静态报告。二者都在代码空间运作。Predator 为反馈而增强解释器的做法有启发意义——我们的运行时基底同样是增强解释器(ANOTA 的插桩 CPython~\cite{anota}),但它产出\emph{语义}观测(注解事件、状态读回)而非块距离,且方向信号位于状态图。关键在于:Predator 的会话以有效凭据预置~\cite{predator},认证不是它的 fuzzer 所\emph{构造}的东西。SDFuzz~\cite{sdfuzz} 在内核场景按目标\emph{状态}驱动——概念上最近的亲戚——但其状态人工指定,我们从源码恢复应用语义状态。ChatAFL~\cite{chatafl} 用 LLM 辅助推断协议状态机并合成种子;我们的状态是应用语义级(数据库、工作流、会话),LLM 修图而非合成输入。
 
-\textbf{快照 fuzzing。}Atropos~\cite{atropos} 在 epoch 间恢复快照,并展示——我们的进程级移植亦证实——二阶检出等于使用点 oracle 与状态链的乘积:固定 oracle 时,逐输入恢复不检出而 epoch 级链化检出。但 Atropos 盲目积累状态:没有"存在哪些状态"的模型、没有朝向目标的距离信号、没有对不可达性的解释,检查点摆位靠启发式。\sys{} 补上的正是这些:SSTG 提供地图,规划器提供路线,新颖度反馈提供前沿,状态评分提供检查点策略。
+\textbf{快照 fuzzing。}Atropos~\cite{atropos} 在 epoch 间恢复快照,并展示——我们的进程级移植亦证实——二阶检出等于使用点 oracle 与状态链的乘积:固定 oracle 时,逐输入恢复不检出而 epoch 级链化检出。但 Atropos 盲目积累状态:没有"存在哪些状态"的模型、没有朝向目标的距离信号、没有对不可达性的解释,检查点摆位靠启发式。\sys{} 补上的正是这些:SSTG 提供地图,规划器提供路线,新颖度反馈提供前沿,状态评分提供检查点策略。正交地,Ariadne~\cite{ariadne} 做\emph{取证式}重建:给定已检出的终末攻击请求,以目标导向搜索(状态距离来自流量数据)恢复前置状态准备序列。我们与之互补——我们在攻击发生\emph{之前}发现它们,不以任何攻击或报告为输入,且状态模型从源码恢复而非运行日志。
 
 \subsection{动机实例}
 考虑受控应用的支付绕过缺陷。ship 端点内含检查 \texttt{if order["status"] != "PAID": 拒绝},外包一个运行时功能旗标(单源码、守卫/非守卫双变体)。代码定向 fuzzer 看到 ship 处理器距离近乎为零,朝它倾泻未认证请求——全部 401/409 被拒。触达缺陷需要四层深的状态链:\texttt{register}(产用户)$\to$\texttt{login}(产会话)$\to$\texttt{create}(产 \texttt{Order.status=CREATED},绑定对象号 $\theta$)$\to$\texttt{ship},附攻击假设"旗标条件前置缺席"。我们的规划器从恢复的 SSTG 恰好排出这条链——\emph{不含支付步骤}——由执行终裁:非守卫变体以 \texttt{paid\_amount=0} 到达 \texttt{SHIPPED}(命中),守卫变体在 ship 被阻断(409)。假设本身可机器生成:静态分析观察到前置的旗标条件性。问题不是这类链存不存在——而是谁能找到它们、以何种成本。
@@ -232,6 +232,11 @@ in \emph{Proc. IEEE S\&P}, 2025.
 \bibitem{atropos}
 ``Atropos: Stateful web application fuzzing with snapshot restoration,''
 in \emph{Proc. USENIX Security Symposium}, 2024.
+
+\bibitem{ariadne}
+Y. Peng, J.-R. Zhang, X.-Y. Mu, Z.-F. He, S. Ji, H. Wan, et al.,
+``Ariadne: Reconstruction of stateful web attacks via goal-oriented state search,''
+\emph{IEEE Trans. Dependable Secure Comput.}, vol.~23, no.~5, pp. 11184--11198, 2026.
 
 \bibitem{witcher}
 E. Trickel, B. Wang, A. Doup\'e, and Y. Shoshitaishvili,
