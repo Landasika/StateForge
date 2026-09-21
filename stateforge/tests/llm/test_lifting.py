@@ -50,17 +50,17 @@ def test_label_llm_applies_enum_labels():
     assert lift.source.startswith("llm:")
     by = {sv.var: sv for sv in svs}
     assert by["Order.status"].label == "workflow"
-    assert "[llm:fake-model]" in by["Order.status"].rationale
+    assert "[llm:anthropic:fake-model]" in by["Order.status"].rationale
     assert len(lift.label_log) == 2
 
 
 def test_label_invalid_json_falls_back_to_rules():
     p = FakeProvider(["这不是 JSON", "仍然不是"])
     svs, lift = label(_cands(), {}, provider=p)
-    assert lift.source == "heuristic"
+    assert lift.source == "no-llm"
     assert lift.meta.get("fallback") == "schema_violation"
     by = {sv.var: sv for sv in svs}
-    assert by["Coupon.used"].label == "single_use"  # 规则兜底仍工作
+    assert by["Coupon.used"].label == "irrelevant"  # 无 LLM 降级:不猜语义
 
 
 def test_label_rejects_missing_candidates():
@@ -68,7 +68,7 @@ def test_label_rejects_missing_candidates():
     resp = json.dumps([{"var": "Order.status", "label": "workflow", "rationale": "x"}])
     p = FakeProvider([resp, resp])
     _, lift = label(_cands(), {}, provider=p)
-    assert lift.source == "heuristic"
+    assert lift.source == "no-llm"
 
 
 def test_relate_parses_hierarchy():
@@ -87,5 +87,5 @@ def test_relate_parses_hierarchy():
 
 def test_provider_none_means_rules():
     svs, lift = label(_cands(), {}, provider=None)
-    assert lift.source == "heuristic"
+    assert lift.source == "no-llm"
     assert svs

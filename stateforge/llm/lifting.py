@@ -39,16 +39,24 @@ class ExtraTransition(BaseModel):
     model_config = {"populate_by_name": True}
 
 
+class AuthChain(BaseModel):
+    """LLM relate 提出的 auth 链:该端点是否产/需认证状态。"""
+    endpoint: str                     # "POST /auth/login"
+    direction: str                    # "produce" | "require" | "clear"
+    rationale: str = ""
+
+
 class CrossEntityInvariant(BaseModel):
     vars: list[str]
     rule: str
 
 
 class LiftResult(BaseModel):
-    source: str = "heuristic"            # heuristic | llm:<provider>:<model>
+    source: str = "heuristic"            # heuristic | llm:<provider>:<model> | llm:cache
     role_hierarchy: dict[str, list[str]] = Field(default_factory=dict)
     extra_transitions: list[ExtraTransition] = Field(default_factory=list)
     cross_entity_invariants: list[CrossEntityInvariant] = Field(default_factory=list)
+    auth_chains: list[AuthChain] = Field(default_factory=list)  # LLM auth 链(替代 auth_baseline)
     label_log: list[dict] = Field(default_factory=list)   # 逐候选标签审计记录
     meta: dict = Field(default_factory=dict)             # 模型/温度/缓存命中
 
@@ -58,38 +66,63 @@ class LiftResult(BaseModel):
 
 def label(candidates: list[StateCandidate], domains: dict[str, list[str]],
           provider: Provider | None = None) -> tuple[list[StateVar], LiftResult]:
-    """返回 (StateVar 列表, LiftResult 审计)。provider=None 走规则。"""
-    if provider is None:
-        return label_rule_based(candidates, domains), LiftResult(source="heuristic")
+    """返回 (StateVar 列表, LiftResult 审计)。
 
+    优先级:① 缓存命中(即使无 provider,历史 LLM 响应仍可用)
+           ② provider 调用
+           ③ 无 provider 且无缓存 → 全 irrelevant(诚实降级,不猜)
+    """
     facts = [
         {"var": c.var, "ops": c.ops, "source": c.source,
          "domain": domains.get(c.var), "evidence": c.evidence[:160]}
         for c in candidates
     ]
+
+    # ① 缓存优先(测试/离线复现:跑一次真 LLM 后,后续零 token)
+    cached_raw = cache.get({"kind": "label", "facts": facts}, PROMPT_VERSION)
+    if cached_raw is not None:
+        parsed = _parse_labels(cached_raw, facts)
+        if parsed is not None:
+            return _apply_labels(parsed, candidates, domains,
+                                 LiftResult(source="llm:cache",
+                                            meta={"from": "cache"}))
+
+    # ② 无缓存且无 provider → 诚实降级
+    if provider is None:
+        return label_rule_based(candidates, domains), LiftResult(source="no-llm")
+
+    # ③ 真调用
     raw = _cached_complete(provider, "label", facts, _LABEL_SYSTEM)
     parsed = _parse_labels(raw, facts)
     if parsed is None:  # 一次结构化重试
-        raw = _cached_complete(provider, "label", facts, _LABEL_SYSTEM + "\n(previous answer was not valid JSON — output ONLY the JSON array)", refresh=True)
+        raw = _cached_complete(provider, "label", facts,
+                               _LABEL_SYSTEM + "\n(previous answer was not valid JSON — output ONLY the JSON array)",
+                               refresh=True)
         parsed = _parse_labels(raw, facts)
     if parsed is None:  # 降级
         return label_rule_based(candidates, domains), LiftResult(
-            source="heuristic", meta={"fallback": "schema_violation"},
+            source="no-llm", meta={"fallback": "schema_violation"},
         )
+    return _apply_labels(parsed, candidates, domains,
+                         LiftResult(source=f"llm:{provider.kind}:{provider.model}",
+                                    meta={"temperature": 0.0, "prompt": PROMPT_VERSION,
+                                          "model": provider.model}))
 
+
+def _apply_labels(parsed: list[dict], candidates: list[StateCandidate],
+                  domains: dict[str, list[str]], lift: LiftResult
+                  ) -> tuple[list[StateVar], LiftResult]:
+    """LLM 解析结果应用到 StateVar(结构打底+标签覆盖)。"""
     by_var = {p["var"]: p for p in parsed}
     out = label_rule_based(candidates, domains)  # 结构打底(anchors/domain 合并)
     for sv in out:
         hit = by_var.get(sv.var)
         if hit:
             sv.label = hit["label"]
-            sv.rationale = f"[llm:{provider.model}] {hit['rationale']}"
-    log = [{"var": p["var"], "label": p["label"], "confidence": p.get("confidence")}
-           for p in parsed]
-    return out, LiftResult(
-        source=f"llm:{provider.kind}:{provider.model}", label_log=log,
-        meta={"temperature": 0.0, "prompt": PROMPT_VERSION, "model": provider.model},
-    )
+            sv.rationale = f"[{lift.source}] {hit['rationale']}"
+    lift.label_log = [{"var": p["var"], "label": p["label"],
+                       "confidence": p.get("confidence")} for p in parsed]
+    return out, lift
 
 
 def _parse_labels(raw: str, facts: list[dict]) -> list[dict] | None:
@@ -139,9 +172,12 @@ def _cached_complete(provider: Provider, kind: str, facts, system: str,
 
 def relate(relevant_vars: list[StateVar], endpoints: list[Endpoint],
            provider: Provider | None = None) -> LiftResult:
-    """有界关系提升:只对 security-relevant 候选做(ADR-0009)。"""
-    if provider is None or not relevant_vars:
-        return LiftResult(source="heuristic")
+    """有界关系提升:只对 security-relevant 候选做(ADR-0009)。
+
+    产出:角色层级/补迁移/跨实体不变式 + **auth 链**(产/需/清认证状态)。
+    """
+    if not relevant_vars:
+        return LiftResult(source="no-llm")
     facts = {
         "vars": [
             {"var": sv.var, "label": sv.label, "domain": sv.domain}
@@ -150,21 +186,87 @@ def relate(relevant_vars: list[StateVar], endpoints: list[Endpoint],
         "endpoints": [
             {"route": f"{ep.methods[0]} {ep.route}",
              "pre": [[p.var, p.op, p.value] for p in ep.preconditions],
-             "eff": [[e.var, e.value] for e in ep.effects]}
+             "eff": [[e.var, e.value] for e in ep.effects],
+             "observes": ep.observes[:6]}
             for ep in endpoints
         ],
     }
+
+    # 缓存优先
+    cached_raw = cache.get({"kind": "relate", "facts": facts}, PROMPT_VERSION)
+    if cached_raw is not None:
+        return _parse_relate(cached_raw, LiftResult(source="llm:cache"))
+
+    if provider is None:
+        return LiftResult(source="no-llm")
+
     raw = _cached_complete(provider, "relate", facts, _RELATE_SYSTEM)
+    return _parse_relate(raw, LiftResult(
+        source=f"llm:{provider.kind}:{provider.model}",
+        meta={"temperature": 0.0, "prompt": PROMPT_VERSION, "model": provider.model}))
+
+
+def _parse_relate(raw: str, lift: LiftResult) -> LiftResult:
     try:
         data = json.loads(_strip_fences(raw))
-        return LiftResult(
-            source=f"llm:{provider.kind}:{provider.model}",
-            role_hierarchy=data.get("role_hierarchy") or {},
-            extra_transitions=[ExtraTransition.model_validate(t)
-                               for t in data.get("extra_transitions") or []],
-            cross_entity_invariants=[CrossEntityInvariant.model_validate(i)
-                                     for i in data.get("cross_entity_invariants") or []],
-            meta={"temperature": 0.0, "prompt": PROMPT_VERSION, "model": provider.model},
-        )
+        lift.role_hierarchy = data.get("role_hierarchy") or {}
+        lift.extra_transitions = [ExtraTransition.model_validate(t)
+                                  for t in data.get("extra_transitions") or []]
+        lift.cross_entity_invariants = [CrossEntityInvariant.model_validate(i)
+                                        for i in data.get("cross_entity_invariants") or []]
+        lift.auth_chains = [AuthChain.model_validate(a)
+                            for a in data.get("auth_chains") or []]
+        return lift
     except (json.JSONDecodeError, ValidationError):
-        return LiftResult(source="heuristic", meta={"fallback": "schema_violation"})
+        return LiftResult(source="no-llm", meta={"fallback": "schema_violation"})
+
+
+def apply_lift_result(model, lift: LiftResult) -> int:
+    """把 LLM relate 的 auth_chains 应用到 AppModel(替代 auth_baseline)。
+
+    返回应用了多少条事实。
+    """
+    from stateforge.core.model import Effect, Precondition, StateCandidate
+
+    added = 0
+    for chain in lift.auth_chains:
+        route = chain.endpoint
+        for ep in model.endpoints:
+            if f"{ep.methods[0]} {ep.route}" == route or ep.route == route:
+                if chain.direction == "produce":
+                    if not any(e.var == "Session.authed_as" for e in ep.effects):
+                        ep.effects.append(Effect(
+                            var="Session.authed_as", op="set", key="username",
+                            file=ep.file, line=ep.line))
+                        added += 1
+                elif chain.direction == "require":
+                    if not any(p.var == "Session.authed_as" for p in ep.preconditions):
+                        ep.preconditions.append(Precondition(
+                            var="Session.authed_as", op="truthy",
+                            file=ep.file, line=ep.line))
+                        added += 1
+                elif chain.direction == "clear":
+                    if not any(e.var == "Session.authed_as" and e.op == "clear"
+                               for e in ep.effects):
+                        ep.effects.append(Effect(
+                            var="Session.authed_as", op="clear",
+                            file=ep.file, line=ep.line))
+                        added += 1
+                break
+
+    # Session.authed_as 候选+StateVar 若不存在,补(直接带 authn 标签,
+    # 因为 LLM 的 auth_chains 本身就是语义判断的产物)
+    if added:
+        from stateforge.core.model import StateVar
+        if not any(c.var == "Session.authed_as" for c in model.candidates):
+            model.candidates.append(StateCandidate(
+                var="Session.authed_as", entity="Session", attr="authed_as",
+                ops=["write", "read"],
+                evidence="LLM relate auth_chains",
+                source="session_access", file="", line=0))
+        if not any(sv.var == "Session.authed_as" for sv in model.state_vars):
+            model.state_vars.append(StateVar(
+                entity="Session", attr="authed_as", kind="session",
+                label="authn", security_relevant=True,
+                rationale=f"[{lift.source}] LLM auth chain"))
+    return added

@@ -10,7 +10,6 @@ from __future__ import annotations
 from collections import defaultdict
 from pathlib import Path
 
-from stateforge.analyzer.auth_baseline import apply_auth_baseline
 from stateforge.analyzer.flask_adapter import extract_flask
 from stateforge.analyzer.openapi_adapter import extract_connexion
 from stateforge.analyzer.selector import select
@@ -30,11 +29,21 @@ def analyze(target_dir: str | Path, framework: str = "flask") -> AppModel:
     else:
         raise ValueError(f"unknown framework: {framework}")
 
-    # auth 基线(标注层,非挖掘):在标注前补 Session.authed_as 候选,
-    # 使其能进入 label → select 流程;LLM relate 的 auth_chains 是正式通道
-    apply_auth_baseline(model)
-    model.state_vars = label_rule_based(model.candidates, _domains(model))
-    model.state_vars = select(model.state_vars)
+    # 语义标注:LLM 是唯一通道(缓存优先,无缓存+无 key → 全 irrelevant)
+    domains = _domains(model)
+    from stateforge.llm.lifting import label, relate, apply_lift_result
+    from stateforge.llm.provider import Provider
+    provider = Provider.from_env()
+
+    svs, lift = label(model.candidates, domains, provider=provider)
+    model.state_vars = select(svs)
+
+    # relate:auth 链 + 关系事实(LLM,替代旧 auth_baseline 白名单)
+    sec = [sv for sv in model.state_vars if sv.security_relevant]
+    if sec:
+        rel = relate(sec, model.endpoints, provider=provider)
+        apply_lift_result(model, rel)  # auth_chains → Session.authed_as 产/需/清
+
     model.invariants = derive_invariants(model)
     return model
 
