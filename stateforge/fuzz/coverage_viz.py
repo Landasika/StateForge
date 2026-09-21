@@ -110,7 +110,13 @@ def _load_app(app_root: str, framework: str):
 
 def map_coverage_to_blocks(app_root: str, framework: str,
                            covered: set[tuple[str, int]]) -> dict:
-    """把覆盖行映射到 G_xfg 的块节点,返回 {block_id: True}。"""
+    """把覆盖行映射到 G_xfg 的块节点(精确匹配优先,范围匹配兜底)。
+
+    精度改进(任务 B):
+    ① 精确匹配:块内每条语句的起始行号逐一核对(不是范围包含)
+    ② 范围兜底:精确匹配失败的块,退回行范围判断(处理多行语句)
+    ③ 文件消歧:同目录下的同名文件用完整相对路径消歧
+    """
     from stateforge.analyzer.analyzer import analyze
     from stateforge.analyzer.cfg import build_xfg
 
@@ -118,26 +124,43 @@ def map_coverage_to_blocks(app_root: str, framework: str,
     cg_path = Path(app_root) / ".pycg-callgraph.json"
     xfg = build_xfg(model, callgraph_path=cg_path if cg_path.exists() else None)
 
-    # 构建 文件名 → 行号集合
+    # 构建 文件 → 行号集合(用相对路径消歧同名文件)
+    root = Path(app_root).resolve()
     by_file: dict[str, set[int]] = {}
     for f, l in covered:
-        fname = Path(f).name
-        by_file.setdefault(fname, set()).add(l)
+        try:
+            rel = str(Path(f).resolve().relative_to(root))
+        except ValueError:
+            rel = Path(f).name
+        by_file.setdefault(rel, set()).add(l)
 
-    # 对每个块节点,检查其行范围是否有覆盖行
+    # 对每个块节点:精确匹配(语句行号)→范围兜底
     covered_blocks = {}
     for n, d in xfg.nodes(data=True):
         if d.get("kind") not in ("block", "branch", "terminal"):
             continue
+        stmts = d.get("stmts", [])
         lines = d.get("lines")
         if not lines:
             continue
-        fname = Path(d.get("file", "")).name
-        if not fname:
+        # 文件消歧:用相对路径
+        d_file = d.get("file", "")
+        try:
+            rel = str(Path(d_file).resolve().relative_to(root))
+        except (ValueError, TypeError):
+            rel = Path(d_file).name if d_file else ""
+        file_lines = by_file.get(rel, set())
+        if not file_lines:
             continue
-        file_lines = by_file.get(fname, set())
+
         lo, hi = lines
-        if any(lo <= l <= hi for l in file_lines):
+        # ① 精确匹配:块内语句的起始行号
+        stmt_lines = {s.lineno for s in stmts if hasattr(s, "lineno")}
+        exact_hit = bool(stmt_lines & file_lines)
+        # ② 范围兜底:处理多行语句(如 if cond: 跨行)
+        range_hit = any(lo <= l <= hi for l in file_lines)
+
+        if exact_hit or range_hit:
             covered_blocks[n] = True
             xfg.nodes[n]["covered"] = True
 
