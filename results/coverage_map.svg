@@ -1,0 +1,433 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='32730' height='302' font-family='Helvetica,Arial,sans-serif'>
+<text x='20' y='28' font-size='17' font-weight='bold'>Coverage Map — 73/121 blocks covered</text>
+<defs><marker id='a' markerWidth='9' markerHeight='9' refX='8' refY='3' orient='auto'><path d='M0,0 L9,3 L0,6 z' fill='#555'/></marker></defs>
+<rect x='0' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='1'/>
+<text x='8' y='58' font-size='11' fill='#111'>e0</text>
+<rect x='250' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='1'/>
+<text x='258' y='58' font-size='11' fill='#111'>e0</text>
+<rect x='500' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='508' y='58' font-size='11' fill='#111'>b1</text>
+<rect x='750' y='40' width='190' height='46' rx='12' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='758' y='58' font-size='11' fill='#111'>b2</text>
+<rect x='1000' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='1'/>
+<text x='1008' y='58' font-size='11' fill='#111'>t3</text>
+<rect x='1250' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='2.5'/>
+<text x='1258' y='58' font-size='11' fill='#111'>b4</text>
+<text x='1258' y='72' font-size='9' fill='#c00'>e:User.role</text>
+<rect x='1500' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='1'/>
+<text x='1508' y='58' font-size='11' fill='#111'>t5</text>
+<rect x='1750' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='1758' y='58' font-size='11' fill='#111'>t6</text>
+<rect x='2000' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='2.5'/>
+<text x='2008' y='58' font-size='11' fill='#111'>e0</text>
+<text x='2008' y='72' font-size='9' fill='#c00'>e:Session.authed_as</text>
+<rect x='2250' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='2258' y='58' font-size='11' fill='#111'>b1</text>
+<rect x='2500' y='40' width='190' height='46' rx='12' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='2508' y='58' font-size='11' fill='#111'>b2</text>
+<rect x='2750' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='1'/>
+<text x='2758' y='58' font-size='11' fill='#111'>t3</text>
+<rect x='3000' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='3008' y='58' font-size='11' fill='#111'>t4</text>
+<rect x='3250' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='2.5'/>
+<text x='3258' y='58' font-size='11' fill='#111'>e0</text>
+<text x='3258' y='72' font-size='9' fill='#c00'>p:Session.authed_as</text>
+<rect x='3500' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='3508' y='58' font-size='11' fill='#111'>b1</text>
+<rect x='3750' y='40' width='190' height='46' rx='12' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='3758' y='58' font-size='11' fill='#111'>b2</text>
+<rect x='4000' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='1'/>
+<text x='4008' y='58' font-size='11' fill='#111'>t3</text>
+<rect x='4250' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='4258' y='58' font-size='11' fill='#111'>t4</text>
+<rect x='4500' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='2.5'/>
+<text x='4508' y='58' font-size='11' fill='#111'>e0</text>
+<text x='4508' y='72' font-size='9' fill='#c00'>p:Session.authed_as</text>
+<rect x='4750' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='4758' y='58' font-size='11' fill='#111'>b1</text>
+<rect x='5000' y='40' width='190' height='46' rx='12' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='5008' y='58' font-size='11' fill='#111'>b2</text>
+<rect x='5250' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='1'/>
+<text x='5258' y='58' font-size='11' fill='#111'>t3</text>
+<rect x='5500' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='5508' y='58' font-size='11' fill='#111'>b4</text>
+<rect x='5750' y='40' width='190' height='46' rx='12' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='5758' y='58' font-size='11' fill='#111'>b5</text>
+<rect x='6000' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='1'/>
+<text x='6008' y='58' font-size='11' fill='#111'>t6</text>
+<rect x='6250' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='6258' y='58' font-size='11' fill='#111'>b7</text>
+<rect x='6500' y='40' width='190' height='46' rx='12' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='6508' y='58' font-size='11' fill='#111'>b8</text>
+<rect x='6750' y='40' width='190' height='46' rx='12' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='6758' y='58' font-size='11' fill='#111'>b9</text>
+<rect x='7000' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='1'/>
+<text x='7008' y='58' font-size='11' fill='#111'>t10</text>
+<rect x='7250' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='7258' y='58' font-size='11' fill='#111'>b11</text>
+<rect x='7500' y='40' width='190' height='46' rx='12' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='7508' y='58' font-size='11' fill='#111'>b12</text>
+<rect x='7750' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='1'/>
+<text x='7758' y='58' font-size='11' fill='#111'>t13</text>
+<rect x='8000' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='8008' y='58' font-size='11' fill='#111'>b14</text>
+<rect x='8250' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='8258' y='58' font-size='11' fill='#111'>b15</text>
+<rect x='8500' y='40' width='190' height='46' rx='12' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='8508' y='58' font-size='11' fill='#111'>b16</text>
+<rect x='8750' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='8758' y='58' font-size='11' fill='#111'>b17</text>
+<rect x='9000' y='40' width='190' height='46' rx='12' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='9008' y='58' font-size='11' fill='#111'>b18</text>
+<rect x='9250' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='1'/>
+<text x='9258' y='58' font-size='11' fill='#111'>t19</text>
+<rect x='9500' y='40' width='190' height='46' rx='12' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='9508' y='58' font-size='11' fill='#111'>b20</text>
+<rect x='9750' y='40' width='190' height='46' rx='12' fill='#f0f0f0' stroke='#ccc' stroke-width='2.5'/>
+<text x='9758' y='58' font-size='11' fill='#111'>b21</text>
+<text x='9758' y='72' font-size='9' fill='#c00'>p:Coupon.used</text>
+<rect x='10000' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='1'/>
+<text x='10008' y='58' font-size='11' fill='#111'>t22</text>
+<rect x='10250' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='2.5'/>
+<text x='10258' y='58' font-size='11' fill='#111'>b23</text>
+<text x='10258' y='72' font-size='9' fill='#c00'>e:Coupon.used</text>
+<rect x='10500' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='2.5'/>
+<text x='10508' y='58' font-size='11' fill='#111'>b24</text>
+<text x='10508' y='72' font-size='9' fill='#c00'>e:Order.status e:Order.paid_amount</text>
+<rect x='10750' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='10758' y='58' font-size='11' fill='#111'>t25</text>
+<rect x='11000' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='2.5'/>
+<text x='11008' y='58' font-size='11' fill='#111'>e0</text>
+<text x='11008' y='72' font-size='9' fill='#c00'>p:Session.authed_as</text>
+<rect x='11250' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='11258' y='58' font-size='11' fill='#111'>b1</text>
+<rect x='11500' y='40' width='190' height='46' rx='12' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='11508' y='58' font-size='11' fill='#111'>b2</text>
+<rect x='11750' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='1'/>
+<text x='11758' y='58' font-size='11' fill='#111'>t3</text>
+<rect x='12000' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='12008' y='58' font-size='11' fill='#111'>b4</text>
+<rect x='12250' y='40' width='190' height='46' rx='12' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='12258' y='58' font-size='11' fill='#111'>b5</text>
+<rect x='12500' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='1'/>
+<text x='12508' y='58' font-size='11' fill='#111'>t6</text>
+<rect x='12750' y='40' width='190' height='46' rx='12' fill='#c8facc' stroke='#28a745' stroke-width='2.5'/>
+<text x='12758' y='58' font-size='11' fill='#111'>b7</text>
+<text x='12758' y='72' font-size='9' fill='#c00'>g:owner</text>
+<rect x='13000' y='40' width='190' height='46' rx='12' fill='#f0f0f0' stroke='#ccc' stroke-width='2.5'/>
+<text x='13008' y='58' font-size='11' fill='#111'>b8</text>
+<text x='13008' y='72' font-size='9' fill='#c00'>p:Order.user_id</text>
+<rect x='13250' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='1'/>
+<text x='13258' y='58' font-size='11' fill='#111'>t9</text>
+<rect x='13500' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='13508' y='58' font-size='11' fill='#111'>t10</text>
+<rect x='13750' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='2.5'/>
+<text x='13758' y='58' font-size='11' fill='#111'>e0</text>
+<text x='13758' y='72' font-size='9' fill='#c00'>p:Session.authed_as</text>
+<rect x='14000' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='14008' y='58' font-size='11' fill='#111'>b1</text>
+<rect x='14250' y='40' width='190' height='46' rx='12' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='14258' y='58' font-size='11' fill='#111'>b2</text>
+<rect x='14500' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='1'/>
+<text x='14508' y='58' font-size='11' fill='#111'>t3</text>
+<rect x='14750' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='14758' y='58' font-size='11' fill='#111'>b4</text>
+<rect x='15000' y='40' width='190' height='46' rx='12' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='15008' y='58' font-size='11' fill='#111'>b5</text>
+<rect x='15250' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='1'/>
+<text x='15258' y='58' font-size='11' fill='#111'>t6</text>
+<rect x='15500' y='40' width='190' height='46' rx='12' fill='#c8facc' stroke='#28a745' stroke-width='2.5'/>
+<text x='15508' y='58' font-size='11' fill='#111'>b7</text>
+<text x='15508' y='72' font-size='9' fill='#c00'>g:owner</text>
+<rect x='15750' y='40' width='190' height='46' rx='12' fill='#f0f0f0' stroke='#ccc' stroke-width='2.5'/>
+<text x='15758' y='58' font-size='11' fill='#111'>b8</text>
+<text x='15758' y='72' font-size='9' fill='#c00'>p:Order.user_id</text>
+<rect x='16000' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='1'/>
+<text x='16008' y='58' font-size='11' fill='#111'>t9</text>
+<rect x='16250' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='16258' y='58' font-size='11' fill='#111'>b10</text>
+<rect x='16500' y='40' width='190' height='46' rx='12' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='16508' y='58' font-size='11' fill='#111'>b11</text>
+<rect x='16750' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='1'/>
+<text x='16758' y='58' font-size='11' fill='#111'>t12</text>
+<rect x='17000' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='17008' y='58' font-size='11' fill='#111'>b13</text>
+<rect x='17250' y='40' width='190' height='46' rx='12' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='17258' y='58' font-size='11' fill='#111'>b14</text>
+<rect x='17500' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='1'/>
+<text x='17508' y='58' font-size='11' fill='#111'>b15</text>
+<rect x='17750' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='17758' y='58' font-size='11' fill='#111'>b16</text>
+<rect x='18000' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='18008' y='58' font-size='11' fill='#111'>b17</text>
+<rect x='18250' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='18258' y='58' font-size='11' fill='#111'>t18</text>
+<rect x='18500' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='2.5'/>
+<text x='18508' y='58' font-size='11' fill='#111'>e0</text>
+<text x='18508' y='72' font-size='9' fill='#c00'>p:Session.authed_as</text>
+<rect x='18750' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='18758' y='58' font-size='11' fill='#111'>b1</text>
+<rect x='19000' y='40' width='190' height='46' rx='12' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='19008' y='58' font-size='11' fill='#111'>b2</text>
+<rect x='19250' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='1'/>
+<text x='19258' y='58' font-size='11' fill='#111'>t3</text>
+<rect x='19500' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='19508' y='58' font-size='11' fill='#111'>b4</text>
+<rect x='19750' y='40' width='190' height='46' rx='12' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='19758' y='58' font-size='11' fill='#111'>b5</text>
+<rect x='20000' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='1'/>
+<text x='20008' y='58' font-size='11' fill='#111'>t6</text>
+<rect x='20250' y='40' width='190' height='46' rx='12' fill='#c8facc' stroke='#28a745' stroke-width='2.5'/>
+<text x='20258' y='58' font-size='11' fill='#111'>b7</text>
+<text x='20258' y='72' font-size='9' fill='#c00'>g:owner g:custom</text>
+<rect x='20500' y='40' width='190' height='46' rx='12' fill='#f0f0f0' stroke='#ccc' stroke-width='2.5'/>
+<text x='20508' y='58' font-size='11' fill='#111'>b8</text>
+<text x='20508' y='72' font-size='9' fill='#c00'>p:Order.user_id</text>
+<rect x='20750' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='1'/>
+<text x='20758' y='58' font-size='11' fill='#111'>t9</text>
+<rect x='21000' y='40' width='190' height='46' rx='12' fill='#f0f0f0' stroke='#ccc' stroke-width='2.5'/>
+<text x='21008' y='58' font-size='11' fill='#111'>b10</text>
+<text x='21008' y='72' font-size='9' fill='#c00'>p:Order.status</text>
+<rect x='21250' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='1'/>
+<text x='21258' y='58' font-size='11' fill='#111'>t11</text>
+<rect x='21500' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='2.5'/>
+<text x='21508' y='58' font-size='11' fill='#111'>b12</text>
+<text x='21508' y='72' font-size='9' fill='#c00'>e:Order.status</text>
+<rect x='21750' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='21758' y='58' font-size='11' fill='#111'>t13</text>
+<rect x='22000' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='2.5'/>
+<text x='22008' y='58' font-size='11' fill='#111'>e0</text>
+<text x='22008' y='72' font-size='9' fill='#c00'>p:Session.authed_as</text>
+<rect x='22250' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='22258' y='58' font-size='11' fill='#111'>b1</text>
+<rect x='22500' y='40' width='190' height='46' rx='12' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='22508' y='58' font-size='11' fill='#111'>b2</text>
+<rect x='22750' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='1'/>
+<text x='22758' y='58' font-size='11' fill='#111'>t3</text>
+<rect x='23000' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='23008' y='58' font-size='11' fill='#111'>b4</text>
+<rect x='23250' y='40' width='190' height='46' rx='12' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='23258' y='58' font-size='11' fill='#111'>b5</text>
+<rect x='23500' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='1'/>
+<text x='23508' y='58' font-size='11' fill='#111'>t6</text>
+<rect x='23750' y='40' width='190' height='46' rx='12' fill='#c8facc' stroke='#28a745' stroke-width='2.5'/>
+<text x='23758' y='58' font-size='11' fill='#111'>b7</text>
+<text x='23758' y='72' font-size='9' fill='#c00'>g:owner</text>
+<rect x='24000' y='40' width='190' height='46' rx='12' fill='#f0f0f0' stroke='#ccc' stroke-width='2.5'/>
+<text x='24008' y='58' font-size='11' fill='#111'>b8</text>
+<text x='24008' y='72' font-size='9' fill='#c00'>p:Order.user_id</text>
+<rect x='24250' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='1'/>
+<text x='24258' y='58' font-size='11' fill='#111'>t9</text>
+<rect x='24500' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='2.5'/>
+<text x='24508' y='58' font-size='11' fill='#111'>b10</text>
+<text x='24508' y='72' font-size='9' fill='#c00'>e:Order.status</text>
+<rect x='24750' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='24758' y='58' font-size='11' fill='#111'>t11</text>
+<rect x='25000' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='1'/>
+<text x='25008' y='58' font-size='11' fill='#111'>e0</text>
+<rect x='25250' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='25258' y='58' font-size='11' fill='#111'>b1</text>
+<rect x='25500' y='40' width='190' height='46' rx='12' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='25508' y='58' font-size='11' fill='#111'>b2</text>
+<rect x='25750' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='1'/>
+<text x='25758' y='58' font-size='11' fill='#111'>t3</text>
+<rect x='26000' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='26008' y='58' font-size='11' fill='#111'>t4</text>
+<rect x='26250' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='2.5'/>
+<text x='26258' y='58' font-size='11' fill='#111'>e0</text>
+<text x='26258' y='72' font-size='9' fill='#c00'>p:Session.authed_as</text>
+<rect x='26500' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='26508' y='58' font-size='11' fill='#111'>b1</text>
+<rect x='26750' y='40' width='190' height='46' rx='12' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='26758' y='58' font-size='11' fill='#111'>b2</text>
+<rect x='27000' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='1'/>
+<text x='27008' y='58' font-size='11' fill='#111'>t3</text>
+<rect x='27250' y='40' width='190' height='46' rx='12' fill='#c8facc' stroke='#28a745' stroke-width='2.5'/>
+<text x='27258' y='58' font-size='11' fill='#111'>b4</text>
+<text x='27258' y='72' font-size='9' fill='#c00'>g:role</text>
+<rect x='27500' y='40' width='190' height='46' rx='12' fill='#f0f0f0' stroke='#ccc' stroke-width='2.5'/>
+<text x='27508' y='58' font-size='11' fill='#111'>b5</text>
+<text x='27508' y='72' font-size='9' fill='#c00'>p:User.role</text>
+<rect x='27750' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='1'/>
+<text x='27758' y='58' font-size='11' fill='#111'>t6</text>
+<rect x='28000' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='28008' y='58' font-size='11' fill='#111'>b7</text>
+<rect x='28250' y='40' width='190' height='46' rx='12' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='28258' y='58' font-size='11' fill='#111'>b8</text>
+<rect x='28500' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='1'/>
+<text x='28508' y='58' font-size='11' fill='#111'>t9</text>
+<rect x='28750' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='28758' y='58' font-size='11' fill='#111'>b10</text>
+<rect x='29000' y='40' width='190' height='46' rx='12' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='29008' y='58' font-size='11' fill='#111'>b11</text>
+<rect x='29250' y='40' width='190' height='46' rx='7' fill='#f0f0f0' stroke='#ccc' stroke-width='1'/>
+<text x='29258' y='58' font-size='11' fill='#111'>t12</text>
+<rect x='29500' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='29508' y='58' font-size='11' fill='#111'>b13</text>
+<rect x='29750' y='40' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='29758' y='58' font-size='11' fill='#111'>t14</text>
+<box x='30000' y='40' width='190' height='46' rx='7' fill='#d6f5d6' stroke='#2e8b57' stroke-width='1'/>
+<text x='30008' y='58' font-size='11' fill='#111'>GET /</text>
+<box x='30250' y='40' width='190' height='46' rx='7' fill='#d6f5d6' stroke='#2e8b57' stroke-width='1'/>
+<text x='30258' y='58' font-size='11' fill='#111'>POST /auth/register</text>
+<box x='30500' y='40' width='190' height='46' rx='7' fill='#d6f5d6' stroke='#2e8b57' stroke-width='1'/>
+<text x='30508' y='58' font-size='11' fill='#111'>POST /auth/login</text>
+<box x='30750' y='40' width='190' height='46' rx='7' fill='#d6f5d6' stroke='#2e8b57' stroke-width='1'/>
+<text x='30758' y='58' font-size='11' fill='#111'>GET /auth/me</text>
+<box x='31000' y='40' width='190' height='46' rx='7' fill='#d6f5d6' stroke='#2e8b57' stroke-width='1'/>
+<text x='31008' y='58' font-size='11' fill='#111'>POST /orders</text>
+<box x='31250' y='40' width='190' height='46' rx='7' fill='#d6f5d6' stroke='#2e8b57' stroke-width='1'/>
+<text x='31258' y='58' font-size='11' fill='#111'>GET /orders/&lt;int:oid&gt;</text>
+<box x='31500' y='40' width='190' height='46' rx='7' fill='#d6f5d6' stroke='#2e8b57' stroke-width='1'/>
+<text x='31508' y='58' font-size='11' fill='#111'>POST /orders/&lt;int:oid&gt;/pay</text>
+<box x='31750' y='40' width='190' height='46' rx='7' fill='#d6f5d6' stroke='#2e8b57' stroke-width='1'/>
+<text x='31758' y='58' font-size='11' fill='#111'>POST /orders/&lt;int:oid&gt;/shi</text>
+<box x='32000' y='40' width='190' height='46' rx='7' fill='#d6f5d6' stroke='#2e8b57' stroke-width='1'/>
+<text x='32008' y='58' font-size='11' fill='#111'>POST /orders/&lt;int:oid&gt;/can</text>
+<box x='32250' y='40' width='190' height='46' rx='7' fill='#d6f5d6' stroke='#2e8b57' stroke-width='1'/>
+<text x='32258' y='58' font-size='11' fill='#111'>GET /coupons/&lt;code&gt;</text>
+<box x='32500' y='40' width='190' height='46' rx='7' fill='#d6f5d6' stroke='#2e8b57' stroke-width='1'/>
+<text x='32508' y='58' font-size='11' fill='#111'>POST /admin/users/&lt;int:uid&gt</text>
+<rect x='0' y='156' width='190' height='46' rx='7' fill='#c8facc' stroke='#28a745' stroke-width='1'/>
+<text x='8' y='174' font-size='11' fill='#111'>t1</text>
+<line x1='95.0' y1='86' x2='95.0' y2='156' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='345.0' y1='86' x2='595.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='595.0' y1='86' x2='845.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='845.0' y1='86' x2='1095.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='845.0' y1='86' x2='1345.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='1345.0' y1='86' x2='1595.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='1345.0' y1='86' x2='1845.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='1345.0' y1='86' x2='27595.0' y2='40' stroke='#2b6cb0' marker-end='url(#a)' stroke-width='1'/>
+<line x1='2095.0' y1='86' x2='2345.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='2095.0' y1='86' x2='3345.0' y2='40' stroke='#2b6cb0' marker-end='url(#a)' stroke-width='1'/>
+<line x1='2095.0' y1='86' x2='4595.0' y2='40' stroke='#2b6cb0' marker-end='url(#a)' stroke-width='1'/>
+<line x1='2095.0' y1='86' x2='11095.0' y2='40' stroke='#2b6cb0' marker-end='url(#a)' stroke-width='1'/>
+<line x1='2095.0' y1='86' x2='13845.0' y2='40' stroke='#2b6cb0' marker-end='url(#a)' stroke-width='1'/>
+<line x1='2095.0' y1='86' x2='18595.0' y2='40' stroke='#2b6cb0' marker-end='url(#a)' stroke-width='1'/>
+<line x1='2095.0' y1='86' x2='22095.0' y2='40' stroke='#2b6cb0' marker-end='url(#a)' stroke-width='1'/>
+<line x1='2095.0' y1='86' x2='26345.0' y2='40' stroke='#2b6cb0' marker-end='url(#a)' stroke-width='1'/>
+<line x1='2345.0' y1='86' x2='2595.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='2595.0' y1='86' x2='2845.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='2595.0' y1='86' x2='3095.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='3345.0' y1='86' x2='3595.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='3595.0' y1='86' x2='3845.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='3845.0' y1='86' x2='4095.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='3845.0' y1='86' x2='4345.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='4595.0' y1='86' x2='4845.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='4845.0' y1='86' x2='5095.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='5095.0' y1='86' x2='5345.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='5095.0' y1='86' x2='5595.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='5595.0' y1='86' x2='5845.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='5845.0' y1='86' x2='6095.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='5845.0' y1='86' x2='6345.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='6345.0' y1='86' x2='6595.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='6595.0' y1='86' x2='6845.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='6595.0' y1='86' x2='8345.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='6845.0' y1='86' x2='7095.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='6845.0' y1='86' x2='7345.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='7345.0' y1='86' x2='7595.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='7595.0' y1='86' x2='7845.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='7595.0' y1='86' x2='8095.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='8095.0' y1='86' x2='6595.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='8345.0' y1='86' x2='8595.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='8595.0' y1='86' x2='8845.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='8595.0' y1='86' x2='10595.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='8845.0' y1='86' x2='9095.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='9095.0' y1='86' x2='9345.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='9095.0' y1='86' x2='9595.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='9595.0' y1='86' x2='9845.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='9595.0' y1='86' x2='10345.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='9845.0' y1='86' x2='10095.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='9845.0' y1='86' x2='10345.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='10345.0' y1='86' x2='10595.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='10595.0' y1='86' x2='10845.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='10595.0' y1='86' x2='21095.0' y2='40' stroke='#2b6cb0' marker-end='url(#a)' stroke-width='1'/>
+<line x1='11095.0' y1='86' x2='11345.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='11345.0' y1='86' x2='11595.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='11595.0' y1='86' x2='11845.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='11595.0' y1='86' x2='12095.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='12095.0' y1='86' x2='12345.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='12345.0' y1='86' x2='12595.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='12345.0' y1='86' x2='12845.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='12845.0' y1='86' x2='13095.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='12845.0' y1='86' x2='13595.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='13095.0' y1='86' x2='13345.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='13095.0' y1='86' x2='13595.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='13845.0' y1='86' x2='14095.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='14095.0' y1='86' x2='14345.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='14345.0' y1='86' x2='14595.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='14345.0' y1='86' x2='14845.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='14845.0' y1='86' x2='15095.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='15095.0' y1='86' x2='15345.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='15095.0' y1='86' x2='15595.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='15595.0' y1='86' x2='15845.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='15595.0' y1='86' x2='16345.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='15845.0' y1='86' x2='16095.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='15845.0' y1='86' x2='16345.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='16345.0' y1='86' x2='16595.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='16595.0' y1='86' x2='16845.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='16595.0' y1='86' x2='17095.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='17095.0' y1='86' x2='17345.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='17345.0' y1='86' x2='17595.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='17345.0' y1='86' x2='17845.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='17595.0' y1='86' x2='18095.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='17845.0' y1='86' x2='18095.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='18095.0' y1='86' x2='18345.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='18595.0' y1='86' x2='18845.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='18845.0' y1='86' x2='19095.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='19095.0' y1='86' x2='19345.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='19095.0' y1='86' x2='19595.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='19595.0' y1='86' x2='19845.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='19845.0' y1='86' x2='20095.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='19845.0' y1='86' x2='20345.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='20345.0' y1='86' x2='20595.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='20345.0' y1='86' x2='21595.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='20595.0' y1='86' x2='20845.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='20595.0' y1='86' x2='21095.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='21095.0' y1='86' x2='21345.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='21095.0' y1='86' x2='21595.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='21595.0' y1='86' x2='21845.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='22095.0' y1='86' x2='22345.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='22345.0' y1='86' x2='22595.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='22595.0' y1='86' x2='22845.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='22595.0' y1='86' x2='23095.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='23095.0' y1='86' x2='23345.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='23345.0' y1='86' x2='23595.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='23345.0' y1='86' x2='23845.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='23845.0' y1='86' x2='24095.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='23845.0' y1='86' x2='24595.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='24095.0' y1='86' x2='24345.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='24095.0' y1='86' x2='24595.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='24595.0' y1='86' x2='24845.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='24595.0' y1='86' x2='21095.0' y2='40' stroke='#2b6cb0' marker-end='url(#a)' stroke-width='1'/>
+<line x1='25095.0' y1='86' x2='25345.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='25345.0' y1='86' x2='25595.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='25595.0' y1='86' x2='25845.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='25595.0' y1='86' x2='26095.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='26345.0' y1='86' x2='26595.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='26595.0' y1='86' x2='26845.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='26845.0' y1='86' x2='27095.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='26845.0' y1='86' x2='27345.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='27345.0' y1='86' x2='27595.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='27345.0' y1='86' x2='28095.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='27595.0' y1='86' x2='27845.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='27595.0' y1='86' x2='28095.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='28095.0' y1='86' x2='28345.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='28345.0' y1='86' x2='28595.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='28345.0' y1='86' x2='28845.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='28845.0' y1='86' x2='29095.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='29095.0' y1='86' x2='29345.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='29095.0' y1='86' x2='29595.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='29595.0' y1='86' x2='29845.0' y2='40' stroke='#888' marker-end='url(#a)' stroke-width='1'/>
+<line x1='30095.0' y1='86' x2='95.0' y2='40' stroke='#2e8b57' marker-end='url(#a)' stroke-width='1'/>
+<line x1='30345.0' y1='86' x2='345.0' y2='40' stroke='#2e8b57' marker-end='url(#a)' stroke-width='1'/>
+<line x1='30595.0' y1='86' x2='2095.0' y2='40' stroke='#2e8b57' marker-end='url(#a)' stroke-width='1'/>
+<line x1='30845.0' y1='86' x2='3345.0' y2='40' stroke='#2e8b57' marker-end='url(#a)' stroke-width='1'/>
+<line x1='31095.0' y1='86' x2='4595.0' y2='40' stroke='#2e8b57' marker-end='url(#a)' stroke-width='1'/>
+<line x1='31345.0' y1='86' x2='11095.0' y2='40' stroke='#2e8b57' marker-end='url(#a)' stroke-width='1'/>
+<line x1='31595.0' y1='86' x2='13845.0' y2='40' stroke='#2e8b57' marker-end='url(#a)' stroke-width='1'/>
+<line x1='31845.0' y1='86' x2='18595.0' y2='40' stroke='#2e8b57' marker-end='url(#a)' stroke-width='1'/>
+<line x1='32095.0' y1='86' x2='22095.0' y2='40' stroke='#2e8b57' marker-end='url(#a)' stroke-width='1'/>
+<line x1='32345.0' y1='86' x2='25095.0' y2='40' stroke='#2e8b57' marker-end='url(#a)' stroke-width='1'/>
+<line x1='32595.0' y1='86' x2='26345.0' y2='40' stroke='#2e8b57' marker-end='url(#a)' stroke-width='1'/>
+</svg>
