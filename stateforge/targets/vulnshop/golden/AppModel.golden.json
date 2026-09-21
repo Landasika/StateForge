@@ -42,16 +42,7 @@
         }
       ],
       "guards": [],
-      "preconditions": [
-        {
-          "var": "Session.authed_as",
-          "op": "truthy",
-          "value": null,
-          "key": null,
-          "file": "stateforge/targets/vulnshop/app.py",
-          "line": 137
-        }
-      ],
+      "preconditions": [],
       "effects": [
         {
           "var": "User.role",
@@ -478,16 +469,7 @@
         }
       ],
       "guards": [],
-      "preconditions": [
-        {
-          "var": "Session.authed_as",
-          "op": "truthy",
-          "value": null,
-          "key": null,
-          "file": "stateforge/targets/vulnshop/app.py",
-          "line": 293
-        }
-      ],
+      "preconditions": [],
       "effects": [],
       "sinks": [],
       "observes": [
@@ -653,7 +635,7 @@
         "write",
         "read"
       ],
-      "evidence": "auth baseline: observes/effects",
+      "evidence": "LLM auth_chains + structural inference",
       "source": "session_access",
       "file": "",
       "line": 0
@@ -667,7 +649,7 @@
       "domain": null,
       "label": "irrelevant",
       "security_relevant": false,
-      "rationale": "[rule] 无六类关键词命中;证据:conn = db() [select] irrelevant 出局",
+      "rationale": "[no-llm] 无 LLM 且缓存未命中,不猜语义 [select] irrelevant 出局",
       "anchors": []
     },
     {
@@ -680,7 +662,7 @@
       ],
       "label": "authz",
       "security_relevant": true,
-      "rationale": "[rule] 角色/权限判定变量;证据:execute(INSERT INTO users(username, password, role) VALUES(?, ?, 'us...) [select] 固定映射直入",
+      "rationale": "[llm:cache] Role field over domain user/admin governs permissions. [select] 固定映射直入",
       "anchors": []
     },
     {
@@ -695,7 +677,7 @@
       ],
       "label": "workflow",
       "security_relevant": true,
-      "rationale": "[rule] 业务状态机枚举属性;证据:execute(INSERT INTO orders(user_id, status, total, paid_amount) VALU...) [select] workflow 需 domain≥2:满足",
+      "rationale": "[llm:cache] Lifecycle enum (CREATED/PAID/SHIPPED/CANCELLED) tracking order stage. [select] workflow 需 domain≥2:满足",
       "anchors": []
     },
     {
@@ -707,7 +689,7 @@
       ],
       "label": "money",
       "security_relevant": true,
-      "rationale": "[rule] 资金/额度字段;证据:execute(INSERT INTO orders(user_id, status, total, paid_amount) VALU...) [select] 固定映射直入",
+      "rationale": "[llm:cache] Monetary amount paid on the order. [select] 固定映射直入",
       "anchors": []
     },
     {
@@ -719,7 +701,7 @@
       ],
       "label": "single_use",
       "security_relevant": true,
-      "rationale": "[rule] 单次性布尔(单向翻转);证据:if coupon[\"used\"] [select] 固定映射直入",
+      "rationale": "[llm:cache] One-shot flag checked before redemption to prevent coupon reuse. [select] 固定映射直入",
       "anchors": []
     },
     {
@@ -729,7 +711,7 @@
       "domain": null,
       "label": "irrelevant",
       "security_relevant": false,
-      "rationale": "[rule] 无六类关键词命中;证据:order = get_order_or_none(oid) [select] irrelevant 出局",
+      "rationale": "[no-llm] 无 LLM 且缓存未命中,不猜语义 [select] irrelevant 出局",
       "anchors": []
     },
     {
@@ -739,7 +721,7 @@
       "domain": null,
       "label": "ownership",
       "security_relevant": true,
-      "rationale": "[rule] 实体所有者绑定;证据:order[\"user_id\"] vs user[\"id\"] [select] 固定映射直入",
+      "rationale": "[llm:cache] Compares order's user_id against requester id to enforce ownership. [select] 固定映射直入",
       "anchors": []
     },
     {
@@ -749,7 +731,7 @@
       "domain": null,
       "label": "authn",
       "security_relevant": true,
-      "rationale": "[rule] 认证链变量(token/session);证据:auth baseline: observes/effects [select] 固定映射直入",
+      "rationale": "[llm:cache] LLM auth chain + structural inference",
       "anchors": []
     }
   ],

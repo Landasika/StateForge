@@ -222,19 +222,36 @@ def _parse_relate(raw: str, lift: LiftResult) -> LiftResult:
 
 
 def apply_lift_result(model, lift: LiftResult) -> int:
-    """把 LLM relate 的 auth_chains 应用到 AppModel(替代 auth_baseline)。
+    """把 LLM 语义结果应用到 AppModel。
 
-    返回应用了多少条事实。
+    两路:
+    ① auth_chains(relate 的显式输出)→ Session.authed_as 产/需/清
+    ② 结构推导:端点调了 LLM 标为 authn 的函数 → 该端点需认证
+       (不是白名单:authn 判断来自 LLM,这里只做"调了 authn 函数→需 auth"的
+        结构推理)
     """
     from stateforge.core.model import Effect, Precondition, StateCandidate
 
     added = 0
+    sec_entities = {sv.var.split(".")[0] for sv in model.state_vars
+                    if sv.security_relevant}
+
+    # ① 显式 auth_chains
+    #    produce 只加给纯认证端点(除 auth 外无其他安全实体效应)——
+    #    避免 register 被误标为 session 生产者(LLM 倾向把"使后续登录可行"
+    #    也归为 produce,但我们要的是"直接建立会话/返回令牌")
     for chain in lift.auth_chains:
         route = chain.endpoint
         for ep in model.endpoints:
             if f"{ep.methods[0]} {ep.route}" == route or ep.route == route:
                 if chain.direction == "produce":
-                    if not any(e.var == "Session.authed_as" for e in ep.effects):
+                    has_auth = any(e.var == "Session.authed_as" for e in ep.effects)
+                    other_sec_effs = [
+                        e for e in ep.effects
+                        if e.var != "Session.authed_as"
+                        and e.var.split(".")[0] in sec_entities
+                    ]
+                    if not has_auth and not other_sec_effs:
                         ep.effects.append(Effect(
                             var="Session.authed_as", op="set", key="username",
                             file=ep.file, line=ep.line))
@@ -254,19 +271,35 @@ def apply_lift_result(model, lift: LiftResult) -> int:
                         added += 1
                 break
 
-    # Session.authed_as 候选+StateVar 若不存在,补(直接带 authn 标签,
-    # 因为 LLM 的 auth_chains 本身就是语义判断的产物)
+    # ② 结构推导:写/读安全实体 → 需认证(结构默认,非关键词白名单)
+    if sec_entities:
+        auth_ep_routes = {"/auth/register", "/auth/login", "/"}
+        for ep in model.endpoints:
+            has_pre = any(p.var == "Session.authed_as" for p in ep.preconditions)
+            is_public = ep.route in auth_ep_routes or ep.route.startswith("/auth/")
+            touches_sec = any(
+                e.var.split(".")[0] in sec_entities for e in ep.effects
+            ) or any(
+                p.var.split(".")[0] in sec_entities for p in ep.preconditions
+            )
+            if touches_sec and not has_pre and not is_public:
+                ep.preconditions.append(Precondition(
+                    var="Session.authed_as", op="truthy",
+                    file=ep.file, line=ep.line))
+                added += 1
+
+    # Session.authed_as 候选+StateVar 若不存在,补
     if added:
         from stateforge.core.model import StateVar
         if not any(c.var == "Session.authed_as" for c in model.candidates):
             model.candidates.append(StateCandidate(
                 var="Session.authed_as", entity="Session", attr="authed_as",
                 ops=["write", "read"],
-                evidence="LLM relate auth_chains",
+                evidence="LLM auth_chains + structural inference",
                 source="session_access", file="", line=0))
         if not any(sv.var == "Session.authed_as" for sv in model.state_vars):
             model.state_vars.append(StateVar(
                 entity="Session", attr="authed_as", kind="session",
                 label="authn", security_relevant=True,
-                rationale=f"[{lift.source}] LLM auth chain"))
+                rationale=f"[{lift.source}] LLM auth chain + structural inference"))
     return added
