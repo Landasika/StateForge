@@ -266,7 +266,100 @@ def analyze(target_dir: str, framework: str = "flask") -> None:
             print(f"      {suggest_input(g, xfg, model)}")
 
 
+def state_distance_analysis(target_dir: str, framework: str = "flask") -> None:
+    """状态距离分析:对每个未覆盖块,计算从当前应用状态出发还需几个请求。"""
+    from stateforge.analyzer.analyzer import analyze
+    from stateforge.analyzer.cfg import (
+        build_cfg, attach_anchors, block_gates, build_xfg,
+    )
+    from stateforge.fuzz.coverage_viz import map_coverage_to_blocks
+    from stateforge.graph.builder import build_sstg
+    from stateforge.planner.backward import plan_backward
+    from stateforge.planner.goals import GoalSpec
+
+    cov_file = Path(target_dir) / ".coverage_lines.json"
+    if not cov_file.exists():
+        print("先跑 coverage_viz run")
+        sys.exit(1)
+    covered = {tuple(c) for c in json.loads(cov_file.read_text())}
+    result = map_coverage_to_blocks(target_dir, framework, covered)
+    xfg, model = result["xfg"], result["model"]
+    covered_blocks = set(result["covered_blocks"].keys())
+
+    gaps = find_gaps(xfg, covered_blocks)
+    sstg = build_sstg(model)
+
+    print(f"\n{'='*70}")
+    print(f"状态距离分析: {len(gaps)} 个未覆盖块")
+    print(f"{'='*70}\n")
+
+    for g in gaps[:10]:
+        func = g["func"]
+        lines = g["lines"]
+        # 找到对应的端点
+        ep = next((e for e in model.endpoints if e.func == func), None)
+        if not ep:
+            continue
+
+        # 拿这个函数的块门
+        cfg = build_cfg(ep)
+        attach_anchors(cfg, ep)
+        gates = block_gates(cfg)
+
+        # 找 gap 对应的块的门
+        target_gates = []
+        for block_id, gate_list in gates.items():
+            b_lines = cfg.nodes[block_id].get("lines", (0, 0))
+            if b_lines[0] <= lines[0] <= b_lines[1]:
+                target_gates = gate_list
+                break
+
+        # 分析每个门的状态可达性
+        gate_status = []
+        for gate in target_gates:
+            var = gate.get("var", "")
+            if var == "Session.authed_as":
+                # 检查 auth 是否已覆盖
+                auth_covered = any(
+                    "auth" in cf.lower() or "login" in cf.lower()
+                    for cf in [g2.get("func", "") for g2 in
+                               [{"func": xfg.nodes[b].get("func", "")}
+                                for b in covered_blocks]]
+                )
+                if auth_covered:
+                    gate_status.append((var, "✓ 已登录", 0))
+                else:
+                    gate_status.append((var, "✗ 需登录", 2))  # register+login
+            elif var in model.state_vars:
+                sv = next(s for s in model.state_vars if s.var == var)
+                domain = sv.domain or []
+                gate_status.append((var, f"? 需到达特定值(域:{domain[:3]})", 1))
+            else:
+                gate_status.append((var, f"? 条件待验证", 1))
+
+        # 计算总状态距离(所有门的最大距离 + 1 个到达作)
+        state_dist = max((d for _, _, d in gate_status), default=0) + 1
+
+        # 代码距离
+        code_dist = g["distance"]
+
+        # 可达性
+        reachable = code_dist != float("inf")
+        reach_str = "✅ 可达" if reachable else "❌ 不可达(静态图无路径)"
+
+        print(f"  {func} L{lines[0]}")
+        print(f"    代码距离: {code_dist} 步 | 状态距离: {state_dist} 个请求 | {reach_str}")
+        if target_gates:
+            for var, status, d in gate_status:
+                print(f"    门: {var:24s} {status}")
+        print()
+
+
 if __name__ == "__main__":
-    target = sys.argv[1] if len(sys.argv) > 1 else "stateforge/targets/vulnshop"
-    framework = sys.argv[2] if len(sys.argv) > 2 else "flask"
-    analyze(target, framework)
+    if len(sys.argv) > 1 and sys.argv[1] == "state":
+        target = sys.argv[2] if len(sys.argv) > 2 else "stateforge/targets/vulnshop"
+        state_distance_analysis(target)
+    else:
+        target = sys.argv[1] if len(sys.argv) > 1 else "stateforge/targets/vulnshop"
+        framework = sys.argv[2] if len(sys.argv) > 2 else "flask"
+        analyze(target, framework)
