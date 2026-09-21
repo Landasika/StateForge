@@ -1,1 +1,0 @@
-{"fastapi_demo.app": ["fastapi.FastAPI", "fastapi.FastAPI.post", "fastapi.FastAPI.get"], "fastapi.FastAPI": [], "fastapi.FastAPI.get": [], "fastapi_demo.app.read_order": [], "fastapi.FastAPI.post": [], "fastapi_demo.app.pay_order": []}

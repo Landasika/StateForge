@@ -1,4 +1,0 @@
-digraph SSTG {
-  rankdir=LR;
-  node [fontname="Helvetica"];
-}

@@ -1,0 +1,362 @@
+{
+  "directed": true,
+  "multigraph": true,
+  "graph": {},
+  "nodes": [
+    {
+      "kind": "action",
+      "func": "index",
+      "file": "stateforge/targets/vulnshop/app.py",
+      "line": 131,
+      "id": "GET /"
+    },
+    {
+      "kind": "action",
+      "func": "register",
+      "file": "stateforge/targets/vulnshop/app.py",
+      "line": 137,
+      "id": "POST /auth/register"
+    },
+    {
+      "kind": "state",
+      "var": "User.role",
+      "value": "user",
+      "security_relevant": true,
+      "label": "authz",
+      "id": "User.role=user"
+    },
+    {
+      "kind": "action",
+      "func": "login",
+      "file": "stateforge/targets/vulnshop/app.py",
+      "line": 153,
+      "id": "POST /auth/login"
+    },
+    {
+      "kind": "state",
+      "var": "Session.authed_as",
+      "value": "*",
+      "security_relevant": true,
+      "label": "authn",
+      "id": "Session.authed_as=<authed>"
+    },
+    {
+      "kind": "action",
+      "func": "me",
+      "file": "stateforge/targets/vulnshop/app.py",
+      "line": 164,
+      "id": "GET /auth/me"
+    },
+    {
+      "kind": "action",
+      "func": "create_order",
+      "file": "stateforge/targets/vulnshop/app.py",
+      "line": 171,
+      "id": "POST /orders"
+    },
+    {
+      "kind": "state",
+      "var": "Coupon.used",
+      "value": "True",
+      "security_relevant": true,
+      "label": "single_use",
+      "id": "Coupon.used=True"
+    },
+    {
+      "kind": "state",
+      "var": "Order.status",
+      "value": "CREATED",
+      "security_relevant": true,
+      "label": "workflow",
+      "id": "Order.status=CREATED"
+    },
+    {
+      "kind": "state",
+      "var": "Order.paid_amount",
+      "value": "0",
+      "security_relevant": true,
+      "label": "money",
+      "id": "Order.paid_amount=0"
+    },
+    {
+      "kind": "state",
+      "var": "Coupon.used",
+      "value": "1",
+      "security_relevant": true,
+      "label": "single_use",
+      "id": "Coupon.used=1"
+    },
+    {
+      "kind": "action",
+      "func": "read_order",
+      "file": "stateforge/targets/vulnshop/app.py",
+      "line": 218,
+      "id": "GET /orders/<int:oid>"
+    },
+    {
+      "kind": "action",
+      "func": "pay_order",
+      "file": "stateforge/targets/vulnshop/app.py",
+      "line": 239,
+      "id": "POST /orders/<int:oid>/pay"
+    },
+    {
+      "kind": "action",
+      "func": "ship_order",
+      "file": "stateforge/targets/vulnshop/app.py",
+      "line": 263,
+      "id": "POST /orders/<int:oid>/ship"
+    },
+    {
+      "kind": "state",
+      "var": "Order.status",
+      "value": "PAID",
+      "security_relevant": true,
+      "label": "workflow",
+      "id": "Order.status=PAID"
+    },
+    {
+      "kind": "state",
+      "var": "Order.status",
+      "value": "SHIPPED",
+      "security_relevant": true,
+      "label": "workflow",
+      "id": "Order.status=SHIPPED"
+    },
+    {
+      "kind": "action",
+      "func": "cancel_order",
+      "file": "stateforge/targets/vulnshop/app.py",
+      "line": 279,
+      "id": "POST /orders/<int:oid>/cancel"
+    },
+    {
+      "kind": "state",
+      "var": "Order.status",
+      "value": "CANCELLED",
+      "security_relevant": true,
+      "label": "workflow",
+      "id": "Order.status=CANCELLED"
+    },
+    {
+      "kind": "action",
+      "func": "read_coupon",
+      "file": "stateforge/targets/vulnshop/app.py",
+      "line": 293,
+      "id": "GET /coupons/<code>"
+    },
+    {
+      "kind": "action",
+      "func": "set_role",
+      "file": "stateforge/targets/vulnshop/app.py",
+      "line": 302,
+      "id": "POST /admin/users/<int:uid>/role"
+    },
+    {
+      "kind": "state",
+      "var": "User.role",
+      "value": "admin",
+      "security_relevant": true,
+      "label": "authz",
+      "id": "User.role=admin"
+    }
+  ],
+  "edges": [
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /auth/register",
+      "target": "User.role=user",
+      "key": 0
+    },
+    {
+      "kind": "invariant",
+      "legal": true,
+      "source": "User.role=user",
+      "target": "User.role=admin",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /auth/login",
+      "target": "Session.authed_as=<authed>",
+      "key": "username"
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "GET /auth/me",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /orders",
+      "target": "Coupon.used=True",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /orders",
+      "target": "Order.status=CREATED",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /orders",
+      "target": "Order.paid_amount=0",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /orders",
+      "target": "Coupon.used=1",
+      "key": 0
+    },
+    {
+      "kind": "invariant",
+      "legal": false,
+      "source": "Coupon.used=True",
+      "target": "Coupon.used=1",
+      "key": 0
+    },
+    {
+      "kind": "invariant",
+      "legal": true,
+      "source": "Order.status=CREATED",
+      "target": "Order.status=PAID",
+      "key": 0
+    },
+    {
+      "kind": "invariant",
+      "legal": false,
+      "source": "Order.status=CREATED",
+      "target": "Order.status=SHIPPED",
+      "key": 0
+    },
+    {
+      "kind": "invariant",
+      "legal": true,
+      "source": "Order.status=CREATED",
+      "target": "Order.status=CANCELLED",
+      "key": 0
+    },
+    {
+      "kind": "invariant",
+      "legal": false,
+      "source": "Coupon.used=1",
+      "target": "Coupon.used=True",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "ne",
+      "source": "POST /orders/<int:oid>/ship",
+      "target": "Order.status=PAID",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /orders/<int:oid>/ship",
+      "target": "Order.status=SHIPPED",
+      "key": 0
+    },
+    {
+      "kind": "invariant",
+      "legal": false,
+      "source": "Order.status=PAID",
+      "target": "Order.status=CREATED",
+      "key": 0
+    },
+    {
+      "kind": "invariant",
+      "legal": true,
+      "source": "Order.status=PAID",
+      "target": "Order.status=SHIPPED",
+      "key": 0
+    },
+    {
+      "kind": "invariant",
+      "legal": false,
+      "source": "Order.status=PAID",
+      "target": "Order.status=CANCELLED",
+      "key": 0
+    },
+    {
+      "kind": "invariant",
+      "legal": false,
+      "source": "Order.status=SHIPPED",
+      "target": "Order.status=CREATED",
+      "key": 0
+    },
+    {
+      "kind": "invariant",
+      "legal": false,
+      "source": "Order.status=SHIPPED",
+      "target": "Order.status=PAID",
+      "key": 0
+    },
+    {
+      "kind": "invariant",
+      "legal": false,
+      "source": "Order.status=SHIPPED",
+      "target": "Order.status=CANCELLED",
+      "key": 0
+    },
+    {
+      "kind": "produces",
+      "op": "set",
+      "source": "POST /orders/<int:oid>/cancel",
+      "target": "Order.status=CANCELLED",
+      "key": 0
+    },
+    {
+      "kind": "invariant",
+      "legal": false,
+      "source": "Order.status=CANCELLED",
+      "target": "Order.status=CREATED",
+      "key": 0
+    },
+    {
+      "kind": "invariant",
+      "legal": false,
+      "source": "Order.status=CANCELLED",
+      "target": "Order.status=PAID",
+      "key": 0
+    },
+    {
+      "kind": "invariant",
+      "legal": false,
+      "source": "Order.status=CANCELLED",
+      "target": "Order.status=SHIPPED",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "ne",
+      "source": "POST /admin/users/<int:uid>/role",
+      "target": "User.role=admin",
+      "key": 0
+    },
+    {
+      "kind": "requires",
+      "op": "truthy",
+      "source": "POST /admin/users/<int:uid>/role",
+      "target": "Session.authed_as=<authed>",
+      "key": 0
+    },
+    {
+      "kind": "invariant",
+      "legal": false,
+      "source": "User.role=admin",
+      "target": "User.role=user",
+      "key": 0
+    }
+  ]
+}

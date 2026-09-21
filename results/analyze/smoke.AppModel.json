@@ -1,0 +1,747 @@
+{
+  "app_root": "stateforge/targets/vulnshop",
+  "framework": "flask",
+  "endpoints": [
+    {
+      "func": "index",
+      "route": "/",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [
+        "app",
+        "guards",
+        "coupons"
+      ],
+      "file": "stateforge/targets/vulnshop/app.py",
+      "line": 131
+    },
+    {
+      "func": "register",
+      "route": "/auth/register",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "username",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "password",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [
+        {
+          "var": "User.role",
+          "op": "set",
+          "value": "user",
+          "key": null,
+          "file": "stateforge/targets/vulnshop/app.py",
+          "line": 144
+        }
+      ],
+      "sinks": [],
+      "observes": [
+        "id",
+        "username",
+        "role",
+        "error"
+      ],
+      "file": "stateforge/targets/vulnshop/app.py",
+      "line": 137
+    },
+    {
+      "func": "login",
+      "route": "/auth/login",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "username",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "password",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [
+        {
+          "var": "Session.authed_as",
+          "op": "set",
+          "value": null,
+          "key": "username",
+          "file": "stateforge/targets/vulnshop/app.py",
+          "line": 153
+        }
+      ],
+      "sinks": [],
+      "observes": [
+        "token",
+        "error"
+      ],
+      "file": "stateforge/targets/vulnshop/app.py",
+      "line": 153
+    },
+    {
+      "func": "me",
+      "route": "/auth/me",
+      "methods": [
+        "GET"
+      ],
+      "params": [],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/vulnshop/app.py",
+          "line": 164
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [
+        "id",
+        "username",
+        "role"
+      ],
+      "file": "stateforge/targets/vulnshop/app.py",
+      "line": 164
+    },
+    {
+      "func": "create_order",
+      "route": "/orders",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "items",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "coupon_code",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [
+        {
+          "var": "Coupon.used",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/vulnshop/app.py",
+          "line": 196
+        }
+      ],
+      "effects": [
+        {
+          "var": "Order.status",
+          "op": "set",
+          "value": "CREATED",
+          "key": null,
+          "file": "stateforge/targets/vulnshop/app.py",
+          "line": 208
+        },
+        {
+          "var": "Order.paid_amount",
+          "op": "set",
+          "value": "0",
+          "key": null,
+          "file": "stateforge/targets/vulnshop/app.py",
+          "line": 208
+        },
+        {
+          "var": "Coupon.used",
+          "op": "set",
+          "value": "1",
+          "key": null,
+          "file": "stateforge/targets/vulnshop/app.py",
+          "line": 202
+        }
+      ],
+      "sinks": [],
+      "observes": [
+        "id",
+        "status",
+        "total",
+        "paid_amount",
+        "error"
+      ],
+      "file": "stateforge/targets/vulnshop/app.py",
+      "line": 171
+    },
+    {
+      "func": "read_order",
+      "route": "/orders/<int:oid>",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "oid",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [
+        {
+          "kind": "owner",
+          "present": true,
+          "detail": "order.user_id == user.id",
+          "file": "stateforge/targets/vulnshop/app.py",
+          "line": 225
+        }
+      ],
+      "preconditions": [
+        {
+          "var": "Order.user_id",
+          "op": "eq",
+          "value": null,
+          "key": "user.id",
+          "file": "stateforge/targets/vulnshop/app.py",
+          "line": 226
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [
+        "id",
+        "user_id",
+        "status",
+        "total",
+        "paid_amount",
+        "error"
+      ],
+      "file": "stateforge/targets/vulnshop/app.py",
+      "line": 218
+    },
+    {
+      "func": "pay_order",
+      "route": "/orders/<int:oid>/pay",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "oid",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "amount",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [
+        {
+          "kind": "owner",
+          "present": true,
+          "detail": "order.user_id == user.id",
+          "file": "stateforge/targets/vulnshop/app.py",
+          "line": 246
+        }
+      ],
+      "preconditions": [
+        {
+          "var": "Order.user_id",
+          "op": "eq",
+          "value": null,
+          "key": "user.id",
+          "file": "stateforge/targets/vulnshop/app.py",
+          "line": 247
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [
+        "id",
+        "status",
+        "paid_amount",
+        "error"
+      ],
+      "file": "stateforge/targets/vulnshop/app.py",
+      "line": 239
+    },
+    {
+      "func": "ship_order",
+      "route": "/orders/<int:oid>/ship",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "oid",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [
+        {
+          "kind": "owner",
+          "present": true,
+          "detail": "order.user_id == user.id",
+          "file": "stateforge/targets/vulnshop/app.py",
+          "line": 270
+        },
+        {
+          "kind": "custom",
+          "present": true,
+          "detail": "order.status == \"PAID\"",
+          "file": "stateforge/targets/vulnshop/app.py",
+          "line": 270
+        }
+      ],
+      "preconditions": [
+        {
+          "var": "Order.user_id",
+          "op": "eq",
+          "value": null,
+          "key": "user.id",
+          "file": "stateforge/targets/vulnshop/app.py",
+          "line": 271
+        },
+        {
+          "var": "Order.status",
+          "op": "ne",
+          "value": "PAID",
+          "key": null,
+          "file": "stateforge/targets/vulnshop/app.py",
+          "line": 273
+        }
+      ],
+      "effects": [
+        {
+          "var": "Order.status",
+          "op": "set",
+          "value": "SHIPPED",
+          "key": null,
+          "file": "stateforge/targets/vulnshop/app.py",
+          "line": 275
+        }
+      ],
+      "sinks": [],
+      "observes": [
+        "id",
+        "status",
+        "error"
+      ],
+      "file": "stateforge/targets/vulnshop/app.py",
+      "line": 263
+    },
+    {
+      "func": "cancel_order",
+      "route": "/orders/<int:oid>/cancel",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "oid",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [
+        {
+          "kind": "owner",
+          "present": true,
+          "detail": "order.user_id == user.id",
+          "file": "stateforge/targets/vulnshop/app.py",
+          "line": 286
+        }
+      ],
+      "preconditions": [
+        {
+          "var": "Order.user_id",
+          "op": "eq",
+          "value": null,
+          "key": "user.id",
+          "file": "stateforge/targets/vulnshop/app.py",
+          "line": 287
+        }
+      ],
+      "effects": [
+        {
+          "var": "Order.status",
+          "op": "set",
+          "value": "CANCELLED",
+          "key": null,
+          "file": "stateforge/targets/vulnshop/app.py",
+          "line": 289
+        }
+      ],
+      "sinks": [],
+      "observes": [
+        "id",
+        "status",
+        "error"
+      ],
+      "file": "stateforge/targets/vulnshop/app.py",
+      "line": 279
+    },
+    {
+      "func": "read_coupon",
+      "route": "/coupons/<code>",
+      "methods": [
+        "GET"
+      ],
+      "params": [
+        {
+          "name": "code",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [],
+      "preconditions": [],
+      "effects": [],
+      "sinks": [],
+      "observes": [
+        "code",
+        "used",
+        "discount",
+        "error"
+      ],
+      "file": "stateforge/targets/vulnshop/app.py",
+      "line": 293
+    },
+    {
+      "func": "set_role",
+      "route": "/admin/users/<int:uid>/role",
+      "methods": [
+        "POST"
+      ],
+      "params": [
+        {
+          "name": "uid",
+          "location": "path",
+          "py_type": "str",
+          "value_domain": null
+        },
+        {
+          "name": "role",
+          "location": "json",
+          "py_type": "str",
+          "value_domain": null
+        }
+      ],
+      "guards": [
+        {
+          "kind": "role",
+          "present": true,
+          "detail": "user.role != \"admin\"",
+          "file": "stateforge/targets/vulnshop/app.py",
+          "line": 306
+        }
+      ],
+      "preconditions": [
+        {
+          "var": "User.role",
+          "op": "ne",
+          "value": "admin",
+          "key": null,
+          "file": "stateforge/targets/vulnshop/app.py",
+          "line": 307
+        },
+        {
+          "var": "Session.authed_as",
+          "op": "truthy",
+          "value": null,
+          "key": null,
+          "file": "stateforge/targets/vulnshop/app.py",
+          "line": 302
+        }
+      ],
+      "effects": [],
+      "sinks": [],
+      "observes": [
+        "id",
+        "role",
+        "error"
+      ],
+      "file": "stateforge/targets/vulnshop/app.py",
+      "line": 302
+    }
+  ],
+  "candidates": [
+    {
+      "var": "db",
+      "entity": "db",
+      "attr": null,
+      "ops": [
+        "write"
+      ],
+      "evidence": "conn = db()",
+      "source": "call",
+      "file": "stateforge/targets/vulnshop/app.py",
+      "line": 0
+    },
+    {
+      "var": "User.role",
+      "entity": "User",
+      "attr": "role",
+      "ops": [
+        "write",
+        "compare"
+      ],
+      "evidence": "execute(INSERT INTO users(username, password, role) VALUES(?, ?, 'us...)",
+      "source": "db_field",
+      "file": "stateforge/targets/vulnshop/app.py",
+      "line": 0
+    },
+    {
+      "var": "Order.status",
+      "entity": "Order",
+      "attr": "status",
+      "ops": [
+        "write",
+        "compare"
+      ],
+      "evidence": "execute(INSERT INTO orders(user_id, status, total, paid_amount) VALU...)",
+      "source": "db_field",
+      "file": "stateforge/targets/vulnshop/app.py",
+      "line": 0
+    },
+    {
+      "var": "Order.paid_amount",
+      "entity": "Order",
+      "attr": "paid_amount",
+      "ops": [
+        "write"
+      ],
+      "evidence": "execute(INSERT INTO orders(user_id, status, total, paid_amount) VALU...)",
+      "source": "db_field",
+      "file": "stateforge/targets/vulnshop/app.py",
+      "line": 0
+    },
+    {
+      "var": "Coupon.used",
+      "entity": "Coupon",
+      "attr": "used",
+      "ops": [
+        "compare",
+        "write"
+      ],
+      "evidence": "if coupon[\"used\"]",
+      "source": "condition",
+      "file": "stateforge/targets/vulnshop/app.py",
+      "line": 0
+    },
+    {
+      "var": "get_order_or_none",
+      "entity": "get_order_or_none",
+      "attr": null,
+      "ops": [
+        "write"
+      ],
+      "evidence": "order = get_order_or_none(oid)",
+      "source": "call",
+      "file": "stateforge/targets/vulnshop/app.py",
+      "line": 0
+    },
+    {
+      "var": "Order.user_id",
+      "entity": "Order",
+      "attr": "user_id",
+      "ops": [
+        "compare"
+      ],
+      "evidence": "order[\"user_id\"] vs user[\"id\"]",
+      "source": "ownership_binding",
+      "file": "stateforge/targets/vulnshop/app.py",
+      "line": 0
+    },
+    {
+      "var": "Session.authed_as",
+      "entity": "Session",
+      "attr": "authed_as",
+      "ops": [
+        "write",
+        "read"
+      ],
+      "evidence": "LLM relate auth_chains",
+      "source": "session_access",
+      "file": "",
+      "line": 0
+    }
+  ],
+  "state_vars": [
+    {
+      "entity": "db",
+      "attr": "",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[no-llm] 无 LLM 且缓存未命中,不猜语义 [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "User",
+      "attr": "role",
+      "kind": "db_column",
+      "domain": [
+        "user",
+        "admin"
+      ],
+      "label": "authz",
+      "security_relevant": true,
+      "rationale": "[llm:cache] Role field with user/admin domain governs permissions. [select] 固定映射直入",
+      "anchors": []
+    },
+    {
+      "entity": "Order",
+      "attr": "status",
+      "kind": "db_column",
+      "domain": [
+        "CREATED",
+        "PAID",
+        "SHIPPED",
+        "CANCELLED"
+      ],
+      "label": "workflow",
+      "security_relevant": true,
+      "rationale": "[llm:cache] Order lifecycle enum (CREATED/PAID/SHIPPED/CANCELLED). [select] workflow 需 domain≥2:满足",
+      "anchors": []
+    },
+    {
+      "entity": "Order",
+      "attr": "paid_amount",
+      "kind": "db_column",
+      "domain": [
+        "0"
+      ],
+      "label": "money",
+      "security_relevant": true,
+      "rationale": "[llm:cache] Monetary amount paid against the order total. [select] 固定映射直入",
+      "anchors": []
+    },
+    {
+      "entity": "Coupon",
+      "attr": "used",
+      "kind": "db_column",
+      "domain": [
+        "1"
+      ],
+      "label": "single_use",
+      "security_relevant": true,
+      "rationale": "[llm:cache] One-shot boolean checked before use and set to prevent reuse. [select] 固定映射直入",
+      "anchors": []
+    },
+    {
+      "entity": "get_order_or_none",
+      "attr": "",
+      "kind": "db_column",
+      "domain": null,
+      "label": "irrelevant",
+      "security_relevant": false,
+      "rationale": "[no-llm] 无 LLM 且缓存未命中,不猜语义 [select] irrelevant 出局",
+      "anchors": []
+    },
+    {
+      "entity": "Order",
+      "attr": "user_id",
+      "kind": "db_column",
+      "domain": null,
+      "label": "ownership",
+      "security_relevant": true,
+      "rationale": "[llm:cache] user_id compared against user id binds the order to its owner. [select] 固定映射直入",
+      "anchors": []
+    },
+    {
+      "entity": "Session",
+      "attr": "authed_as",
+      "kind": "session",
+      "domain": null,
+      "label": "authn",
+      "security_relevant": true,
+      "rationale": "[llm:cache] LLM auth chain",
+      "anchors": []
+    }
+  ],
+  "invariants": [
+    {
+      "entity": "User",
+      "attr": "role",
+      "legal_transitions": [
+        [
+          "user",
+          "admin"
+        ]
+      ],
+      "one_way": []
+    },
+    {
+      "entity": "Order",
+      "attr": "status",
+      "legal_transitions": [
+        [
+          "CREATED",
+          "CANCELLED"
+        ],
+        [
+          "CREATED",
+          "PAID"
+        ],
+        [
+          "PAID",
+          "SHIPPED"
+        ]
+      ],
+      "one_way": []
+    },
+    {
+      "entity": "Coupon",
+      "attr": "used",
+      "legal_transitions": [
+        [
+          "False",
+          "True"
+        ]
+      ],
+      "one_way": [
+        "used"
+      ]
+    }
+  ],
+  "config_flags": {
+    "GUARDS": 0,
+    "PORT": 5000
+  }
+}

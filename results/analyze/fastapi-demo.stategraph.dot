@@ -1,8 +1,0 @@
-digraph SSTG {
-  rankdir=LR;
-  node [fontname="Helvetica"];
-  "GET /orders/{oid}" [shape=box];
-  "POST /orders/{oid}/pay" [shape=box];
-  "Order.status=PAID" [shape=ellipse];
-  "POST /orders/{oid}/pay" -> "Order.status=PAID" [style=dashed, label="requires"];
-}
