@@ -77,32 +77,48 @@ def save_feedback(scores: list[SeedScore], path: str | Path) -> None:
                                      indent=2), encoding="utf-8")
 
 
-def run_atheris(target, root: str | Path | None = None,
-                argv: list[str] | None = None,
-                trace_path: str | Path | None = None) -> None:
-    """Run Atheris with a StateForge tracing harness.
+def build_input_handler(adapter, session, writer: TraceJsonlWriter | None = None,
+                        every_n: int = 1):
+    """Per-input boundary: fresh request id, exception capture, trace line."""
+    def handle(data: bytes) -> None:
+        with session.request() as rid:
+            start = len(session.events)
+            error: str | None = None
+            try:
+                adapter.execute(data)
+            except Exception as exc:      # fuzz inputs must not stop the engine
+                error = f"{type(exc).__name__}: {exc}"
+            if writer is not None and rid % every_n == 0:
+                writer.write_input(rid, data, error, session.events[start:])
+    return handle
 
-    This adapter intentionally delegates mutation, scheduling, and execution
-    to Atheris.  It only accumulates the ordered Python events needed for a
-    later ``cli feedback`` pass.  Atheris is imported lazily so structural
-    analysis and unit tests do not require the optional runtime dependency.
+
+def run_atheris(adapter, root: str | Path | None = None,
+                argv: list[str] | None = None, trace_path: str | Path | None = None,
+                corpus_dir: str | Path | None = None, every_n: int = 1,
+                fsync_every: int = 100) -> None:
+    """Drive Atheris over a TargetAdapter with structural tracing.
+
+    Atheris owns mutation, scheduling, execution, and native coverage
+    (via adapter.prepare instrumentation).  StateForge only records the
+    ordered Python trace per input.  ``corpus_dir`` is handed to libFuzzer
+    as its corpus directory so seeds persist across the process _Exit.
     """
     import atheris
-    from stateforge.fuzz.harness import run_one
+    from stateforge.dynamic.tracer import TraceSession
 
-    all_events = []
-
-    def test_one_input(data: bytes) -> None:
-        result = run_one(data, target, root=root)
-        all_events.extend(result.trace)
-
-    setup_argv = argv if argv is not None else sys.argv
-    atheris.Setup(setup_argv, test_one_input)
+    adapter.prepare(atheris)
+    session = TraceSession(root)
+    writer = TraceJsonlWriter(trace_path, fsync_every) if trace_path else None
+    handler = build_input_handler(adapter, session, writer, every_n)
+    fuzz_argv = list(sys.argv if argv is None else argv)
+    if corpus_dir:
+        Path(corpus_dir).mkdir(parents=True, exist_ok=True)
+        fuzz_argv = [fuzz_argv[0], str(corpus_dir), *fuzz_argv[1:]]
+    atheris.Setup(fuzz_argv, handler)
     try:
-        atheris.Fuzz()
+        with session:
+            atheris.Fuzz()
     finally:
-        if trace_path is not None:
-            Path(trace_path).write_text(
-                json.dumps([event.__dict__ for event in all_events], indent=2),
-                encoding="utf-8",
-            )
+        if writer is not None:
+            writer.close()      # best-effort; per-line flush already durable
