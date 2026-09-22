@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 import json
+import os
 from pathlib import Path
 import sys
 import threading
@@ -28,6 +29,8 @@ class TraceSession:
         self._request_indices: dict[int, int] = {}
         self._previous = None
         self._lock = threading.Lock()
+        # filename -> (在 root 内?, 已解析绝对路径);热路径逐事件只做一次 dict 查找
+        self._file_cache: dict[str, tuple[bool, str]] = {}
 
     def start_request(self) -> int:
         with self._lock:
@@ -37,17 +40,27 @@ class TraceSession:
         return rid
 
     def _trace(self, frame, event, arg):
-        if event in {"call", "line", "return"}:
-            filename = str(Path(frame.f_code.co_filename).resolve())
-            in_root = self.root is None or Path(filename).is_relative_to(self.root)
-            if in_root:
-                rid = getattr(self, "_active_request", 0)
-                with self._lock:
-                    index = self._request_indices.get(rid, 0)
-                    self._request_indices[rid] = index + 1
-                self.events.append(TraceEvent(rid, index, filename,
-                                              frame.f_code.co_name, frame.f_lineno,
-                                              event))
+        if event not in {"call", "line", "return"}:
+            return self._trace
+        filename = frame.f_code.co_filename
+        cached = self._file_cache.get(filename)
+        if cached is None:
+            resolved = str(Path(filename).resolve())
+            if self.root is None:
+                cached = (True, resolved)
+            else:
+                inside = resolved == self.root or resolved.startswith(self.root + os.sep)
+                cached = (inside, resolved)
+            self._file_cache[filename] = cached
+        inside, resolved = cached
+        if inside:
+            rid = getattr(self, "_active_request", 0)
+            with self._lock:
+                index = self._request_indices.get(rid, 0)
+                self._request_indices[rid] = index + 1
+            self.events.append(TraceEvent(rid, index, resolved,
+                                          frame.f_code.co_name, frame.f_lineno,
+                                          event))
         return self._trace
 
     def __enter__(self):
