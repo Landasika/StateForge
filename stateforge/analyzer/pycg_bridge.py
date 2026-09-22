@@ -99,6 +99,7 @@ def build_callgraph(root: str | Path, cache_path: str | Path | None = None,
         else:
             gaps.append(str(e))
     graph = merge_callgraphs(parts)
+    cache.parent.mkdir(parents=True, exist_ok=True)
     cache.write_text(json.dumps({"graph": graph, "gaps": gaps,
                                  "entries": [str(e) for e in entries],
                                  "ok": len(parts), "generated": time.strftime("%F %T")}),
