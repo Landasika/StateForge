@@ -9,7 +9,23 @@ from stateforge.dynamic.tracer import TraceEvent
 
 
 def load_events(path: str | Path) -> list[TraceEvent]:
-    raw = json.loads(Path(path).read_text(encoding="utf-8"))
+    text = Path(path).read_text(encoding="utf-8").strip()
+    if not text:
+        return []
+    if text[0] == "[":
+        raw: object = json.loads(text)
+    elif text[0] == "{":
+        first = json.loads(text.splitlines()[0])
+        if "request_id" in first and "events" in first:      # JSONL:一行一输入
+            events: list[TraceEvent] = []
+            for line in text.splitlines():
+                if line.strip():
+                    events.extend(TraceEvent(**item)
+                                  for item in json.loads(line)["events"])
+            return events
+        raw = json.loads(text)
+    else:
+        raise ValueError(f"unrecognized trace artifact: {path}")
     if isinstance(raw, dict):
         raw = raw.get("events", raw.get("trace", []))
     return [TraceEvent(**item) for item in raw]

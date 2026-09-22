@@ -6,12 +6,53 @@ charge of mutation, execution, and native coverage accounting.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from pathlib import Path
+import hashlib
 import json
+import os
 import sys
 
 from stateforge.feedback.corpus import CorpusEntry, rank
+
+
+class TraceJsonlWriter:
+    """Incremental per-input trace sink.
+
+    libFuzzer terminates the process with _Exit after -runs/-max_total_time,
+    bypassing finally/atexit.  Every input is flushed immediately (and fsynced
+    every ``fsync_every`` lines) so the artifact survives hard termination.
+    """
+
+    def __init__(self, path: str | Path, fsync_every: int = 100):
+        self.path = Path(path)
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self.fsync_every = fsync_every
+        self._count = 0
+        self._fh = self.path.open("w", encoding="utf-8")
+
+    def write_input(self, request_id: int, data: bytes,
+                    exception: str | None, events: list) -> None:
+        record = {
+            "request_id": request_id,
+            "data_sha256": hashlib.sha256(data).hexdigest(),
+            "data_length": len(data),
+            "exception": exception,
+            "events": [asdict(event) for event in events],
+        }
+        self._fh.write(json.dumps(record, ensure_ascii=False) + "\n")
+        self._count += 1
+        self._fh.flush()
+        if self.fsync_every and self._count % self.fsync_every == 0:
+            os.fsync(self._fh.fileno())
+
+    def close(self) -> None:
+        try:
+            os.fsync(self._fh.fileno())
+        except OSError:
+            pass
+        finally:
+            self._fh.close()
 
 
 @dataclass
