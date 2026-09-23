@@ -1,0 +1,38 @@
+{
+  "target": "/home/landasika/icassp/external/BenchmarkPython",
+  "static": {
+    "seconds": 12.8,
+    "functions": 3709,
+    "blocks": 26958,
+    "edges": 26835,
+    "call_edges": 1699,
+    "return_edges": 1699,
+    "unresolved_calls": 10276
+  },
+  "dynamic": {
+    "requests": 40,
+    "covered_blocks": 490,
+    "covered_edges": 498,
+    "unresolved_events": 31476
+  },
+  "coverage": {
+    "blocks": 490,
+    "total_blocks": 26958,
+    "block_ratio": 0.01817642258327769,
+    "edges": 361,
+    "total_edges": 26835,
+    "edge_ratio": 0.013452580585056828,
+    "calls": 33,
+    "total_calls": 1699,
+    "call_ratio": 0.01942319011183049
+  },
+  "frontiers": {
+    "total": 566,
+    "kinds": {
+      "false": 27,
+      "true": 43,
+      "flow": 10,
+      "return": 486
+    }
+  }
+}
