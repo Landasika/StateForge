@@ -19,6 +19,7 @@ from pathlib import Path
 import networkx as nx
 
 from stateforge.core.model import AppModel, Endpoint
+from stateforge.static.cfg import build_function_cfg
 
 _FILE_CACHE: dict[str, ast.Module] = {}
 
@@ -42,7 +43,14 @@ def _locate_func(path: str, name: str) -> ast.FunctionDef | None:
 
 def build_cfg(func: ast.FunctionDef | Endpoint, prefix: str = "",
               file: str | None = None) -> nx.DiGraph:
-    """过程内 CFG。接受 FunctionDef 或 Endpoint(按 ep.file+ep.func 反查函数)。"""
+    """过程内 CFG(委托 static/cfg.py,P1-6 语义修复:归属/控制流正确)。
+
+    契约(消费方 attach_anchors/_block_calls_name/数据流层/旧测试):
+    节点 kind/stmts(AST 对象;branch 块=[test 表达式])/lines=(lo,hi)/terminal;
+    边 cond ∈ {"T","F","back","break","continue",None}。
+    块 ID 换为 static 管线稳定格式(file::func::lo-hi::kind::n);``prefix``
+    仅保留于签名兼容(只用于 missing 占位节点)。
+    """
     if isinstance(func, Endpoint):
         file = func.file
         fdef = _locate_func(func.file, func.func)
@@ -52,84 +60,56 @@ def build_cfg(func: ast.FunctionDef | Endpoint, prefix: str = "",
             return g
         func = fdef
     file = file or "<ast>"
+    module = Path(file).resolve().stem or "app"
 
+    built = build_function_cfg(func, file, module)
     g = nx.DiGraph()
-    counter = itertools.count()
-    fname = func.name
-
-    def new_block(kind: str, stmts: list) -> str:
-        bid = f"{prefix}{kind[0]}{next(counter)}"
-        linenos = [s.lineno for s in stmts] or [func.lineno]
-        lines = (min(linenos), max(linenos))
-        g.add_node(bid, kind=kind, stmts=stmts, lines=lines, file=file, func=fname,
-                   anchors=[])
-        return bid
-
-    def connect(edges, target):
-        for p, cond in edges:
-            g.add_edge(p, target, cond=cond)
-
-    def link(stmts: list[ast.stmt], edges: list[tuple[str, str | None]]):
-        for s in stmts:
-            edges = link_stmt(s, edges)
-        return edges
-
-    def link_stmt(s: ast.stmt, edges):
-        if isinstance(s, ast.If):
-            br = new_block("branch", [s])
-            connect(edges, br)
-            t_end = link(s.body, [(br, "T")])
-            f_end = link(s.orelse, [(br, "F")]) if s.orelse else [(br, "F")]
-            return t_end + f_end
-        if isinstance(s, (ast.While, ast.For, ast.AsyncFor)):
-            br = new_block("branch", [s])
-            connect(edges, br)
-            body_end = link(s.body, [(br, "T")])
-            for p, _c in body_end:          # 回边(忽略 cond 标注)
-                g.add_edge(p, br, cond="back")
-            if s.orelse:
-                return link(s.orelse, [(br, "F")]) + []
-            return [(br, "F")]
-        if isinstance(s, ast.Return):
-            t = new_block("terminal", [s])
-            t_attr = g.nodes[t]
-            t_attr["terminal"] = True
-            connect(edges, t)
-            return []
-        if isinstance(s, (ast.Break, ast.Continue)):
-            # v1 近似:当终止处理(罕见于 Flask 处理器;见 LIMITATIONS)
-            t = new_block("terminal", [s])
-            g.nodes[t]["terminal"] = True
-            connect(edges, t)
-            return []
-        if isinstance(s, ast.Try):
-            body_end = link(s.body, edges)
-            for handler in s.handlers:      # 异常边近似:handler 自 try 入口可达
-                h_end = link(handler.body, edges)
-                body_end = body_end + h_end
-            if s.orelse:
-                body_end = body_end + link(s.orelse, body_end)
-            if s.finalbody:
-                body_end = link(s.finalbody, body_end)
-            return body_end
-        # 顺序语句:可扩展则并入当前开放块
-        if (len(edges) == 1 and edges[0][1] is None
-                and g.nodes[edges[0][0]].get("kind") == "block"):
-            g.nodes[edges[0][0]]["stmts"].append(s)
-            lo, hi = g.nodes[edges[0][0]]["lines"]
-            g.nodes[edges[0][0]]["lines"] = (min(lo, s.lineno), max(hi, s.lineno))
-            return edges
-        b = new_block("block", [s])
-        connect(edges, b)
-        return [(b, None)]
-
-    entry = new_block("entry", [])
-    end = link(func.body, [(entry, None)])
-    if end:                                 # 自然结尾 → 隐式出口
-        x = new_block("exit", [])
-        connect(end, x)
+    for bid, blk in built.blocks.items():
+        g.add_node(bid, kind=blk.kind, stmts=_ast_bodies_for(func, blk),
+                   lines=(blk.start_line, blk.end_line), file=file,
+                   func=func.name, anchors=[])
+    # static 管线:true/false 是边的 kind;back/break/continue 是 flow 边的 condition
+    for edge in built.edges:
+        if edge.kind == "true":
+            cond = "T"
+        elif edge.kind == "false":
+            cond = "F"
+        else:
+            cond = edge.condition if edge.condition in ("back", "break",
+                                                        "continue") else None
+        g.add_edge(edge.src, edge.dst, cond=cond)
+    for n, d in g.nodes(data=True):
+        if d.get("kind") == "terminal":
+            d["terminal"] = True
     return g
 
+
+def _ast_bodies_for(func: ast.FunctionDef, blk) -> list:
+    """ownership-aware 把 AST 语句/条件表达式重新挂回委托块(P1-6)。
+
+    branch 块只挂 test/iter 表达式;block/terminal 块挂行号落在块区间内的
+    顶层语句;不下钻嵌套 def/lambda/class(属于其自身 CFG)。
+    """
+    owned: list = []
+    stack = list(func.body)
+    while stack:
+        node = stack.pop(0)
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef,
+                             ast.Lambda, ast.ClassDef)):
+            continue
+        if isinstance(node, (ast.If, ast.While, ast.For, ast.AsyncFor)):
+            test = getattr(node, "test", None)
+            if test is None:
+                test = getattr(node, "iter", None)
+            if (test is not None and blk.kind == "branch"
+                    and getattr(test, "lineno", None) in blk.line_numbers):
+                owned.append(test)
+        elif (blk.kind in ("block", "terminal")
+              and isinstance(node, ast.stmt)
+              and getattr(node, "lineno", None) in blk.line_numbers):
+            owned.append(node)
+        stack.extend(ast.iter_child_nodes(node))
+    return owned
 
 def attach_anchors(cfg: nx.DiGraph, ep: Endpoint) -> nx.DiGraph:
     """SA-PR 事实钉到块:行范围包含(或最近)事实行号。"""
@@ -281,7 +261,11 @@ def build_xfg(model: AppModel, callgraph_path: str | Path | None = None) -> nx.M
                 continue
             sites = [f"{cmod}.{cname}::{b}" for b, d in cfg_c.nodes(data=True)
                      if _block_calls_name(d.get("stmts", []), gname)]
-            for s in sites or [f"{cmod}.{cname}::{next(iter(cfg_c.nodes))}"]:
+            if not sites:                   # P1-6:找不到 callsite 不造假边
+                xfg.graph.setdefault("unresolved_calls", 0)
+                xfg.graph["unresolved_calls"] += 1
+                continue
+            for s in sites:
                 xfg.add_edge(s, target, kind=kind, callee=g)
 
     # ---- 跨端点状态虚边(同变量:写锚块 → 读锚块)

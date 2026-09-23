@@ -193,3 +193,34 @@ def test_block_gates_ship_update(model):
     gate_vars = {a["var"] for a in gates.get(upd, [])}
     assert "Order.status" in gate_vars       # PAID 门(条件性,may 捕获)
     assert "Session.authed_as" in gate_vars  # 认证门
+
+
+# ---------------------------------------------------------------- P1-6 回归
+
+ADMIN = """
+def handler(admin):
+    if admin:
+        delete_user()
+    return "done"
+"""
+
+
+def test_call_not_owned_by_branch_block():
+    g = _cfg_of(ADMIN, func="handler")
+    branch = next(n for n, d in g.nodes(data=True) if d.get("kind") == "branch")
+    branch_text = "; ".join(ast.unparse(s) for s in g.nodes[branch]["stmts"])
+    assert "delete_user" not in branch_text, "branch 块只拥有 test 表达式"
+    body = [n for n, d in g.nodes(data=True)
+            if d.get("kind") == "block" and "delete_user" in
+            "; ".join(ast.unparse(s) for s in d["stmts"])]
+    assert body, "delete_user() 应有自己的顺序块"
+
+
+def test_break_continue_wired():
+    src = ("def f(items):\n    for x in items:\n"
+           "        if x:\n            break\n        process(x)\n    return 0\n")
+    g = _cfg_of(src)
+    brk = [n for n, d in g.nodes(data=True)
+           if d.get("stmts") and isinstance(d["stmts"][0], ast.Break)]
+    assert brk, "break 语句成块"
+    assert any(g.successors(brk[0])), "break 不再是死终点,应连向 loop 出口"
