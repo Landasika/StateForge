@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import ast
+import hashlib
 from pathlib import Path
 
 from stateforge.core.ir import ProgramIR, FlowEdge, BasicBlock
@@ -38,6 +39,15 @@ def _files(root: Path):
     for path in sorted(root.rglob("*.py")):
         if not any(part in _SKIP for part in path.parts):
             yield path
+
+
+def _source_hash(root: Path) -> str:
+    """P1-7:目标源指纹(path:size:mtime),缓存失效判据。"""
+    parts = []
+    for path in _files(root):
+        st = path.stat()
+        parts.append(f"{path}:{st.st_size}:{st.st_mtime_ns}")
+    return hashlib.sha256("\n".join(parts).encode()).hexdigest()
 
 
 def build_icfg(app_root: str | Path, callgraph: dict[str, list[str]] | None = None,
@@ -130,6 +140,7 @@ def build_icfg(app_root: str | Path, callgraph: dict[str, list[str]] | None = No
     ir.metadata["block_count"] = len(ir.blocks)
     ir.metadata["edge_count"] = len(ir.edges)
     ir.metadata["unresolved_calls"] = unresolved
+    ir.metadata["source_hash"] = _source_hash(root)
     return ir
 
 

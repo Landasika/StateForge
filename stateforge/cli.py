@@ -42,6 +42,17 @@ def analyze_cmd(target: str, out: str, callgraph_path: str | None = None) -> int
 
 def feedback_cmd(ir_path: str, trace_paths: list[str], out: str) -> int:
     ir = ProgramIR.from_json(ir_path)
+    ir_stale = False                                   # P1-7:陈旧检测
+    root = ir.metadata.get("root")
+    if root:
+        from stateforge.static.icfg import _source_hash
+        try:
+            ir_stale = _source_hash(Path(root)) != ir.metadata.get("source_hash")
+        except OSError:
+            ir_stale = True
+        if ir_stale:
+            print("[warn] ir is stale: sources changed since analyze",
+                  file=sys.stderr)
     try:
         events = merge_events(trace_paths)
     except (OSError, ValueError, TypeError, json.JSONDecodeError) as exc:
@@ -59,6 +70,7 @@ def feedback_cmd(ir_path: str, trace_paths: list[str], out: str) -> int:
         "request_count": report.request_count,
         "block_request_count": report.overlay.block_request_count,
         "block_hits": report.overlay.block_hits,
+        "ir_stale": ir_stale,
         "target_distances": report.target_distances,
         "unresolved_events": len(report.trace.unresolved),
         "block_coverage": report.block_coverage,
