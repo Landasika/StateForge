@@ -21,7 +21,7 @@ class BasicBlock:
     function: str
     start_line: int
     end_line: int
-    kind: str = "block"
+    kind: str = "block"  # block/branch/terminal/entry/exit/loop_exit/try/callsite/returnsite
     statements: list[str] = field(default_factory=list)
     line_numbers: list[int] = field(default_factory=list)
 
@@ -57,6 +57,11 @@ class ProgramIR:
         if not any(e.src == edge.src and e.dst == edge.dst and e.kind == edge.kind
                    for e in self.edges):
             self.edges.append(edge)
+
+    def remove_edge(self, src: str, dst: str, kind: str) -> None:
+        """Drop an edge by identity (P1-2: chains replace direct block edges)."""
+        self.edges = [e for e in self.edges
+                      if not (e.src == src and e.dst == dst and e.kind == kind)]
 
     def outgoing(self, node: str, kind: str | None = None) -> list[FlowEdge]:
         return [e for e in self.edges if e.src == node and (kind is None or e.kind == kind)]

@@ -5,7 +5,7 @@ from __future__ import annotations
 import ast
 from pathlib import Path
 
-from stateforge.core.ir import ProgramIR, FlowEdge
+from stateforge.core.ir import ProgramIR, FlowEdge, BasicBlock
 from stateforge.static.cfg import build_function_cfg
 
 _SKIP = {"tests", "__pycache__", "migrations", "node_modules", ".git", "golden"}
@@ -65,44 +65,66 @@ def build_icfg(app_root: str | Path, callgraph: dict[str, list[str]] | None = No
                 for edge in cfg.edges:
                     ir.add_edge(edge)
 
-    # Resolve calls from real AST call sites.  A call edge is anchored at the
-    # block containing the Call node; an explicit return edge goes to every
-    # normal successor of that callsite block.
+    # Resolve calls from real AST call sites (spec P1-2).  Internal calls in
+    # a block are serialized as a synthetic chain so execution order and the
+    # caller continuation are explicit:
+    #   B -flow-> CS#1 -call-> callee1.entry ... callee1.exit -return-> RS#1
+    #   RS#1 -flow-> CS#2 ... RS#N -(原 kind)-> succ(B)
     unresolved: list[dict[str, object]] = []
     for qname, fn in list(ir.functions.items()):
         module, _, fname = qname.rpartition(".")
         node = ast_functions.get((module, fname))
         if node is None:
             continue
-        for block_id in fn.blocks:
-            block = ir.blocks[block_id]
-            lines = set(block.line_numbers)
-            calls = [n for n in _iter_owned_calls(node)
-                     if getattr(n, "lineno", 0) in lines]
-            for call in calls:
-                callee_short = _callee_name(call)
-                callee = _resolve_callee(callee_short, module, ast_functions, aliases)
-                if callee is None or callee not in ir.functions or callee == qname:
-                    unresolved.append({
-                        "caller": qname,
-                        "callee": callee_short,
-                        "line": getattr(call, "lineno", block.start_line),
-                    })
-                    continue
-                target = ir.functions[callee]
-                line = getattr(call, "lineno", block.start_line)
-                ir.add_edge(FlowEdge(block_id, target.entry, "call", callsite_line=line,
+        block_calls: dict[str, list[tuple[int, str]]] = {}
+        for call in _iter_owned_calls(node):
+            callee_short = _callee_name(call)
+            callee = _resolve_callee(callee_short, module, ast_functions, aliases)
+            line = getattr(call, "lineno", 0)
+            if callee is None or callee not in ir.functions or callee == qname:
+                unresolved.append({"caller": qname, "callee": callee_short,
+                                   "line": line})
+                continue
+            host = next((bid for bid in fn.blocks
+                         if line in ir.blocks[bid].line_numbers), None)
+            if host is None:
+                unresolved.append({"caller": qname, "callee": callee_short,
+                                   "reason": "no host block", "line": line})
+                continue
+            block_calls.setdefault(host, []).append((line, callee))
+
+        for host, calls in block_calls.items():
+            calls.sort(key=lambda t: t[0])
+            succs = [out for out in ir.outgoing(host)
+                     if out.kind in ("flow", "true", "false")]
+            continuations = succs or []          # return helper() 的空后继→exit
+            for out in succs:
+                ir.remove_edge(host, out.dst, out.kind)
+            file = ir.blocks[host].file
+            prev = host
+            chain_blocks: list[str] = []
+            for n, (line, callee) in enumerate(calls, start=1):
+                cs = f"{file}::{fname}::{line}-{line}::callsite::{n}"
+                rs = f"{file}::{fname}::{line}-{line}::returnsite::{n}"
+                ir.blocks[cs] = BasicBlock(cs, file, module, fname, line, line,
+                                           "callsite", [f"<call> {callee}"], [line])
+                ir.blocks[rs] = BasicBlock(rs, file, module, fname, line, line,
+                                           "returnsite", [f"<ret> {callee}"], [line])
+                chain_blocks.extend([cs, rs])
+                ir.add_edge(FlowEdge(prev, cs, "flow", callsite_line=line,
                                      callee=callee))
-                continuations = [out.dst for out in ir.outgoing(block_id)
-                                 if out.kind in ("flow", "true", "false")
-                                 and out.dst != target.entry]
-                # A call inside ``return helper()`` has no CFG successor in
-                # the caller.  Its natural continuation is the caller exit.
-                if not continuations:
-                    continuations = [fn.exit]
-                for continuation in continuations:
-                    ir.add_edge(FlowEdge(target.exit, continuation, "return",
-                                         callsite_line=line, callee=callee))
+                ir.add_edge(FlowEdge(cs, ir.functions[callee].entry, "call",
+                                     callsite_line=line, callee=callee))
+                ir.add_edge(FlowEdge(ir.functions[callee].exit, rs, "return",
+                                     callsite_line=line, callee=callee))
+                prev = rs
+            if continuations:
+                for out in continuations:       # 保留原 true/false 标注
+                    ir.add_edge(FlowEdge(prev, out.dst, out.kind,
+                                         condition=out.condition))
+            else:
+                ir.add_edge(FlowEdge(prev, fn.exit, "flow"))
+            fn.blocks.extend(chain_blocks)
     ir.metadata["callgraph_supplied"] = callgraph is not None
     ir.metadata["function_count"] = len(ir.functions)
     ir.metadata["block_count"] = len(ir.blocks)
