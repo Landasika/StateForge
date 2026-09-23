@@ -20,6 +20,9 @@ class MappedTrace:
     # retaining the structural kind information for coverage accounting.
     edge_kinds: dict[tuple[str, str], set[str]] = field(default_factory=dict)
     unresolved: list[TraceEvent] = field(default_factory=list)
+    # P1-4:request 维度——块/边被哪些请求命中
+    block_requests: dict[str, set[int]] = field(default_factory=dict)
+    edge_requests: dict[tuple[str, str], set[int]] = field(default_factory=dict)
 
 
 def map_trace(events: list[TraceEvent], ir: ProgramIR) -> MappedTrace:
@@ -57,6 +60,8 @@ def map_trace(events: list[TraceEvent], ir: ProgramIR) -> MappedTrace:
 
     def append_block(hit: str) -> None:
         nonlocal previous
+        rid_now = previous_request if previous_request is not None else -1
+        out.block_requests.setdefault(hit, set()).add(rid_now)
         if out.blocks and out.blocks[-1] == hit:
             return
         out.blocks.append(hit)
@@ -65,6 +70,7 @@ def map_trace(events: list[TraceEvent], ir: ProgramIR) -> MappedTrace:
             pair = (previous, hit)
             out.edges.append(pair)
             out.edge_hits[pair] += 1
+            out.edge_requests.setdefault(pair, set()).add(rid_now)
             kinds = {edge.kind for edge in ir.edges
                      if edge.src == previous and edge.dst == hit}
             if kinds:

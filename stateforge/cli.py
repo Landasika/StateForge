@@ -56,6 +56,8 @@ def feedback_cmd(ir_path: str, trace_paths: list[str], out: str) -> int:
             for (src, dst), kinds in sorted(report.trace.edge_kinds.items())
         },
         "frontiers": [f.__dict__ for f in report.frontiers],
+        "request_count": report.request_count,
+        "block_request_count": report.overlay.block_request_count,
         "target_distances": report.target_distances,
         "unresolved_events": len(report.trace.unresolved),
         "block_coverage": report.block_coverage,

@@ -19,6 +19,7 @@ class FeedbackReport:
     target_distances: dict[str, int]
     trace: MappedTrace
     total_blocks: int
+    request_count: int = 0                        # P1-4:不重复 request_id 计数
 
     @property
     def block_coverage(self) -> float:
@@ -32,4 +33,5 @@ def compute_feedback(ir: ProgramIR, events: list[TraceEvent],
     frontiers = find_frontiers(ir, overlay)
     target_set = targets or {f.dst for f in frontiers}
     distances = distance_to_targets(ir, overlay.covered_blocks, target_set)
-    return FeedbackReport(overlay, frontiers, distances, mapped, len(ir.blocks))
+    return FeedbackReport(overlay, frontiers, distances, mapped, len(ir.blocks),
+                          request_count=len({e.request_id for e in events}))
