@@ -325,8 +325,9 @@ def main() -> None:  # 直接 `python app.py` 起服(同步单线程,fork-per-le
     from werkzeug.serving import make_server
 
     port = int(os.getenv("VULNSHOP_PORT", "5000"))
-    server = make_server("127.0.0.1", port, app, threaded=False)
-    print(f"[vulnshop] GUARDS={GUARDS} db={DB_PATH} listening on 127.0.0.1:{port}")
+    host = os.getenv("VULNSHOP_HOST", "0.0.0.0")
+    server = make_server(host, port, app, threaded=False)
+    print(f"[vulnshop] GUARDS={GUARDS} db={DB_PATH} listening on {host}:{port}")
     server.serve_forever()
 
 
