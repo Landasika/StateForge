@@ -10,6 +10,24 @@ from stateforge.static.cfg import build_function_cfg
 
 _SKIP = {"tests", "__pycache__", "migrations", "node_modules", ".git", "golden"}
 
+_OWNED_STOP = (ast.FunctionDef, ast.AsyncFunctionDef, ast.Lambda, ast.ClassDef)
+
+
+def _iter_owned_calls(fn_node: ast.FunctionDef | ast.AsyncFunctionDef):
+    """Yield ast.Call nodes belonging to *fn_node* itself.
+
+    Ownership (spec P1-1): never descend into nested function/lambda/class
+    bodies — those calls belong to their own FunctionIR.
+    """
+    stack = list(fn_node.body)
+    while stack:
+        node = stack.pop()
+        if isinstance(node, _OWNED_STOP):
+            continue                      # 嵌套定义体:整棵不入内
+        if isinstance(node, ast.Call):
+            yield node
+        stack.extend(ast.iter_child_nodes(node))
+
 
 def _module_name(root: Path, path: Path) -> str:
     rel = path.relative_to(root).with_suffix("")
@@ -59,8 +77,8 @@ def build_icfg(app_root: str | Path, callgraph: dict[str, list[str]] | None = No
         for block_id in fn.blocks:
             block = ir.blocks[block_id]
             lines = set(block.line_numbers)
-            calls = [n for n in ast.walk(node)
-                     if isinstance(n, ast.Call) and getattr(n, "lineno", 0) in lines]
+            calls = [n for n in _iter_owned_calls(node)
+                     if getattr(n, "lineno", 0) in lines]
             for call in calls:
                 callee_short = _callee_name(call)
                 callee = _resolve_callee(callee_short, module, ast_functions, aliases)
