@@ -21,6 +21,9 @@ class TraceEvent:
     event_type: str = "line"
 
 
+_SELF_FILE = __file__      # tracer 不得 trace 自身:root=None 时会自锁死锁(见 T P1-3)
+
+
 class TraceSession:
     def __init__(self, root: str | Path | None = None):
         self.root = str(Path(root).resolve()) if root else None
@@ -40,7 +43,9 @@ class TraceSession:
         return rid
 
     def _trace(self, frame, event, arg):
-        if event not in {"call", "line", "return"}:
+        if frame.f_code.co_filename == _SELF_FILE:
+            return None                     # 自身帧不追踪(防 root=None 自锁死锁)
+        if event not in {"call", "line", "return", "exception"}:
             return self._trace
         filename = frame.f_code.co_filename
         cached = self._file_cache.get(filename)
