@@ -1,6 +1,6 @@
 # Phase-1:结构执行图收尾(Structural Execution Graph — Close-out)
 
-状态:spec 定稿(2026-09-23),待审。
+状态:已实施(2026-09-23,分支 phase1-structural);验收见 tests/static/test_buy_acceptance.py(3/3)+ 全量 97 passed。
 上游:plans/design-v2-state-reachability.md(T+11/T+12 依赖此件收尾)。
 来源:外部顾问版 Phase-1 规格(25 节)经代码对账后修正;对账表见 §2。
 
@@ -235,3 +235,17 @@ P1-8 验收 fixture 端到端 + 全量回归
 - exception 静态边缺失:Try 用 flow+condition 近似(现状保留)
 - 动态 line→CS/RS 映射在优化(CPython 3.10 无字节码重排)下可靠;若未来换
   3.11+ 需重审 tracer
+
+### 实施中新增的记录(2026-09-23)
+
+- **优于 spec 原文**:RS→后继边保留原 true/false kind(替代 spec 写的统一
+  flow),frontier 的分支语义因此完整
+- mapper:同块多 call 第二次进入时,`RS1→host`、`host→CS2` 邻接对无静态边
+  (block 级真实执行序),edge_kinds 不标注——非缺陷,块粒度表达
+- **修复既有 bug**:TraceSession(root=None) 时 tracer 追踪自身帧导致自锁
+  死锁(P1-3 测试暴露);现按 co_filename 自排除
+- settrace 只对之后进入的函数帧生效:模块级帧无事件(harness 一律函数态)
+- load_events 的 JSONL 格式 = "一行一输入记录"(request_id+events 嵌套,
+  atheris_runner 产物);单事件一行的写法不支持
+- 旧管线委托后 build_cfg 块 ID 变为稳定格式,XFG 节点名相应变化(svg 导出
+  兼容,无消费方依赖旧 ID 格式)
