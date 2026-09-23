@@ -58,6 +58,7 @@ def feedback_cmd(ir_path: str, trace_paths: list[str], out: str) -> int:
         "frontiers": [f.__dict__ for f in report.frontiers],
         "request_count": report.request_count,
         "block_request_count": report.overlay.block_request_count,
+        "block_hits": report.overlay.block_hits,
         "target_distances": report.target_distances,
         "unresolved_events": len(report.trace.unresolved),
         "block_coverage": report.block_coverage,
@@ -103,11 +104,22 @@ def main() -> int:
     experiment.add_argument("--out", default="results/experiment")
     experiment.add_argument("--trace", action="append", dest="traces",
                             help="trace artifact; repeat for multiple seeds")
+    viz = sub.add_parser("viz", help="static+dynamic coverage overlay dot (P1-5)")
+    viz.add_argument("ir")
+    viz.add_argument("feedback")
+    viz.add_argument("--out", default="results/coverage.dot")
     args = parser.parse_args()
     if args.command == "analyze":
         return analyze_cmd(args.target, args.out, args.callgraph)
     if args.command == "experiment":
         return experiment_cmd(args.target, args.out, args.traces)
+    if args.command == "viz":
+        from stateforge.viz.coverage_dot import coverage_dot
+        ir_obj = ProgramIR.from_json(args.ir)
+        fb = json.loads(Path(args.feedback).read_text(encoding="utf-8"))
+        out = coverage_dot(ir_obj, fb, args.out)
+        print(f"[viz] {out}")
+        return 0
     return feedback_cmd(args.ir, args.trace, args.out)
 
 
