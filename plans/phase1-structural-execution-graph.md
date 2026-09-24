@@ -262,3 +262,8 @@ P1-8 验收 fixture 端到端 + 全量回归
 - **H6(P1)**:块/CS/RS ID 用 root 相对路径;file 字段保持绝对供匹配
 - Try/except 为保守近似(handler 自 try 入口可达),非精确 exception 边;
   动态 exception 事件仅留诊断——评审 §12 措辞已收紧
+- **H8(P0)**:SF-Micro 真值基准——15 用例(顺序/分支/嵌套/循环/break-continue/
+  早返回/各类调用/递归/try),静态 CFG/CALL/RETURN P&R **全 1.00**;动态 5 用例
+  trace-accuracy **全 1.00**;pytest 门禁固化(tests/eval/test_micro_benchmark.py)。
+  真值逐例人工按 Python 语义核准后冻结;try_except 为声明的保守近似。
+  附带修复:自递归此前按 unresolved 丢弃,现产出 call/return 边(recursion 用例)。

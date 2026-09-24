@@ -97,7 +97,7 @@ def build_icfg(app_root: str | Path, callgraph: dict[str, list[str]] | None = No
                 callee = _resolve_via_callgraph(qname, callee_short,
                                                 ir, callgraph)
             line = getattr(call, "lineno", 0)
-            if callee is None or callee not in ir.functions or callee == qname:
+            if callee is None or callee not in ir.functions:
                 unresolved.append({"caller": qname, "callee": callee_short,
                                    "line": line})
                 continue

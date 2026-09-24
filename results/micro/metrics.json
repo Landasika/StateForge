@@ -1,0 +1,456 @@
+{
+  "static": {
+    "break_continue": {
+      "CFG": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 13,
+        "expected": 13
+      },
+      "CALL": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 0,
+        "expected": 0
+      },
+      "RETURN": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 0,
+        "expected": 0
+      },
+      "allow": {},
+      "missing": [],
+      "phantom": []
+    },
+    "call_in_loop": {
+      "CFG": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 9,
+        "expected": 9
+      },
+      "CALL": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 1,
+        "expected": 1
+      },
+      "RETURN": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 1,
+        "expected": 1
+      },
+      "allow": {},
+      "missing": [],
+      "phantom": []
+    },
+    "call_in_true": {
+      "CFG": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 7,
+        "expected": 7
+      },
+      "CALL": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 1,
+        "expected": 1
+      },
+      "RETURN": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 1,
+        "expected": 1
+      },
+      "allow": {},
+      "missing": [],
+      "phantom": []
+    },
+    "early_return": {
+      "CFG": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 6,
+        "expected": 6
+      },
+      "CALL": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 0,
+        "expected": 0
+      },
+      "RETURN": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 0,
+        "expected": 0
+      },
+      "allow": {},
+      "missing": [],
+      "phantom": []
+    },
+    "for_loop": {
+      "CFG": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 7,
+        "expected": 7
+      },
+      "CALL": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 0,
+        "expected": 0
+      },
+      "RETURN": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 0,
+        "expected": 0
+      },
+      "allow": {},
+      "missing": [],
+      "phantom": []
+    },
+    "if_else": {
+      "CFG": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 5,
+        "expected": 5
+      },
+      "CALL": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 0,
+        "expected": 0
+      },
+      "RETURN": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 0,
+        "expected": 0
+      },
+      "allow": {},
+      "missing": [],
+      "phantom": []
+    },
+    "multiple_calls": {
+      "CFG": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 7,
+        "expected": 7
+      },
+      "CALL": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 2,
+        "expected": 2
+      },
+      "RETURN": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 2,
+        "expected": 2
+      },
+      "allow": {},
+      "missing": [],
+      "phantom": []
+    },
+    "nested_call": {
+      "CFG": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 6,
+        "expected": 6
+      },
+      "CALL": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 2,
+        "expected": 2
+      },
+      "RETURN": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 2,
+        "expected": 2
+      },
+      "allow": {},
+      "missing": [],
+      "phantom": []
+    },
+    "nested_if": {
+      "CFG": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 8,
+        "expected": 8
+      },
+      "CALL": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 0,
+        "expected": 0
+      },
+      "RETURN": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 0,
+        "expected": 0
+      },
+      "allow": {},
+      "missing": [],
+      "phantom": []
+    },
+    "recursion": {
+      "CFG": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 5,
+        "expected": 5
+      },
+      "CALL": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 1,
+        "expected": 1
+      },
+      "RETURN": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 1,
+        "expected": 1
+      },
+      "allow": {},
+      "missing": [],
+      "phantom": []
+    },
+    "same_line_calls": {
+      "CFG": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 6,
+        "expected": 6
+      },
+      "CALL": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 2,
+        "expected": 2
+      },
+      "RETURN": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 2,
+        "expected": 2
+      },
+      "allow": {},
+      "missing": [],
+      "phantom": []
+    },
+    "sequential": {
+      "CFG": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 3,
+        "expected": 3
+      },
+      "CALL": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 0,
+        "expected": 0
+      },
+      "RETURN": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 0,
+        "expected": 0
+      },
+      "allow": {},
+      "missing": [],
+      "phantom": []
+    },
+    "simple_call": {
+      "CFG": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 4,
+        "expected": 4
+      },
+      "CALL": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 1,
+        "expected": 1
+      },
+      "RETURN": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 1,
+        "expected": 1
+      },
+      "allow": {},
+      "missing": [],
+      "phantom": []
+    },
+    "try_except": {
+      "CFG": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 6,
+        "expected": 6
+      },
+      "CALL": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 0,
+        "expected": 0
+      },
+      "RETURN": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 0,
+        "expected": 0
+      },
+      "allow": {},
+      "missing": [],
+      "phantom": []
+    },
+    "while_loop": {
+      "CFG": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 7,
+        "expected": 7
+      },
+      "CALL": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 0,
+        "expected": 0
+      },
+      "RETURN": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 0,
+        "expected": 0
+      },
+      "allow": {},
+      "missing": [],
+      "phantom": []
+    }
+  },
+  "dynamic": {
+    "early_return": {
+      "accuracy": 1.0,
+      "got": [
+        "run::entry",
+        "run:2:branch",
+        "run:3:terminal",
+        "run::exit"
+      ],
+      "want": [
+        "run::entry",
+        "run:2:branch",
+        "run:3:terminal",
+        "run::exit"
+      ]
+    },
+    "if_else": {
+      "accuracy": 1.0,
+      "got": [
+        "run::entry",
+        "run:2:branch",
+        "run:4:terminal",
+        "run::exit"
+      ],
+      "want": [
+        "run::entry",
+        "run:2:branch",
+        "run:4:terminal",
+        "run::exit"
+      ]
+    },
+    "multiple_calls": {
+      "accuracy": 1.0,
+      "got": [
+        "run::entry",
+        "run:2:block",
+        "run:2:call",
+        "first::entry",
+        "first:7:terminal",
+        "first::exit",
+        "run:2:call",
+        "run:2:block",
+        "run:3:call",
+        "second::entry",
+        "second:10:terminal",
+        "second::exit",
+        "run:3:call",
+        "run:4:terminal",
+        "run::exit"
+      ],
+      "want": [
+        "run::entry",
+        "run:2:block",
+        "run:2:call",
+        "first::entry",
+        "first:7:terminal",
+        "first::exit",
+        "run:2:call",
+        "run:2:block",
+        "run:3:call",
+        "second::entry",
+        "second:10:terminal",
+        "second::exit",
+        "run:3:call",
+        "run:4:terminal",
+        "run::exit"
+      ]
+    },
+    "sequential": {
+      "accuracy": 1.0,
+      "got": [
+        "run::entry",
+        "run:2:block",
+        "run:4:terminal",
+        "run::exit"
+      ],
+      "want": [
+        "run::entry",
+        "run:2:block",
+        "run:4:terminal",
+        "run::exit"
+      ]
+    },
+    "simple_call": {
+      "accuracy": 1.0,
+      "got": [
+        "run::entry",
+        "run:2:terminal",
+        "run:2:call",
+        "helper::entry",
+        "helper:5:terminal",
+        "helper::exit",
+        "run:2:call",
+        "run::exit"
+      ],
+      "want": [
+        "run::entry",
+        "run:2:terminal",
+        "run:2:call",
+        "helper::entry",
+        "helper:5:terminal",
+        "helper::exit",
+        "run:2:call",
+        "run::exit"
+      ]
+    }
+  }
+}

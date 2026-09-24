@@ -1,0 +1,44 @@
+{
+ "edges": [
+  [
+   "run:2:branch",
+   "false",
+   "run:6:terminal"
+  ],
+  [
+   "run:2:branch",
+   "true",
+   "run:3:branch"
+  ],
+  [
+   "run:3:branch",
+   "false",
+   "run:5:terminal"
+  ],
+  [
+   "run:3:branch",
+   "true",
+   "run:4:terminal"
+  ],
+  [
+   "run:4:terminal",
+   "flow",
+   "run::exit"
+  ],
+  [
+   "run:5:terminal",
+   "flow",
+   "run::exit"
+  ],
+  [
+   "run:6:terminal",
+   "flow",
+   "run::exit"
+  ],
+  [
+   "run::entry",
+   "flow",
+   "run:2:branch"
+  ]
+ ]
+}

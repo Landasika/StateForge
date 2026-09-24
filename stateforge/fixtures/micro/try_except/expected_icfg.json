@@ -1,0 +1,35 @@
+{
+ "edges": [
+  [
+   "run:1:try",
+   "flow",
+   "run:3:block"
+  ],
+  [
+   "run:1:try",
+   "flow",
+   "run:6:terminal"
+  ],
+  [
+   "run:3:block",
+   "flow",
+   "run:4:terminal"
+  ],
+  [
+   "run:4:terminal",
+   "flow",
+   "run::exit"
+  ],
+  [
+   "run:6:terminal",
+   "flow",
+   "run::exit"
+  ],
+  [
+   "run::entry",
+   "flow",
+   "run:1:try"
+  ]
+ ],
+ "approximation": "exception dispatch: handler reachable from try entry (conservative may-approximation, spec §10)"
+}
