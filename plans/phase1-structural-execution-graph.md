@@ -249,3 +249,16 @@ P1-8 验收 fixture 端到端 + 全量回归
   atheris_runner 产物);单事件一行的写法不支持
 - 旧管线委托后 build_cfg 块 ID 变为稳定格式,XFG 节点名相应变化(svg 导出
   兼容,无消费方依赖旧 ID 格式)
+
+### 正确性加固轮(2026-09-24,外部评审驱动)
+
+- **H1(P0)**:return terminal 显式连 function.exit(此前 exit 零入边不可达)
+- **H2(P0)**:mapper 行→块精确 line_numbers 优先,合成节点降权,range 兜底
+- **H3(P0/P1)**:名字歧义时预生成调用图消歧(vulnshop 实测零增益——其
+  unresolved 全为外部/内建调用;机制以构造场景验证)
+- **H4(P1)**:同行多 call 按 (lineno, col_offset) 排序;**嵌套表达式内真实
+  求值序(foo(bar()) 先 bar)在块级不区分——已知限制,两 callsite 均在链上**
+- **H5(P1)**:EdgeFrontier(dst 已覆盖但边未观察)
+- **H6(P1)**:块/CS/RS ID 用 root 相对路径;file 字段保持绝对供匹配
+- Try/except 为保守近似(handler 自 try 入口可达),非精确 exception 边;
+  动态 exception 事件仅留诊断——评审 §12 措辞已收紧

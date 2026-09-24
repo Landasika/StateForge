@@ -125,8 +125,10 @@ class _Builder:
             return []
 
         if isinstance(stmt, ast.Try):
-            # Exceptional dispatch is represented explicitly as an exception
-            # edge from the try entry; normal flow remains statement order.
+            # CONSERVATIVE APPROXIMATION(评审§12):handler 从 try 入口可达
+            # (flow+condition),不是从真实抛出点出发的 exception 边;
+            # 正常流与异常派发在静态上均自 try_entry 出发——过近似,已记
+            # spec §10;动态 exception 事件仅留诊断,不参与结构反馈。
             try_entry = self.new("try")
             self._connect(incoming, try_entry)
             normal = self._sequence(stmt.body, [(try_entry, "flow")], loops)

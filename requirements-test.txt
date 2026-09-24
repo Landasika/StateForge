@@ -1,0 +1,6 @@
+# 驱动侧(anaconda py3.13)运行 stateforge 测试所需;ANOTA 侧依赖另见
+# stateforge/targets/*/requirements-anota.txt 与 notes/env-rebuild-2026-09-17.md
+flask>=3.1
+pytest>=8
+elementpath>=5    # OWASP BenchmarkPython 部分用例;缺它仅 warn 不中断
+networkx>=3.4
