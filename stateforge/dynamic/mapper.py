@@ -113,8 +113,24 @@ def map_trace(events: list[TraceEvent], ir: ProgramIR) -> MappedTrace:
         if not candidates:
             candidates = [bid for bid, block in ir.blocks.items()
                           if block.file == filename and block.function == event.function]
-        hit = next((bid for bid in candidates
-                     if ir.blocks[bid].start_line <= event.line <= ir.blocks[bid].end_line), None)
+        # H2(评审§15):精确 line_numbers 优先(块 range 可能吞并嵌套块的行);
+        # 合成 callsite/returnsite 与宿主语句同行时,优先真实块;range 兜底
+        # 多行语句的中段行。
+        exact = [bid for bid in candidates
+                 if event.line in ir.blocks[bid].line_numbers]
+        real = [bid for bid in exact
+                if ir.blocks[bid].kind not in ("callsite", "returnsite")]
+        pool = real or exact
+        if len(pool) == 1:
+            hit = pool[0]
+        else:
+            hit = next((bid for bid in pool
+                        if ir.blocks[bid].start_line <= event.line <= ir.blocks[bid].end_line),
+                       None)
+            if hit is None:
+                hit = next((bid for bid in candidates
+                            if ir.blocks[bid].start_line <= event.line <= ir.blocks[bid].end_line),
+                           None)
         if hit is None:
             out.unresolved.append(event)
             continue
