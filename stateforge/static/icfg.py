@@ -62,11 +62,14 @@ def build_icfg(app_root: str | Path, callgraph: dict[str, list[str]] | None = No
         except (OSError, SyntaxError):
             continue
         module = _module_name(root, path)
-        for node in ast.walk(tree):
+        for node, class_path in _walk_with_class(tree):
             if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                qname = f"{module}.{node.name}"
-                ast_functions[(module, node.name)] = node
-                aliases.setdefault(node.name, []).append(qname)
+                # F2(封版):方法按类限定命名(module.Class.method)——同名方法
+                # 不合并;对它们的裸名/属性名调用解析不出→unresolved(不造假边)
+                short = ".".join(class_path + [node.name]) if class_path else node.name
+                qname = f"{module}.{short}"
+                ast_functions[(module, short)] = node
+                aliases.setdefault(short, []).append(qname)
                 rel_id = str(path.relative_to(root))
                 cfg = build_function_cfg(node, str(path), module, id_file=rel_id)
                 if not include_all_functions and callgraph and qname not in callgraph:
@@ -152,6 +155,17 @@ def build_icfg(app_root: str | Path, callgraph: dict[str, list[str]] | None = No
     ir.metadata["unresolved_calls"] = unresolved
     ir.metadata["source_hash"] = _source_hash(root)
     return ir
+
+
+def _walk_with_class(tree: ast.Module):
+    """Yield (node, class_path);class_path = 直接外层 ClassDef 名链(仅直接)。"""
+    stack = [(node, []) for node in ast.iter_child_nodes(tree)]
+    while stack:
+        node, path = stack.pop()
+        yield node, path
+        child_path = path + [node.name] if isinstance(node, ast.ClassDef) else path
+        stack.extend((child, child_path)
+                     for child in ast.iter_child_nodes(node))
 
 
 def _resolve_via_callgraph(caller: str, short: str | None, ir: ProgramIR,

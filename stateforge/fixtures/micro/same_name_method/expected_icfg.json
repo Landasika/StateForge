@@ -1,0 +1,40 @@
+{
+ "edges": [
+  [
+   "get:3:terminal",
+   "flow",
+   "get::exit"
+  ],
+  [
+   "get:7:terminal",
+   "flow",
+   "get::exit"
+  ],
+  [
+   "get::entry",
+   "flow",
+   "get:3:terminal"
+  ],
+  [
+   "get::entry",
+   "flow",
+   "get:7:terminal"
+  ],
+  [
+   "run:10:block",
+   "flow",
+   "run:11:terminal"
+  ],
+  [
+   "run:11:terminal",
+   "flow",
+   "run::exit"
+  ],
+  [
+   "run::entry",
+   "flow",
+   "run:10:block"
+  ]
+ ],
+ "approximation": "same-name methods across classes: qualified qnames (A.get/B.get); ambiguous attribute call resolved to NONE (unresolved), no fake edge"
+}

@@ -1,0 +1,30 @@
+{
+ "edges": [
+  [
+   "run:2:branch",
+   "false",
+   "run:4:terminal"
+  ],
+  [
+   "run:2:branch",
+   "true",
+   "run:3:terminal"
+  ],
+  [
+   "run:3:terminal",
+   "flow",
+   "run::exit"
+  ],
+  [
+   "run:4:terminal",
+   "flow",
+   "run::exit"
+  ],
+  [
+   "run::entry",
+   "flow",
+   "run:2:branch"
+  ]
+ ],
+ "approximation": "raise wires to function exit; does NOT route to enclosing except handlers (consistent Try approximation)"
+}

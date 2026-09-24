@@ -1,0 +1,35 @@
+{
+ "edges": [
+  [
+   "run:2:call",
+   "call",
+   "step::entry"
+  ],
+  [
+   "run:2:call",
+   "flow",
+   "run::exit"
+  ],
+  [
+   "run::entry",
+   "flow",
+   "run:2:terminal"
+  ],
+  [
+   "step:5:terminal",
+   "flow",
+   "step::exit"
+  ],
+  [
+   "step::entry",
+   "flow",
+   "step:5:terminal"
+  ],
+  [
+   "step::exit",
+   "return",
+   "run:2:call"
+  ]
+ ],
+ "approximation": "static call edge correct; DYNAMIC mapping of py3.10 comprehension frames (<listcomp>) is a known limitation"
+}

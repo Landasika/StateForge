@@ -1,0 +1,30 @@
+{
+ "edges": [
+  [
+   "run:1:try",
+   "flow",
+   "run:4:block"
+  ],
+  [
+   "run:2:block",
+   "flow",
+   "run:1:try"
+  ],
+  [
+   "run:4:block",
+   "flow",
+   "run:7:terminal"
+  ],
+  [
+   "run:7:terminal",
+   "flow",
+   "run::exit"
+  ],
+  [
+   "run::entry",
+   "flow",
+   "run:2:block"
+  ]
+ ],
+ "approximation": "finally body merged into straight-line block; exceptional path through finally not modeled"
+}

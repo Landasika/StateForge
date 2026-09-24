@@ -23,6 +23,29 @@
       "missing": [],
       "phantom": []
     },
+    "call_in_condition": {
+      "CFG": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 7,
+        "expected": 7
+      },
+      "CALL": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 1,
+        "expected": 1
+      },
+      "RETURN": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 1,
+        "expected": 1
+      },
+      "allow": {},
+      "missing": [],
+      "phantom": []
+    },
     "call_in_loop": {
       "CFG": {
         "precision": 1.0,
@@ -52,6 +75,52 @@
         "recall": 1.0,
         "produced": 7,
         "expected": 7
+      },
+      "CALL": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 1,
+        "expected": 1
+      },
+      "RETURN": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 1,
+        "expected": 1
+      },
+      "allow": {},
+      "missing": [],
+      "phantom": []
+    },
+    "comprehension_call": {
+      "CFG": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 4,
+        "expected": 4
+      },
+      "CALL": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 1,
+        "expected": 1
+      },
+      "RETURN": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 1,
+        "expected": 1
+      },
+      "allow": {},
+      "missing": [],
+      "phantom": []
+    },
+    "deep_branch": {
+      "CFG": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 11,
+        "expected": 11
       },
       "CALL": {
         "precision": 1.0,
@@ -207,6 +276,29 @@
       "missing": [],
       "phantom": []
     },
+    "raise_stmt": {
+      "CFG": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 5,
+        "expected": 5
+      },
+      "CALL": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 0,
+        "expected": 0
+      },
+      "RETURN": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 0,
+        "expected": 0
+      },
+      "allow": {},
+      "missing": [],
+      "phantom": []
+    },
     "recursion": {
       "CFG": {
         "precision": 1.0,
@@ -248,6 +340,29 @@
         "recall": 1.0,
         "produced": 2,
         "expected": 2
+      },
+      "allow": {},
+      "missing": [],
+      "phantom": []
+    },
+    "same_name_method": {
+      "CFG": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 7,
+        "expected": 7
+      },
+      "CALL": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 0,
+        "expected": 0
+      },
+      "RETURN": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 0,
+        "expected": 0
       },
       "allow": {},
       "missing": [],
@@ -305,6 +420,29 @@
         "recall": 1.0,
         "produced": 6,
         "expected": 6
+      },
+      "CALL": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 0,
+        "expected": 0
+      },
+      "RETURN": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 0,
+        "expected": 0
+      },
+      "allow": {},
+      "missing": [],
+      "phantom": []
+    },
+    "try_finally": {
+      "CFG": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "produced": 5,
+        "expected": 5
       },
       "CALL": {
         "precision": 1.0,
