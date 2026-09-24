@@ -55,6 +55,8 @@ class ExperimentRecorder:
                 "group": self.group, "epoch": self.epoch, "t": round(now, 2),
                 "executions": self.executions,
                 "blocks": self.blocks_now, "edges": self.edges_now,
+                "exec_seconds": round(self.exec_seconds, 3),
+                "feedback_seconds": round(self.feedback_seconds, 3),
             }, ensure_ascii=False) + "\n")
             self._snap.flush()
             if self.on_sample:

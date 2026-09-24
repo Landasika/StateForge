@@ -1,0 +1,238 @@
+{
+ "group": "B",
+ "mode": "measure",
+ "epochs": 3,
+ "seed": 907,
+ "epoch_records": [
+  {
+   "epoch": 1,
+   "snapshots": [
+    {
+     "group": "B",
+     "epoch": 1,
+     "t": 2.0,
+     "executions": 1375,
+     "blocks": 43,
+     "edges": 46,
+     "exec_seconds": 0.019,
+     "feedback_seconds": 1.888
+    },
+    {
+     "group": "B",
+     "epoch": 1,
+     "t": 4.0,
+     "executions": 2749,
+     "blocks": 61,
+     "edges": 66,
+     "exec_seconds": 0.039,
+     "feedback_seconds": 3.825
+    },
+    {
+     "group": "B",
+     "epoch": 1,
+     "t": 6.0,
+     "executions": 4102,
+     "blocks": 67,
+     "edges": 73,
+     "exec_seconds": 0.059,
+     "feedback_seconds": 5.763
+    },
+    {
+     "group": "B",
+     "epoch": 1,
+     "t": 8.0,
+     "executions": 5456,
+     "blocks": 67,
+     "edges": 73,
+     "exec_seconds": 0.079,
+     "feedback_seconds": 7.702
+    },
+    {
+     "group": "B",
+     "epoch": 1,
+     "t": 10.0,
+     "executions": 6782,
+     "blocks": 67,
+     "edges": 73,
+     "exec_seconds": 0.099,
+     "feedback_seconds": 9.64
+    }
+   ],
+   "executions": 6782,
+   "blocks": 67,
+   "edges": 73,
+   "exec_seconds": 0.099,
+   "feedback_seconds": 9.64,
+   "candidates_saved": 0,
+   "wall": {
+    "start_offset": 62.158,
+    "end_offset": 73.262,
+    "subprocess_seconds": 11.104
+   },
+   "corpus_in": {
+    "files": 0,
+    "bytes": 0
+   },
+   "corpus_lf_after": {
+    "files": 10,
+    "bytes": 25
+   }
+  },
+  {
+   "epoch": 2,
+   "snapshots": [
+    {
+     "group": "B",
+     "epoch": 2,
+     "t": 2.0,
+     "executions": 1297,
+     "blocks": 67,
+     "edges": 73,
+     "exec_seconds": 0.019,
+     "feedback_seconds": 1.889
+    },
+    {
+     "group": "B",
+     "epoch": 2,
+     "t": 4.0,
+     "executions": 2642,
+     "blocks": 67,
+     "edges": 73,
+     "exec_seconds": 0.04,
+     "feedback_seconds": 3.823
+    },
+    {
+     "group": "B",
+     "epoch": 2,
+     "t": 6.0,
+     "executions": 3988,
+     "blocks": 67,
+     "edges": 73,
+     "exec_seconds": 0.061,
+     "feedback_seconds": 5.759
+    },
+    {
+     "group": "B",
+     "epoch": 2,
+     "t": 8.0,
+     "executions": 5310,
+     "blocks": 67,
+     "edges": 73,
+     "exec_seconds": 0.082,
+     "feedback_seconds": 7.696
+    },
+    {
+     "group": "B",
+     "epoch": 2,
+     "t": 10.0,
+     "executions": 6636,
+     "blocks": 67,
+     "edges": 73,
+     "exec_seconds": 0.102,
+     "feedback_seconds": 9.633
+    }
+   ],
+   "executions": 6636,
+   "blocks": 67,
+   "edges": 73,
+   "exec_seconds": 0.102,
+   "feedback_seconds": 9.633,
+   "candidates_saved": 0,
+   "wall": {
+    "start_offset": 73.264,
+    "end_offset": 84.362,
+    "subprocess_seconds": 11.098
+   },
+   "corpus_in": {
+    "files": 10,
+    "bytes": 25
+   },
+   "corpus_lf_after": {
+    "files": 10,
+    "bytes": 25
+   }
+  },
+  {
+   "epoch": 3,
+   "snapshots": [
+    {
+     "group": "B",
+     "epoch": 3,
+     "t": 2.0,
+     "executions": 1282,
+     "blocks": 67,
+     "edges": 73,
+     "exec_seconds": 0.02,
+     "feedback_seconds": 1.888
+    },
+    {
+     "group": "B",
+     "epoch": 3,
+     "t": 4.0,
+     "executions": 2615,
+     "blocks": 67,
+     "edges": 73,
+     "exec_seconds": 0.04,
+     "feedback_seconds": 3.825
+    },
+    {
+     "group": "B",
+     "epoch": 3,
+     "t": 6.0,
+     "executions": 3928,
+     "blocks": 67,
+     "edges": 73,
+     "exec_seconds": 0.061,
+     "feedback_seconds": 5.762
+    },
+    {
+     "group": "B",
+     "epoch": 3,
+     "t": 8.0,
+     "executions": 5226,
+     "blocks": 67,
+     "edges": 73,
+     "exec_seconds": 0.081,
+     "feedback_seconds": 7.699
+    },
+    {
+     "group": "B",
+     "epoch": 3,
+     "t": 10.0,
+     "executions": 6531,
+     "blocks": 67,
+     "edges": 73,
+     "exec_seconds": 0.101,
+     "feedback_seconds": 9.637
+    }
+   ],
+   "executions": 6531,
+   "blocks": 67,
+   "edges": 73,
+   "exec_seconds": 0.101,
+   "feedback_seconds": 9.637,
+   "candidates_saved": 0,
+   "wall": {
+    "start_offset": 84.365,
+    "end_offset": 95.47,
+    "subprocess_seconds": 11.105
+   },
+   "corpus_in": {
+    "files": 10,
+    "bytes": 25
+   },
+   "corpus_lf_after": {
+    "files": 10,
+    "bytes": 25
+   }
+  }
+ ],
+ "total_executions": 19949,
+ "total_exec_seconds": 0.302,
+ "total_feedback_seconds": 28.91,
+ "total_candidates_saved": 0,
+ "final_blocks": 67,
+ "final_edges": 73,
+ "group_start_offset": 62.158,
+ "wall_span": 33.312
+}

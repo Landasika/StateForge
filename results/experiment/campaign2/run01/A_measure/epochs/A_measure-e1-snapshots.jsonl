@@ -1,0 +1,15 @@
+{"group": "A_measure", "epoch": 1, "t": 2.0, "executions": 1351, "blocks": 43, "edges": 46, "exec_seconds": 0.02, "feedback_seconds": 1.886}
+{"group": "A_measure", "epoch": 1, "t": 4.0, "executions": 2724, "blocks": 43, "edges": 46, "exec_seconds": 0.04, "feedback_seconds": 3.824}
+{"group": "A_measure", "epoch": 1, "t": 6.0, "executions": 4102, "blocks": 49, "edges": 53, "exec_seconds": 0.06, "feedback_seconds": 5.761}
+{"group": "A_measure", "epoch": 1, "t": 8.0, "executions": 5463, "blocks": 49, "edges": 53, "exec_seconds": 0.08, "feedback_seconds": 7.699}
+{"group": "A_measure", "epoch": 1, "t": 10.0, "executions": 6816, "blocks": 67, "edges": 73, "exec_seconds": 0.1, "feedback_seconds": 9.636}
+{"group": "A_measure", "epoch": 1, "t": 12.0, "executions": 8177, "blocks": 67, "edges": 73, "exec_seconds": 0.12, "feedback_seconds": 11.575}
+{"group": "A_measure", "epoch": 1, "t": 14.0, "executions": 9520, "blocks": 67, "edges": 73, "exec_seconds": 0.14, "feedback_seconds": 13.514}
+{"group": "A_measure", "epoch": 1, "t": 16.01, "executions": 10881, "blocks": 67, "edges": 73, "exec_seconds": 0.16, "feedback_seconds": 15.452}
+{"group": "A_measure", "epoch": 1, "t": 18.01, "executions": 12221, "blocks": 67, "edges": 73, "exec_seconds": 0.18, "feedback_seconds": 17.39}
+{"group": "A_measure", "epoch": 1, "t": 20.01, "executions": 13557, "blocks": 67, "edges": 73, "exec_seconds": 0.2, "feedback_seconds": 19.329}
+{"group": "A_measure", "epoch": 1, "t": 22.01, "executions": 14885, "blocks": 67, "edges": 73, "exec_seconds": 0.221, "feedback_seconds": 21.266}
+{"group": "A_measure", "epoch": 1, "t": 24.01, "executions": 16199, "blocks": 67, "edges": 73, "exec_seconds": 0.241, "feedback_seconds": 23.203}
+{"group": "A_measure", "epoch": 1, "t": 26.01, "executions": 17500, "blocks": 67, "edges": 73, "exec_seconds": 0.261, "feedback_seconds": 25.142}
+{"group": "A_measure", "epoch": 1, "t": 28.01, "executions": 18802, "blocks": 67, "edges": 73, "exec_seconds": 0.282, "feedback_seconds": 27.08}
+{"group": "A_measure", "epoch": 1, "t": 30.01, "executions": 20126, "blocks": 67, "edges": 73, "exec_seconds": 0.302, "feedback_seconds": 29.017}

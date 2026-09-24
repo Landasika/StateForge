@@ -21,13 +21,15 @@ class CandidateCollector:
     def __init__(self, ir: ProgramIR, session: TraceSession,
                  feedback: StructuralFeedback,
                  corpus: CorpusManager | None,       # None = measure 模式
-                 recorder: ExperimentRecorder, epoch: int):
+                 recorder: ExperimentRecorder, epoch: int,
+                 on_save=None):                      # P0-7:保存时持久化全局覆盖
         self.ir = ir
         self.session = session
         self.feedback = feedback
         self.corpus = corpus
         self.recorder = recorder
         self.epoch = epoch
+        self.on_save = on_save
 
     def handle(self, target, data: bytes):
         start = len(self.session.events)
@@ -46,6 +48,8 @@ class CandidateCollector:
             cid = self.corpus.save(data, self.epoch, len(obs.new_blocks),
                                    len(obs.new_edges), len(obs.blocks),
                                    len(obs.edges))
+            if cid and self.on_save:
+                self.on_save()                       # 立刻落盘,抗 _Exit 尾丢
         self.feedback.update_global_coverage(obs.blocks, obs.edges)
         feedback_s = time.monotonic() - t1
         self.recorder.tick(exec_s, feedback_s,

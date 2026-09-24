@@ -1,0 +1,244 @@
+{
+ "group": "C",
+ "mode": "feedback",
+ "epochs": 3,
+ "seed": 7,
+ "epoch_records": [
+  {
+   "epoch": 1,
+   "snapshots": [
+    {
+     "group": "C",
+     "epoch": 1,
+     "t": 2.0,
+     "executions": 1401,
+     "blocks": 43,
+     "edges": 46,
+     "exec_seconds": 0.02,
+     "feedback_seconds": 1.886
+    },
+    {
+     "group": "C",
+     "epoch": 1,
+     "t": 4.0,
+     "executions": 2801,
+     "blocks": 55,
+     "edges": 59,
+     "exec_seconds": 0.04,
+     "feedback_seconds": 3.822
+    },
+    {
+     "group": "C",
+     "epoch": 1,
+     "t": 6.0,
+     "executions": 4169,
+     "blocks": 61,
+     "edges": 66,
+     "exec_seconds": 0.061,
+     "feedback_seconds": 5.759
+    },
+    {
+     "group": "C",
+     "epoch": 1,
+     "t": 8.0,
+     "executions": 5520,
+     "blocks": 61,
+     "edges": 66,
+     "exec_seconds": 0.081,
+     "feedback_seconds": 7.697
+    },
+    {
+     "group": "C",
+     "epoch": 1,
+     "t": 10.0,
+     "executions": 6881,
+     "blocks": 67,
+     "edges": 73,
+     "exec_seconds": 0.101,
+     "feedback_seconds": 9.635
+    }
+   ],
+   "executions": 6881,
+   "blocks": 67,
+   "edges": 73,
+   "exec_seconds": 0.101,
+   "feedback_seconds": 9.635,
+   "candidates_saved": 8,
+   "wall": {
+    "start_offset": 95.466,
+    "end_offset": 106.566,
+    "subprocess_seconds": 11.099
+   },
+   "corpus_in": {
+    "files": 0,
+    "bytes": 0
+   },
+   "corpus_lf_after": {
+    "files": 10,
+    "bytes": 26
+   }
+  },
+  {
+   "epoch": 2,
+   "snapshots": [
+    {
+     "group": "C",
+     "epoch": 2,
+     "t": 2.0,
+     "executions": 1292,
+     "blocks": 67,
+     "edges": 73,
+     "exec_seconds": 0.019,
+     "feedback_seconds": 1.892
+    },
+    {
+     "group": "C",
+     "epoch": 2,
+     "t": 4.0,
+     "executions": 2600,
+     "blocks": 67,
+     "edges": 73,
+     "exec_seconds": 0.039,
+     "feedback_seconds": 3.832
+    },
+    {
+     "group": "C",
+     "epoch": 2,
+     "t": 6.0,
+     "executions": 3934,
+     "blocks": 67,
+     "edges": 73,
+     "exec_seconds": 0.059,
+     "feedback_seconds": 5.773
+    },
+    {
+     "group": "C",
+     "epoch": 2,
+     "t": 8.01,
+     "executions": 5258,
+     "blocks": 67,
+     "edges": 73,
+     "exec_seconds": 0.079,
+     "feedback_seconds": 7.713
+    },
+    {
+     "group": "C",
+     "epoch": 2,
+     "t": 10.01,
+     "executions": 6562,
+     "blocks": 67,
+     "edges": 73,
+     "exec_seconds": 0.099,
+     "feedback_seconds": 9.653
+    }
+   ],
+   "executions": 6562,
+   "blocks": 67,
+   "edges": 73,
+   "exec_seconds": 0.099,
+   "feedback_seconds": 9.653,
+   "candidates_saved": 0,
+   "wall": {
+    "start_offset": 106.569,
+    "end_offset": 117.672,
+    "subprocess_seconds": 11.103
+   },
+   "corpus_in": {
+    "files": 18,
+    "bytes": 88
+   },
+   "corpus_lf_after": {
+    "files": 18,
+    "bytes": 88
+   }
+  },
+  {
+   "epoch": 3,
+   "snapshots": [
+    {
+     "group": "C",
+     "epoch": 3,
+     "t": 2.0,
+     "executions": 1295,
+     "blocks": 67,
+     "edges": 73,
+     "exec_seconds": 0.019,
+     "feedback_seconds": 1.892
+    },
+    {
+     "group": "C",
+     "epoch": 3,
+     "t": 4.0,
+     "executions": 2611,
+     "blocks": 67,
+     "edges": 73,
+     "exec_seconds": 0.039,
+     "feedback_seconds": 3.832
+    },
+    {
+     "group": "C",
+     "epoch": 3,
+     "t": 6.0,
+     "executions": 3947,
+     "blocks": 67,
+     "edges": 73,
+     "exec_seconds": 0.059,
+     "feedback_seconds": 5.77
+    },
+    {
+     "group": "C",
+     "epoch": 3,
+     "t": 8.0,
+     "executions": 5266,
+     "blocks": 67,
+     "edges": 73,
+     "exec_seconds": 0.079,
+     "feedback_seconds": 7.709
+    },
+    {
+     "group": "C",
+     "epoch": 3,
+     "t": 10.0,
+     "executions": 6549,
+     "blocks": 67,
+     "edges": 73,
+     "exec_seconds": 0.1,
+     "feedback_seconds": 9.647
+    }
+   ],
+   "executions": 6549,
+   "blocks": 67,
+   "edges": 73,
+   "exec_seconds": 0.1,
+   "feedback_seconds": 9.647,
+   "candidates_saved": 0,
+   "wall": {
+    "start_offset": 117.678,
+    "end_offset": 128.78,
+    "subprocess_seconds": 11.102
+   },
+   "corpus_in": {
+    "files": 18,
+    "bytes": 88
+   },
+   "corpus_lf_after": {
+    "files": 18,
+    "bytes": 88
+   }
+  }
+ ],
+ "total_executions": 19992,
+ "total_exec_seconds": 0.3,
+ "total_feedback_seconds": 28.935,
+ "total_candidates_saved": 8,
+ "final_blocks": 67,
+ "final_edges": 73,
+ "group_start_offset": 95.466,
+ "wall_span": 33.314,
+ "novel_seed_gain": {
+  "sf_candidates_total": 8,
+  "sf_already_in_native": 8,
+  "sf_unique_vs_native": 0,
+  "novel_seed_gain": 0.0
+ }
+}

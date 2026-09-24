@@ -89,7 +89,8 @@ def main() -> int:
         corpus = (CorpusManager(Path(args.out_dir) / "spool")
                   if args.mode == "feedback" else None)
         collector = CandidateCollector(ir, session, feedback, corpus,
-                                       recorder, args.epoch)
+                                       recorder, args.epoch,
+                                       on_save=_dump_state)
 
         def handler(data: bytes) -> None:
             collector.handle(target, data)
