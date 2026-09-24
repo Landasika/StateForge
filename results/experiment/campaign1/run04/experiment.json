@@ -1,0 +1,389 @@
+{
+ "target": "stateforge/targets/microplus/hash_gates.py",
+ "seed": 407,
+ "epochs": 3,
+ "seconds_per_epoch": 8.0,
+ "groups": {
+  "A": {
+   "runs": [
+    {
+     "group": "A",
+     "epoch": 1,
+     "executions": 9570473,
+     "wall_seconds": 24.0,
+     "blocks": 0,
+     "edges": 0,
+     "candidates_saved": 0,
+     "snapshots": [
+      {
+       "group": "A",
+       "epoch": 1,
+       "t": 2.0,
+       "executions": 812920,
+       "blocks": 0,
+       "edges": 0
+      },
+      {
+       "group": "A",
+       "epoch": 1,
+       "t": 4.0,
+       "executions": 1630056,
+       "blocks": 0,
+       "edges": 0
+      },
+      {
+       "group": "A",
+       "epoch": 1,
+       "t": 6.0,
+       "executions": 2446208,
+       "blocks": 0,
+       "edges": 0
+      },
+      {
+       "group": "A",
+       "epoch": 1,
+       "t": 8.0,
+       "executions": 3260181,
+       "blocks": 0,
+       "edges": 0
+      },
+      {
+       "group": "A",
+       "epoch": 1,
+       "t": 10.0,
+       "executions": 4045156,
+       "blocks": 0,
+       "edges": 0
+      },
+      {
+       "group": "A",
+       "epoch": 1,
+       "t": 12.0,
+       "executions": 4860463,
+       "blocks": 0,
+       "edges": 0
+      },
+      {
+       "group": "A",
+       "epoch": 1,
+       "t": 14.0,
+       "executions": 5665092,
+       "blocks": 0,
+       "edges": 0
+      },
+      {
+       "group": "A",
+       "epoch": 1,
+       "t": 16.0,
+       "executions": 6469119,
+       "blocks": 0,
+       "edges": 0
+      },
+      {
+       "group": "A",
+       "epoch": 1,
+       "t": 18.0,
+       "executions": 7275619,
+       "blocks": 0,
+       "edges": 0
+      },
+      {
+       "group": "A",
+       "epoch": 1,
+       "t": 20.0,
+       "executions": 8084821,
+       "blocks": 0,
+       "edges": 0
+      },
+      {
+       "group": "A",
+       "epoch": 1,
+       "t": 22.0,
+       "executions": 8875090,
+       "blocks": 0,
+       "edges": 0
+      },
+      {
+       "group": "A",
+       "epoch": 1,
+       "t": 24.0,
+       "executions": 9570473,
+       "blocks": 0,
+       "edges": 0
+      }
+     ]
+    }
+   ]
+  },
+  "B": {
+   "runs": [
+    [
+     {
+      "group": "B",
+      "epoch": 1,
+      "executions": 4329,
+      "wall_seconds": 8.01,
+      "blocks": 67,
+      "edges": 73,
+      "candidates_saved": 0,
+      "snapshots": [
+       {
+        "group": "B",
+        "epoch": 1,
+        "t": 2.0,
+        "executions": 1121,
+        "blocks": 25,
+        "edges": 26
+       },
+       {
+        "group": "B",
+        "epoch": 1,
+        "t": 4.0,
+        "executions": 2219,
+        "blocks": 49,
+        "edges": 53
+       },
+       {
+        "group": "B",
+        "epoch": 1,
+        "t": 6.0,
+        "executions": 3303,
+        "blocks": 67,
+        "edges": 73
+       },
+       {
+        "group": "B",
+        "epoch": 1,
+        "t": 8.01,
+        "executions": 4329,
+        "blocks": 67,
+        "edges": 73
+       }
+      ]
+     },
+     {
+      "group": "B",
+      "epoch": 2,
+      "executions": 4910,
+      "wall_seconds": 8.0,
+      "blocks": 67,
+      "edges": 73,
+      "candidates_saved": 0,
+      "snapshots": [
+       {
+        "group": "B",
+        "epoch": 2,
+        "t": 2.0,
+        "executions": 1092,
+        "blocks": 67,
+        "edges": 73
+       },
+       {
+        "group": "B",
+        "epoch": 2,
+        "t": 4.0,
+        "executions": 2343,
+        "blocks": 67,
+        "edges": 73
+       },
+       {
+        "group": "B",
+        "epoch": 2,
+        "t": 6.0,
+        "executions": 3611,
+        "blocks": 67,
+        "edges": 73
+       },
+       {
+        "group": "B",
+        "epoch": 2,
+        "t": 8.0,
+        "executions": 4910,
+        "blocks": 67,
+        "edges": 73
+       }
+      ]
+     },
+     {
+      "group": "B",
+      "epoch": 3,
+      "executions": 5145,
+      "wall_seconds": 8.0,
+      "blocks": 67,
+      "edges": 73,
+      "candidates_saved": 0,
+      "snapshots": [
+       {
+        "group": "B",
+        "epoch": 3,
+        "t": 2.0,
+        "executions": 1293,
+        "blocks": 67,
+        "edges": 73
+       },
+       {
+        "group": "B",
+        "epoch": 3,
+        "t": 4.0,
+        "executions": 2578,
+        "blocks": 67,
+        "edges": 73
+       },
+       {
+        "group": "B",
+        "epoch": 3,
+        "t": 6.0,
+        "executions": 3881,
+        "blocks": 67,
+        "edges": 73
+       },
+       {
+        "group": "B",
+        "epoch": 3,
+        "t": 8.0,
+        "executions": 5145,
+        "blocks": 67,
+        "edges": 73
+       }
+      ]
+     }
+    ]
+   ]
+  },
+  "C": {
+   "runs": [
+    [
+     {
+      "group": "C",
+      "epoch": 1,
+      "executions": 5279,
+      "wall_seconds": 8.0,
+      "blocks": 67,
+      "edges": 73,
+      "candidates_saved": 8,
+      "snapshots": [
+       {
+        "group": "C",
+        "epoch": 1,
+        "t": 2.0,
+        "executions": 1350,
+        "blocks": 25,
+        "edges": 26
+       },
+       {
+        "group": "C",
+        "epoch": 1,
+        "t": 4.0,
+        "executions": 2698,
+        "blocks": 49,
+        "edges": 53
+       },
+       {
+        "group": "C",
+        "epoch": 1,
+        "t": 6.0,
+        "executions": 3997,
+        "blocks": 67,
+        "edges": 73
+       },
+       {
+        "group": "C",
+        "epoch": 1,
+        "t": 8.0,
+        "executions": 5279,
+        "blocks": 67,
+        "edges": 73
+       }
+      ]
+     },
+     {
+      "group": "C",
+      "epoch": 2,
+      "executions": 5272,
+      "wall_seconds": 8.0,
+      "blocks": 67,
+      "edges": 73,
+      "candidates_saved": 0,
+      "snapshots": [
+       {
+        "group": "C",
+        "epoch": 2,
+        "t": 2.0,
+        "executions": 1304,
+        "blocks": 67,
+        "edges": 73
+       },
+       {
+        "group": "C",
+        "epoch": 2,
+        "t": 4.0,
+        "executions": 2606,
+        "blocks": 67,
+        "edges": 73
+       },
+       {
+        "group": "C",
+        "epoch": 2,
+        "t": 6.0,
+        "executions": 3945,
+        "blocks": 67,
+        "edges": 73
+       },
+       {
+        "group": "C",
+        "epoch": 2,
+        "t": 8.0,
+        "executions": 5272,
+        "blocks": 67,
+        "edges": 73
+       }
+      ]
+     },
+     {
+      "group": "C",
+      "epoch": 3,
+      "executions": 5150,
+      "wall_seconds": 8.01,
+      "blocks": 67,
+      "edges": 73,
+      "candidates_saved": 0,
+      "snapshots": [
+       {
+        "group": "C",
+        "epoch": 3,
+        "t": 2.0,
+        "executions": 1272,
+        "blocks": 67,
+        "edges": 73
+       },
+       {
+        "group": "C",
+        "epoch": 3,
+        "t": 4.0,
+        "executions": 2555,
+        "blocks": 67,
+        "edges": 73
+       },
+       {
+        "group": "C",
+        "epoch": 3,
+        "t": 6.0,
+        "executions": 3854,
+        "blocks": 67,
+        "edges": 73
+       },
+       {
+        "group": "C",
+        "epoch": 3,
+        "t": 8.01,
+        "executions": 5150,
+        "blocks": 67,
+        "edges": 73
+       }
+      ]
+     }
+    ]
+   ]
+  }
+ }
+}

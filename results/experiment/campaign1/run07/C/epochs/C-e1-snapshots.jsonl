@@ -1,0 +1,4 @@
+{"group": "C", "epoch": 1, "t": 2.0, "executions": 1315, "blocks": 55, "edges": 59}
+{"group": "C", "epoch": 1, "t": 4.0, "executions": 2625, "blocks": 61, "edges": 66}
+{"group": "C", "epoch": 1, "t": 6.01, "executions": 3947, "blocks": 61, "edges": 66}
+{"group": "C", "epoch": 1, "t": 8.01, "executions": 5250, "blocks": 67, "edges": 73}
