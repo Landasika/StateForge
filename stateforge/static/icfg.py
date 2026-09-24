@@ -86,7 +86,7 @@ def build_icfg(app_root: str | Path, callgraph: dict[str, list[str]] | None = No
         node = ast_functions.get((module, fname))
         if node is None:
             continue
-        block_calls: dict[str, list[tuple[int, str]]] = {}
+        block_calls: dict[str, list[tuple[int, int, str]]] = {}
         for call in _iter_owned_calls(node):
             callee_short = _callee_name(call)
             callee = _resolve_callee(callee_short, module, ast_functions, aliases)
@@ -106,10 +106,11 @@ def build_icfg(app_root: str | Path, callgraph: dict[str, list[str]] | None = No
                 unresolved.append({"caller": qname, "callee": callee_short,
                                    "reason": "no host block", "line": line})
                 continue
-            block_calls.setdefault(host, []).append((line, callee))
+            col = getattr(call, "col_offset", 0)
+            block_calls.setdefault(host, []).append((line, col, callee))
 
         for host, calls in block_calls.items():
-            calls.sort(key=lambda t: t[0])
+            calls.sort(key=lambda t: (t[0], t[1]))   # H4:同行按 col_offset
             succs = [out for out in ir.outgoing(host)
                      if out.kind in ("flow", "true", "false")]
             continuations = succs or []          # return helper() 的空后继→exit
@@ -118,7 +119,7 @@ def build_icfg(app_root: str | Path, callgraph: dict[str, list[str]] | None = No
             file = ir.blocks[host].file
             prev = host
             chain_blocks: list[str] = []
-            for n, (line, callee) in enumerate(calls, start=1):
+            for n, (line, _col, callee) in enumerate(calls, start=1):
                 cs = f"{file}::{fname}::{line}-{line}::callsite::{n}"
                 rs = f"{file}::{fname}::{line}-{line}::returnsite::{n}"
                 ir.blocks[cs] = BasicBlock(cs, file, module, fname, line, line,
