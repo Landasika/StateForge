@@ -27,6 +27,7 @@ class _Builder:
         self.raw_blocks: list[tuple[str, str, list[ast.stmt], ast.expr | None]] = []
         self.edges: list[tuple[str, str, str, str | None]] = []
         self.ordinal = 0
+        self.returns: list[str] = []     # H1:return terminal 块,build 时统一连 exit
 
     def new(self, kind: str, stmts: list[ast.stmt] | None = None,
             test: ast.expr | None = None) -> str:
@@ -51,6 +52,11 @@ class _Builder:
         exit_node = self.new("exit")
         for src, kind in exits:
             self.edge(src, exit_node, kind)
+        # H1(评审§11):显式 return 的 terminal 块由 _sequence 返回空、
+        # 不在 exits 里——必须单独连到 exit,否则 exit 不可达、
+        # 动态 return 事件与静态图语义脱节。
+        for block in self.returns:
+            self.edge(block, exit_node, "flow")
         return self._finalize(entry, exit_node)
 
     def _sequence(self, stmts: list[ast.stmt], incoming: list[tuple[str, str]],
@@ -113,6 +119,7 @@ class _Builder:
         if isinstance(stmt, ast.Return):
             block = self.new("terminal", [stmt])
             self._connect(incoming, block)
+            self.returns.append(block)
             return []
 
         if isinstance(stmt, ast.Try):
