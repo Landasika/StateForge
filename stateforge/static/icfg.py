@@ -90,6 +90,11 @@ def build_icfg(app_root: str | Path, callgraph: dict[str, list[str]] | None = No
         for call in _iter_owned_calls(node):
             callee_short = _callee_name(call)
             callee = _resolve_callee(callee_short, module, ast_functions, aliases)
+            if callee is None and callee_short and callgraph is not None:
+                # H3(评审§13):名字解析失败/歧义时,用预生成调用图
+                # (PyCG 在 ANOTA 侧预出 JSON,驱动侧 py3.13 不可运行)消歧
+                callee = _resolve_via_callgraph(qname, callee_short,
+                                                ir, callgraph)
             line = getattr(call, "lineno", 0)
             if callee is None or callee not in ir.functions or callee == qname:
                 unresolved.append({"caller": qname, "callee": callee_short,
@@ -142,6 +147,33 @@ def build_icfg(app_root: str | Path, callgraph: dict[str, list[str]] | None = No
     ir.metadata["unresolved_calls"] = unresolved
     ir.metadata["source_hash"] = _source_hash(root)
     return ir
+
+
+def _resolve_via_callgraph(caller: str, short: str | None, ir: ProgramIR,
+                           callgraph: dict[str, list[str]]) -> str | None:
+    """按调用图边消歧:caller 的 callee 候选中 short 名匹配且唯一者胜出。
+
+    PyCG 产物的 qname 可能带仓库前缀(如 ``vulnshop.app.a.handler``),用
+    后缀匹配桥接到本 IR 的函数名;歧义或无命中返回 None(保持 unresolved)。
+    """
+    if not short:
+        return None
+    known = set(ir.functions)
+    callees: set[str] = set()
+    for key, targets in callgraph.items():
+        if key != caller and not key.endswith("." + caller):
+            continue
+        for target in targets:
+            tname = target.rsplit(".", 1)[-1]
+            if tname != short:
+                continue
+            if target in known:
+                callees.add(target)
+            else:                       # 仓库前缀形态:target 以我们的 qname 结尾
+                for fn in known:
+                    if target == fn or target.endswith("." + fn):
+                        callees.add(fn)
+    return callees.pop() if len(callees) == 1 else None
 
 
 def _callee_name(call: ast.Call) -> str | None:
