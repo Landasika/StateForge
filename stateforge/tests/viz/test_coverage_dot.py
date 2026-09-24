@@ -23,3 +23,18 @@ def test_dot_smoke(tmp_path):
     assert 'fillcolor="palegreen"' in text      # 覆盖块着色
     assert 'color="gray"' in text               # 未覆盖块灰
     assert "red" in text and "frontier" in text  # frontier 边红
+
+
+def test_edge_attributes_inside_single_bracket_group():
+    import re
+
+    from stateforge.core.ir import FlowEdge
+
+    ir = _ir()
+    ir.edges.append(FlowEdge("b2", "b1", "call", callee="x"))
+    fb = {"covered_blocks": [], "frontiers": [], "block_hits": {}}
+    text = coverage_dot(ir, fb, "/tmp/_shape.dot").read_text(encoding="utf-8")
+    for line in text.splitlines():
+        if "->" in line:
+            assert re.match(r'^  ".*" -> ".*"( \[.*\])?;$', line), \
+                f"边属性必须在单一方括号组内: {line}"

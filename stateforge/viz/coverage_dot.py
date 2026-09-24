@@ -7,7 +7,7 @@ from pathlib import Path
 from stateforge.core.ir import ProgramIR
 
 _KIND_SHAPE = {"branch": "diamond", "entry": "circle", "exit": "doublecircle",
-               "terminal": "box, style=rounded", "callsite": "point",
+               "terminal": "box", "callsite": "point",
                "returnsite": "point", "loop_exit": "point", "try": "ellipse"}
 
 
@@ -36,10 +36,13 @@ def coverage_dot(ir: ProgramIR, feedback: dict, path: str | Path) -> Path:
             lines.append(f'  "{edge.src}" -> "{edge.dst}" '
                          '[color="red", penwidth=2.5, label="frontier"];')
         else:
-            label = edge.kind if edge.kind in ("call", "return") else ""
-            attr = f' [label="{label}"]' if label else ""
-            color = ' color="purple"' if edge.kind in ("call", "return") else ""
-            lines.append(f'  "{edge.src}" -> "{edge.dst}"{color}{attr};')
+            # 属性必须整体放进一个方括号组(color 裸写在外面是 dot 语法错误)
+            attrs = []
+            if edge.kind in ("call", "return"):
+                attrs.append(f'label="{edge.kind}"')
+                attrs.append('color="purple"')
+            attr = f" [{', '.join(attrs)}]" if attrs else ""
+            lines.append(f'  "{edge.src}" -> "{edge.dst}"{attr};')
     lines.append("}")
     out = Path(path)
     out.write_text("\n".join(lines), encoding="utf-8")
