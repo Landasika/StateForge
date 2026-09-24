@@ -124,6 +124,14 @@ class _Builder:
             self.returns.append(block)
             return []
 
+        if isinstance(stmt, ast.Raise):
+            # F1:raise 终止正常控制流,直连函数出口;不解码 enclosing
+            # except handler(与 Try 的保守近似一致,spec §10)
+            block = self.new("terminal", [stmt])
+            self._connect(incoming, block)
+            self.returns.append(block)      # 复用 return→exit 的统一出口连接
+            return []
+
         if isinstance(stmt, ast.Try):
             # CONSERVATIVE APPROXIMATION(评审§12):handler 从 try 入口可达
             # (flow+condition),不是从真实抛出点出发的 exception 边;
