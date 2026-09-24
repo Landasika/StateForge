@@ -67,7 +67,8 @@ def build_icfg(app_root: str | Path, callgraph: dict[str, list[str]] | None = No
                 qname = f"{module}.{node.name}"
                 ast_functions[(module, node.name)] = node
                 aliases.setdefault(node.name, []).append(qname)
-                cfg = build_function_cfg(node, str(path), module)
+                rel_id = str(path.relative_to(root))
+                cfg = build_function_cfg(node, str(path), module, id_file=rel_id)
                 if not include_all_functions and callgraph and qname not in callgraph:
                     continue
                 ir.functions[qname] = cfg.function
@@ -117,11 +118,14 @@ def build_icfg(app_root: str | Path, callgraph: dict[str, list[str]] | None = No
             for out in succs:
                 ir.remove_edge(host, out.dst, out.kind)
             file = ir.blocks[host].file
+            # H6:合成节点 ID 用相对路径(与块 ID 一致,跨机器稳定)
+            root_str = str(root)
+            id_file = file[len(root_str) + 1:] if file.startswith(root_str + "/") else file
             prev = host
             chain_blocks: list[str] = []
             for n, (line, _col, callee) in enumerate(calls, start=1):
-                cs = f"{file}::{fname}::{line}-{line}::callsite::{n}"
-                rs = f"{file}::{fname}::{line}-{line}::returnsite::{n}"
+                cs = f"{id_file}::{fname}::{line}-{line}::callsite::{n}"
+                rs = f"{id_file}::{fname}::{line}-{line}::returnsite::{n}"
                 ir.blocks[cs] = BasicBlock(cs, file, module, fname, line, line,
                                            "callsite", [f"<call> {callee}"], [line])
                 ir.blocks[rs] = BasicBlock(rs, file, module, fname, line, line,

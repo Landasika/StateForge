@@ -22,8 +22,10 @@ class FunctionCFG:
 
 class _Builder:
     def __init__(self, node: ast.FunctionDef | ast.AsyncFunctionDef, file: str,
-                 module: str):
+                 module: str, id_file: str | None = None):
         self.node, self.file, self.module = node, file, module
+        # H6(评审§2):ID 用相对路径(跨机器稳定);file 保持绝对路径供动态匹配
+        self.id_file = id_file or file
         self.raw_blocks: list[tuple[str, str, list[ast.stmt], ast.expr | None]] = []
         self.edges: list[tuple[str, str, str, str | None]] = []
         self.ordinal = 0
@@ -162,7 +164,7 @@ class _Builder:
             if not lines:
                 lines = [self.node.lineno]
             lo, hi = min(lines), max(lines)
-            base = f"{self.file}::{self.node.name}::{lo}-{hi}::{kind}"
+            base = f"{self.id_file}::{self.node.name}::{lo}-{hi}::{kind}"
             used[base] = used.get(base, 0) + 1
             bid = f"{base}::{used[base]}"
             ids[raw] = bid
@@ -181,5 +183,6 @@ class _Builder:
 
 
 def build_function_cfg(node: ast.FunctionDef | ast.AsyncFunctionDef,
-                       file: str, module: str) -> FunctionCFG:
-    return _Builder(node, file, module).build()
+                       file: str, module: str,
+                       id_file: str | None = None) -> FunctionCFG:
+    return _Builder(node, file, module, id_file).build()
