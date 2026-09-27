@@ -1,0 +1,214 @@
+{
+ "group": "C",
+ "mode": "feedback",
+ "epochs": 3,
+ "seed": 207,
+ "epoch_records": [
+  {
+   "epoch": 1,
+   "snapshots": [
+    {
+     "group": "C",
+     "epoch": 1,
+     "t": 2.01,
+     "executions": 184,
+     "blocks": 120,
+     "edges": 87,
+     "exec_seconds": 0.311,
+     "feedback_seconds": 1.646
+    },
+    {
+     "group": "C",
+     "epoch": 1,
+     "t": 4.03,
+     "executions": 358,
+     "blocks": 144,
+     "edges": 108,
+     "exec_seconds": 0.661,
+     "feedback_seconds": 3.31
+    },
+    {
+     "group": "C",
+     "epoch": 1,
+     "t": 6.05,
+     "executions": 540,
+     "blocks": 144,
+     "edges": 108,
+     "exec_seconds": 1.007,
+     "feedback_seconds": 4.978
+    },
+    {
+     "group": "C",
+     "epoch": 1,
+     "t": 8.05,
+     "executions": 712,
+     "blocks": 144,
+     "edges": 108,
+     "exec_seconds": 1.384,
+     "feedback_seconds": 6.594
+    }
+   ],
+   "executions": 712,
+   "blocks": 144,
+   "edges": 108,
+   "exec_seconds": 1.384,
+   "feedback_seconds": 6.594,
+   "candidates_saved": 17,
+   "wall": {
+    "start_offset": 84.691,
+    "end_offset": 95.228,
+    "subprocess_seconds": 10.537
+   },
+   "corpus_in": {
+    "files": 0,
+    "bytes": 0
+   },
+   "corpus_lf_after": {
+    "files": 5,
+    "bytes": 13
+   }
+  },
+  {
+   "epoch": 2,
+   "snapshots": [
+    {
+     "group": "C",
+     "epoch": 2,
+     "t": 2.01,
+     "executions": 142,
+     "blocks": 166,
+     "edges": 129,
+     "exec_seconds": 0.452,
+     "feedback_seconds": 1.507
+    },
+    {
+     "group": "C",
+     "epoch": 2,
+     "t": 4.01,
+     "executions": 332,
+     "blocks": 166,
+     "edges": 129,
+     "exec_seconds": 0.751,
+     "feedback_seconds": 3.204
+    },
+    {
+     "group": "C",
+     "epoch": 2,
+     "t": 6.02,
+     "executions": 498,
+     "blocks": 171,
+     "edges": 132,
+     "exec_seconds": 1.136,
+     "feedback_seconds": 4.826
+    },
+    {
+     "group": "C",
+     "epoch": 2,
+     "t": 8.03,
+     "executions": 657,
+     "blocks": 171,
+     "edges": 132,
+     "exec_seconds": 1.555,
+     "feedback_seconds": 6.406
+    }
+   ],
+   "executions": 657,
+   "blocks": 171,
+   "edges": 132,
+   "exec_seconds": 1.555,
+   "feedback_seconds": 6.406,
+   "candidates_saved": 1,
+   "wall": {
+    "start_offset": 95.232,
+    "end_offset": 105.714,
+    "subprocess_seconds": 10.482
+   },
+   "corpus_in": {
+    "files": 22,
+    "bytes": 85
+   },
+   "corpus_lf_after": {
+    "files": 23,
+    "bytes": 86
+   }
+  },
+  {
+   "epoch": 3,
+   "snapshots": [
+    {
+     "group": "C",
+     "epoch": 3,
+     "t": 2.0,
+     "executions": 155,
+     "blocks": 173,
+     "edges": 134,
+     "exec_seconds": 0.418,
+     "feedback_seconds": 1.536
+    },
+    {
+     "group": "C",
+     "epoch": 3,
+     "t": 4.01,
+     "executions": 370,
+     "blocks": 173,
+     "edges": 134,
+     "exec_seconds": 0.722,
+     "feedback_seconds": 3.23
+    },
+    {
+     "group": "C",
+     "epoch": 3,
+     "t": 6.01,
+     "executions": 566,
+     "blocks": 173,
+     "edges": 134,
+     "exec_seconds": 1.088,
+     "feedback_seconds": 4.859
+    },
+    {
+     "group": "C",
+     "epoch": 3,
+     "t": 8.02,
+     "executions": 739,
+     "blocks": 173,
+     "edges": 134,
+     "exec_seconds": 1.454,
+     "feedback_seconds": 6.49
+    }
+   ],
+   "executions": 739,
+   "blocks": 173,
+   "edges": 134,
+   "exec_seconds": 1.454,
+   "feedback_seconds": 6.49,
+   "candidates_saved": 0,
+   "wall": {
+    "start_offset": 105.723,
+    "end_offset": 116.208,
+    "subprocess_seconds": 10.485
+   },
+   "corpus_in": {
+    "files": 24,
+    "bytes": 92
+   },
+   "corpus_lf_after": {
+    "files": 24,
+    "bytes": 92
+   }
+  }
+ ],
+ "total_executions": 2108,
+ "total_exec_seconds": 4.393,
+ "total_feedback_seconds": 19.49,
+ "total_candidates_saved": 18,
+ "final_blocks": 173,
+ "final_edges": 134,
+ "group_start_offset": 84.691,
+ "wall_span": 31.517,
+ "novel_seed_gain": {
+  "sf_candidates_total": 18,
+  "sf_already_in_native": 18,
+  "sf_unique_vs_native": 0,
+  "novel_seed_gain": 0.0
+ }
+}

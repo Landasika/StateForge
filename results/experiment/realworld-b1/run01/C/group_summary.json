@@ -1,0 +1,214 @@
+{
+ "group": "C",
+ "mode": "feedback",
+ "epochs": 3,
+ "seed": 107,
+ "epoch_records": [
+  {
+   "epoch": 1,
+   "snapshots": [
+    {
+     "group": "C",
+     "epoch": 1,
+     "t": 2.0,
+     "executions": 182,
+     "blocks": 96,
+     "edges": 67,
+     "exec_seconds": 0.297,
+     "feedback_seconds": 1.657
+    },
+    {
+     "group": "C",
+     "epoch": 1,
+     "t": 4.01,
+     "executions": 380,
+     "blocks": 115,
+     "edges": 82,
+     "exec_seconds": 0.591,
+     "feedback_seconds": 3.363
+    },
+    {
+     "group": "C",
+     "epoch": 1,
+     "t": 6.02,
+     "executions": 575,
+     "blocks": 115,
+     "edges": 82,
+     "exec_seconds": 0.897,
+     "feedback_seconds": 5.054
+    },
+    {
+     "group": "C",
+     "epoch": 1,
+     "t": 8.02,
+     "executions": 758,
+     "blocks": 115,
+     "edges": 82,
+     "exec_seconds": 1.267,
+     "feedback_seconds": 6.683
+    }
+   ],
+   "executions": 758,
+   "blocks": 115,
+   "edges": 82,
+   "exec_seconds": 1.267,
+   "feedback_seconds": 6.683,
+   "candidates_saved": 13,
+   "wall": {
+    "start_offset": 84.499,
+    "end_offset": 95.075,
+    "subprocess_seconds": 10.576
+   },
+   "corpus_in": {
+    "files": 0,
+    "bytes": 0
+   },
+   "corpus_lf_after": {
+    "files": 5,
+    "bytes": 13
+   }
+  },
+  {
+   "epoch": 2,
+   "snapshots": [
+    {
+     "group": "C",
+     "epoch": 2,
+     "t": 2.0,
+     "executions": 159,
+     "blocks": 117,
+     "edges": 83,
+     "exec_seconds": 0.377,
+     "feedback_seconds": 1.579
+    },
+    {
+     "group": "C",
+     "epoch": 2,
+     "t": 4.01,
+     "executions": 338,
+     "blocks": 134,
+     "edges": 99,
+     "exec_seconds": 0.72,
+     "feedback_seconds": 3.229
+    },
+    {
+     "group": "C",
+     "epoch": 2,
+     "t": 6.01,
+     "executions": 511,
+     "blocks": 141,
+     "edges": 106,
+     "exec_seconds": 1.09,
+     "feedback_seconds": 4.859
+    },
+    {
+     "group": "C",
+     "epoch": 2,
+     "t": 8.02,
+     "executions": 676,
+     "blocks": 141,
+     "edges": 106,
+     "exec_seconds": 1.5,
+     "feedback_seconds": 6.443
+    }
+   ],
+   "executions": 676,
+   "blocks": 141,
+   "edges": 106,
+   "exec_seconds": 1.5,
+   "feedback_seconds": 6.443,
+   "candidates_saved": 2,
+   "wall": {
+    "start_offset": 95.078,
+    "end_offset": 105.577,
+    "subprocess_seconds": 10.5
+   },
+   "corpus_in": {
+    "files": 18,
+    "bytes": 55
+   },
+   "corpus_lf_after": {
+    "files": 19,
+    "bytes": 56
+   }
+  },
+  {
+   "epoch": 3,
+   "snapshots": [
+    {
+     "group": "C",
+     "epoch": 3,
+     "t": 2.0,
+     "executions": 167,
+     "blocks": 141,
+     "edges": 106,
+     "exec_seconds": 0.335,
+     "feedback_seconds": 1.616
+    },
+    {
+     "group": "C",
+     "epoch": 3,
+     "t": 4.0,
+     "executions": 345,
+     "blocks": 141,
+     "edges": 106,
+     "exec_seconds": 0.669,
+     "feedback_seconds": 3.276
+    },
+    {
+     "group": "C",
+     "epoch": 3,
+     "t": 6.01,
+     "executions": 512,
+     "blocks": 141,
+     "edges": 106,
+     "exec_seconds": 1.047,
+     "feedback_seconds": 4.894
+    },
+    {
+     "group": "C",
+     "epoch": 3,
+     "t": 8.01,
+     "executions": 663,
+     "blocks": 141,
+     "edges": 106,
+     "exec_seconds": 1.454,
+     "feedback_seconds": 6.488
+    }
+   ],
+   "executions": 663,
+   "blocks": 141,
+   "edges": 106,
+   "exec_seconds": 1.454,
+   "feedback_seconds": 6.488,
+   "candidates_saved": 0,
+   "wall": {
+    "start_offset": 105.584,
+    "end_offset": 116.109,
+    "subprocess_seconds": 10.526
+   },
+   "corpus_in": {
+    "files": 21,
+    "bytes": 65
+   },
+   "corpus_lf_after": {
+    "files": 21,
+    "bytes": 65
+   }
+  }
+ ],
+ "total_executions": 2097,
+ "total_exec_seconds": 4.221,
+ "total_feedback_seconds": 19.614,
+ "total_candidates_saved": 15,
+ "final_blocks": 141,
+ "final_edges": 106,
+ "group_start_offset": 84.499,
+ "wall_span": 31.61,
+ "novel_seed_gain": {
+  "sf_candidates_total": 15,
+  "sf_already_in_native": 15,
+  "sf_unique_vs_native": 0,
+  "novel_seed_gain": 0.0
+ }
+}
