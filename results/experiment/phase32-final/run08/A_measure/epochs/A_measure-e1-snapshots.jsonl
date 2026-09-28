@@ -1,0 +1,12 @@
+{"group": "A_measure", "epoch": 1, "t": 2.0, "executions": 363, "blocks": 72, "edges": 73, "exec_seconds": 0.007, "feedback_seconds": 1.916}
+{"group": "A_measure", "epoch": 1, "t": 4.0, "executions": 723, "blocks": 72, "edges": 73, "exec_seconds": 0.013, "feedback_seconds": 3.896}
+{"group": "A_measure", "epoch": 1, "t": 6.0, "executions": 1090, "blocks": 72, "edges": 73, "exec_seconds": 0.019, "feedback_seconds": 5.877}
+{"group": "A_measure", "epoch": 1, "t": 8.0, "executions": 1450, "blocks": 72, "edges": 73, "exec_seconds": 0.026, "feedback_seconds": 7.857}
+{"group": "A_measure", "epoch": 1, "t": 10.01, "executions": 1809, "blocks": 72, "edges": 73, "exec_seconds": 0.033, "feedback_seconds": 9.841}
+{"group": "A_measure", "epoch": 1, "t": 12.01, "executions": 2190, "blocks": 72, "edges": 73, "exec_seconds": 0.039, "feedback_seconds": 11.82}
+{"group": "A_measure", "epoch": 1, "t": 14.02, "executions": 2554, "blocks": 72, "edges": 73, "exec_seconds": 0.046, "feedback_seconds": 13.806}
+{"group": "A_measure", "epoch": 1, "t": 16.02, "executions": 2902, "blocks": 72, "edges": 73, "exec_seconds": 0.052, "feedback_seconds": 15.789}
+{"group": "A_measure", "epoch": 1, "t": 18.02, "executions": 3254, "blocks": 72, "edges": 73, "exec_seconds": 0.059, "feedback_seconds": 17.769}
+{"group": "A_measure", "epoch": 1, "t": 20.02, "executions": 3624, "blocks": 72, "edges": 73, "exec_seconds": 0.065, "feedback_seconds": 19.751}
+{"group": "A_measure", "epoch": 1, "t": 22.02, "executions": 3981, "blocks": 72, "edges": 73, "exec_seconds": 0.072, "feedback_seconds": 21.734}
+{"group": "A_measure", "epoch": 1, "t": 24.02, "executions": 4359, "blocks": 72, "edges": 73, "exec_seconds": 0.078, "feedback_seconds": 23.716}

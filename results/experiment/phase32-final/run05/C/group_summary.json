@@ -1,0 +1,217 @@
+{
+ "group": "C",
+ "mode": "feedback",
+ "epochs": 3,
+ "seed": 507,
+ "epoch_records": [
+  {
+   "epoch": 1,
+   "snapshots": [
+    {
+     "group": "C",
+     "epoch": 1,
+     "t": 2.01,
+     "executions": 375,
+     "blocks": 65,
+     "edges": 65,
+     "exec_seconds": 0.006,
+     "feedback_seconds": 1.921
+    },
+    {
+     "group": "C",
+     "epoch": 1,
+     "t": 4.01,
+     "executions": 730,
+     "blocks": 65,
+     "edges": 65,
+     "exec_seconds": 0.013,
+     "feedback_seconds": 3.907
+    },
+    {
+     "group": "C",
+     "epoch": 1,
+     "t": 6.02,
+     "executions": 1093,
+     "blocks": 72,
+     "edges": 73,
+     "exec_seconds": 0.019,
+     "feedback_seconds": 5.89
+    },
+    {
+     "group": "C",
+     "epoch": 1,
+     "t": 8.02,
+     "executions": 1481,
+     "blocks": 72,
+     "edges": 73,
+     "exec_seconds": 0.026,
+     "feedback_seconds": 7.874
+    }
+   ],
+   "executions": 1481,
+   "blocks": 72,
+   "edges": 73,
+   "exec_seconds": 0.026,
+   "feedback_seconds": 7.874,
+   "candidates_saved": 6,
+   "wall": {
+    "start_offset": 77.645,
+    "end_offset": 86.764,
+    "subprocess_seconds": 9.119
+   },
+   "corpus_in": {
+    "files": 0,
+    "bytes": 0
+   },
+   "corpus_lf_after": {
+    "files": 7,
+    "bytes": 17
+   }
+  },
+  {
+   "epoch": 2,
+   "snapshots": [
+    {
+     "group": "C",
+     "epoch": 2,
+     "t": 2.0,
+     "executions": 346,
+     "blocks": 79,
+     "edges": 81,
+     "exec_seconds": 0.007,
+     "feedback_seconds": 1.912
+    },
+    {
+     "group": "C",
+     "epoch": 2,
+     "t": 4.0,
+     "executions": 749,
+     "blocks": 79,
+     "edges": 81,
+     "exec_seconds": 0.013,
+     "feedback_seconds": 3.891
+    },
+    {
+     "group": "C",
+     "epoch": 2,
+     "t": 6.01,
+     "executions": 1140,
+     "blocks": 79,
+     "edges": 81,
+     "exec_seconds": 0.02,
+     "feedback_seconds": 5.873
+    },
+    {
+     "group": "C",
+     "epoch": 2,
+     "t": 8.01,
+     "executions": 1528,
+     "blocks": 86,
+     "edges": 89,
+     "exec_seconds": 0.026,
+     "feedback_seconds": 7.853
+    }
+   ],
+   "executions": 1528,
+   "blocks": 86,
+   "edges": 89,
+   "exec_seconds": 0.026,
+   "feedback_seconds": 7.853,
+   "candidates_saved": 1,
+   "wall": {
+    "start_offset": 86.766,
+    "end_offset": 95.898,
+    "subprocess_seconds": 9.132
+   },
+   "corpus_in": {
+    "files": 13,
+    "bytes": 35
+   },
+   "corpus_lf_after": {
+    "files": 18,
+    "bytes": 50
+   }
+  },
+  {
+   "epoch": 3,
+   "snapshots": [
+    {
+     "group": "C",
+     "epoch": 3,
+     "t": 2.0,
+     "executions": 388,
+     "blocks": 86,
+     "edges": 89,
+     "exec_seconds": 0.007,
+     "feedback_seconds": 1.914
+    },
+    {
+     "group": "C",
+     "epoch": 3,
+     "t": 4.01,
+     "executions": 778,
+     "blocks": 86,
+     "edges": 89,
+     "exec_seconds": 0.013,
+     "feedback_seconds": 3.897
+    },
+    {
+     "group": "C",
+     "epoch": 3,
+     "t": 6.01,
+     "executions": 1169,
+     "blocks": 86,
+     "edges": 89,
+     "exec_seconds": 0.019,
+     "feedback_seconds": 5.877
+    },
+    {
+     "group": "C",
+     "epoch": 3,
+     "t": 8.01,
+     "executions": 1556,
+     "blocks": 86,
+     "edges": 89,
+     "exec_seconds": 0.026,
+     "feedback_seconds": 7.856
+    }
+   ],
+   "executions": 1556,
+   "blocks": 86,
+   "edges": 89,
+   "exec_seconds": 0.026,
+   "feedback_seconds": 7.856,
+   "candidates_saved": 0,
+   "wall": {
+    "start_offset": 95.904,
+    "end_offset": 105.019,
+    "subprocess_seconds": 9.116
+   },
+   "corpus_in": {
+    "files": 19,
+    "bytes": 56
+   },
+   "corpus_lf_after": {
+    "files": 19,
+    "bytes": 56
+   }
+  }
+ ],
+ "total_executions": 4565,
+ "total_exec_seconds": 0.078,
+ "total_feedback_seconds": 23.583,
+ "total_candidates_saved": 7,
+ "final_blocks": 86,
+ "final_edges": 89,
+ "group_start_offset": 77.645,
+ "wall_span": 27.374,
+ "novel_seed_gain": {
+  "sf_candidates_total": 7,
+  "sf_already_in_native": 7,
+  "sf_unique_vs_native": 0,
+  "novel_seed_gain": 0.0
+ },
+ "portfolio_champions": 0,
+ "portfolio_replacements": 0,
+ "corpus_dilution_ratio": 0.0
+}
