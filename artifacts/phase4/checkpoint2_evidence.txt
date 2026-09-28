@@ -1,0 +1,25 @@
+════ 证据链①:单 frontier(BS01 query_int_eq)════
+  CANDIDATE_EXECUTED   {'seed': {'query': {'x': '20'}}}
+  HINT_GENERATED       {'frontier': 'app.py::run::3-3::branch::1->app.py::run::4-4::terminal::1', 'guard': 'x == 731', 'hint_reason': 'solved', 'target': 731, 'source': 'QUERY[x]'}
+  CANDIDATE_GENERATED  {'candidate': {'query': {'x': '731'}}, 'changed_field': 'QUERY[x]'}
+  CANDIDATE_EXECUTED   {'seed': {'query': {'x': '731'}}}
+  BRANCH_SATISFIED     {'guard': '/home/landasika/icassp/stateforge/fixtures/bs_micro/BS01_query_int_eq/app.py:3:7:Eq', 'actual': True, 'satisfied': True}
+  FRONTIER_CROSSED     {'frontier': 'app.py::run::3-3::branch::1->app.py::run::4-4::terminal::1'}
+  CANDIDATE_EXECUTED   {'seed': {'query': {'x': '731'}}}
+  target_reached: True | crossed: 1
+
+════ 证据链②:嵌套 frontier 迭代(BS07)════
+  CANDIDATE_EXECUTED   {'seed': {'query': {'x': '20', 'y': '5'}}}
+  HINT_GENERATED       {'frontier': 'app.py::run::4-4::branch::1->app.py::run::5-5::branch::1', 'guard': 'x == 731', 'hint_reason': 'solved', 'target': 731, 'source': 'QUERY[x]'}
+  CANDIDATE_GENERATED  {'candidate': {'query': {'x': '731', 'y': '5'}}, 'changed_field': 'QUERY[x]'}
+  CANDIDATE_EXECUTED   {'seed': {'query': {'x': '731', 'y': '5'}}}
+  BRANCH_SATISFIED     {'guard': '/home/landasika/icassp/stateforge/fixtures/bs_micro/BS07_nested_two_guards/app.py:4:7:Eq', 'actual': True, 'satisfied': True}
+  FRONTIER_CROSSED     {'frontier': 'app.py::run::4-4::branch::1->app.py::run::5-5::branch::1'}
+  CANDIDATE_EXECUTED   {'seed': {'query': {'x': '731', 'y': '5'}}}
+  HINT_GENERATED       {'frontier': 'app.py::run::5-5::branch::1->app.py::run::6-6::terminal::1', 'guard': 'y >= 18', 'hint_reason': 'solved', 'target': 18, 'source': 'QUERY[y]'}
+  CANDIDATE_GENERATED  {'candidate': {'query': {'x': '731', 'y': '18'}}, 'changed_field': 'QUERY[y]'}
+  CANDIDATE_EXECUTED   {'seed': {'query': {'x': '731', 'y': '18'}}}
+  BRANCH_SATISFIED     {'guard': '/home/landasika/icassp/stateforge/fixtures/bs_micro/BS07_nested_two_guards/app.py:5:11:GtE', 'actual': True, 'satisfied': True}
+  FRONTIER_CROSSED     {'frontier': 'app.py::run::5-5::branch::1->app.py::run::6-6::terminal::1'}
+  CANDIDATE_EXECUTED   {'seed': {'query': {'x': '731', 'y': '18'}}}
+  target_reached: True | crossed: 2

@@ -76,7 +76,8 @@ def _classify(test: ast.expr) -> tuple[str, str]:
         if isinstance(inner, ast.Name) or isinstance(inner, ast.Constant):
             return "truthy", text
         return "UNSUPPORTED", text
-    if isinstance(test, (ast.Name, ast.Constant, ast.Call, ast.Attribute)):
+    if isinstance(test, (ast.Name, ast.Constant, ast.Call, ast.Attribute,
+                          ast.Subscript)):
         return "truthy", text
     return "UNSUPPORTED", text
 

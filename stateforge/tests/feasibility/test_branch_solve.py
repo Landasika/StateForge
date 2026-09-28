@@ -1,0 +1,173 @@
+"""Phase-4.1B 检查点二验收:Level 4-9 全链 + BS-Micro 12 用例端到端。"""
+import json
+import textwrap
+from pathlib import Path
+
+import pytest
+
+from stateforge.feasibility.branch_observer import BranchObservation
+from stateforge.feasibility.branch_solver import solve
+from stateforge.feasibility.input_provenance import resolve_operand_source
+from stateforge.feasibility.mutation_hint import MutationHint
+from stateforge.feasibility.solve_loop import solve_loop
+from stateforge.static.icfg import build_icfg
+
+BS = Path(__file__).parents[2] / "fixtures" / "bs_micro"
+
+
+# ---------------------------------------------------------------- Level 4
+
+def _prov(src, guard_line=3):
+    import tempfile
+    with tempfile.TemporaryDirectory() as d:
+        p = Path(d) / "app.py"
+        p.write_text(textwrap.dedent(src), encoding="utf-8")
+        return resolve_operand_source(p, "run", guard_line)
+
+
+def test_level4_supported_cases_100pct():
+    cases = [
+        ('def run(request):\n    x = request.args["x"]\n    if x == "a":\n'
+         '        return 1\n', "QUERY", "x", "identity"),
+        ('def run(request):\n    x = int(request.args["x"])\n    if x == 1:\n'
+         '        return 1\n', "QUERY", "x", "int"),
+        ('def run(request):\n    x = request.form["n"]\n    if x == "a":\n'
+         '        return 1\n', "FORM", "n", "identity"),
+        ('def run(request):\n    x = int(request.form["n"])\n    if x == 1:\n'
+         '        return 1\n', "FORM", "n", "int"),
+        ('def run(request):\n    x = request.json["c"]\n    if x == 1:\n'
+         '        return 1\n', "JSON", "c", "identity"),
+        ('def run(request):\n    x = int(request.json["c"])\n    if x == 1:\n'
+         '        return 1\n', "JSON", "c", "int"),
+    ]
+    for src, kind, key, transform in cases:
+        s = _prov(src)
+        assert (s.status, s.kind, s.key, s.transform) == \
+            ("ok", kind, key, transform), src
+
+
+def test_level4_refusals():
+    assert _prov('def compute():\n    return 1\n\n\ndef run(request):\n'
+                 '    x = compute()\n    if x == 1:\n        return 1\n',
+                 guard_line=7).status == "SOURCE_UNKNOWN"
+    assert _prov('def run(request):\n'
+                 '    x = int(request.args["x"]) % 101\n    if x == 13:\n'
+                 '        return 1\n').status == "UNRESOLVED_TRANSFORM"
+
+
+# ---------------------------------------------------------------- Level 5
+
+def _obs(op, lhs, rhs):
+    return BranchObservation("g", op, lhs, rhs, lhs == rhs, 1)
+
+
+def test_level5_frozen_rules():
+    r = solve("f", "g", "true", "Eq", True, _obs("Eq", 20, 731), "QUERY", "x")
+    assert r.reason == "solved" and r.target_value == 731
+    r = solve("f", "g", "true", "Gt", True, _obs("Gt", 5, 100), "QUERY", "x")
+    assert r.target_value == 101
+    r = solve("f", "g", "true", "Lt", True, _obs("Lt", 20, 10), "QUERY", "x")
+    assert r.target_value == 9
+    r = solve("f", "g", "true", "GtE", True, _obs("GtE", 3, 10), "JSON", "c")
+    assert r.target_value == 10
+    # desired FALSE = 补谓词
+    r = solve("f", "g", "false", "Eq", True, _obs("Eq", 5, 5), "QUERY", "x")
+    assert r.target_value == 6                      # !(x==5) → x != 5 → C+1
+    r = solve("f", "g", "false", "LtE", True, _obs("LtE", 12, 10),
+              "QUERY", "x")
+    assert r.target_value == 11                     # !(x<=10) → x > 10 → C+1
+    r = solve("f", "g", "true", "Eq", True, _obs("Eq", "user1", "admin"),
+              "QUERY", "n")
+    assert r.target_value == "admin"
+
+
+def test_level5_refusals():
+    r = solve("f", "g", "true", "Eq", True, _obs("Eq", "20", 731),
+              "QUERY", "x")
+    assert r.reason == "NOT_SOLVABLE_TYPE_MISMATCH"
+    r = solve("f", "g", "true", "Lt", True, _obs("Lt", "a", "b"), "QUERY", "x")
+    assert r.reason == "NOT_SOLVABLE_STRING_ORDERED"
+
+
+# ---------------------------------------------------------------- Level 6
+
+def test_level6_field_isolation():
+    from stateforge.fuzz.constraint_mutator import (MutationError,
+                                                    apply_hint)
+    seed = {"query": {"x": "20", "item": "book", "mode": "fast"},
+            "form": {"csrf": "tok"}, "json": {"n": 1}}
+    hint = MutationHint("f", "g", "QUERY", "x", 20, 731, "Eq", "true",
+                        "solved")
+    out = apply_hint(seed, hint)
+    assert out["query"]["x"] == "731"
+    assert out["query"]["item"] == "book" and out["query"]["mode"] == "fast"
+    assert out["form"] == {"csrf": "tok"} and out["json"] == {"n": 1}
+    assert seed["query"]["x"] == "20"                # 原种子不被改
+    with pytest.raises(MutationError):
+        apply_hint(seed, MutationHint("f", "g", "QUERY", "absent", 1, 2,
+                                      "Eq", "true", "solved"))
+    json_hint = MutationHint("f", "g", "JSON", "n", 1, 10, "GtE", "true",
+                             "solved")
+    assert apply_hint(seed, json_hint)["json"]["n"] == 10   # JSON 保类型
+
+
+# ---------------------------------------------------------------- Level 9
+
+def _run_bs(case: str):
+    d = BS / case
+    ir = build_icfg(d)
+    seed = json.loads((d / "input.json").read_text(encoding="utf-8"))
+    return solve_loop(d / "app.py", ir, seed)
+
+
+def _events(res, stage):
+    return [e for e in res.events if e["stage"] == stage]
+
+
+@pytest.mark.parametrize("case,hint_target,field", [
+    ("BS01_query_int_eq", "731", "QUERY[x]"),
+    ("BS02_query_int_gt", "101", "QUERY[x]"),
+    ("BS03_query_false_edge", "6", "QUERY[x]"),
+    ("BS04_query_string_eq", "admin", "QUERY[name]"),
+    ("BS05_form_int_eq", "42", "FORM[count]"),
+    ("BS06_json_int_ge", 10, "JSON[count]"),
+])
+def test_bs_single_frontier_crossed(case, hint_target, field):
+    res = _run_bs(case)
+    hints = _events(res, "HINT_GENERATED")
+    assert hints and hints[0]["hint_reason"] == "solved"
+    assert str(hints[0]["target"]) == str(hint_target)
+    assert hints[0]["source"] == field
+    assert _events(res, "CANDIDATE_GENERATED")
+    assert _events(res, "BRANCH_SATISFIED")[0]["satisfied"] is True
+    assert _events(res, "FRONTIER_CROSSED"), res.events
+    assert res.target_reached
+
+
+def test_bs07_nested_two_guards():
+    res = _run_bs("BS07_nested_two_guards")
+    hints = _events(res, "HINT_GENERATED")
+    assert [str(h["target"]) for h in hints] == ["731", "18"]
+    crossed = _events(res, "FRONTIER_CROSSED")
+    assert len(crossed) == 2 and res.target_reached
+    # 第二个候选只改 y,x 保持 731
+    cands = _events(res, "CANDIDATE_GENERATED")
+    assert cands[1]["candidate"]["query"]["x"] == "731"
+
+
+def test_bs08_already_satisfied():
+    res = _run_bs("BS08_already_satisfied")
+    assert res.target_reached and not _events(res, "HINT_GENERATED")
+
+
+@pytest.mark.parametrize("case,reason", [
+    ("BS09_unknown_source", "NOT_SINGLE_INPUT_SOLVABLE"),
+    ("BS10_unresolved_transform", "NOT_SINGLE_INPUT_SOLVABLE"),
+    ("BS11_type_mismatch", "NOT_SOLVABLE_TYPE_MISMATCH"),
+    ("BS12_non_input_guard", "NOT_SINGLE_INPUT_SOLVABLE"),
+])
+def test_bs_refusals(case, reason):
+    res = _run_bs(case)
+    hints = _events(res, "HINT_GENERATED")
+    assert hints and hints[0]["hint_reason"] == reason, res.events
+    assert not res.target_reached and not _events(res, "FRONTIER_CROSSED")

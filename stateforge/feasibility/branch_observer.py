@@ -92,7 +92,8 @@ class _Rewrite(ast.NodeTransformer):
             call = ast.Call(func=ast.Name("_sf_not", ast.Load()),
                             args=[ast.Constant(self._gid(test, "not_truthy")),
                                   test.operand], keywords=[])
-        elif isinstance(test, (ast.Name, ast.Constant, ast.Call, ast.Attribute)):
+        elif isinstance(test, (ast.Name, ast.Constant, ast.Call, ast.Attribute,
+                                ast.Subscript)):
             call = ast.Call(func=ast.Name("_sf_truth", ast.Load()),
                             args=[ast.Constant(self._gid(test, "truthy")),
                                   test], keywords=[])
