@@ -143,7 +143,7 @@ def run_campaign(target: str, ir_path: str, out: Path, runs: int, epochs: int,
 
     summary = {"manifest": manifest, "per_run": per_run, "aggregate": {},
                "questions": {}}
-    for group in ("A_native", "A_measure", "B", "C"):
+    for group in ("A_native", "A_measure", "B", "C", "D"):
         summary["aggregate"][group] = {
             k: _stats([r[group][k] for r in per_run])
             for k in per_run[0][group] if k != "novel_seed_gain"}
@@ -163,6 +163,10 @@ def run_campaign(target: str, ir_path: str, out: Path, runs: int, epochs: int,
     q["feedback_gain_auc_norm"] = _stats(
         [r["C"]["auc_blocks_norm"] - r["B"]["auc_blocks_norm"] for r in per_run])
     nsg = [r["C"]["novel_seed_gain"] for r in per_run if "novel_seed_gain" in r["C"]]
+    q["directed_gain_final_blocks"] = _stats(
+        [r["D"]["final_blocks"] - r["C"]["final_blocks"] for r in per_run])
+    q["directed_gain_auc_norm"] = _stats(
+        [r["D"]["auc_blocks_norm"] - r["C"]["auc_blocks_norm"] for r in per_run])
     q["novel_seed_gain"] = {
         "sf_total": sum(x["sf_candidates_total"] for x in nsg),
         "sf_unique": sum(x["sf_unique_vs_native"] for x in nsg),
@@ -170,7 +174,7 @@ def run_campaign(target: str, ir_path: str, out: Path, runs: int, epochs: int,
                              if x["novel_seed_gain"] is not None])}
     # 统一曲线 CSV(墙钟,1s 桶,A_measure/B/C)
     csv = ["group,t,blocks_mean,blocks_p25,blocks_p75"]
-    for group in ("A_measure", "B", "C"):
+    for group in ("A_measure", "B", "C", "D"):
         grid = {t: [] for t in range(0, int(horizon) + 1)}
         for k in range(runs):
             pts = _curve_points(out / f"run{k:02d}", group)

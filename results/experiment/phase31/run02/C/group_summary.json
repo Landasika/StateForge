@@ -1,0 +1,214 @@
+{
+ "group": "C",
+ "mode": "feedback",
+ "epochs": 3,
+ "seed": 207,
+ "epoch_records": [
+  {
+   "epoch": 1,
+   "snapshots": [
+    {
+     "group": "C",
+     "epoch": 1,
+     "t": 2.0,
+     "executions": 362,
+     "blocks": 65,
+     "edges": 65,
+     "exec_seconds": 0.007,
+     "feedback_seconds": 1.915
+    },
+    {
+     "group": "C",
+     "epoch": 1,
+     "t": 4.01,
+     "executions": 718,
+     "blocks": 65,
+     "edges": 65,
+     "exec_seconds": 0.013,
+     "feedback_seconds": 3.899
+    },
+    {
+     "group": "C",
+     "epoch": 1,
+     "t": 6.01,
+     "executions": 1036,
+     "blocks": 65,
+     "edges": 65,
+     "exec_seconds": 0.02,
+     "feedback_seconds": 5.88
+    },
+    {
+     "group": "C",
+     "epoch": 1,
+     "t": 8.01,
+     "executions": 1372,
+     "blocks": 65,
+     "edges": 65,
+     "exec_seconds": 0.027,
+     "feedback_seconds": 7.863
+    }
+   ],
+   "executions": 1372,
+   "blocks": 65,
+   "edges": 65,
+   "exec_seconds": 0.027,
+   "feedback_seconds": 7.863,
+   "candidates_saved": 7,
+   "wall": {
+    "start_offset": 77.585,
+    "end_offset": 86.734,
+    "subprocess_seconds": 9.149
+   },
+   "corpus_in": {
+    "files": 0,
+    "bytes": 0
+   },
+   "corpus_lf_after": {
+    "files": 7,
+    "bytes": 16
+   }
+  },
+  {
+   "epoch": 2,
+   "snapshots": [
+    {
+     "group": "C",
+     "epoch": 2,
+     "t": 2.0,
+     "executions": 368,
+     "blocks": 65,
+     "edges": 65,
+     "exec_seconds": 0.007,
+     "feedback_seconds": 1.915
+    },
+    {
+     "group": "C",
+     "epoch": 2,
+     "t": 4.01,
+     "executions": 744,
+     "blocks": 65,
+     "edges": 65,
+     "exec_seconds": 0.013,
+     "feedback_seconds": 3.9
+    },
+    {
+     "group": "C",
+     "epoch": 2,
+     "t": 6.01,
+     "executions": 1117,
+     "blocks": 65,
+     "edges": 65,
+     "exec_seconds": 0.019,
+     "feedback_seconds": 5.882
+    },
+    {
+     "group": "C",
+     "epoch": 2,
+     "t": 8.01,
+     "executions": 1450,
+     "blocks": 65,
+     "edges": 65,
+     "exec_seconds": 0.026,
+     "feedback_seconds": 7.869
+    }
+   ],
+   "executions": 1450,
+   "blocks": 65,
+   "edges": 65,
+   "exec_seconds": 0.026,
+   "feedback_seconds": 7.869,
+   "candidates_saved": 0,
+   "wall": {
+    "start_offset": 86.736,
+    "end_offset": 95.857,
+    "subprocess_seconds": 9.12
+   },
+   "corpus_in": {
+    "files": 14,
+    "bytes": 30
+   },
+   "corpus_lf_after": {
+    "files": 15,
+    "bytes": 31
+   }
+  },
+  {
+   "epoch": 3,
+   "snapshots": [
+    {
+     "group": "C",
+     "epoch": 3,
+     "t": 2.0,
+     "executions": 376,
+     "blocks": 72,
+     "edges": 73,
+     "exec_seconds": 0.006,
+     "feedback_seconds": 1.915
+    },
+    {
+     "group": "C",
+     "epoch": 3,
+     "t": 4.0,
+     "executions": 748,
+     "blocks": 72,
+     "edges": 73,
+     "exec_seconds": 0.013,
+     "feedback_seconds": 3.896
+    },
+    {
+     "group": "C",
+     "epoch": 3,
+     "t": 6.0,
+     "executions": 1128,
+     "blocks": 72,
+     "edges": 73,
+     "exec_seconds": 0.019,
+     "feedback_seconds": 5.877
+    },
+    {
+     "group": "C",
+     "epoch": 3,
+     "t": 8.0,
+     "executions": 1485,
+     "blocks": 72,
+     "edges": 73,
+     "exec_seconds": 0.026,
+     "feedback_seconds": 7.857
+    }
+   ],
+   "executions": 1485,
+   "blocks": 72,
+   "edges": 73,
+   "exec_seconds": 0.026,
+   "feedback_seconds": 7.857,
+   "candidates_saved": 1,
+   "wall": {
+    "start_offset": 95.862,
+    "end_offset": 105.006,
+    "subprocess_seconds": 9.144
+   },
+   "corpus_in": {
+    "files": 15,
+    "bytes": 31
+   },
+   "corpus_lf_after": {
+    "files": 17,
+    "bytes": 36
+   }
+  }
+ ],
+ "total_executions": 4307,
+ "total_exec_seconds": 0.079,
+ "total_feedback_seconds": 23.589,
+ "total_candidates_saved": 8,
+ "final_blocks": 72,
+ "final_edges": 73,
+ "group_start_offset": 77.585,
+ "wall_span": 27.421,
+ "novel_seed_gain": {
+  "sf_candidates_total": 8,
+  "sf_already_in_native": 8,
+  "sf_unique_vs_native": 0,
+  "novel_seed_gain": 0.0
+ }
+}

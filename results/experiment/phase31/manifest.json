@@ -1,0 +1,15 @@
+{
+ "commit": "74cfd1a64d6024cee337e94cc566f92a99440db7",
+ "branch": "phase3-frontier",
+ "python": "3.13.5",
+ "atheris": "3.1.0",
+ "target": "stateforge/targets/microplus/misleading_subtree.py",
+ "target_sha": "25d482b3197bfcd8",
+ "ir_sha": "70140f68d7b2f485",
+ "runs": 3,
+ "epochs": 3,
+ "seconds_per_epoch": 8.0,
+ "seed0": 7,
+ "total_blocks": 202,
+ "total_edges": 224
+}

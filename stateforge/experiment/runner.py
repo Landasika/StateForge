@@ -16,7 +16,7 @@ from pathlib import Path
 
 from stateforge.experiment.epoch import run_epochs
 
-GROUPS = ("A_native", "A_measure", "B", "C")
+GROUPS = ("A_native", "A_measure", "B", "C", "D")
 
 
 def run_experiment(target: str, ir: str, out: Path, epochs: int,
@@ -39,6 +39,10 @@ def run_experiment(target: str, ir: str, out: Path, epochs: int,
     report["groups"]["C"] = run_epochs(
         target, ir, out / "C", seconds_per_epoch, epochs, seed, "C",
         mode="feedback", use_feedback=True, t0=t0)
+    # Phase-3.1 D 组:重启 + frontier 定向(NB+NE+1/(1+D),全局冠军)
+    report["groups"]["D"] = run_epochs(
+        target, ir, out / "D", seconds_per_epoch, epochs, seed, "D",
+        mode="frontier", use_feedback=True, t0=t0)
     (out / "experiment.json").write_text(
         json.dumps(report, indent=1, ensure_ascii=False), encoding="utf-8")
     return report

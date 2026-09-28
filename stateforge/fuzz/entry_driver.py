@@ -36,7 +36,8 @@ def main() -> int:
     parser.add_argument("corpus_dir")        # 种子目录(libFuzzer 亦落盘于此)
     parser.add_argument("out_dir")           # recorder 产物目录
     parser.add_argument("--seconds", type=float, required=True)
-    parser.add_argument("--mode", choices=["off", "measure", "feedback"],
+    parser.add_argument("--mode",
+                        choices=["off", "measure", "feedback", "frontier"],
                         required=True)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--epoch", type=int, default=0)
@@ -69,31 +70,53 @@ def main() -> int:
         root = ir.metadata.get("root") or str(Path(args.target).parent)
         session = TraceSession(root=root)
         session.__enter__()
-        feedback = StructuralFeedback()
+        # 反馈对象按模式先建(frontier 需要 load_state 恢复前沿/冠军)
+        if args.mode == "frontier":
+            from stateforge.feedback.frontier_feedback import FrontierDirectedFeedback
+            feedback = FrontierDirectedFeedback(ir)
+        else:
+            feedback = StructuralFeedback()
         # 全局覆盖跨 epoch 持久化(采样时落盘,容忍 ~1 个采样间隔的尾部丢失)
         state_path = Path(args.out_dir) / "global_state.json"
 
         def _dump_state():
-            state_path.write_text(_json.dumps({
-                "blocks": sorted(feedback.global_blocks),
-                "edges": [list(e) for e in sorted(feedback.global_edges)],
-            }), encoding="utf-8")
+            if args.mode == "frontier":
+                payload = feedback.export_state()       # 含 version/best_distance
+            else:
+                payload = {
+                    "blocks": sorted(feedback.global_blocks),
+                    "edges": [list(e) for e in sorted(feedback.global_edges)],
+                }
+            state_path.write_text(_json.dumps(payload), encoding="utf-8")
 
         recorder = ExperimentRecorder(args.out_dir, args.group, args.epoch,
                                        on_sample=_dump_state)
         if state_path.exists():
             prior = _json.loads(state_path.read_text(encoding="utf-8"))
-            feedback.update_global_coverage(
-                set(prior.get("blocks", [])),
-                {tuple(e) for e in prior.get("edges", [])})
-        corpus = (CorpusManager(Path(args.out_dir) / "spool")
-                  if args.mode == "feedback" else None)
-        collector = CandidateCollector(ir, session, feedback, corpus,
-                                       recorder, args.epoch,
-                                       on_save=_dump_state)
+            if args.mode == "frontier":
+                feedback.load_state(prior)              # 恢复覆盖+前沿版本+冠军
+            else:
+                feedback.update_global_coverage(
+                    set(prior.get("blocks", [])),
+                    {tuple(e) for e in prior.get("edges", [])})
+        if args.mode == "frontier":
+            from stateforge.fuzz.frontier_collector import FrontierCollector
+            corpus = CorpusManager(Path(args.out_dir) / "spool")
+            collector = FrontierCollector(ir, session, feedback, corpus,
+                                          recorder, args.epoch,
+                                          on_save=_dump_state)
 
-        def handler(data: bytes) -> None:
-            collector.handle(target, data)
+            def handler(data: bytes) -> None:
+                collector.handle(target, data)
+        else:
+            corpus = (CorpusManager(Path(args.out_dir) / "spool")
+                      if args.mode == "feedback" else None)
+            collector = CandidateCollector(ir, session, feedback, corpus,
+                                           recorder, args.epoch,
+                                           on_save=_dump_state)
+
+            def handler(data: bytes) -> None:
+                collector.handle(target, data)
 
     # 原生覆盖必须开(否则盲变异、语料不增长);用选择性插桩只打目标模块——
     # instrument_all 会把解释器全量模块插桩,启动 ~30s 且与 tracer 冲突风险高。
