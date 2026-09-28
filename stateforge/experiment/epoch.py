@@ -70,10 +70,49 @@ def _novel_seed_gain(workdir: Path) -> dict:
             "novel_seed_gain": round((total - overlap) / total, 4) if total else None}
 
 
+def _focused_corpus(workdir: Path, out_dir: Path) -> Path:
+    """D2-P focused epoch 语料:当前 per-frontier 冠军 + 最近 8 个新结构种子。
+
+    外部 epoch 级预算分配(顾问 §4/§5):不碰 Atheris 调度器,只决定本 epoch
+    的起始语料 = 把 wall-clock 预算直接交给 StateForge 选出的种子。
+    """
+    import json as _json
+    out = workdir / "focused_in"
+    out.mkdir(exist_ok=True)
+    for f in out.iterdir():
+        f.unlink()
+    spool = out_dir / "spool"
+    state_p = out_dir / "global_state.json"
+    champs: dict[str, str] = {}          # frontier -> input_id
+    if state_p.exists():
+        champs = {f: r["input_id"] for f, r in
+                  _json.loads(state_p.read_text(encoding="utf-8"))
+                  .get("portfolio", {}).get("champions", {}).items()}
+    seeds = spool / "seeds"
+    novel_recent: list[str] = []
+    if (spool / "meta.jsonl").exists():
+        for line in (spool / "meta.jsonl").read_text(encoding="utf-8").splitlines():
+            if line.strip():
+                m = _json.loads(line)
+                if m["interesting_reason"] in ("new_blocks", "new_edges"):
+                    novel_recent.append(m["input_id"])
+    want = set(champs.values()) | set(novel_recent[-8:])
+    for cid in want:
+        seed_file = seeds / cid
+        if seed_file.exists():
+            (out / cid).write_bytes(seed_file.read_bytes())
+    return out
+
+
 def run_epochs(target: str, ir: str, workdir: Path, seconds_per_epoch: float,
                epochs: int, seed: int, group: str, mode: str,
-               use_feedback: bool, t0: float | None = None) -> dict:
-    """跑一组(单 epoch 连续或多 epoch 重启),返回含墙钟与累计的完整记录。"""
+               use_feedback: bool, t0: float | None = None,
+               policy: str = "reinjection") -> dict:
+    """跑一组(单 epoch 连续或多 epoch 重启),返回含墙钟与累计的完整记录。
+
+    policy:reinjection=语料联合结转(D2-R);portfolio=奇数轮正常、偶数轮
+    focused(冠军组合+少量新结构,D2-P 外部预算分配)。
+    """
     t0 = t0 if t0 is not None else time.monotonic()
     workdir.mkdir(parents=True, exist_ok=True)
     corpus_dir = workdir / "lf_corpus"
@@ -83,7 +122,9 @@ def run_epochs(target: str, ir: str, workdir: Path, seconds_per_epoch: float,
         in_dir = corpus_dir if epoch == 1 else workdir / f"corp_in_e{epoch}"
         if epoch > 1:
             in_dir.mkdir(exist_ok=True)
-            if use_feedback:
+            if epoch % 2 == 0 and policy == "portfolio":
+                in_dir = _focused_corpus(workdir, workdir / "epochs")
+            elif use_feedback:
                 CorpusManager(workdir / "epochs" / "spool").export_seed_dir(
                     in_dir, extra=[corpus_dir])
             else:
@@ -122,6 +163,33 @@ def run_epochs(target: str, ir: str, workdir: Path, seconds_per_epoch: float,
                                  - epoch_records[0]["wall"]["start_offset"], 3)}
     if use_feedback:
         result["novel_seed_gain"] = _novel_seed_gain(workdir)
+        # 3.2 诊断:组合规模/替换数;focused vs normal 的 Portfolio Yield
+        state_p = workdir / "epochs" / "global_state.json"
+        if state_p.exists():
+            pf = __import__("json").loads(
+                state_p.read_text(encoding="utf-8")).get("portfolio", {})
+            result["portfolio_champions"] = len(pf.get("champions", {}))
+            result["portfolio_replacements"] = pf.get("replacement_count", 0)
+        if policy == "portfolio" and len(epoch_records) >= 2:
+            focused = [r for i, r in enumerate(epoch_records) if (i + 1) % 2 == 0]
+            normal = [r for i, r in enumerate(epoch_records) if (i + 1) % 2 == 1]
+            def _yield(recs, idxs):
+                # 相邻差分:每 epoch 内新增块 = 本轮末 − 上轮末(全局累计口径)
+                allb = [r["blocks"] for r in epoch_records]
+                gained = sum(allb[i] - allb[i - 1] if i > 0 else allb[0]
+                             for i in idxs)
+                secs = seconds_per_epoch * len(idxs)
+                return round(gained / max(secs, 1e-9), 3)
+            result["portfolio_yield"] = {
+                "focused": _yield(focused, [i for i in range(len(epoch_records))
+                                            if (i + 1) % 2 == 0]),
+                "normal": _yield(normal, [i for i in range(len(epoch_records))
+                                          if (i + 1) % 2 == 1])}
+        last_in = epoch_records[-1].get("corpus_in", {})
+        lf_files = _dir_stats(corpus_dir)["files"]
+        result["corpus_dilution_ratio"] = round(
+            max(last_in.get("files", 0) - lf_files, 0) /
+            max(last_in.get("files", 0), 1), 3)
     (workdir / "group_summary.json").write_text(
         json.dumps(result, indent=1, ensure_ascii=False), encoding="utf-8")
     return result

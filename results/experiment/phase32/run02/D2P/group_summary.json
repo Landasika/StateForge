@@ -1,0 +1,221 @@
+{
+ "group": "D2P",
+ "mode": "frontier",
+ "epochs": 3,
+ "seed": 207,
+ "epoch_records": [
+  {
+   "epoch": 1,
+   "snapshots": [
+    {
+     "group": "D2P",
+     "epoch": 1,
+     "t": 2.0,
+     "executions": 355,
+     "blocks": 65,
+     "edges": 65,
+     "exec_seconds": 0.006,
+     "feedback_seconds": 1.917
+    },
+    {
+     "group": "D2P",
+     "epoch": 1,
+     "t": 4.0,
+     "executions": 683,
+     "blocks": 65,
+     "edges": 65,
+     "exec_seconds": 0.013,
+     "feedback_seconds": 3.899
+    },
+    {
+     "group": "D2P",
+     "epoch": 1,
+     "t": 6.01,
+     "executions": 995,
+     "blocks": 65,
+     "edges": 65,
+     "exec_seconds": 0.019,
+     "feedback_seconds": 5.887
+    },
+    {
+     "group": "D2P",
+     "epoch": 1,
+     "t": 8.01,
+     "executions": 1335,
+     "blocks": 65,
+     "edges": 65,
+     "exec_seconds": 0.026,
+     "feedback_seconds": 7.871
+    }
+   ],
+   "executions": 1335,
+   "blocks": 65,
+   "edges": 65,
+   "exec_seconds": 0.026,
+   "feedback_seconds": 7.871,
+   "candidates_saved": 17,
+   "wall": {
+    "start_offset": 160.053,
+    "end_offset": 169.205,
+    "subprocess_seconds": 9.152
+   },
+   "corpus_in": {
+    "files": 0,
+    "bytes": 0
+   },
+   "corpus_lf_after": {
+    "files": 7,
+    "bytes": 16
+   }
+  },
+  {
+   "epoch": 2,
+   "snapshots": [
+    {
+     "group": "D2P",
+     "epoch": 2,
+     "t": 2.0,
+     "executions": 378,
+     "blocks": 65,
+     "edges": 65,
+     "exec_seconds": 0.007,
+     "feedback_seconds": 1.916
+    },
+    {
+     "group": "D2P",
+     "epoch": 2,
+     "t": 4.01,
+     "executions": 736,
+     "blocks": 65,
+     "edges": 65,
+     "exec_seconds": 0.013,
+     "feedback_seconds": 3.898
+    },
+    {
+     "group": "D2P",
+     "epoch": 2,
+     "t": 6.01,
+     "executions": 1098,
+     "blocks": 65,
+     "edges": 65,
+     "exec_seconds": 0.02,
+     "feedback_seconds": 5.881
+    },
+    {
+     "group": "D2P",
+     "epoch": 2,
+     "t": 8.02,
+     "executions": 1411,
+     "blocks": 65,
+     "edges": 65,
+     "exec_seconds": 0.027,
+     "feedback_seconds": 7.867
+    }
+   ],
+   "executions": 1411,
+   "blocks": 65,
+   "edges": 65,
+   "exec_seconds": 0.027,
+   "feedback_seconds": 7.867,
+   "candidates_saved": 0,
+   "wall": {
+    "start_offset": 169.208,
+    "end_offset": 178.35,
+    "subprocess_seconds": 9.142
+   },
+   "corpus_in": {
+    "files": 16,
+    "bytes": 37
+   },
+   "corpus_lf_after": {
+    "files": 24,
+    "bytes": 55
+   }
+  },
+  {
+   "epoch": 3,
+   "snapshots": [
+    {
+     "group": "D2P",
+     "epoch": 3,
+     "t": 2.01,
+     "executions": 326,
+     "blocks": 65,
+     "edges": 65,
+     "exec_seconds": 0.007,
+     "feedback_seconds": 1.907
+    },
+    {
+     "group": "D2P",
+     "epoch": 3,
+     "t": 4.01,
+     "executions": 679,
+     "blocks": 65,
+     "edges": 65,
+     "exec_seconds": 0.013,
+     "feedback_seconds": 3.887
+    },
+    {
+     "group": "D2P",
+     "epoch": 3,
+     "t": 6.01,
+     "executions": 999,
+     "blocks": 65,
+     "edges": 65,
+     "exec_seconds": 0.02,
+     "feedback_seconds": 5.87
+    },
+    {
+     "group": "D2P",
+     "epoch": 3,
+     "t": 8.01,
+     "executions": 1319,
+     "blocks": 65,
+     "edges": 65,
+     "exec_seconds": 0.026,
+     "feedback_seconds": 7.853
+    }
+   ],
+   "executions": 1319,
+   "blocks": 65,
+   "edges": 65,
+   "exec_seconds": 0.026,
+   "feedback_seconds": 7.853,
+   "candidates_saved": 0,
+   "wall": {
+    "start_offset": 178.356,
+    "end_offset": 187.503,
+    "subprocess_seconds": 9.148
+   },
+   "corpus_in": {
+    "files": 25,
+    "bytes": 56
+   },
+   "corpus_lf_after": {
+    "files": 25,
+    "bytes": 56
+   }
+  }
+ ],
+ "total_executions": 4065,
+ "total_exec_seconds": 0.079,
+ "total_feedback_seconds": 23.591,
+ "total_candidates_saved": 17,
+ "final_blocks": 65,
+ "final_edges": 65,
+ "group_start_offset": 160.053,
+ "wall_span": 27.45,
+ "novel_seed_gain": {
+  "sf_candidates_total": 17,
+  "sf_already_in_native": 17,
+  "sf_unique_vs_native": 0,
+  "novel_seed_gain": 0.0
+ },
+ "portfolio_champions": 9,
+ "portfolio_replacements": 1,
+ "portfolio_yield": {
+  "focused": 8.125,
+  "normal": 0.0
+ },
+ "corpus_dilution_ratio": 0.0
+}

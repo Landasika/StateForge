@@ -16,7 +16,7 @@ from pathlib import Path
 
 from stateforge.experiment.epoch import run_epochs
 
-GROUPS = ("A_native", "A_measure", "B", "C", "D")
+GROUPS = ("A_native", "A_measure", "B", "C", "D1", "D2R", "D2P")
 
 
 def run_experiment(target: str, ir: str, out: Path, epochs: int,
@@ -39,10 +39,18 @@ def run_experiment(target: str, ir: str, out: Path, epochs: int,
     report["groups"]["C"] = run_epochs(
         target, ir, out / "C", seconds_per_epoch, epochs, seed, "C",
         mode="feedback", use_feedback=True, t0=t0)
-    # Phase-3.1 D 组:重启 + frontier 定向(NB+NE+1/(1+D),全局冠军)
-    report["groups"]["D"] = run_epochs(
-        target, ir, out / "D", seconds_per_epoch, epochs, seed, "D",
+    # D1 = 3.1(frontier,全局冠军语义已被组合取代,行为兼容:组合挑战最近前沿)
+    report["groups"]["D1"] = run_epochs(
+        target, ir, out / "D1", seconds_per_epoch, epochs, seed, "D1",
         mode="frontier", use_feedback=True, t0=t0)
+    # D2-R:组合冠军,普通重注入(语料联合结转)
+    report["groups"]["D2R"] = run_epochs(
+        target, ir, out / "D2R", seconds_per_epoch, epochs, seed, "D2R",
+        mode="frontier", use_feedback=True, t0=t0, policy="reinjection")
+    # D2-P:组合冠军 + focused portfolio epoch(外部预算分配)
+    report["groups"]["D2P"] = run_epochs(
+        target, ir, out / "D2P", seconds_per_epoch, epochs, seed, "D2P",
+        mode="frontier", use_feedback=True, t0=t0, policy="portfolio")
     (out / "experiment.json").write_text(
         json.dumps(report, indent=1, ensure_ascii=False), encoding="utf-8")
     return report

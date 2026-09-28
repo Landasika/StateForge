@@ -143,7 +143,7 @@ def run_campaign(target: str, ir_path: str, out: Path, runs: int, epochs: int,
 
     summary = {"manifest": manifest, "per_run": per_run, "aggregate": {},
                "questions": {}}
-    for group in ("A_native", "A_measure", "B", "C", "D"):
+    for group in ("A_native", "A_measure", "B", "C", "D1", "D2R", "D2P"):
         summary["aggregate"][group] = {
             k: _stats([r[group][k] for r in per_run])
             for k in per_run[0][group] if k != "novel_seed_gain"}
@@ -162,11 +162,30 @@ def run_campaign(target: str, ir_path: str, out: Path, runs: int, epochs: int,
         [r["C"]["final_blocks"] - r["B"]["final_blocks"] for r in per_run])
     q["feedback_gain_auc_norm"] = _stats(
         [r["C"]["auc_blocks_norm"] - r["B"]["auc_blocks_norm"] for r in per_run])
+    for gname in ("D2R", "D2P"):
+        runs_g = []
+        for k, r in enumerate(per_run):
+            gs = json.loads((out / f"run{k:02d}" / gname / "group_summary.json")
+                            .read_text(encoding="utf-8"))
+            runs_g.append({"champions": gs.get("portfolio_champions"),
+                           "replacements": gs.get("portfolio_replacements"),
+                           "yield": gs.get("portfolio_yield"),
+                           "cdr": gs.get("corpus_dilution_ratio")})
+        q[f"diagnostics_{gname}"] = runs_g
     nsg = [r["C"]["novel_seed_gain"] for r in per_run if "novel_seed_gain" in r["C"]]
     q["directed_gain_final_blocks"] = _stats(
-        [r["D"]["final_blocks"] - r["C"]["final_blocks"] for r in per_run])
+        [r["D1"]["final_blocks"] - r["C"]["final_blocks"] for r in per_run])
     q["directed_gain_auc_norm"] = _stats(
-        [r["D"]["auc_blocks_norm"] - r["C"]["auc_blocks_norm"] for r in per_run])
+        [r["D1"]["auc_blocks_norm"] - r["C"]["auc_blocks_norm"] for r in per_run])
+    q["portfolio_gain_final_blocks"] = _stats(
+        [r["D2P"]["final_blocks"] - r["D2R"]["final_blocks"] for r in per_run])
+    q["portfolio_gain_auc_norm"] = _stats(
+        [r["D2P"]["auc_blocks_norm"] - r["D2R"]["auc_blocks_norm"] for r in per_run])
+    q["paired_deltas"] = {
+        "D1_minus_C": [round(r["D1"]["auc_blocks_norm"] - r["C"]["auc_blocks_norm"], 4)
+                       for r in per_run],
+        "D2P_minus_D2R": [round(r["D2P"]["auc_blocks_norm"] - r["D2R"]["auc_blocks_norm"], 4)
+                          for r in per_run]}
     q["novel_seed_gain"] = {
         "sf_total": sum(x["sf_candidates_total"] for x in nsg),
         "sf_unique": sum(x["sf_unique_vs_native"] for x in nsg),
@@ -174,7 +193,7 @@ def run_campaign(target: str, ir_path: str, out: Path, runs: int, epochs: int,
                              if x["novel_seed_gain"] is not None])}
     # 统一曲线 CSV(墙钟,1s 桶,A_measure/B/C)
     csv = ["group,t,blocks_mean,blocks_p25,blocks_p75"]
-    for group in ("A_measure", "B", "C", "D"):
+    for group in ("A_measure", "B", "C", "D1", "D2R", "D2P"):
         grid = {t: [] for t in range(0, int(horizon) + 1)}
         for k in range(runs):
             pts = _curve_points(out / f"run{k:02d}", group)

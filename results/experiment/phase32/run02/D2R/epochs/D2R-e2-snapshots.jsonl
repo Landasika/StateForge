@@ -1,0 +1,4 @@
+{"group": "D2R", "epoch": 2, "t": 2.0, "executions": 338, "blocks": 65, "edges": 65, "exec_seconds": 0.007, "feedback_seconds": 1.909}
+{"group": "D2R", "epoch": 2, "t": 4.0, "executions": 684, "blocks": 65, "edges": 65, "exec_seconds": 0.014, "feedback_seconds": 3.887}
+{"group": "D2R", "epoch": 2, "t": 6.01, "executions": 1036, "blocks": 65, "edges": 65, "exec_seconds": 0.021, "feedback_seconds": 5.874}
+{"group": "D2R", "epoch": 2, "t": 8.01, "executions": 1366, "blocks": 65, "edges": 65, "exec_seconds": 0.028, "feedback_seconds": 7.856}

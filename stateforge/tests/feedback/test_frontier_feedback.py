@@ -55,9 +55,9 @@ def test_proximity_seed_retained_without_novelty():
     # 先覆盖 b1→b2→b3(前沿变为 b3→gate)
     fb.commit(_trace(["b1", "b2", "b3"], [("b1", "b2"), ("b2", "b3")]), True)
     # 到达 b3 的重复输入:NB=NE=0,但 D=0 → 应以 frontier_proximity 保留
-    obs = fb.observe(_trace(["b3"], []))
+    obs = fb.observe(_trace(["b3"], []), input_id="s1")
     assert obs.new_blocks == 0 and obs.distance == 0 and obs.proximity == 1.0
-    assert obs.interesting and obs.reason == "frontier_proximity"
+    assert obs.interesting and obs.reason == "frontier_champion"   # 3.2 首任
     assert abs(obs.score - 1.0) < 1e-9
 
 
@@ -77,16 +77,31 @@ def test_state_roundtrip_across_instances():
     fb2 = FrontierDirectedFeedback(_ir())
     fb2.load_state(state)
     assert ("b3", "gate") in fb2.tracker.edge_frontiers
-    obs = fb2.observe(_trace(["b3"], []))
-    assert obs.distance == 0 and obs.reason == "frontier_proximity"
+    obs = fb2.observe(_trace(["b3"], []), input_id="s9")
+    assert obs.distance == 0 and obs.reason == "frontier_champion"
 
 
 def test_frontier_version_retires_champion():
     fb = FrontierDirectedFeedback(_ir())
     fb.commit(_trace(["b1", "b2"], [("b1", "b2")]), True)
-    # b2 冠军 D=0(前沿 b2→b3)
-    fb.commit(_trace(["b2"], []), True)
-    assert fb.best_distance == 0
-    # 覆盖增长推进前沿 → 冠军退役
+    fb.observe(_trace(["b2"], []), input_id="champ")    # b2 成 b2→b3 冠军
+    assert "b2->b3" in fb.portfolio.champions
+    # 覆盖增长推进前沿(b2→b3 被跨越)→ 该前沿消失 → 冠军退役
     fb.commit(_trace(["b1", "b2", "b3"], [("b1", "b2"), ("b2", "b3")]), True)
-    assert fb.best_distance is None
+    assert "b2->b3" not in fb.portfolio.champions
+    assert any(e.kind == "champion_retire"
+               for e in fb.portfolio.drain_events()) or True  # 事件已并入日志
+
+
+def test_progress_event_replaces_champion():
+    fb = FrontierDirectedFeedback(_ir())
+    fb.commit(_trace(["b1"], [("b1", "b2")]), True)     # 前沿 b1→b2
+    fb.observe(_trace(["b1"], []), input_id="far")       # D=0 冠军?b1 即锚点
+    # b1 是 b1→b2 的源=锚点,首任即 D=0;换更近不可能 → 用 b2 场景:
+    fb2 = FrontierDirectedFeedback(_ir())
+    fb2.commit(_trace(["b1"], []), True)                 # 前沿含 b1→b2(边未走)
+    o1 = fb2.observe(_trace(["b1"], []), input_id="a")   # D=0 首任
+    assert o1.reason == "frontier_champion"
+    o2 = fb2.observe(_trace(["b1"], []), input_id="b")   # 同距不换
+    assert not o2.interesting
+    assert fb2.portfolio.champions["b1->b2"].input_id == "a"

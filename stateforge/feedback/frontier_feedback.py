@@ -14,6 +14,7 @@ from dataclasses import dataclass, field
 from stateforge.core.ir import ProgramIR
 from stateforge.dynamic.mapper import MappedTrace
 from stateforge.feedback.distance_oracle import DistanceOracle
+from stateforge.feedback.frontier_portfolio import FrontierPortfolio
 from stateforge.feedback.frontier_tracker import FrontierTracker
 from stateforge.feedback.structural import StructuralFeedback
 
@@ -38,13 +39,13 @@ class FrontierDirectedFeedback:
         self.novelty = StructuralFeedback()
         self.tracker = FrontierTracker(ir)
         self.oracle = DistanceOracle(ir)
-        self.best_distance: int | None = None
+        self.portfolio = FrontierPortfolio()       # 3.2:per-frontier 冠军组合
         self._observe_calls = 0
 
     # ---- 状态持久化(跨 epoch) ----
     def export_state(self) -> dict:
         state = self.tracker.state()
-        state["best_distance"] = self.best_distance
+        state["portfolio"] = self.portfolio.state()
         return state
 
     def load_state(self, state: dict) -> None:
@@ -54,11 +55,12 @@ class FrontierDirectedFeedback:
         self.tracker.covered_blocks, self.tracker.covered_edges = set(blocks), set(edges)
         self.tracker._recompute()
         self.tracker.version = state.get("version", 0) + 1
-        self.best_distance = state.get("best_distance")
+        self.portfolio.load_state(state.get("portfolio", {}))
         self.oracle.rebuild(self.tracker.edge_frontiers, self.tracker.version)
 
     # ---- 逐输入评估:先评分(旧覆盖/旧前沿),后 commit ----
-    def observe(self, trace: MappedTrace) -> FrontierObservation:
+    def observe(self, trace: MappedTrace,
+                input_id: str = "") -> FrontierObservation:
         """tracker 只在 commit 更新 → 此处的前沿恒为执行前状态。"""
         obs = self.novelty.observe(trace)               # 对执行前快照
         self.oracle.rebuild(self.tracker.edge_frontiers, self.tracker.version)
@@ -71,24 +73,25 @@ class FrontierDirectedFeedback:
             edge_frontier_count=len(self.tracker.edge_frontiers))
         obs31.score = obs31.new_blocks + obs31.new_edges + proximity
 
-        improved = d is not None and (self.best_distance is None or d < self.best_distance)
         if obs31.new_blocks or obs31.new_edges:
             obs31.interesting, obs31.reason = True, \
                 "new_blocks" if obs31.new_blocks else "new_edges"
-        elif improved:
-            obs31.interesting, obs31.reason = True, "frontier_proximity"
+        elif near is not None and d is not None:
+            kept, reason = self.portfolio.challenge(          # 3.2:组合挑战
+                near, d, input_id, self._current_epoch, self.tracker.version)
+            if kept:
+                obs31.interesting, obs31.reason = True, reason
         return obs31
 
+    _current_epoch = 0
+
     def commit(self, trace: MappedTrace, kept: bool) -> None:
-        """评分完成后并入全局覆盖;前沿版本变化 → 冠军退役(best 重置)。"""
+        """评分完成后并入全局覆盖;前沿版本变化 → 距离表重建+组合退役。"""
         blocks, edges = self.novelty.evidence(trace)
         self.novelty.update_global_coverage(blocks, edges)
         grew = self.tracker.update(blocks, edges)
         if grew:
-            self.oracle.rebuild(self.tracker.edge_frontiers,   # 修:前沿变了距离表须重建
+            self.oracle.rebuild(self.tracker.edge_frontiers,
                                 self.tracker.version)
-            self.best_distance = None       # §15:frontier 变化,旧冠军失效
-        elif kept:
-            d, _ = self.oracle.distance(blocks)
-            if d is not None and (self.best_distance is None or d < self.best_distance):
-                self.best_distance = d
+            self.portfolio.retire({f"{u}->{v}"                 # §15:冠军退役
+                                   for (u, v) in self.tracker.edge_frontiers})

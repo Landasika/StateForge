@@ -33,7 +33,8 @@ class FrontierCollector:
             exec_s = time.monotonic() - t0
         t1 = time.monotonic()
         mapped = map_trace(self.session.events[start:], self.ir)
-        obs = self.feedback.observe(mapped)         # 旧前沿上评分
+        cid_pre = CorpusManager.content_id(data)
+        obs = self.feedback.observe(mapped, cid_pre)   # 旧前沿上评分+组合挑战
         cid = None
         if obs.interesting:
             cid = self.corpus.save(data, self.epoch, obs.new_blocks,
@@ -42,11 +43,16 @@ class FrontierCollector:
                                    distance=obs.distance,
                                    nearest_frontier=obs.nearest_frontier,
                                    interesting_reason=obs.reason)
-            if cid and obs.reason == "frontier_proximity":
+            if cid and obs.reason in ("frontier_champion", "frontier_progress"):
                 self.frontier_saves += 1
             if cid and self.on_save:
                 self.on_save()
         self.feedback.commit(mapped, cid is not None)
+        for ev in self.feedback.portfolio.drain_events():
+            self._events_path.parent.mkdir(parents=True, exist_ok=True)
+            with self._events_path.open("a", encoding="utf-8") as fh:
+                fh.write(__import__("json").dumps(vars(ev) | {"edge": None},
+                                                  ensure_ascii=False) + "\n")
         for ev in self.feedback.tracker.drain_lifecycle():
             self._events_path.parent.mkdir(parents=True, exist_ok=True)
             with self._events_path.open("a", encoding="utf-8") as fh:
