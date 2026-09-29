@@ -131,6 +131,11 @@ def _events(res, stage):
     ("BS04_query_string_eq", "admin", "QUERY[name]"),
     ("BS05_form_int_eq", "42", "FORM[count]"),
     ("BS06_json_int_ge", 10, "JSON[count]"),
+    # P0-1:输入在比较符右侧(常量在左),canonicalize 后求解方向必须正确
+    ("BS13_rhs_gt", "11", "QUERY[x]"),      # 10 < x → x > 10 → 11
+    ("BS14_rhs_ge", "10", "QUERY[x]"),      # 10 <= x → x >= 10 → 10
+    ("BS15_rhs_lt", "99", "QUERY[x]"),      # 100 > x → x < 100 → 99
+    ("BS16_rhs_le", "100", "QUERY[x]"),     # 100 >= x → x <= 100 → 100
 ])
 def test_bs_single_frontier_crossed(case, hint_target, field):
     res = _run_bs(case)
@@ -144,6 +149,12 @@ def test_bs_single_frontier_crossed(case, hint_target, field):
     assert res.target_reached
 
 
+def test_rhs_solver_rules_frozen():
+    # 评审示例:10 < x,desired TRUE → x=11(而非错误的 9)
+    r = solve("f", "g", "true", "Lt", False, _obs("Lt", 10, 5), "QUERY", "x")
+    assert r.reason == "solved" and r.target_value == 11
+
+
 def test_bs07_nested_two_guards():
     res = _run_bs("BS07_nested_two_guards")
     hints = _events(res, "HINT_GENERATED")
@@ -153,6 +164,21 @@ def test_bs07_nested_two_guards():
     # 第二个候选只改 y,x 保持 731
     cands = _events(res, "CANDIDATE_GENERATED")
     assert cands[1]["candidate"]["query"]["x"] == "731"
+
+
+def test_nested_seed_isolation():
+    """P1-2:S0 恒不变;S1 仅改 x;S2 相对 S1 仅改 y。"""
+    import copy
+    d = BS / "BS07_nested_two_guards"
+    s0 = json.loads((d / "input.json").read_text(encoding="utf-8"))
+    s0_frozen = copy.deepcopy(s0)
+    res = solve_loop(d / "app.py", build_icfg(d), s0)
+    cands = [e["candidate"] for e in _events(res, "CANDIDATE_GENERATED")]
+    s1, s2 = cands[0], cands[1]
+    assert s0 == s0_frozen, "原始种子必须不可变"
+    assert s1["query"]["x"] == "731" and s1["query"]["y"] == "5"
+    assert s2["query"]["x"] == "731" and s2["query"]["y"] == "18"
+    assert set(s1) == set(s0) and set(s2) == set(s0)
 
 
 def test_bs08_already_satisfied():

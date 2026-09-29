@@ -14,6 +14,9 @@ from stateforge.feasibility.mutation_hint import MutationHint
 
 _FLIP = {"Eq": "NotEq", "NotEq": "Eq", "Lt": "GtE", "GtE": "Lt",
          "LtE": "Gt", "Gt": "LtE"}
+# 输入在 RHS 时把 C op x 规范化为 x op' C(P0-1:先 canonicalize 再翻极性)
+_SWAP = {"Eq": "Eq", "NotEq": "NotEq", "Lt": "Gt", "Gt": "Lt",
+         "LtE": "GtE", "GtE": "LtE"}
 
 
 def _solve_true(op: str, const):
@@ -38,7 +41,8 @@ def solve(frontier_id: str, guard_id: str, polarity: str, op: str,
     current = observation.lhs if input_is_lhs else observation.rhs
     const = observation.rhs if input_is_lhs else observation.lhs
     want = (polarity == "true")
-    effective_op = op if want else _FLIP[op]
+    canonical_op = op if input_is_lhs else _SWAP[op]   # INPUT op CONST
+    effective_op = canonical_op if want else _FLIP[canonical_op]
     reason = "solved"
     target = None
     if not isinstance(const, (int, float, str)):

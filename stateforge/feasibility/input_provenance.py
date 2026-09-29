@@ -11,8 +11,9 @@ import ast
 from dataclasses import dataclass
 from pathlib import Path
 
-KIND_ATTR = {"args": "QUERY", "form": "FORM", "json": "JSON",
-             "values": "FORM"}
+KIND_ATTR = {"args": "QUERY", "form": "FORM", "json": "JSON"}
+# request.values 是组合视图,协议只冻结 QUERY/FORM/JSON → AMBIGUOUS(P1-1)
+_AMBIGUOUS_ATTRS = {"values", "cookies", "headers", "data", "query_string"}
 
 
 @dataclass
@@ -43,9 +44,11 @@ def _extract(expr: ast.expr) -> tuple[str, str] | None:
     if isinstance(expr, ast.Subscript) and isinstance(expr.value, ast.Attribute):
         attr = expr.value
         if isinstance(attr.value, ast.Name) and attr.value.id == "request" \
-                and attr.attr in KIND_ATTR \
                 and isinstance(expr.slice, ast.Constant):
-            return KIND_ATTR[attr.attr], str(expr.slice.value)
+            if attr.attr in KIND_ATTR:
+                return KIND_ATTR[attr.attr], str(expr.slice.value)
+            if attr.attr in _AMBIGUOUS_ATTRS:
+                return "AMBIGUOUS", attr.attr
     if isinstance(expr, ast.Call) and isinstance(expr.func, ast.Attribute) \
             and expr.func.attr == "get" \
             and isinstance(expr.func.value, ast.Attribute) \
@@ -101,13 +104,59 @@ def _assign_source(stmt: ast.stmt) -> InputSource | None:
     return InputSource(kind, key, transform, names[0])
 
 
-def _scan_function(fn: ast.FunctionDef) -> dict[str, InputSource]:
-    """函数内直线扫描赋值(顺序无关:同名重写覆盖;不支持分支敏感)。"""
+def _assign_targets(stmt):
+    if isinstance(stmt, ast.Assign):
+        return [t.id for t in stmt.targets if isinstance(t, ast.Name)]
+    if isinstance(stmt, ast.AnnAssign) and isinstance(stmt.target, ast.Name):
+        return [stmt.target.id]
+    return []
+
+
+def _scan_function_before(fn: ast.FunctionDef, guard_line: int
+                          ) -> dict[str, InputSource]:
+    """guard 词法位置之前的**直线**赋值(按行序,后者覆盖前者)。
+
+    P0-2:guard 之后的赋值不参与(时序正确);分支/循环体内的重定义
+    一律 SOURCE_AMBIGUOUS——宁可未知,不给确定但错误的来源。
+    """
+    direct: list[tuple[int, str, InputSource]] = []
+    ambiguous: set[str] = set()
+
+    def visit(stmts, in_branch: bool):
+        for s in stmts:
+            if isinstance(s, (ast.Assign, ast.AnnAssign)):
+                src = _assign_source(s)
+                names = _assign_targets(s)
+                if src is not None:
+                    for n in names:
+                        if in_branch:
+                            ambiguous.add(n)
+                        else:
+                            direct.append((s.lineno, n, src))
+                elif in_branch and _mentions_request(s.value):
+                    ambiguous.update(names)
+            elif not isinstance(s, (ast.If, ast.While, ast.For,
+                                    ast.AsyncFor, ast.Try)):
+                pass
+            for field in ("body", "orelse", "finalbody", "handlers"):
+                for child in getattr(s, field, []) or []:
+                    if isinstance(child, ast.stmt):
+                        visit([child], in_branch=True)
+                    elif isinstance(child, ast.ExceptHandler):
+                        visit(child.body, in_branch=True)
+
+    visit(fn.body, in_branch=False)
     env: dict[str, InputSource] = {}
-    for stmt in ast.walk(fn):
-        src = _assign_source(stmt)
-        if src is not None:
-            env[src.var] = src
+    for lineno, name, src in sorted(direct, key=lambda t: t[0]):
+        if lineno >= guard_line:                   # guard 之后:不参与
+            continue
+        if name in ambiguous:
+            continue
+        env[name] = src
+    for name in ambiguous:
+        if name not in env:
+            env[name] = InputSource("", "", "", name,
+                                    status="SOURCE_AMBIGUOUS", confidence=0.0)
     return env
 
 
@@ -120,7 +169,7 @@ def resolve_operand_source(app_path: str | Path, function: str,
                and n.name == function), None)
     if fn is None:
         return InputSource("", "", "", "", status="SOURCE_UNKNOWN", confidence=0.0)
-    env = _scan_function(fn)
+    env = _scan_function_before(fn, guard_lineno)
     test = _test_at(fn, guard_lineno)
     if test is None or not isinstance(test, ast.Compare) \
             or len(test.ops) != 1:
