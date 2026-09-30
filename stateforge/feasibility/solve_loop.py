@@ -18,7 +18,9 @@ from stateforge.dynamic.tracer import TraceSession
 from stateforge.feasibility.branch_observer import Observer, load_observed_target
 from stateforge.feasibility.branch_solver import solve
 from stateforge.feasibility.guard_recovery import _TestIndex, recover_guard
-from stateforge.feasibility.input_provenance import resolve_operand_source
+from stateforge.feasibility.input_provenance import (apply_transforms,
+                                                     resolve_operand_source)
+from stateforge.feasibility.mutation_hint import MutationHint
 from stateforge.feedback.frontier_tracker import FrontierTracker
 from stateforge.fuzz.constraint_mutator import MutationError, apply_hint
 
@@ -30,6 +32,10 @@ class Request:
         self.args = dict(seed.get("query", {}))
         self.form = dict(seed.get("form", {}))
         self.json = dict(seed.get("json", {}))
+        self.headers = dict(seed.get("header", {}))
+        self.cookies = dict(seed.get("cookie", {}))
+        self.values = {**self.args, **self.form}  # 组合视图(可执行;
+        # provenance 侧仍按协议拒判 SOURCE_AMBIGUOUS)
         self.session = {"authenticated": False}   # 中性未认证态(4.2 的领地)
 
 
@@ -117,9 +123,11 @@ def solve_loop(app_path: str | Path, ir: ProgramIR, seed: dict,
                 return result
             raw = {"QUERY": current.get("query", {}),
                    "FORM": current.get("form", {}),
-                   "JSON": current.get("json", {})}[src.kind].get(src.key)
-            expect = int(raw) if (src.transform == "int"
-                                  and raw is not None) else raw
+                   "JSON": current.get("json", {}),
+                   "HEADER": current.get("header", {}),
+                   "COOKIE": current.get("cookie", {})}[src.kind].get(src.key)
+            expect = (apply_transforms(raw, src.transforms)
+                      if raw is not None and src.transforms else raw)
             input_is_lhs = _input_is_lhs(app_path, ir.blocks[u].function,
                                          guard.lineno, src.var)
             runtime_val = gobs.lhs if input_is_lhs else gobs.rhs
@@ -130,6 +138,12 @@ def solve_loop(app_path: str | Path, ir: ProgramIR, seed: dict,
                 return result
             hint = solve(frontier_id, guard.guard_id, guard.polarity,
                          guard.op, input_is_lhs, gobs, src.kind, src.key)
+            hint = MutationHint(hint.frontier_id, hint.guard_id,
+                                hint.source_kind, hint.source_key,
+                                hint.current_value, hint.target_value,
+                                hint.operator, hint.desired_polarity,
+                                hint.reason, hint.confidence,
+                                transform_chain=src.transforms)
             ev("HINT_GENERATED", round=round_no, frontier=frontier_id,
                guard=guard.expression, hint_reason=hint.reason,
                target=hint.target_value, source=f"{src.kind}[{src.key}]")

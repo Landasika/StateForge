@@ -11,7 +11,8 @@ import json
 
 from stateforge.feasibility.mutation_hint import MutationHint
 
-_SECTION = {"QUERY": "query", "FORM": "form", "JSON": "json"}
+_SECTION = {"QUERY": "query", "FORM": "form", "JSON": "json",
+            "HEADER": "header", "COOKIE": "cookie"}
 
 
 class MutationError(ValueError):
@@ -19,8 +20,10 @@ class MutationError(ValueError):
 
 
 def serialize_for(kind: str, value) -> object:
-    """QUERY/FORM 是字符串表单域;JSON 保原生类型。"""
-    return str(value) if kind in ("QUERY", "FORM") else value
+    """冻结的不动点序列化:QUERY/FORM/HEADER/COOKIE 为字符串域
+    (str(target) 经 strip/lower/upper/int/float 链后仍得 target 的
+    固定点);JSON 保原生类型。"""
+    return str(value) if kind in ("QUERY", "FORM", "HEADER", "COOKIE") else value
 
 
 def apply_hint(seed: dict, hint: MutationHint) -> dict:

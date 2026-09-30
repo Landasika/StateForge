@@ -1,0 +1,387 @@
+{
+ "cases": [
+  {
+   "case": "BS01_query_int_eq",
+   "expect": "cross",
+   "ok": true,
+   "hint_reason": "solved",
+   "crossed": 1,
+   "target_reached": true
+  },
+  {
+   "case": "BS02_query_int_gt",
+   "expect": "cross",
+   "ok": true,
+   "hint_reason": "solved",
+   "crossed": 1,
+   "target_reached": true
+  },
+  {
+   "case": "BS03_query_false_edge",
+   "expect": "cross",
+   "ok": true,
+   "hint_reason": "solved",
+   "crossed": 1,
+   "target_reached": true
+  },
+  {
+   "case": "BS04_query_string_eq",
+   "expect": "cross",
+   "ok": true,
+   "hint_reason": "solved",
+   "crossed": 1,
+   "target_reached": true
+  },
+  {
+   "case": "BS05_form_int_eq",
+   "expect": "cross",
+   "ok": true,
+   "hint_reason": "solved",
+   "crossed": 1,
+   "target_reached": true
+  },
+  {
+   "case": "BS06_json_int_ge",
+   "expect": "cross",
+   "ok": true,
+   "hint_reason": "solved",
+   "crossed": 1,
+   "target_reached": true
+  },
+  {
+   "case": "BS07_nested_two_guards",
+   "expect": "cross",
+   "ok": true,
+   "hint_reason": "solved",
+   "crossed": 2,
+   "target_reached": true
+  },
+  {
+   "case": "BS08_already_satisfied",
+   "expect": "cross",
+   "ok": true,
+   "hint_reason": null,
+   "crossed": 0,
+   "target_reached": true
+  },
+  {
+   "case": "BS09_unknown_source",
+   "expect": "refuse",
+   "ok": true,
+   "hint_reason": "NOT_SINGLE_INPUT_SOLVABLE",
+   "crossed": 0,
+   "target_reached": false
+  },
+  {
+   "case": "BS10_unresolved_transform",
+   "expect": "refuse",
+   "ok": true,
+   "hint_reason": "NOT_SINGLE_INPUT_SOLVABLE",
+   "crossed": 0,
+   "target_reached": false
+  },
+  {
+   "case": "BS11_type_mismatch",
+   "expect": "refuse",
+   "ok": true,
+   "hint_reason": "NOT_SOLVABLE_TYPE_MISMATCH",
+   "crossed": 0,
+   "target_reached": false
+  },
+  {
+   "case": "BS12_non_input_guard",
+   "expect": "refuse",
+   "ok": true,
+   "hint_reason": "NOT_SINGLE_INPUT_SOLVABLE",
+   "crossed": 0,
+   "target_reached": false
+  },
+  {
+   "case": "BS13_rhs_gt",
+   "expect": "cross",
+   "ok": true,
+   "hint_reason": "solved",
+   "crossed": 1,
+   "target_reached": true
+  },
+  {
+   "case": "BS14_rhs_ge",
+   "expect": "cross",
+   "ok": true,
+   "hint_reason": "solved",
+   "crossed": 1,
+   "target_reached": true
+  },
+  {
+   "case": "BS15_rhs_lt",
+   "expect": "cross",
+   "ok": true,
+   "hint_reason": "solved",
+   "crossed": 1,
+   "target_reached": true
+  },
+  {
+   "case": "BS16_rhs_le",
+   "expect": "cross",
+   "ok": true,
+   "hint_reason": "solved",
+   "crossed": 1,
+   "target_reached": true
+  },
+  {
+   "case": "BS17_header_eq",
+   "expect": "cross",
+   "ok": true,
+   "hint_reason": "solved",
+   "crossed": 1,
+   "target_reached": true
+  },
+  {
+   "case": "BS18_cookie_eq",
+   "expect": "cross",
+   "ok": true,
+   "hint_reason": "solved",
+   "crossed": 1,
+   "target_reached": true
+  },
+  {
+   "case": "BS19_strip_lower_chain",
+   "expect": "cross",
+   "ok": true,
+   "hint_reason": "solved",
+   "crossed": 1,
+   "target_reached": true
+  },
+  {
+   "case": "BS20_float_transform",
+   "expect": "cross",
+   "ok": true,
+   "hint_reason": "solved",
+   "crossed": 1,
+   "target_reached": true
+  },
+  {
+   "case": "BS21_values_ambiguous",
+   "expect": "refuse",
+   "ok": true,
+   "hint_reason": "NOT_SINGLE_INPUT_SOLVABLE",
+   "crossed": 0,
+   "target_reached": false
+  },
+  {
+   "case": "BS22_unsupported_chain",
+   "expect": "refuse",
+   "ok": true,
+   "hint_reason": "NOT_SINGLE_INPUT_SOLVABLE",
+   "crossed": 0,
+   "target_reached": false
+  }
+ ],
+ "metrics": {
+  "overall_accuracy": 1.0,
+  "cross_case_frontier_crossing_rate": 1.0,
+  "refuse_case_honesty_rate": 1.0,
+  "GuardRecoveryAccuracy": "见 tests/feasibility(真值门禁 100%)",
+  "OperandObservationAccuracy": "见 branch_observer 单测",
+  "ProvenanceAccuracy": "见 input_provenance 单测",
+  "HintAccuracy": 1.0,
+  "CandidateValidity": 1.0
+ },
+ "failures": [],
+ "representative_traces": {
+  "BS01_query_int_eq": [
+   {
+    "stage": "CANDIDATE_EXECUTED",
+    "round": 0,
+    "seed": {
+     "query": {
+      "x": "20"
+     }
+    }
+   },
+   {
+    "stage": "HINT_GENERATED",
+    "round": 0,
+    "frontier": "app.py::run::3-3::branch::1->app.py::run::4-4::terminal::1",
+    "guard": "x == 731",
+    "hint_reason": "solved",
+    "target": 731,
+    "source": "QUERY[x]"
+   },
+   {
+    "stage": "CANDIDATE_GENERATED",
+    "round": 0,
+    "candidate": {
+     "query": {
+      "x": "731"
+     }
+    },
+    "changed_field": "QUERY[x]"
+   },
+   {
+    "stage": "CANDIDATE_EXECUTED",
+    "round": 1,
+    "seed": {
+     "query": {
+      "x": "731"
+     }
+    }
+   },
+   {
+    "stage": "BRANCH_SATISFIED",
+    "round": 0,
+    "guard": "/home/landasika/icassp/stateforge/fixtures/bs_micro/BS01_query_int_eq/app.py:3:7:Eq",
+    "actual": true,
+    "satisfied": true
+   },
+   {
+    "stage": "FRONTIER_CROSSED",
+    "round": 0,
+    "frontier": "app.py::run::3-3::branch::1->app.py::run::4-4::terminal::1"
+   },
+   {
+    "stage": "CANDIDATE_EXECUTED",
+    "round": 2,
+    "seed": {
+     "query": {
+      "x": "731"
+     }
+    }
+   }
+  ],
+  "BS07_nested_two_guards": [
+   {
+    "stage": "CANDIDATE_EXECUTED",
+    "round": 0,
+    "seed": {
+     "query": {
+      "x": "20",
+      "y": "5"
+     }
+    }
+   },
+   {
+    "stage": "HINT_GENERATED",
+    "round": 0,
+    "frontier": "app.py::run::4-4::branch::1->app.py::run::5-5::branch::1",
+    "guard": "x == 731",
+    "hint_reason": "solved",
+    "target": 731,
+    "source": "QUERY[x]"
+   },
+   {
+    "stage": "CANDIDATE_GENERATED",
+    "round": 0,
+    "candidate": {
+     "query": {
+      "x": "731",
+      "y": "5"
+     }
+    },
+    "changed_field": "QUERY[x]"
+   },
+   {
+    "stage": "CANDIDATE_EXECUTED",
+    "round": 1,
+    "seed": {
+     "query": {
+      "x": "731",
+      "y": "5"
+     }
+    }
+   },
+   {
+    "stage": "BRANCH_SATISFIED",
+    "round": 0,
+    "guard": "/home/landasika/icassp/stateforge/fixtures/bs_micro/BS07_nested_two_guards/app.py:4:7:Eq",
+    "actual": true,
+    "satisfied": true
+   },
+   {
+    "stage": "FRONTIER_CROSSED",
+    "round": 0,
+    "frontier": "app.py::run::4-4::branch::1->app.py::run::5-5::branch::1"
+   },
+   {
+    "stage": "CANDIDATE_EXECUTED",
+    "round": 2,
+    "seed": {
+     "query": {
+      "x": "731",
+      "y": "5"
+     }
+    }
+   },
+   {
+    "stage": "HINT_GENERATED",
+    "round": 2,
+    "frontier": "app.py::run::5-5::branch::1->app.py::run::6-6::terminal::1",
+    "guard": "y >= 18",
+    "hint_reason": "solved",
+    "target": 18,
+    "source": "QUERY[y]"
+   },
+   {
+    "stage": "CANDIDATE_GENERATED",
+    "round": 2,
+    "candidate": {
+     "query": {
+      "x": "731",
+      "y": "18"
+     }
+    },
+    "changed_field": "QUERY[y]"
+   },
+   {
+    "stage": "CANDIDATE_EXECUTED",
+    "round": 3,
+    "seed": {
+     "query": {
+      "x": "731",
+      "y": "18"
+     }
+    }
+   },
+   {
+    "stage": "BRANCH_SATISFIED",
+    "round": 2,
+    "guard": "/home/landasika/icassp/stateforge/fixtures/bs_micro/BS07_nested_two_guards/app.py:5:11:GtE",
+    "actual": true,
+    "satisfied": true
+   },
+   {
+    "stage": "FRONTIER_CROSSED",
+    "round": 2,
+    "frontier": "app.py::run::5-5::branch::1->app.py::run::6-6::terminal::1"
+   },
+   {
+    "stage": "CANDIDATE_EXECUTED",
+    "round": 4,
+    "seed": {
+     "query": {
+      "x": "731",
+      "y": "18"
+     }
+    }
+   }
+  ],
+  "BS12_non_input_guard": [
+   {
+    "stage": "CANDIDATE_EXECUTED",
+    "round": 0,
+    "seed": {
+     "query": {
+      "x": "20"
+     }
+    }
+   },
+   {
+    "stage": "HINT_GENERATED",
+    "round": 0,
+    "frontier": "app.py::run::2-2::branch::1->app.py::run::3-3::terminal::1",
+    "hint_reason": "NOT_SINGLE_INPUT_SOLVABLE",
+    "detail": "SOURCE_UNKNOWN"
+   }
+  ]
+ }
+}

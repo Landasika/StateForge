@@ -136,6 +136,11 @@ def _events(res, stage):
     ("BS14_rhs_ge", "10", "QUERY[x]"),      # 10 <= x → x >= 10 → 10
     ("BS15_rhs_lt", "99", "QUERY[x]"),      # 100 > x → x < 100 → 99
     ("BS16_rhs_le", "100", "QUERY[x]"),     # 100 >= x → x <= 100 → 100
+    # 4.1-A 增量:HEADER/COOKIE 源 + 变换链
+    ("BS17_header_eq", "admin", "HEADER[X-Mode]"),
+    ("BS18_cookie_eq", "s3cret", "COOKIE[tok]"),
+    ("BS19_strip_lower_chain", "admin", "QUERY[name]"),   # strip->lower 链
+    ("BS20_float_transform", "1.5", "QUERY[v]"),          # float 链,>= 1.5
 ])
 def test_bs_single_frontier_crossed(case, hint_target, field):
     res = _run_bs(case)
@@ -191,9 +196,21 @@ def test_bs08_already_satisfied():
     ("BS10_unresolved_transform", "NOT_SINGLE_INPUT_SOLVABLE"),
     ("BS11_type_mismatch", "NOT_SOLVABLE_TYPE_MISMATCH"),
     ("BS12_non_input_guard", "NOT_SINGLE_INPUT_SOLVABLE"),
+    ("BS21_values_ambiguous", "NOT_SINGLE_INPUT_SOLVABLE"),
+    ("BS22_unsupported_chain", "NOT_SINGLE_INPUT_SOLVABLE"),
 ])
 def test_bs_refusals(case, reason):
     res = _run_bs(case)
     hints = _events(res, "HINT_GENERATED")
     assert hints and hints[0]["hint_reason"] == reason, res.events
     assert not res.target_reached and not _events(res, "FRONTIER_CROSSED")
+
+
+def test_micro_report_all_green():
+    """SF-BranchSolveMicro 全 22 用例:overall=1.0、零失败。"""
+    from stateforge.eval.branchsolve_report import run_report
+    report = run_report()
+    assert report["failures"] == []
+    assert report["metrics"]["overall_accuracy"] == 1.0
+    assert report["metrics"]["cross_case_frontier_crossing_rate"] == 1.0
+    assert report["metrics"]["refuse_case_honesty_rate"] == 1.0

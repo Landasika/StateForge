@@ -17,3 +17,4 @@ class MutationHint:
     desired_polarity: str         # true / false
     reason: str                   # solved / NOT_SOLVABLE_* / NOT_SINGLE_INPUT_SOLVABLE
     confidence: float = 1.0
+    transform_chain: tuple = ()   # 源→变量 的冻结变换链

@@ -11,19 +11,45 @@ import ast
 from dataclasses import dataclass
 from pathlib import Path
 
-KIND_ATTR = {"args": "QUERY", "form": "FORM", "json": "JSON"}
-# request.values 是组合视图,协议只冻结 QUERY/FORM/JSON → AMBIGUOUS(P1-1)
-_AMBIGUOUS_ATTRS = {"values", "cookies", "headers", "data", "query_string"}
+KIND_ATTR = {"args": "QUERY", "form": "FORM", "json": "JSON",
+             "headers": "HEADER", "cookies": "COOKIE"}
+# request.values 是 query+form 组合视图 → AMBIGUOUS(评审 P1-1 冻结);
+# headers/cookies 按本轮指令升级为一等源(单一来源,可解析)。
+_AMBIGUOUS_ATTRS = {"values", "data", "query_string"}
+# 冻结的确定性变换链词汇表(实验前冻结,不增不调)
+TRANSFORMS = ("int", "float", "str", "strip", "lower", "upper")
 
 
 @dataclass
 class InputSource:
-    kind: str                    # QUERY / FORM / JSON
+    kind: str                    # QUERY / FORM / JSON / HEADER / COOKIE
     key: str
-    transform: str               # identity / int
+    transform: str               # 链摘要:"identity" / "int" / "strip->int"…
     var: str                     # 绑定的变量名
-    status: str = "ok"           # ok / SOURCE_UNKNOWN / UNRESOLVED_TRANSFORM
+    status: str = "ok"           # ok / SOURCE_UNKNOWN / SOURCE_AMBIGUOUS /
+                                 # UNRESOLVED_TRANSFORM / PROVENANCE_UNAVAILABLE
     confidence: float = 1.0
+    transforms: tuple = ()       # 变换链(按从源到变量的顺序)
+
+
+def apply_transforms(raw, chain):
+    """按链顺序应用冻结变换(值确认用;不猜逆变换)。"""
+    for t in chain:
+        if t == "int":
+            raw = int(raw)
+        elif t == "float":
+            raw = float(raw)
+        elif t == "str":
+            raw = str(raw)
+        elif t == "strip":
+            raw = raw.strip()
+        elif t == "lower":
+            raw = raw.lower()
+        elif t == "upper":
+            raw = raw.upper()
+        else:
+            raise ValueError(t)
+    return raw
 
 
 def _match_source(expr: ast.expr) -> tuple[str, str] | None:
@@ -69,6 +95,24 @@ def _mentions_request(value: ast.expr) -> bool:
     return False
 
 
+def _parse_chain(value: ast.expr) -> tuple[list[str], ast.expr]:
+    """由外向内剥冻结变换:int(x)/x.strip()/x.lower()/x.upper()…"""
+    chain: list[str] = []
+    expr = value
+    while True:
+        if isinstance(expr, ast.Call) and isinstance(expr.func, ast.Name) \
+                and expr.func.id in ("int", "float", "str") and len(expr.args) == 1:
+            chain.append(expr.func.id)
+            expr = expr.args[0]
+        elif isinstance(expr, ast.Call) and isinstance(expr.func, ast.Attribute) \
+                and expr.func.attr in ("strip", "lower", "upper") \
+                and not expr.args:
+            chain.append(expr.func.attr)
+            expr = expr.func.value
+        else:
+            return chain, expr
+
+
 def _assign_source(stmt: ast.stmt) -> InputSource | None:
     """单条赋值 var = <source expr> / int(<source expr>);不匹配返回 None。"""
     if not isinstance(stmt, (ast.Assign, ast.AnnAssign)):
@@ -77,31 +121,19 @@ def _assign_source(stmt: ast.stmt) -> InputSource | None:
     names = [t.id for t in targets if isinstance(t, ast.Name)]
     if not names:
         return None
-    value = stmt.value
-    transform = "identity"
-    if isinstance(value, ast.Call) and isinstance(value.func, ast.Name):
-        if value.func.id == "int" and len(value.args) == 1:
-            inner = value.args[0]
-            hit = _extract(inner)
-            if hit is None:
-                if _mentions_request(inner):
-                    return InputSource("", "", "UNRESOLVED", names[0],
-                                       status="UNRESOLVED_TRANSFORM")
-                return None
-            kind, key = hit
-            return InputSource(kind, key, "int", names[0])
-        if _mentions_request(value):             # int 以外的函数包裹 → 拒绝
+    chain, base = _parse_chain(stmt.value)
+    hit = _extract(base)
+    if hit is None or hit[0] == "AMBIGUOUS":
+        if _mentions_request(stmt.value):
+            status = ("SOURCE_AMBIGUOUS" if (hit and hit[0] == "AMBIGUOUS")
+                      else "UNRESOLVED_TRANSFORM")
             return InputSource("", "", "UNRESOLVED", names[0],
-                               status="UNRESOLVED_TRANSFORM", confidence=0.0)
-        return None                              # 纯局部函数调用
-    hit = _extract(value)
-    if hit is None:
-        if _mentions_request(value):             # 复杂表达式提及 request → 拒绝
-            return InputSource("", "", "UNRESOLVED", names[0],
-                               status="UNRESOLVED_TRANSFORM", confidence=0.0)
-        return None                              # 非输入赋值(局部计算)
+                               status=status, confidence=0.0)
+        return None                              # 纯局部计算
     kind, key = hit
-    return InputSource(kind, key, transform, names[0])
+    transform = "->".join(chain) if chain else "identity"
+    return InputSource(kind, key, transform, names[0],
+                       transforms=tuple(chain))
 
 
 def _assign_targets(stmt):
