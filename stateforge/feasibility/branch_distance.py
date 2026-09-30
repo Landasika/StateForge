@@ -23,6 +23,9 @@ _FLIP = {"Eq": "NotEq", "NotEq": "Eq", "Lt": "GtE", "GtE": "Lt",
 
 def _numeric_distance(op: str, lhs, rhs) -> int | float:
     if op == "Eq":
+        # 字符串 Eq 按冻结规格:相等=0,不等=1(非 abs 差——那是数值的)
+        if isinstance(lhs, str) or isinstance(rhs, str):
+            return 0 if lhs == rhs else 1
         return abs(lhs - rhs)
     if op == "NotEq":
         return 0 if lhs != rhs else 1
