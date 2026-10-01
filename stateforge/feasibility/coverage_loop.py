@@ -193,7 +193,11 @@ class LLMCoverageLoop:
         self.frontier_attempts[fid] = self.frontier_attempts.get(fid, 0) + 1
         rec.invoked = True
 
-        proposal, latency, tokens = self.solver.solve(slice_)
+        try:
+            proposal, latency, tokens = self.solver.solve(slice_)
+        except Exception as exc:                # noqa: BLE001  provider 崩溃不 crash
+            rec.failure_reason = f"PROVIDER_ERROR: {type(exc).__name__}"
+            return rec
         if proposal.status != ProposalStatus.PROPOSED:
             rec.failure_reason = f"LLM_{proposal.status.value}"
             self.frontier_failures.setdefault(fid, []).append(
@@ -239,7 +243,8 @@ class LLMCoverageLoop:
                 discovered_edges=0,
                 distance=rec.distance_after,
                 nearest_frontier=fid,
-                interesting_reason="llm_proposal")
+                interesting_reason="llm_proposal",
+                origin="LLM")
             rec.candidate_kept = cid is not None
         else:
             self.frontier_failures.setdefault(fid, []).append(

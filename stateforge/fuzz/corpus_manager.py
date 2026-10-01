@@ -27,6 +27,10 @@ class CorpusEntryMeta:
     distance: int | None = None
     nearest_frontier: str | None = None
     interesting_reason: str = "new_structure"
+    # Phase-4.2-F:lineage(区分 LLM direct gain vs descendant gain)
+    origin: str = "NATIVE"            # NATIVE / LLM
+    parent_seed_id: str | None = None
+    llm_attempt_id: str | None = None
 
 
 class CorpusManager:
@@ -53,7 +57,9 @@ class CorpusManager:
     def save(self, data: bytes, epoch: int, new_blocks: int, new_edges: int,
              discovered_blocks: int, discovered_edges: int,
              distance: int | None = None, nearest_frontier: str | None = None,
-             interesting_reason: str = "new_structure") -> str | None:
+             interesting_reason: str = "new_structure",
+             origin: str = "NATIVE", parent_seed_id: str | None = None,
+             llm_attempt_id: str | None = None) -> str | None:
         """有结构新颖性且未见过才保存;返回 input_id 或 None。"""
         cid = self.content_id(data)
         if cid in self._seen_hashes:
@@ -63,7 +69,8 @@ class CorpusManager:
         (self.seeds_dir / cid).write_bytes(data)
         meta = CorpusEntryMeta(cid, epoch, discovered_blocks, discovered_edges,
                                new_blocks, new_edges, score, time.time(),
-                               distance, nearest_frontier, interesting_reason)
+                               distance, nearest_frontier, interesting_reason,
+                               origin, parent_seed_id, llm_attempt_id)
         with self.meta_path.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(asdict(meta), ensure_ascii=False) + "\n")
             fh.flush()

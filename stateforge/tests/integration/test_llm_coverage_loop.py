@@ -99,3 +99,114 @@ class TestLLMCoverageLoopE2E:
         result = loop.run()
         assert not result.target_reached
         assert provider.calls == 3, "K=3 后应停止"
+
+
+class TestSixMicroTargets:
+    """T1-T6 全部 Mock E2E(顾问 §十八 六靶矩阵)。"""
+
+    def _run(self, case, mock_values):
+        from stateforge.feasibility.coverage_loop import LLMCoverageLoop
+        d = FIXTURES / case
+        seed = json.loads((d / "input.json").read_text())
+        provider = MockProvider([_proposal(*mv) for mv in mock_values])
+        import tempfile; workdir = tempfile.mkdtemp()
+        loop = LLMCoverageLoop(app_path=d / "app.py", seed=seed,
+                               provider=provider, workdir=workdir)
+        return loop.run(), provider
+
+    def test_t3_nested_three_layers(self):
+        """A=111→B=222→C=333 三层逐门打开。"""
+        result, provider = self._run("T3_nested", [
+            ("QUERY", "a", 111), ("QUERY", "b", 222), ("QUERY", "c", 333)])
+        assert result.target_reached, f"attempts={result.attempt_records}"
+
+    def test_t4_transform_strip_int(self):
+        """slice 中的 strip+int 变换信息帮助 LLM 生成干净值。"""
+        result, provider = self._run("T4_transform", [
+            ("QUERY", "v", "4242")])
+        assert result.target_reached
+
+    def test_t5_relational_single_field(self):
+        """x+y==1337:LLM 需理解关系,改 x 使 x+5=1337 → x=1332。"""
+        result, provider = self._run("T5_relational", [
+            ("QUERY", "x", 1332)])
+        assert result.target_reached
+
+    def test_all_six_pass_summary(self):
+        cases = [
+            ("T1_magic_string", [("QUERY", "payload", "MAGIC_STATEFORGE")]),
+            ("T2_numeric", [("QUERY", "n", 999)]),
+            ("T3_nested", [("QUERY", "a", 111), ("QUERY", "b", 222),
+                            ("QUERY", "c", 333)]),
+            ("T4_transform", [("QUERY", "v", "4242")]),
+            ("T5_relational", [("QUERY", "x", 1332)]),
+            ("T6_semantic", [("QUERY", "username", "administrator"),
+                              ("QUERY", "action", "delete")]),
+        ]
+        results = {}
+        for name, mock_vals in cases:
+            r, _ = self._run(name, mock_vals)
+            results[name] = r.target_reached
+        assert all(results.values()), f"未通过的靶: {results}"
+
+
+class TestOriginLineage:
+    """顾问:区分 LLM direct gain 与 descendant gain 的 provenance。"""
+
+    def test_llm_candidates_have_origin(self):
+        from stateforge.feasibility.coverage_loop import LLMCoverageLoop
+        d = FIXTURES / "T2_numeric"
+        seed = json.loads((d / "input.json").read_text())
+        provider = MockProvider([_proposal("QUERY", "n", 999)])
+        loop = LLMCoverageLoop(app_path=d / "app.py", seed=seed,
+                               provider=provider, workdir=__import__('tempfile').mkdtemp())
+        loop.run()
+        entries = loop.corpus.entries()
+        assert entries, "corpus 非空"
+        assert all(e.origin == "LLM" for e in entries), \
+            [e.origin for e in entries]
+
+    def test_native_candidates_default_origin(self):
+        from stateforge.fuzz.corpus_manager import CorpusManager
+        import tempfile
+        with tempfile.TemporaryDirectory() as td:
+            cm = CorpusManager(td)
+            cm.save(b"\x01", 0, 1, 0, 1, 0)
+            assert cm.entries()[0].origin == "NATIVE"
+
+
+class TestErrorTolerance:
+    """顾问:timeout/malformed/provider exception → 不 crash。"""
+
+    def test_provider_exception_does_not_crash(self):
+        from stateforge.feasibility.coverage_loop import LLMCoverageLoop
+
+        class ExplodingProvider:
+            calls = 0
+            def complete(self, system, user):
+                self.calls += 1
+                raise RuntimeError("API connection refused")
+
+        d = FIXTURES / "T1_magic_string"
+        seed = json.loads((d / "input.json").read_text())
+        provider = ExplodingProvider()
+        loop = LLMCoverageLoop(app_path=d / "app.py", seed=seed,
+                               provider=provider,
+                               workdir=__import__('tempfile').mkdtemp(),
+                               max_attempts_per_frontier=2)
+        result = loop.run()          # 不应 raise
+        assert not result.target_reached
+        assert provider.calls == 2   # K=2 后停止
+
+    def test_malformed_json_rejected_not_crash(self):
+        from stateforge.feasibility.coverage_loop import LLMCoverageLoop
+        d = FIXTURES / "T1_magic_string"
+        seed = json.loads((d / "input.json").read_text())
+        provider = MockProvider(["completely not json", "{broken"])
+        loop = LLMCoverageLoop(app_path=d / "app.py", seed=seed,
+                               provider=provider,
+                               workdir=__import__('tempfile').mkdtemp(),
+                               max_attempts_per_frontier=2)
+        result = loop.run()
+        assert not result.target_reached
+        assert all(a.failure_reason for a in result.attempts)
