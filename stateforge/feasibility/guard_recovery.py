@@ -79,6 +79,10 @@ def _classify(test: ast.expr) -> tuple[str, str]:
     if isinstance(test, (ast.Name, ast.Constant, ast.Call, ast.Attribute,
                           ast.Subscript)):
         return "truthy", text
+    # In / NotIn 也是真假测试(成员测试),归入 truthy;LLM 可从 source 推理
+    if isinstance(test, ast.Compare) and len(test.ops) == 1 \
+            and isinstance(test.ops[0], (ast.In, ast.NotIn)):
+        return "truthy", text
     return "UNSUPPORTED", text
 
 
