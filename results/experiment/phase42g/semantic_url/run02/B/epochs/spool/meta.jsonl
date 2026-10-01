@@ -1,0 +1,1 @@
+{"input_id": "e3b0c44298fc1c14", "epoch": 1, "discovered_blocks": 4, "discovered_edges": 3, "new_blocks": 4, "new_edges": 3, "structural_score": 7, "saved_at": 1790875317.1444385, "distance": null, "nearest_frontier": null, "interesting_reason": "new_structure", "origin": "NATIVE", "parent_seed_id": null, "llm_attempt_id": null}

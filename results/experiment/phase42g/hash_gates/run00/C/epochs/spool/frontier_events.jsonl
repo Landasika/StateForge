@@ -1,0 +1,20 @@
+{"kind": "champion_new", "frontier": "hash_gates.py::target::15-15::branch::1->hash_gates.py::target::16-16::block::1", "input_id": "01ba4719c80b6fe9", "old_distance": null, "new_distance": 0, "epoch": 0, "edge": null}
+{"edge": ["hash_gates.py::target::19-19::branch::1", "hash_gates.py::target::20-20::block::1"], "created": 1790875417.22, "crossed": 1790875417.581, "crossing_seconds": 0.361}
+{"kind": "champion_new", "frontier": "hash_gates.py::target::23-23::branch::1->hash_gates.py::target::24-24::block::1", "input_id": "851d6c17afaf9f35", "old_distance": null, "new_distance": 0, "epoch": 0, "edge": null}
+{"kind": "champion_retire", "frontier": "hash_gates.py::target::23-23::branch::1->hash_gates.py::target::24-24::block::1", "input_id": "851d6c17afaf9f35", "old_distance": 0, "new_distance": null, "epoch": 0, "edge": null}
+{"edge": ["hash_gates.py::target::23-23::branch::1", "hash_gates.py::target::24-24::block::1"], "created": 1790875417.22, "crossed": 1790875418.82, "crossing_seconds": 1.6}
+{"kind": "champion_new", "frontier": "hash_gates.py::target::21-21::branch::1->hash_gates.py::target::22-22::block::1", "input_id": "851d6c17afaf9f35", "old_distance": null, "new_distance": 0, "epoch": 0, "edge": null}
+{"kind": "champion_retire", "frontier": "hash_gates.py::target::21-21::branch::1->hash_gates.py::target::22-22::block::1", "input_id": "851d6c17afaf9f35", "old_distance": 0, "new_distance": null, "epoch": 0, "edge": null}
+{"edge": ["hash_gates.py::target::21-21::branch::1", "hash_gates.py::target::22-22::block::1"], "created": 1790875417.22, "crossed": 1790875420.618, "crossing_seconds": 3.398}
+{"kind": "champion_retire", "frontier": "hash_gates.py::target::15-15::branch::1->hash_gates.py::target::16-16::block::1", "input_id": "01ba4719c80b6fe9", "old_distance": 0, "new_distance": null, "epoch": 0, "edge": null}
+{"edge": ["hash_gates.py::target::15-15::branch::1", "hash_gates.py::target::16-16::block::1"], "created": 1790875417.22, "crossed": 1790875422.117, "crossing_seconds": 4.897}
+{"kind": "champion_new", "frontier": "hash_gates.py::target::17-17::branch::1->hash_gates.py::target::18-18::block::1", "input_id": "a6b8f729a6cf1bf1", "old_distance": null, "new_distance": 0, "epoch": 0, "edge": null}
+{"kind": "champion_new", "frontier": "hash_gates.py::gate_one::46-46::branch::1->hash_gates.py::gate_one::47-47::terminal::1", "input_id": "851d6c17afaf9f35", "old_distance": null, "new_distance": 0, "epoch": 0, "edge": null}
+{"kind": "champion_retire", "frontier": "hash_gates.py::gate_one::46-46::branch::1->hash_gates.py::gate_one::47-47::terminal::1", "input_id": "851d6c17afaf9f35", "old_distance": 0, "new_distance": null, "epoch": 0, "edge": null}
+{"edge": ["hash_gates.py::gate_one::46-46::branch::1", "hash_gates.py::gate_one::47-47::terminal::1"], "created": 1790875426.294, "crossed": 1790875426.394, "crossing_seconds": 0.099}
+{"kind": "champion_retire", "frontier": "hash_gates.py::target::17-17::branch::1->hash_gates.py::target::18-18::block::1", "input_id": "a6b8f729a6cf1bf1", "old_distance": 0, "new_distance": null, "epoch": 0, "edge": null}
+{"edge": ["hash_gates.py::target::17-17::branch::1", "hash_gates.py::target::18-18::block::1"], "created": 1790875435.457, "crossed": 1790875436.891, "crossing_seconds": 1.434}
+{"kind": "champion_new", "frontier": "hash_gates.py::easy_two::32-32::branch::1->hash_gates.py::easy_two::34-34::terminal::1", "input_id": "4a64a107f0cb3253", "old_distance": null, "new_distance": 4, "epoch": 0, "edge": null}
+{"kind": "champion_replace", "frontier": "hash_gates.py::easy_two::32-32::branch::1->hash_gates.py::easy_two::34-34::terminal::1", "input_id": "976b0278743f8072", "old_distance": 4, "new_distance": 0, "epoch": 0, "edge": null}
+{"kind": "champion_retire", "frontier": "hash_gates.py::easy_two::32-32::branch::1->hash_gates.py::easy_two::34-34::terminal::1", "input_id": "976b0278743f8072", "old_distance": 0, "new_distance": null, "epoch": 0, "edge": null}
+{"edge": ["hash_gates.py::easy_two::32-32::branch::1", "hash_gates.py::easy_two::34-34::terminal::1"], "created": 1790875436.891, "crossed": 1790875438.039, "crossing_seconds": 1.148}

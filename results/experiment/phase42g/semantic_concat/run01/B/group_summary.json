@@ -1,0 +1,217 @@
+{
+ "group": "B",
+ "mode": "feedback",
+ "epochs": 3,
+ "seed": 107,
+ "epoch_records": [
+  {
+   "epoch": 1,
+   "snapshots": [
+    {
+     "group": "B",
+     "epoch": 1,
+     "t": 2.0,
+     "executions": 460,
+     "blocks": 4,
+     "edges": 3,
+     "exec_seconds": 0.006,
+     "feedback_seconds": 1.962
+    },
+    {
+     "group": "B",
+     "epoch": 1,
+     "t": 4.0,
+     "executions": 969,
+     "blocks": 4,
+     "edges": 3,
+     "exec_seconds": 0.011,
+     "feedback_seconds": 3.942
+    },
+    {
+     "group": "B",
+     "epoch": 1,
+     "t": 6.0,
+     "executions": 1457,
+     "blocks": 4,
+     "edges": 3,
+     "exec_seconds": 0.016,
+     "feedback_seconds": 5.922
+    },
+    {
+     "group": "B",
+     "epoch": 1,
+     "t": 8.01,
+     "executions": 1958,
+     "blocks": 4,
+     "edges": 3,
+     "exec_seconds": 0.021,
+     "feedback_seconds": 7.904
+    }
+   ],
+   "executions": 1958,
+   "blocks": 4,
+   "edges": 3,
+   "exec_seconds": 0.021,
+   "feedback_seconds": 7.904,
+   "candidates_saved": 1,
+   "wall": {
+    "start_offset": 0.0,
+    "end_offset": 9.088,
+    "subprocess_seconds": 9.088
+   },
+   "corpus_in": {
+    "files": 0,
+    "bytes": 0
+   },
+   "corpus_lf_after": {
+    "files": 0,
+    "bytes": 0
+   }
+  },
+  {
+   "epoch": 2,
+   "snapshots": [
+    {
+     "group": "B",
+     "epoch": 2,
+     "t": 2.0,
+     "executions": 495,
+     "blocks": 4,
+     "edges": 3,
+     "exec_seconds": 0.006,
+     "feedback_seconds": 1.965
+    },
+    {
+     "group": "B",
+     "epoch": 2,
+     "t": 4.0,
+     "executions": 997,
+     "blocks": 4,
+     "edges": 3,
+     "exec_seconds": 0.011,
+     "feedback_seconds": 3.945
+    },
+    {
+     "group": "B",
+     "epoch": 2,
+     "t": 6.01,
+     "executions": 1504,
+     "blocks": 4,
+     "edges": 3,
+     "exec_seconds": 0.016,
+     "feedback_seconds": 5.928
+    },
+    {
+     "group": "B",
+     "epoch": 2,
+     "t": 8.01,
+     "executions": 1989,
+     "blocks": 4,
+     "edges": 3,
+     "exec_seconds": 0.021,
+     "feedback_seconds": 7.908
+    }
+   ],
+   "executions": 1989,
+   "blocks": 4,
+   "edges": 3,
+   "exec_seconds": 0.021,
+   "feedback_seconds": 7.908,
+   "candidates_saved": 0,
+   "wall": {
+    "start_offset": 9.089,
+    "end_offset": 18.172,
+    "subprocess_seconds": 9.083
+   },
+   "corpus_in": {
+    "files": 1,
+    "bytes": 0
+   },
+   "corpus_lf_after": {
+    "files": 1,
+    "bytes": 0
+   }
+  },
+  {
+   "epoch": 3,
+   "snapshots": [
+    {
+     "group": "B",
+     "epoch": 3,
+     "t": 2.0,
+     "executions": 497,
+     "blocks": 4,
+     "edges": 3,
+     "exec_seconds": 0.006,
+     "feedback_seconds": 1.964
+    },
+    {
+     "group": "B",
+     "epoch": 3,
+     "t": 4.0,
+     "executions": 1001,
+     "blocks": 4,
+     "edges": 3,
+     "exec_seconds": 0.012,
+     "feedback_seconds": 3.94
+    },
+    {
+     "group": "B",
+     "epoch": 3,
+     "t": 6.01,
+     "executions": 1512,
+     "blocks": 4,
+     "edges": 3,
+     "exec_seconds": 0.017,
+     "feedback_seconds": 5.921
+    },
+    {
+     "group": "B",
+     "epoch": 3,
+     "t": 8.01,
+     "executions": 2018,
+     "blocks": 4,
+     "edges": 3,
+     "exec_seconds": 0.022,
+     "feedback_seconds": 7.902
+    }
+   ],
+   "executions": 2018,
+   "blocks": 4,
+   "edges": 3,
+   "exec_seconds": 0.022,
+   "feedback_seconds": 7.902,
+   "candidates_saved": 0,
+   "wall": {
+    "start_offset": 18.173,
+    "end_offset": 27.24,
+    "subprocess_seconds": 9.067
+   },
+   "corpus_in": {
+    "files": 1,
+    "bytes": 0
+   },
+   "corpus_lf_after": {
+    "files": 1,
+    "bytes": 0
+   }
+  }
+ ],
+ "total_executions": 5965,
+ "total_exec_seconds": 0.064,
+ "total_feedback_seconds": 23.714,
+ "total_candidates_saved": 1,
+ "final_blocks": 4,
+ "final_edges": 3,
+ "group_start_offset": 0.0,
+ "wall_span": 27.24,
+ "novel_seed_gain": {
+  "sf_candidates_total": 1,
+  "sf_already_in_native": 1,
+  "sf_unique_vs_native": 0,
+  "novel_seed_gain": 0.0
+ },
+ "portfolio_champions": 0,
+ "portfolio_replacements": 0,
+ "corpus_dilution_ratio": 0.0
+}
