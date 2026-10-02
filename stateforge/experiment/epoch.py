@@ -114,7 +114,7 @@ def _inject_llm_between_epochs(ir, workdir: Path, corpus_dir: Path,
     if not state_path.exists():
         return []
     state = _json.loads(state_path.read_text(encoding="utf-8"))
-    provider_path = Path(target).parent / ".llm_provider.py"
+    provider_path = Path(target).parent / (Path(target).stem + ".llm.py")
     if not provider_path.exists():
         return []                        # 无 provider 配置 → 跳过
     # provider 从靶目录加载(用户自定义 mock 或真 API)
@@ -124,7 +124,9 @@ def _inject_llm_between_epochs(ir, workdir: Path, corpus_dir: Path,
     spec.loader.exec_module(mod)
     provider = mod.provider
 
-    records = inject_llm_seeds(ir, Path(target).parent, state,
+    from stateforge.core.ir import ProgramIR
+    ir_obj = ProgramIR.from_json(ir)  # ir 是 JSON 路径,需加载
+    records = inject_llm_seeds(ir_obj, Path(target), state,
                                corpus_dir, provider)
     if records:
         llm_log = workdir / "epochs" / "llm_injections.jsonl"
@@ -151,8 +153,16 @@ def run_epochs(target: str, ir: str, workdir: Path, seconds_per_epoch: float,
     for epoch in range(1, epochs + 1):
         in_dir = corpus_dir if epoch == 1 else workdir / f"corp_in_e{epoch}"
         if epoch > 1:
-            in_dir.mkdir(exist_ok=True)
+            in_dir.mkdir(parents=True, exist_ok=True)
+
+        # LLM 种子注入(先于语料准备;失败不阻塞)
+        if policy == "llm" and epoch > 1:
+            try:
+                _inject_llm_between_epochs(ir, workdir, corpus_dir, target)
+            except Exception:              # noqa: BLE001
+                pass                       # 注入失败 → 照常跑下一轮
             if epoch % 2 == 0 and policy == "portfolio":
+                in_dir.mkdir(parents=True, exist_ok=True)
                 in_dir = _focused_corpus(workdir, workdir / "epochs")
             elif use_feedback:
                 CorpusManager(workdir / "epochs" / "spool").export_seed_dir(
@@ -160,10 +170,6 @@ def run_epochs(target: str, ir: str, workdir: Path, seconds_per_epoch: float,
             else:
                 for f in corpus_dir.iterdir():
                     shutil.copy2(f, in_dir / f.name)
-
-        # LLM 种子注入(轮间:从上轮覆盖找 stalled frontier → 种子入 corpus)
-        if policy == "llm" and epoch > 1:
-            _inject_llm_between_epochs(ir, workdir, corpus_dir, target)
 
         in_stats = _dir_stats(in_dir)
         start_off = time.monotonic() - t0

@@ -33,7 +33,7 @@ def test_injector_produces_seed_files(tmp_path):
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
 
-    records = inject_llm_seeds(ir, d, state, corpus_dir, mod.provider)
+    records = inject_llm_seeds(ir, d / "app.py", state, corpus_dir, mod.provider)
 
     # 至少一个种子被注入
     injected = [r for r in records if r["status"] == "INJECTED"]
@@ -57,7 +57,7 @@ def test_injector_no_stalled_no_injection(tmp_path):
     corpus_dir = tmp_path / "corpus"
     corpus_dir.mkdir()
 
-    records = inject_llm_seeds(ir, FIXTURES, state, corpus_dir,
+    records = inject_llm_seeds(ir, FIXTURES / "S2_api_path" / "app.py", state, corpus_dir,
                                _NoopProvider())
     assert records == []
 
@@ -75,7 +75,7 @@ def test_injector_provider_error_no_crash(tmp_path):
     corpus_dir = tmp_path / "corpus"
     corpus_dir.mkdir()
 
-    records = inject_llm_seeds(ir, FIXTURES, state, corpus_dir,
+    records = inject_llm_seeds(ir, FIXTURES / "S2_api_path" / "app.py", state, corpus_dir,
                                _ExplodingProvider())
     assert all(r["status"] == "PROVIDER_ERROR" for r in records)
 

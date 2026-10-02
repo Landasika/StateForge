@@ -37,10 +37,6 @@ def inject_llm_seeds(ir: ProgramIR, app_path: Path,
     from stateforge.feasibility.semantic_slice import build_slice
     from stateforge.feasibility.stalled import StalledFrontier
 
-    # 目录 → 自动补 app.py(provenance/slice 需要源文件路径)
-    if app_path.is_dir():
-        app_path = app_path / "app.py"
-
     covered_blocks = set(coverage_state.get("covered_blocks", []))
     covered_edges = {tuple(e) for e in
                      coverage_state.get("covered_edges", [])}

@@ -40,10 +40,16 @@ def validate(proposal: MutationProposal, slice_: dict) -> ValidationResult:
         # provenance 失败(UNRESOLVED/SOURCE_UNKNOWN/AMBIGUOUS)→ 检查
         # LLM 提出的来源是否在 backward_dataflow 文本中出现过
         # (trust boundary:不得发明 slice 中不存在的输入源)
-        attr = _KIND_TO_ATTR.get(proposal.source_kind, "")
-        pattern = rf"request\.{attr}\[.{re.escape(proposal.source_key)}.\]"
+        # 通用 key 匹配:request.args["x"] / q.get("x") / json["x"] 等
+        # 只要 key 在数据流文本中出现即接受(LLM 不能发明不存在的字段)
+        key = re.escape(proposal.source_key)
+        patterns = [
+            rf"request\.[a-z]+\[.{key}.\]",       # request.args["x"]
+            rf"\.get\(.{key}.\)",                   # q.get("x")
+            rf"\[.{key}\]",                          # dict["x"]
+        ]
         dataflow_text = " ".join(slice_.get("backward_dataflow", []))
-        if not re.search(pattern, dataflow_text):
+        if not any(re.search(p, dataflow_text) for p in patterns):
             return ValidationResult(False,
                                     "SOURCE_NOT_IN_DATAFLOW_SLICE")
 
