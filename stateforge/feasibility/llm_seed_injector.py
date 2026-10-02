@@ -55,8 +55,8 @@ def inject_llm_seeds(ir: ProgramIR, app_path: Path,
         if u not in covered_blocks or (u, v) in covered_edges:
             continue
         guard = recover_guard(ir, u, v, e.kind, index)
-        if guard.status != "ok":
-            continue
+        if guard.status == "BRANCH_NOT_FOUND":
+            continue          # 完全恢复不了才跳;UNSUPPORTED 交给 LLM
         stalled.append(StalledFrontier((u, v), min_hits, guard))
         if len(stalled) >= max_seeds:
             break
@@ -126,12 +126,14 @@ def inject_llm_seeds(ir: ProgramIR, app_path: Path,
 
 
 def _load_base_seed(corpus_dir: Path) -> dict:
-    """从 Atheris corpus 取一个种子作为 LLM 变异基底。"""
+    """从 Atheris corpus 取一个 dict 种子(跳过 int/str 等非 dict JSON)。"""
     if corpus_dir.exists():
         for f in sorted(corpus_dir.glob("*")):
             if f.is_file():
                 try:
-                    return json.loads(f.read_bytes())
+                    data = json.loads(f.read_bytes())
+                    if isinstance(data, dict):
+                        return data
                 except (json.JSONDecodeError, UnicodeDecodeError):
                     continue
     return {"query": {}}

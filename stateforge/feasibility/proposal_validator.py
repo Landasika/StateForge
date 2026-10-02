@@ -43,13 +43,9 @@ def validate(proposal: MutationProposal, slice_: dict) -> ValidationResult:
         # 通用 key 匹配:request.args["x"] / q.get("x") / json["x"] 等
         # 只要 key 在数据流文本中出现即接受(LLM 不能发明不存在的字段)
         key = re.escape(proposal.source_key)
-        patterns = [
-            rf"request\.[a-z]+\[.{key}.\]",       # request.args["x"]
-            rf"\.get\(.{key}.\)",                   # q.get("x")
-            rf"\[.{key}\]",                          # dict["x"]
-        ]
+        pattern = "['\\\"]" + key + "['\\\"]"    # 'key' or "key" in code
         dataflow_text = " ".join(slice_.get("backward_dataflow", []))
-        if not any(re.search(p, dataflow_text) for p in patterns):
+        if not re.search(pattern, dataflow_text):
             return ValidationResult(False,
                                     "SOURCE_NOT_IN_DATAFLOW_SLICE")
 
