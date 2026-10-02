@@ -103,9 +103,11 @@ def test_level6_field_isolation():
     assert out["query"]["item"] == "book" and out["query"]["mode"] == "fast"
     assert out["form"] == {"csrf": "tok"} and out["json"] == {"n": 1}
     assert seed["query"]["x"] == "20"                # 原种子不被改
-    with pytest.raises(MutationError):
-        apply_hint(seed, MutationHint("f", "g", "QUERY", "absent", 1, 2,
-                                      "Eq", "true", "solved"))
+    # LLM 可创建新字段(不再 FIELD_NOT_FOUND)
+    added = apply_hint(seed, MutationHint("f", "g", "QUERY", "absent", 1, 2,
+                                          "Eq", "true", "solved"))
+    assert added["query"]["absent"] == "2"  # 新字段被添加
+    assert seed["query"].get("absent") is None  # 原种子不受影响
     json_hint = MutationHint("f", "g", "JSON", "n", 1, 10, "GtE", "true",
                              "solved")
     assert apply_hint(seed, json_hint)["json"]["n"] == 10   # JSON 保类型
