@@ -1,0 +1,15 @@
+{% load hc_extras %}
+Hello,
+
+The {% site_name %} account registered to {{ owner_email }} is scheduled for deletion
+on {{ deletion_scheduled_date.date }}.
+
+Account details:
+Owner: {{ owner_email }}
+Number of checks in the account: {{ num_checks }}
+
+To prevent deletion, please contact us at {{ support_email}} as soon as possible.
+
+--
+Sincerely,
+The {% site_name %} Team

@@ -1,0 +1,60 @@
+<h1>Third-Party Resources</h1>
+<p>A collection of third-party software projects that integrate with SITE_NAME.
+Please submit additions and corrections
+<a href="https://github.com/healthchecks/healthchecks/issues">on GitHub</a>.</p>
+<h2>Command Runners, Shell Wrappers</h2>
+<ul>
+<li><a href="https://github.com/bdd/runitor">runitor</a> - A command runner with Healthchecks.io integration to keep your scripts and containers simple.</li>
+<li><a href="https://github.com/pforret/crontask">crontask.sh</a> – Bash wrapper to use in crontab. Supports pinging.</li>
+<li><a href="https://github.com/dimo414/task-mon">task-mon</a> – A small binary for notifying Healthchecks.io when a command runs, written in Rust.</li>
+<li><a href="https://gist.github.com/odolbeau/bd6d8eb7910d1289e2687682c8db9275">hc-monitor</a> – Bash wrapper, supports pinging.</li>
+<li><a href="https://github.com/hartwork/pytocron">pytocron</a> – Cron implementation in Python with built-in Healthchecks support.</li>
+</ul>
+<h2>Tools for Self-Hosting</h2>
+<ul>
+<li><a href="https://github.com/linuxserver/docker-healthchecks">linuxserver/docker-healthchecks</a> – Alternative Docker image</li>
+<li><a href="https://github.com/galexrt/docker-healthchecks">galexrt/docker-healthchecks</a> – Alternative Docker image</li>
+<li><a href="https://elest.io/open-source/healthchecks">Elestio</a> – Managed hosting platform with Healthchecks support (uses the linuxserver image)</li>
+</ul>
+<h2>API Wrappers</h2>
+<h3>Ansible</h3>
+<ul>
+<li><a href="https://github.com/ansible-collections/community.healthchecksio">ansible-collections/community.healthchecksio</a> - Ansible modules for automating tasks on Healthchecks.io</li>
+</ul>
+<h3>Go</h3>
+<ul>
+<li><a href="https://github.com/kristofferahl/go-healthchecksio">kristofferahl/go-healthchecksio</a> – Supports listing, creating, updating, deleting, pausing, pinging.</li>
+<li><a href="https://gitlab.com/etke.cc/go/healthchecks">gitlab.com/etke.cc/go/healthchecks</a> – Supports pinging.</li>
+</ul>
+<h3>PowerShell</h3>
+<ul>
+<li><a href="https://github.com/davehope/HealthChecksIOStatusReport">davehope/HealthChecksIOStatusReport</a> – Supports pinging.</li>
+<li><a href="https://github.com/ptmorris1/healthchecks-pwsh">ptmorris1/healthchecks-pwsh</a> – Supports pinging and all Management API calls.</li>
+</ul>
+<h3>Python</h3>
+<ul>
+<li><a href="https://github.com/samarpan-rai/healthchecks_wrapper">samarpan-rai/healthchecks_wrapper</a> – Python context manager, supports pinging.</li>
+<li><a href="https://github.com/danidelvalle/healthchecks-decorator">danidelvalle/healthchecks-decorator</a> – Python context manager, supports pinging.</li>
+<li><a href="https://github.com/andrewthetechie/py-healthchecks.io">andrewthetechie/py-healthchecks.io</a> – Supports creating, pinging. Has sync and async implementations.</li>
+</ul>
+<h3>Rust</h3>
+<ul>
+<li><a href="https://github.com/msfjarvis/healthchecks-rs">msfjarvis/healthchecks-rs</a> – Supports all current Ping API and Management API calls.</li>
+</ul>
+<h3>Terraform</h3>
+<ul>
+<li><a href="https://github.com/kristofferahl/terraform-provider-healthchecksio">terraform-provider-healthchecksio</a> – Terraform Provider for Healthchecks.io. Supports creating, updating, deleting checks.</li>
+</ul>
+<h2>Backup Software Integrations</h2>
+<ul>
+<li><a href="https://github.com/garethgeorge/backrest">backrest</a> – A web UI and orchestrator for restic, includes Healthchecks.io support.</li>
+<li><a href="https://github.com/binarybucks/restic-tools">binarybucks/restic-tools</a> – Wrapper around restic backup, with Healthchecks.io support.</li>
+<li><a href="https://torsion.org/borgmatic/docs/how-to/monitor-your-backups/#healthchecks-hook">borgmatic</a> – A frontend to Borg, includes Healthchecks.io support.</li>
+<li><a href="https://emborg.readthedocs.io/en/latest/monitoring.html#healthchecks-io">emborg</a> – A frontend to Borg, includes Healthchecks.io support.</li>
+</ul>
+<h2>Dashboards</h2>
+<ul>
+<li><a href="https://github.com/healthchecks/dashboard">healthchecks/dashboard</a> – A standalone HTML page showing the status of the checks in your account.</li>
+<li><a href="https://github.com/nicoandrade/healthchecks-front">nicoandrade/healthchecks-front</a> – Beautiful &amp; free web dashboard, works great on desktop and mobile.</li>
+<li><a href="https://apps.apple.com/ca/app/kumabar/id6746335356?mt=12">KumaBar</a> – MacOS menu bar app, supports Uptime Kuma and Healthchecks.io.</li>
+</ul>

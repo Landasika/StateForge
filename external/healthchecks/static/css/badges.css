@@ -1,0 +1,12 @@
+#status-badges #tag,
+#status-badges #check {
+    margin-left: 49px;
+    width: 200px;
+    margin-bottom: 10px;
+}
+
+#status-badges #preview img,
+#status-badges #preview pre,
+#status-badges #preview input {
+    margin-bottom: 20px;
+}

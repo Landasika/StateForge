@@ -1,0 +1,20 @@
+{% load hc_extras tz %}
+{% timezone tz %}
+<table id="downtimes" class="table">
+    {% for d in downtimes %}
+    <tr>
+        <th>{{ d.boundary|date:"N Y"}}</th>
+        <td>
+            {% if d.no_data %}
+                –
+            {% elif d.count %}
+                {{ d.count }} downtime{{ d.count|pluralize }}, {{ d.duration|hc_approx_duration }} total
+                <span class="uptime">{{ d.monthly_uptime|pct }}% uptime</span>
+            {% else %}
+                All good!
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endtimezone %}

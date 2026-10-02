@@ -1,0 +1,6 @@
+
+[test]
+flask>=3.1
+pytest>=8
+elementpath>=5
+networkx>=3.4

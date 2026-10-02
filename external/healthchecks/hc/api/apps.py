@@ -1,0 +1,128 @@
+from __future__ import annotations
+
+from collections.abc import Sequence
+from typing import Any
+from urllib.parse import urlsplit
+
+from django.apps import AppConfig
+from django.conf import settings
+from django.core.checks import Error, Warning, register
+from django.http.request import split_domain_port, validate_host
+
+
+class ApiConfig(AppConfig):
+    name = "hc.api"
+
+
+@register()  # W001, W002, W005, E002, E003
+def settings_check(
+    app_configs: Sequence[AppConfig] | None,
+    databases: Sequence[str] | None,
+    **kwargs: dict[str, Any],
+) -> list[Error | Warning]:
+    items: list[Error | Warning] = []
+
+    site_root_parts = urlsplit(settings.SITE_ROOT)
+    if not site_root_parts.scheme:
+        items.append(
+            Warning(
+                "Invalid settings.SITE_ROOT value",
+                hint="SITE_ROOT should start with either http:// or https://",
+                id="hc.api.W001",
+            )
+        )
+
+    host, _ = split_domain_port(site_root_parts.netloc)
+    if site_root_parts.scheme and not validate_host(host, settings.ALLOWED_HOSTS):
+        items.append(
+            Error(
+                "The hostname in settings.SITE_ROOT is not found in settings.ALLOWED_HOSTS",
+                hint=f"Add '{host}' to settings.ALLOWED_HOSTS",
+                id="hc.api.E002",
+            )
+        )
+
+    if not settings.MAILERS:
+        items.append(
+            Warning(
+                "No SMTP configuration, cannot send email",
+                hint="See https://github.com/healthchecks/healthchecks#sending-emails",
+                id="hc.api.W002",
+            )
+        )
+
+    v = settings.SECURE_PROXY_SSL_HEADER
+    if v is not None and (not isinstance(v, tuple) or len(v) != 2):
+        items.append(
+            Warning(
+                "settings.SECURE_PROXY_SSL_HEADER is not 2-element tuple",
+                hint="See https://healthchecks.io/docs/self_hosted_configuration/#SECURE_PROXY_SSL_HEADER",
+                id="hc.api.W005",
+            )
+        )
+
+    if settings.TIME_ZONE != "UTC":
+        items.append(
+            Error(
+                "settings.TIME_ZONE is not 'UTC'",
+                hint="Healthchecks is designed to use UTC internally, changing this setting will break things",
+                id="hc.api.E003",
+            )
+        )
+
+    if settings.APPRISE_ENABLED and not settings.INTEGRATIONS_ALLOW_PRIVATE_IPS:
+        items.append(
+            Warning(
+                "Apprise can access private IPs regardless of the settings.INTEGRATIONS_ALLOW_PRIVATE_IPS value",
+                hint="See https://healthchecks.io/docs/self_hosted_configuration/#INTEGRATIONS_ALLOW_PRIVATE_IPS",
+                id="hc.api.W006",
+            )
+        )
+
+    return items
+
+
+@register()  # E001
+def mariadb_uuid_check(
+    app_configs: Sequence[AppConfig] | None,
+    databases: Sequence[str] | None,
+    **kwargs: dict[str, Any],
+) -> list[Error]:
+    from django.db import connection
+
+    if connection.vendor != "mysql":
+        return []
+
+    with connection.cursor() as cursor:
+        cursor.execute(
+            # Put the datatype lookup in a subquery. This is to make sure we get a
+            # row back even when the "api_check" table does not exist yet.
+            """
+            SELECT VERSION(),
+              (SELECT DATA_TYPE
+               FROM INFORMATION_SCHEMA.COLUMNS
+               WHERE TABLE_SCHEMA = DATABASE()
+                 AND TABLE_NAME = 'api_check'
+                 AND COLUMN_NAME = 'code')
+            """
+        )
+        version, data_type = cursor.fetchone()
+        if "MariaDB" not in version:
+            return []
+
+        version_parts = version.split(".")
+        major, minor = int(version_parts[0]), int(version_parts[1])
+
+        # If:
+        # - we are using MariaDB 10.7+
+        # - *and* the UUID columns exist and use a varchar datatype,
+        # then we have a problem.
+        if (major, minor) >= (10, 7) and data_type == "char":
+            e = Error(
+                "Detected MariaDB >= 10.7, a manual migration to UUID datatypes required",
+                hint="See https://github.com/healthchecks/healthchecks/issues/929 for details",
+                id="hc.api.E001",
+            )
+            return [e]
+
+    return []

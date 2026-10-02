@@ -1,0 +1,53 @@
+{% load asciitable linemode hc_extras tz %}{% timezone tz %}{% linemode %}
+
+{% line %}Hello,{% endline %}
+{% line %}{% endline %}
+
+{% if summary_nchecks %}
+    {% line %}{{ when }}, {{ summary_nchecks }} check{{ summary_nchecks|pluralize }} had {{ summary_ntimes }} downtime event{{ summary_ntimes|pluralize }}.{% endline %}
+{% else %}
+    {% line %}{{ when }}, no checks had downtimes. Nice!{% endline %}
+{% endif %}
+
+{% endlinemode%}{% regroup checks by project as groups %}{% for group in groups %}
+
+Project "{{ group.grouper|safe }}"
+{% table %}
+    {% row %}
+        {% cell %}Status{% endcell %}
+        {% cell %}Name{% endcell %}
+        {% for dt in boundaries %}
+            {% if report_period == "weekly" %}
+                {% cell %}{{ dt|date:"M j"}} - {{ dt|add6days|date:"M j"}}{% endcell %}
+            {% elif report_period == "daily" %}
+                {% cell %}{{ dt|date:"F j"}}{% endcell %}
+            {% else %}
+                {% cell %}{{ dt|date:"N Y"}}{% endcell %}
+            {% endif %}
+        {% endfor %}
+    {% endrow %}
+    {% for check in group.list|sortbydowntime %}
+        {% row %}
+            {% cell %}{{ check.get_status|uppercase_if_down }}{% endcell %}
+            {% cell %}{{ check.name_then_code|safe }}{% endcell %}
+            {% for d in check.past_downtimes %}
+                {% if d.count %}
+                    {% cell %}{{ d.count }} downtime{{ d.count|pluralize }},
+{{ d.duration|hc_approx_duration }} total{% endcell%}
+                {% else %}
+                    {% if d.no_data %}
+                        {% cell %}{% comment %} The check didn't exist yet {% endcomment %}{% endcell %}
+                    {% else %}
+                        {% cell %}All good!{% endcell %}
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        {% endrow %}
+    {% endfor %}
+{% endtable %}
+{% endfor %}
+
+--
+Cheers,
+{% site_name %}
+{% endtimezone %}

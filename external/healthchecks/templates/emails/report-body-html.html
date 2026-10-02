@@ -1,0 +1,29 @@
+{% extends "emails/base.html" %}
+{% load humanize hc_extras %}
+
+{% block content %}
+
+{% if summary_nchecks %}
+{{ when }}, <strong>{{ summary_nchecks }} check{{ summary_nchecks|pluralize }}</strong> had <strong>{{ summary_ntimes }} downtime event{{ summary_ntimes|pluralize }}</strong>.
+{% else %}
+{{ when }}, no checks had downtimes. Nice!
+{% endif %}
+
+{% include "emails/report-summary-html.html" %}
+
+Just one more thing to check:
+<strong>Do you have more cron jobs or periodic processes,
+that are not yet on this list?</strong>
+Set up monitoring for them, get notified when they don't run on time!
+<br /><br />
+
+Cheers,<br>
+The {% site_name %} Team
+{% endblock %}
+
+{% block unsub %}
+<br>
+<a href="{{ unsub_link }}" target="_blank" style="color: #666666; text-decoration: underline;">
+    Unsubscribe
+</a>
+{% endblock %}

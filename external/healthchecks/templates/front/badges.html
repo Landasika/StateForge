@@ -1,0 +1,111 @@
+{% extends "base_project.html" %}
+{% load compress static hc_extras %}
+
+{% block title %}Status Badges - {{ site_name }}{% endblock %}
+
+{% block content %}
+<div id="status-badges" class="row">
+    <div class="col-sm-12">
+        <h1>Status Badges</h1>
+        <p>
+            {{ site_name }} provides status badges for each of the tags
+            you have used. The badges have public, but hard-to-guess
+            URLs. You can use them in your READMEs,
+            dashboards or status pages.
+        </p>
+        <p>Each badge can be in one of the following states:</p>
+        <ul>
+            <li><strong>up</strong> – all matching checks are up.</li>
+            <li><strong>down</strong> – at least one check is currently down.</li>
+        </ul>
+        <p>
+            As an option, the badges can report a third state:
+           <strong>late</strong> (when at least one check is running late but has not
+           exceeded its grace time yet).
+        </p>
+    </div>
+
+    <div class="col-md-4">
+        <h2>Badge Generator</h2>
+        {% csrf_token %}
+        <form id="badge-settings-form">
+        <div class="form-group">
+            <p>Generate a badge for</p>
+
+            <label class="radio-container">
+                <input type="radio" name="target" value="all" autocomplete="off" checked>
+                <span class="radiomark"></span>
+                All checks in the project
+            </label>
+            {% if tags %}
+            <label class="radio-container">
+                <input type="radio" name="target" value="tag" autocomplete="off">
+                <span class="radiomark"></span>
+                The checks tagged with this tag:
+            </label>
+
+            <select
+                id="tag"
+                name="tag"
+                class="form-control"
+                autocomplete="off">
+                {% for tag in tags %}
+                <option>{{ tag }}</option>
+                {% endfor %}
+            </select>
+            {% endif %}
+            {% if checks %}
+            <label class="radio-container">
+                <input type="radio" name="target" value="check" autocomplete="off">
+                <span class="radiomark"></span>
+                A specific check:
+            </label>
+
+            <select
+                id="check"
+                name="check"
+                class="form-control"
+                autocomplete="off">
+                {% for check in checks %}
+                <option value="{{ check.code }}">{{ check.name_then_code }}</option>
+                {% endfor %}
+            </select>
+            {% endif %}
+        </div>
+        <div class="form-group">
+        <p>Badge format</p>
+            <label class="radio-container">
+                <input type="radio" name="fmt" value="svg" autocomplete="off" checked>
+                <span class="radiomark"></span> SVG
+            </label>
+            <label class="radio-container">
+                <input type="radio" name="fmt" value="json" autocomplete="off">
+                <span class="radiomark"></span> JSON
+            </label>
+            <label class="radio-container">
+                <input type="radio" name="fmt" value="shields" autocomplete="off">
+                <span class="radiomark"></span> Shields.io
+            </label>
+        </div>
+        <div class="form-group">
+            <p>Badge states</p>
+            <label class="radio-container">
+                <input type="radio" name="states" value="2" autocomplete="off" checked>
+                <span class="radiomark"></span> Two states (<strong>up</strong>, <strong>down</strong>)
+            </label>
+            <label class="radio-container">
+                <input type="radio" name="states" value="3" autocomplete="off">
+                <span class="radiomark"></span> Three states (<strong>up</strong>, <strong>late</strong> or <strong>down</strong>)
+            </label>
+        </div>
+        </form>
+    </div>
+    <div id="preview" class="col-md-8">{% include "front/badges_preview.html" %}</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% compress js %}
+<script src="{% static 'js/badges.js' %}"></script>
+{% endcompress %}
+{% endblock %}

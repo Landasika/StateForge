@@ -1,0 +1,16 @@
+{% load hc_extras humanize %}
+{{ check.desc|safe }}
+
+{% if check.kind == "simple" %}
+**Period:** {{ check.timeout|hc_duration }}
+{% endif %}
+
+{% if check.kind == "cron" or check.kind == "oncalendar" %}
+**Schedule:** `{{ check.schedule }}`
+
+**Time Zone:** {{ check.tz }}
+{% endif %}
+
+**Last Ping:** {% if ping %}{{ ping.created|naturaltime }}{% else %}never{% endif %}
+
+[Full Details @ {% site_name %}]({{ check.cloaked_url }})

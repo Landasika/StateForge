@@ -1,0 +1,20 @@
+Here is the chatgpt list:  
+
+TODO:
+Pysa (based on Pyre) — Focused on Python security, especially taint/data-flow analysis. Gist+1
+Checkmarx CxSAST — Enterprise SAST tool supporting many languages including Python. OWASP Foundation+1
+Codacy — Supports Python among many languages for code quality/security scanning. Mend.io
+HCL AppScan Source — Supports Python among its list of languages. Mend.io
+Veracode Static Analysis — Broad-language commercial tool; listed as supporting Python. OWASP Foundation+1
+
+Free:
+Semgrep — Multi-language SAST tool; supports Python among its many languages. wiz.io+2OWASP Foundation+2
+Snyk Code — Developer-centric SAST; supports Python among its supported languages.
+SonarQube / SonarCloud — Supports Python among ~35+ languages; provides code-quality + security analysis. Wikipedia+2Mend.io+2
+
+DONE:
+Bandit — A Python-specific static analyzer targeting common security issues in Python code. OWASP Foundation+3wiz.io+3Gist+3
+Bearer - Not on above list
+CodeQL - Not on above list
+Fortify SCA — Supports Python
+

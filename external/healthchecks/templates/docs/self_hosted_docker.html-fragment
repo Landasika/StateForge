@@ -1,0 +1,172 @@
+<h1>Running with Docker</h1>
+<p>In the Healthchecks source code, <a href="https://github.com/healthchecks/healthchecks/tree/master/docker">/docker/ directory</a>,
+you can find a sample configuration for running the project with
+<a href="https://www.docker.com">Docker</a> and <a href="https://docs.docker.com/compose/">Docker Compose</a>.</p>
+<p>Note: For the sake of simplicity, the sample configuration starts a single database
+node and a single web server node, both on the same host. It does not handle TLS
+termination.</p>
+<h2>Getting Started</h2>
+<ul>
+<li>Grab the Healthchecks source code
+  <a href="https://github.com/healthchecks/healthchecks">from the GitHub repository</a>.</li>
+<li>
+<p>Copy <code>docker/.env.example</code> to <code>docker/.env</code> and add your configuration in it.
+  As a minimum, set the following fields:</p>
+<ul>
+<li><code>ALLOWED_HOSTS</code> – the domain name of your Healthchecks instance.
+Example: <code>ALLOWED_HOSTS=hc.example.org</code>.</li>
+<li><code>DEFAULT_FROM_EMAIL</code> – the "From:" address for outbound emails.</li>
+<li><code>EMAIL_HOST</code> – the SMTP server.</li>
+<li><code>EMAIL_HOST_PASSWORD</code> – the SMTP password.</li>
+<li><code>EMAIL_HOST_USER</code> – the SMTP username.</li>
+<li><code>SECRET_KEY</code> – secures HTTP sessions, set to a random value.</li>
+<li><code>SITE_ROOT</code> – The base public URL of your Healthchecks instance. Example:
+<code>SITE_ROOT=https://hc.example.org</code>.</li>
+</ul>
+</li>
+<li>
+<p>Create and start containers:</p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>docker
+$<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>up
+</code></pre></div>
+
+</li>
+<li>
+<p>Create a superuser:</p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>run<span class="w"> </span>web<span class="w"> </span>/opt/healthchecks/manage.py<span class="w"> </span>createsuperuser
+</code></pre></div>
+
+<p>This will trigger an interactive prompt.</p>
+<p>You can also provide credentials via parameters, bypassing the interactive prompt:</p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>run<span class="w"> </span>web<span class="w"> </span>/opt/healthchecks/manage.py<span class="w"> </span>createsuperuser<span class="w"> </span>--email<span class="w"> </span>user@example.com<span class="w"> </span>--password<span class="w"> </span>changeme123
+</code></pre></div>
+
+</li>
+<li>
+<p>Open <a href="http://localhost:8000">http://localhost:8000</a> in your browser and log in with
+  the credentials from the previous step.</p>
+</li>
+</ul>
+<h2>uWSGI Configuration</h2>
+<p>The reference Dockerfile uses <a href="https://uwsgi-docs.readthedocs.io/en/latest/">uWSGI</a>
+as the WSGI server. You can configure uWSGI by setting <code>UWSGI_...</code> environment
+variables in <code>docker/.env</code>. For example, to disable HTTP request logging, set:</p>
+<div class="highlight"><pre><span></span><code>UWSGI_DISABLE_LOGGING=1
+</code></pre></div>
+
+<p>To adjust the number of uWSGI processes (for example, to save memory), set:</p>
+<div class="highlight"><pre><span></span><code>UWSGI_PROCESSES=2
+</code></pre></div>
+
+<p>Read more about configuring uWSGI in <a href="https://uwsgi-docs.readthedocs.io/en/latest/Configuration.html#environment-variables">uWSGI documentation</a>.</p>
+<h2 id="SMTPD_PORT">SMTP Listener Configuration via <code>SMTPD_PORT</code></h2>
+<p>Healthchecks comes with a <code>smtpd</code> management command, which runs a SMTP listener
+service. With the command running, you can ping your checks by sending email messages
+to <code>your-uuid-here@hc.example.org</code> email addresses.</p>
+<p>The container is configured to start the SMTP listener conditionally, based
+on the value of the <code>SMTPD_PORT</code> environment value:</p>
+<ul>
+<li>If <code>SMTPD_PORT</code> environment variable is not set, the SMTP listener will not run.</li>
+<li>If <code>SMTPD_PORT</code> is set, the listener will run and listen on the specified port.
+  You may also need to edit <code>docker-compose.yml</code> to expose the listening port
+  (see the "ports" section under the "web" service in <code>docker-compose.yml</code>).</li>
+</ul>
+<p>The conditional logic lives in uWSGI configuration file,
+<a href="https://github.com/healthchecks/healthchecks/blob/master/docker/uwsgi.ini">uwsgi.ini</a>.</p>
+<p>See also: the <a href="../self_hosted_configuration/#PING_EMAIL_DOMAIN">PING_EMAIL_DOMAIN</a>
+environment variable for customizing the domain part of the email addresses.</p>
+<h2 id="tls-termination">Reverse Proxy, TLS Termination, and CSRF Protection</h2>
+<p>If you plan to expose your Healthchecks instance to the public internet, make sure you
+put a TLS-terminating reverse proxy or a load balancer in front of it.</p>
+<p><strong>Important:</strong> configure the reverse proxy to set the <code>X-Forwarded-For</code> request
+header. Healthchecks trusts it to determine the client's IP address. If the proxy
+does not set the <code>X-Forwarded-For</code> header, the clients can pass their own value and
+circumvent, among other things, the IP-based rate limiting in the login form.</p>
+<p><strong>Important:</strong> This Dockerfile uses uWSGI, which relies on the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-Proto">X-Forwarded-Proto</a>
+header to determine if a request is secure or not. Without this information you
+may run into HTTP 403 "CSRF verification failed." errors when using your Healthchecks
+instance. See <a href="https://github.com/healthchecks/healthchecks/discussions/851#discussioncomment-6293396">this issue comment</a>
+for more information.</p>
+<p>Make sure your TLS-terminating reverse proxy:</p>
+<ul>
+<li>Discards the <code>X-Forwarded-Proto</code> header sent by the end user.</li>
+<li>Sets the <code>X-Forwarded-Proto</code> header value to match the protocol of the original request
+  ("http" or "https").</li>
+</ul>
+<p>For example, in NGINX you can use the <code>$scheme</code> variable like so:</p>
+<div class="highlight"><pre><span></span><code>proxy_set_header X-Forwarded-Proto $scheme;
+</code></pre></div>
+
+<p>If you are using haproxy, you can do the same like so:</p>
+<div class="highlight"><pre><span></span><code>http-request set-header X-Forwarded-Proto https if { ssl_fc }
+http-request set-header X-Forwarded-Proto http unless { ssl_fc }
+</code></pre></div>
+
+<h2>Making Healthchecks Trust Your Self-signed TLS Certificate</h2>
+<p>If you configure Healthchecks to deliver notifications to a server that uses
+a self-signed TLS certificate, you may see a "TLS handshake failed" error
+when sending a notification.</p>
+<p>Healthchecks uses libcurl for making outbound HTTP(S) requests. curl and libcurl
+validates certificates and refuses to continue if a certificate cannot be validated.
+It is possible to turn off certificate validation, but doing so is
+<a href="https://curl.se/docs/sslcerts.html">strongly discouraged in curl docs</a>.</p>
+<p>To make curl accept a self-hosted certificate, add your self-signed certificate to
+the Healthchecks container's trust store.</p>
+<p>First, mount the certificate inside the container running the healthchecks
+web application. In <code>docker-compose.yml</code>, add the following in the <code>web:</code> section:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">volumes</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/path/to/cert.pem:/usr/local/share/ca-certificates/my-selfsigned-cert.crt:ro</span>
+</code></pre></div>
+
+<p>Note: <code>/path/to/cert.pem</code> must be <strong>an absolute path</strong> in the host system pointing
+to the certificate.</p>
+<p>Then reload configuration and run <code>update-ca-certificates</code> inside the container
+as the root user:</p>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>compose<span class="w"> </span>up
+docker<span class="w"> </span>compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-u<span class="w"> </span>root<span class="w"> </span>web<span class="w"> </span>update-ca-certificates
+</code></pre></div>
+
+<h2>Upgrading Database</h2>
+<p>When you upgrade the database version in <code>docker-compose.yml</code> (for example,
+from <code>postgres:12</code> to <code>postgres:16</code>), you will also need to upgrade your postgres
+data directory. One way to do this is using the
+<a href="https://hub.docker.com/r/pgautoupgrade/pgautoupgrade">pgautoupgrade</a> container.</p>
+<p>Steps:</p>
+<ul>
+<li>As the very first step, <strong>take a full backup of your database</strong>.</li>
+<li>Stop the <code>db</code> and <code>web</code> containers: <code>docker compose stop</code></li>
+<li>Look up the name of the postgres data volume name using <code>docker volume ls</code></li>
+<li>Run <code>pgautoupgrade</code> like so:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">docker</span><span class="w"> </span><span class="n">run</span><span class="w"> </span><span class="o">--</span><span class="n">rm</span><span class="w"> </span><span class="o">--</span><span class="n">name</span><span class="w"> </span><span class="n">pgauto</span><span class="w"> </span><span class="o">-</span><span class="n">it</span><span class="w"> </span>\
+<span class="w">   </span><span class="o">--</span><span class="n">mount</span><span class="w"> </span><span class="n">type</span><span class="o">=</span><span class="n">volume</span><span class="p">,</span><span class="n">source</span><span class="o">=&lt;</span><span class="n">pg</span><span class="o">-</span><span class="n">volume</span><span class="o">-</span><span class="n">name</span><span class="o">-</span><span class="n">here</span><span class="o">&gt;</span><span class="p">,</span><span class="n">target</span><span class="o">=/</span><span class="k">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">postgresql</span><span class="o">/</span><span class="n">data</span><span class="w"> </span>\
+<span class="w">   </span><span class="o">-</span><span class="n">e</span><span class="w"> </span><span class="n">POSTGRES_PASSWORD</span><span class="o">=</span><span class="n">password</span><span class="w"> </span>\
+<span class="w">   </span><span class="o">-</span><span class="n">e</span><span class="w"> </span><span class="n">PGAUTO_ONESHOT</span><span class="o">=</span><span class="n">yes</span><span class="w"> </span>\
+<span class="w">   </span><span class="n">pgautoupgrade</span><span class="o">/</span><span class="n">pgautoupgrade</span><span class="p">:</span><span class="mi">16</span><span class="o">-</span><span class="n">bookworm</span>
+</code></pre></div>
+
+<ul>
+<li>Update the <code>docker-compose.yml</code> file to use the <code>postgres:16</code> image</li>
+<li>Start containers: <code>docker compose up</code></li>
+</ul>
+<h2>Pre-built Images</h2>
+<p>Pre-built Docker images, built from the Dockerfile in the <code>/docker/</code> directory,
+are available <a href="https://hub.docker.com/r/healthchecks/healthchecks">on Docker Hub</a>.
+The images are built automatically for every new release.</p>
+<p>The Docker images:</p>
+<ul>
+<li>Support amd64, arm/v7 and arm64 architectures.</li>
+<li>Use uWSGI as the web server. uWSGI is configured to perform database migrations
+  on startup, and to run <code>sendalerts</code>, <code>sendreports</code>, and <code>smtpd</code> in the background.
+  You do not need to run them separately.</li>
+<li>Ship with both PostgreSQL and MySQL database drivers.</li>
+<li>Serve static files using the whitenoise library.</li>
+<li>Have the apprise library preinstalled.</li>
+<li>Do <em>not</em> handle TLS termination. In a production setup, you will want to put
+  the Healthchecks container behind a reverse proxy or load balancer that handles TLS
+  termination.</li>
+</ul>
+<p>To use a pre-built image for Healthchecks version X.Y, in the <code>docker-compose.yml</code> file
+replace the "build" section with:</p>
+<div class="highlight"><pre><span></span><code>image: healthchecks/healthchecks:vX.Y
+</code></pre></div>

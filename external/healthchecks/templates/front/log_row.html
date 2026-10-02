@@ -1,0 +1,36 @@
+{% load hc_extras %}{% if event.n %}
+<tr class="ok" data-dt="{{ event.created|timestamp }}">
+<td>{{ event.n }}</td>
+<td></td>
+<td></td>
+<td>
+{% if event.kind == "ign" %}<span class="label label-ign">Ignored</span>
+{% elif event.exitstatus %}<span class="label label-danger">Status {{ event.exitstatus }}</span>
+{% elif event.kind == "fail" %}<span class="label label-danger">Failure</span>
+{% elif event.kind == "start" %}<span class="label label-start">Started</span>
+{% elif event.kind == "log" %}<span class="label label-log">Log</span>
+{% else %}<span class="label label-success">OK</span>
+{% endif %}
+</td>
+<td>
+{% if event.duration %}<div class="duration"><span class="ic-timer"></span> {{ event.duration|hms }}</div>{% endif %}
+{% if event.rid %}<span class="label rid">{{ event.rid|first5 }}</span> {% endif %}
+{% if event.scheme == "email" %}{{ event.ua }}{% else %}
+{{ event.scheme|upper }} {{ event.method }}{% if event.remote_addr %} from {{ event.remote_addr }}{% endif %}
+<code>{% if event.body_raw_preview %}- {{ event.body_raw_preview|decode }}{% elif event.object_size %}- {{ event.object_size }} byte body{% endif %}{% if event.ua %} - {{ event.ua|truncatechars:80 }}{% endif %}</code>
+{% endif %}
+</td>
+</tr>
+{% elif event.check_status %}
+<tr class="missing" data-dt="{{ event.created|timestamp }}">
+    <td><span class="ic-alert"></span></td><td></td><td></td>
+    <td colspan="2">{% include "front/event_summary.html" %}</td>
+</tr>
+{% elif event.new_status %}
+<tr class="flip" data-dt="{{ event.created|timestamp }}">
+    <td></td><td></td><td></td>
+    <td colspan="2">
+        Status: <strong>{{ event.old_status }} ➔ {{ event.new_status }}</strong>.
+    </td>
+</tr>
+{% endif %}

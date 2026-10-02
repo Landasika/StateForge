@@ -1,0 +1,60 @@
+{% extends "base_project.html" %}
+{% load humanize static hc_extras %}
+
+{% block title %}{% site_name %} Integration for GitHub{% endblock %}
+
+{% block content %}
+<div class="row">
+<div class="col-sm-12">
+    <p class="alert alert-success">Success, GitHub connected!</p>
+
+    <h2>Integration Settings</h2>
+    <form method="post" action="{% url 'hc-add-github-save' project.code %}" class="form-horizontal">
+        {% csrf_token %}
+        <div class="form-group {{ form.repo_name.css_classes }}">
+            <label for="repo_name" class="col-sm-2 control-label">Repository</label>
+            <div class="col-sm-6">
+                <select name="repo_name" class="form-control">
+                    {% for repo in repo_names %}
+                    <option>{{ repo }}</option>
+                    {% endfor %}
+                </select>
+                <div class="help-block">
+                    When a check goes down, {% site_name %} will create a new issue
+                    in this repository.<br>
+                    If you do not see the repository you are looking for,
+                    make sure {% site_name %} GitHub app is installed
+                    in the repository owner's GitHub account.
+                    <a href="{{ install_url }}">Install…</a>
+                </div>
+            </div>
+        </div>
+        <div class="form-group {{ form.labels.css_classes }}">
+            <label for="labels" class="col-sm-2 control-label">Issue Labels</label>
+            <div class="col-sm-6">
+                <input
+                    id="labels"
+                    type="text"
+                    class="form-control"
+                    name="labels"
+                    maxlength="500">
+                {% if form.token.errors %}
+                <div class="help-block">{{ form.labels.errors|join:"" }}</div>
+                {% else %}
+                <div class="help-block">
+                    {% site_name %} will attach these labels to the issues it creates.
+                    <br>
+                    Optional, separate multiple labels with commas.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">Save Integration</button>
+            </div>
+        </div>
+    </form>
+</div>
+</div>
+{% endblock %}

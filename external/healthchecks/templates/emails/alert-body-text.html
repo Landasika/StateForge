@@ -1,0 +1,97 @@
+{% load hc_extras humanize linemode tz %}{% linemode %}
+{% timezone tz %}
+
+{% line %}The check "{{ check.name_then_code|safe }}" has gone {{ flip.new_status }}.{% endline %}
+{% if flip.reason %}
+{% line %}Reason: {{ flip.reason_long}}.{% endline %}
+{% endif %}
+{% if flip.new_status == "up" and flip.down_duration %}
+{% line %}The downtime lasted {{ flip.down_duration|hc_duration_for_sentence }}.{% endline %}
+{% endif %}
+{% line %}{% endline %}
+
+{% line %}View on {% site_name %}:{% endline %}
+{% line %}{{ check.cloaked_url }}{% endline %}
+
+{% if check.desc %}
+{% line %}{% endline %}
+{% line %}Description:{% endline %}
+{% line %}------------{% endline %}
+{% line %}{{ check.desc|safe}}{% endline %}
+{% endif %}
+
+{% line %}{% endline %}
+{% line %}Details:{% endline %}
+{% line %}--------{% endline %}
+
+{% if check.project.name %}
+    {% line %}Project: {{ check.project.name|safe }}{% endline %}
+{% endif %}
+
+{% if check.tags %}
+    {% line %}Tags: {{ check.tags|safe }}{% endline %}
+{% endif %}
+
+{% if check.kind == "simple" %}
+    {% line %}Period: {{ check.timeout|hc_duration }}{% endline %}
+{% endif %}
+
+{% if check.kind == "cron" or check.kind == "oncalendar" %}
+    {% line %}Schedule: {{ check.schedule }}{% endline %}
+    {% line %}Time zone: {{ check.tz }}{% endline %}
+{% endif %}
+
+{% line %}Total pings: {% if ping %}{{ ping.n }}{% else %}0{% endif %} {% if check.created %}(since {{ check.created|date:'M j, Y' }}){% endif %}{% endline %}
+
+{% if ping %}
+    {% line %}Last ping: {{ ping.created|naturaltime }}{% if ping.remote_addr %}, from {{ ping.remote_addr }}{% endif %}{% endline %}
+
+    {% line %}Last ping type: {{ ping.get_kind_display }}{% endline %}
+    {% if subject %}
+    {% line %}Last ping subject: {{ subject }}{% endline %}
+    {% endif %}
+{% endif %}
+
+{% line %}Status changed to {{ flip.new_status }} at: {{ flip.created|date:"r" }}{% endline %}
+
+{% if ping and ping.has_body %}
+    {% line %}{% endline %}
+    {% line %}Last Ping Body:{% endline %}
+    {% if body|length > 10000 and not ping_attached %}
+        {% line %}Showing the last 10000 bytes of {{ body|length}} bytes total.{% endline %}
+    {% endif %}
+    {% line %}---------------{% endline %}
+    {% if body is None %}
+        {% line %}The request body data is being processed and will be available for viewing shortly.{% endline %}
+        {% line %}Please view it on the website.{% endline %}
+    {% elif ping_attached %}
+        {% line %}See the attachment.{% endline %}
+    {% else %}
+        {% line %}{{ body|safe|slice:"-10000:"|wordwrap:80 }}{% endline %}
+    {% endif %}
+{% endif %}
+
+{% if projects %}
+    {% line %}{% endline %}
+    {% line %}Projects Overview:{% endline %}
+    {% line %}------------------{% endline %}
+
+    {% for project in projects %}
+        {% with project.get_n_down as n_down %}
+            {{ project }} ({{ project.checks_url }})
+            {% if n_down %}
+                {% line %}* {{ project|safe }}: {{ n_down }} check{{ n_down|pluralize }} down{% endline %}
+            {% else %}
+                {% line %}* {{ project|safe }}: OK, all checks up{% endline %}
+            {% endif %}
+        {% endwith %}
+    {% endfor %}
+{% endif %}
+
+{% line %}{% endline %}
+{% line %}--{% endline %}
+{% line %}Unsubscribe: {{ unsub_link }}{% endline %}
+{% line %}Regards, {% site_name %}{% endline %}
+
+{% endtimezone %}
+{% endlinemode %}

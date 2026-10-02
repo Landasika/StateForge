@@ -1,0 +1,117 @@
+{% extends "base_project.html" %}
+{% load compress humanize static hc_extras %}
+
+{% block title %}Event Log - {{ site_name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-12">
+        <ol class="breadcrumb">
+            <li><a href="{% url 'hc-checks' check.project.code %}">{{ check.project }}</a></li>
+            <li>
+                <a href="{% url 'hc-details' check.code %}">{{ check.name_then_code }}</a>
+            </li>
+            <li class="active">Events</li>
+
+            <li id="tz-switcher-container" class="pull-right hidden-xs">
+                <div id="tz-switcher" class="btn-group" data-toggle="buttons">
+                    {% for tz in tz_switches %}
+                    <label class="btn btn-default btn-xs {% if forloop.last %}active{% endif %}" data-tz="{{ tz }}">
+                        <input type="radio" name="tz-switcher-value"> {{ tz }}
+                    </label>
+                    {% endfor %}
+                </div>
+            </li>
+        </ol>
+    </div>
+    <div class="col-sm-9">
+        <div class="table-responsive">
+        <table
+            class="table"
+            id="log"
+            data-url="{% url 'hc-ping-details' check.code '0' %}"
+            data-refresh-url="{% url 'hc-log-events' check.code %}">
+            <tbody>{% include "front/log_rows.html" %}</tbody>
+        </table>
+        </div>
+
+        {% if oldest_ping %}
+        <div class="alert alert-info">
+            Showing <span id="num-hits">{{ events|length }}</span> matching events.
+            <br >
+            The oldest stored ping is ping #{{ oldest_ping.n }} from
+            <span data-dt="{{ oldest_ping.created|timestamp }}"></span>.
+        </div>
+        {% endif %}
+    </div>
+    <div class="col-sm-3">
+        <form id="filters" method="get">
+        <div>
+            <label>Show events older than:</label>
+            <span id="end-formatted">now</span>
+        </div>
+        <input
+            id="end"
+            type="range"
+            name="end"
+            min="{{ min|timestamp }}"
+            max="{{ max|timestamp }}"
+            value="{{ max|timestamp }}"
+            autocomplete="off">
+
+        <p id="end-help" class="text-muted">
+            ⬆<br>
+            <span data-dt="{{ min|timestamp }}"></span>.
+        </p>
+
+        <br>
+        <label>Event types</label>
+        <div class="checkbox">
+            <label><input type="checkbox" name="success" autocomplete="off" checked> Success</label>
+        </div>
+        <div class="checkbox">
+            <label><input type="checkbox" name="fail" autocomplete="off" checked> Failure</label>
+        </div>
+        <div class="checkbox">
+            <label><input type="checkbox" name="start" autocomplete="off" checked> Started</label>
+        </div>
+        <div class="checkbox">
+            <label><input type="checkbox" name="log" autocomplete="off" checked> Log</label>
+        </div>
+        <div class="checkbox">
+            <label><input type="checkbox" name="ign" autocomplete="off" checked> Ignored ping</label>
+        </div>
+        <hr>
+        <div class="checkbox">
+            <label><input type="checkbox" name="flip" autocomplete="off" checked> Status change</label>
+        </div>
+        <div class="checkbox">
+            <label><input type="checkbox" name="notification" autocomplete="off"> Downtime alert</label>
+        </div>
+        </form>
+    </div>
+</div>
+
+<div id="ping-details-modal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id="ping-details-body">Loading</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Got It!</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script id="last-event-timestamp" type="data">{{ last_event_timestamp }}</script>
+{% compress js %}
+<script src="{% static 'js/dates.js' %}"></script>
+<script src="{% static 'js/purify.min.js' %}"></script>
+<script src="{% static 'js/ping_details.js' %}"></script>
+<script src="{% static 'js/log.js' %}"></script>
+<script src="{% static 'js/adaptive-setinterval.js' %}"></script>
+{% endcompress %}
+{% endblock %}

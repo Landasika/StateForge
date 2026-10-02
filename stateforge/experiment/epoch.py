@@ -104,6 +104,36 @@ def _focused_corpus(workdir: Path, out_dir: Path) -> Path:
     return out
 
 
+def _inject_llm_between_epochs(ir, workdir: Path, corpus_dir: Path,
+                               target: str) -> list[dict]:
+    """轮间 LLM 种子注入(不执行目标,只产种子写 corpus)。"""
+    import json as _json
+    from stateforge.feasibility.llm_seed_injector import inject_llm_seeds
+
+    state_path = workdir / "epochs" / "global_state.json"
+    if not state_path.exists():
+        return []
+    state = _json.loads(state_path.read_text(encoding="utf-8"))
+    provider_path = Path(target).parent / ".llm_provider.py"
+    if not provider_path.exists():
+        return []                        # 无 provider 配置 → 跳过
+    # provider 从靶目录加载(用户自定义 mock 或真 API)
+    import importlib.util as _ilu
+    spec = _ilu.spec_from_file_location("llm_provider", provider_path)
+    mod = _ilu.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    provider = mod.provider
+
+    records = inject_llm_seeds(ir, Path(target).parent, state,
+                               corpus_dir, provider)
+    if records:
+        llm_log = workdir / "epochs" / "llm_injections.jsonl"
+        with llm_log.open("a", encoding="utf-8") as fh:
+            for r in records:
+                fh.write(_json.dumps(r, ensure_ascii=False) + "\n")
+    return records
+
+
 def run_epochs(target: str, ir: str, workdir: Path, seconds_per_epoch: float,
                epochs: int, seed: int, group: str, mode: str,
                use_feedback: bool, t0: float | None = None,
@@ -130,6 +160,11 @@ def run_epochs(target: str, ir: str, workdir: Path, seconds_per_epoch: float,
             else:
                 for f in corpus_dir.iterdir():
                     shutil.copy2(f, in_dir / f.name)
+
+        # LLM 种子注入(轮间:从上轮覆盖找 stalled frontier → 种子入 corpus)
+        if policy == "llm" and epoch > 1:
+            _inject_llm_between_epochs(ir, workdir, corpus_dir, target)
+
         in_stats = _dir_stats(in_dir)
         start_off = time.monotonic() - t0
         _run_driver(target, ir, in_dir, workdir / "epochs",

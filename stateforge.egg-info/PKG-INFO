@@ -1,0 +1,11 @@
+Metadata-Version: 2.4
+Name: stateforge
+Version: 0.1.0
+Summary: Structural execution-graph feedback for coverage-guided fuzzing (research prototype)
+License: Proprietary
+Requires-Python: >=3.10
+Provides-Extra: test
+Requires-Dist: flask>=3.1; extra == "test"
+Requires-Dist: pytest>=8; extra == "test"
+Requires-Dist: elementpath>=5; extra == "test"
+Requires-Dist: networkx>=3.4; extra == "test"

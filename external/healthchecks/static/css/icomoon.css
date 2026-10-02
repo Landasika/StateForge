@@ -1,0 +1,84 @@
+@font-face {
+    font-family: "icomoon";
+    src: url("../fonts/icomoon.woff2?12387");
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
+}
+@font-palette-values --palette0 {
+    font-family: "icomoon";
+    base-palette: 0
+}
+@font-palette-values --palette1 {
+    font-family: "icomoon";
+    base-palette: 1
+}
+@font-palette-values --palette2 {
+    font-family: "icomoon";
+    base-palette: 2
+}
+@font-palette-values --palette3 {
+    font-family: "icomoon";
+    base-palette: 3
+}
+.ic, [class^="ic-"], [class*=" ic-"] {
+    /* Use !important to prevent extensions from overriding this font. */
+    font-family: "icomoon" !important;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    font-palette: --palette0;
+    color: currentColor;
+
+    /* Enable Ligatures ================ */
+    letter-spacing: 0;
+    -webkit-font-feature-settings: "liga";
+    -moz-font-feature-settings: "liga=1";
+    -moz-font-feature-settings: "liga";
+    -ms-font-feature-settings: "liga" 1;
+    font-feature-settings: "liga";
+    -webkit-font-variant-ligatures: discretionary-ligatures;
+    font-variant-ligatures: discretionary-ligatures;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.ic-asc:before {
+    content: "\f027";
+}
+.ic-clippy:before {
+    content: "\f025";
+}
+.ic-delete:before {
+    content: "\f024";
+}
+.ic-desc:before {
+    content: "\f023";
+}
+.ic-dots:before {
+    content: "\f021";
+}
+.ic-down:before {
+    content: "\f020";
+}
+.ic-grace:before {
+    content: "\f01b";
+}
+.ic-alert:before {
+    content: "\f017";
+}
+.ic-new:before {
+    content: "\f029";
+}
+.ic-paused:before {
+    content: "\f012";
+}
+.ic-timer:before {
+    content: "\f006";
+}
+.ic-up:before {
+    content: "\f004";
+}

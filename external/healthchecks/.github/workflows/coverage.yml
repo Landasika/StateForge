@@ -1,0 +1,34 @@
+name: Coverage
+
+on:
+    push:
+        branches: [master]
+    pull_request:
+        branches: [master]
+
+permissions: {}
+
+jobs:
+    test:
+        runs-on: ubuntu-26.04
+        steps:
+            - uses: actions/checkout@v7
+            - name: Set up Python
+              uses: actions/setup-python@v6
+              with:
+                  python-version: "3.12"
+            - name: Install Dependencies
+              run: |
+                  sudo apt-get update -qq
+                  sudo apt-get install -y libcurl4-openssl-dev libpython3-dev libssl-dev
+                  python -m pip install --upgrade pip
+                  pip install -r requirements.txt -r requirements-dev.txt
+                  pip install coverage coveralls
+            - name: Run Tests
+              env:
+                  SECRET_KEY: dummy-key
+              run: coverage run --omit=*/tests/*,*/migrations/* --source=hc manage.py test
+            - name: Coveralls
+              run: coveralls --service=github
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

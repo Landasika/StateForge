@@ -1,0 +1,67 @@
+{% load humanize hc_extras %}
+
+{% if checks %}
+<form method="post">
+{% csrf_token %}
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+    <h4>Assign Checks to Integration <small>(<span id="num-assigned">{{ assigned|length }}</span> of {{ checks|length }})</small></h4>
+</div>
+
+<input type="hidden" name="channel" value="{{ channel.code }}" />
+<div id="channel-checks-table-container">
+<table class="table channel-checks-table">
+    {% for check in checks %}
+    <tr>
+        <td>
+            <input type="checkbox" {% if check.code in assigned %} checked {% endif %} name="check-{{ check.code }}">
+        </td>
+        <td>
+            {% if check.name %}
+                {{ check.name }}
+            {% else %}
+                <span class="unnamed">unnamed</span>
+            {% endif %}
+        </td>
+        <td>
+            <code>{{ check.code }}</code>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+</div>
+
+<div class="modal-footer">
+    <button
+        id="select-all"
+        type="button"
+        {% if assigned|length == checks|length%}disabled{% endif%}
+        class="btn btn-default btn-sm pull-left">Select All</button>
+    <button
+        id="unselect-all"
+        {% if assigned|length == 0 %}disabled{% endif %}
+        type="button"
+        class="btn btn-default btn-sm pull-left">Unselect All</button>
+
+    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</div>
+</form>
+{% else %}
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+    <h4>Assign Checks to Integration</h4>
+</div>
+<div class="modal-body">
+    <p>
+        This dialog would normally show a list of checks in the project, and let
+        you assign checks to this integration. But there are currently no checks
+        in <strong>{{ channel.project }}</strong>. Please check back
+        after adding a check!
+    </p>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Got It</button>
+</div>
+{% endif %}

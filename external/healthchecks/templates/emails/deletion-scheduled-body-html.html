@@ -1,0 +1,18 @@
+{% extends "emails/base.html" %}
+{% load hc_extras %}
+
+{% block content %}
+Hello,<br />
+<br />
+The {% site_name %} account registered to <strong>{{ owner_email }}</strong>
+is  scheduled for deletion on <strong>{{ deletion_scheduled_date.date }}</strong>.<br />
+<br />
+Account details:<br />
+Owner: <strong>{{ owner_email }}</strong><br />
+Number of checks in the account: <strong>{{ num_checks }}</strong><br />
+<br />
+To prevent deletion, please contact us at {{ support_email}} as soon as possible.<br />
+<br />
+Sincerely,<br />
+The {% site_name %} Team
+{% endblock %}

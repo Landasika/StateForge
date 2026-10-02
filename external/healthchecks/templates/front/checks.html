@@ -1,0 +1,243 @@
+{% extends "base_project.html" %}
+{% load compress static hc_extras %}
+
+{% block title %}{{ num_down|num_down_title }}{% endblock %}
+{% block favicon %}
+    {% if num_down %}
+    <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon_down.svg' %}">
+    {% else %}
+    <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}">
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+{% if num_available < 0 %}
+<div class="row">
+    <div class="col-sm-12">
+        <div id="my-checks-limit-notice">
+            <p>
+            {% if request.user == project.owner %}
+            Your account is currently over its check limit. Please upgrade, or reduce
+            the number of checks in your account.
+            {% else %}
+            The account <strong>{{ project.owner.email }}</strong> is currently
+            over its check limit. Please ask <strong>{{ project.owner.email }}</strong>
+            to upgrade their account.
+            {% endif %}
+
+            Accounts that remain over the limit for more
+            than 30 days are scheduled for deletion.</p>
+
+            <table class="table">
+                <tr>
+                    <th>Project's Owner:</th>
+                    <td>{{ project.owner.email }}</td>
+                </tr>
+                <tr>
+                    <th>Current Plan:</th>
+                    <td>
+                        {% if project.owner.subscription and project.owner.subscription.plan_name %}
+                        {{ project.owner.subscription.plan_name }}
+                        {% else %}
+                        Hobbyist (free)
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Checks Used:</th>
+                    <td class="at-limit">
+                        <span>{{ project.owner.profile.num_checks_used }} of {{ project.owner.profile.check_limit }}</span>
+                    </td>
+                </tr>
+            </table>
+            {% if request.user == project.owner %}
+            <p><a class="btn btn-default" href="{% url 'hc-billing' %}">Billing Details and Plan Upgrades</a></p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if checks %}
+<div id="check-filters">
+    <div id="my-checks-tags">
+    {% for tag, status, tooltip in tags %}
+        <div data-tooltip="{{ tooltip }}" class="btn btn-xs {{ status }} {% if tag in selected_tags %}checked{% endif%}">{{ tag }}</div>
+    {% endfor %}
+    </div>
+    <div id="search-group" class="input-group hidden-xs">
+        <input
+            id="search"
+            type="text"
+            class="form-control"
+            value="{{ search }}">
+        <div id="filters" class="input-group-btn">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right">
+                <li class="header">Filter by status</li>
+                <li>
+                    <a href="javascript:;" data-value="new">
+                        <span class="status ic-new"></span> New
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:;" data-value="paused">
+                        <span class="status ic-paused"></span> Paused
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:;" data-value="started">
+                        <span class="status ic-dots"></span> Started
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:;" data-value="up">
+                        <span class="status ic-up"></span> Up
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:;" data-value="grace">
+                        <span class="status ic-grace"></span> Late
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:;" data-value="down">
+                        <span class="status ic-down"></span> Down
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <button
+        class="filter-btn btn btn-default hidden-xs"
+        {% if 'new' not in selected_statuses %}style="display: none"{% endif %}
+        data-value="new">New ×</button>
+    <button
+        class="filter-btn btn btn-default hidden-xs"
+        {% if 'paused' not in selected_statuses %}style="display: none"{% endif %}
+        data-value="paused">Paused ×</button>
+    <button
+        class="filter-btn btn btn-default hidden-xs"
+        {% if 'started' not in selected_statuses %}style="display: none"{% endif %}
+        data-value="started">Started ×</button>
+    <button
+        class="filter-btn btn btn-default hidden-xs"
+        {% if 'up' not in selected_statuses %}style="display: none"{% endif %}
+        data-value="up">Up ×</button>
+    <button
+        class="filter-btn btn btn-default hidden-xs"
+        {% if 'grace' not in selected_statuses %}style="display: none"{% endif %}
+        data-value="grace">Late ×</button>
+    <button
+        class="filter-btn btn btn-default hidden-xs"
+        {% if 'down' not in selected_statuses %}style="display: none"{% endif %}
+        data-value="down">Down ×</button>
+
+    {% if rw %}
+    <button
+        class="btn btn-primary"
+        data-toggle="modal"
+        data-target="#add-check-modal"
+        title="{{ checks|length }} in use, {{ num_available }} available"
+        {% if num_available <= 0 %}disabled{% endif %}>
+            Add Check
+        </button>
+    {% endif %}
+</div>
+
+
+<div class="row">
+    <div class="col-sm-12">
+        {% include "front/checks_table.html" %}
+        <div id="no-checks" {% if num_visible > 0 %}style="display: none"{% endif %}>
+            no matching checks found
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="row">
+    <div class="col-sm-12">
+        <div class="alert alert-info">
+            The project <strong>{{ project }}</strong> does not have any checks yet.
+            {% if rw and num_available > 0 %}
+            <br><br>
+            <button
+                class="btn btn-primary"
+                data-toggle="modal"
+                data-target="#add-check-modal"
+                {% if num_available <= 0 %}disabled{% endif %}>
+                    Add Check
+            </button>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endif %}
+
+
+
+{% if num_available == 0 %}
+<div id="my-checks-bottom-actions" class="row">
+    <div class="col-sm-12 text-center">
+        <div class="alert alert-info">
+            <strong>There are more things to monitor.</strong>
+            To add more checks, please
+            {% if request.user == project.owner %}
+            <a href="{% url 'hc-billing' %}">upgrade your account</a>.
+            {% else %}
+            ask <strong>{{ project.owner.email }}</strong> to upgrade their account.
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% include "front/update_name_modal.html" %}
+{% include "front/update_timeout_modal.html" %}
+{% include "front/add_check_modal.html" %}
+
+<div id="ping-details-modal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id="ping-details-body">Loading</div>
+            <div class="modal-footer">
+                <a
+                    id="ping-details-log"
+                    href="#"
+                    class="btn btn-default">
+                    Show Earlier Events
+                </a>
+                <button
+                    type="button"
+                    class="btn btn-default"
+                    data-dismiss="modal">
+                    Got It!
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script id="common-timezones" type="data">{{ common_timezones|join:"," }}</script>
+<script id="all-timezones" type="data">{{ timezones|join:"," }}</script>
+{% compress js %}
+<script src="{% static 'js/tom-select.popular.min.js' %}"></script>
+<script src="{% static 'js/nouislider.min.js' %}"></script>
+<script src="{% static 'js/purify.min.js' %}"></script>
+<script src="{% static 'js/initialize-timezone-selects.js' %}"></script>
+<script src="{% static 'js/update-timeout-modal.js' %}"></script>
+<script src="{% static 'js/adaptive-setinterval.js' %}"></script>
+<script src="{% static 'js/dates.js' %}"></script>
+<script src="{% static 'js/ping_details.js' %}"></script>
+<script src="{% static 'js/checks.js' %}"></script>
+<script src="{% static 'js/add-check-modal.js' %}"></script>
+<script src="{% static 'js/slug-suggestions.js' %}"></script>
+{% endcompress %}
+{% endblock %}

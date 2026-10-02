@@ -1,0 +1,273 @@
+from __future__ import annotations
+
+import json
+from datetime import timedelta as td
+from unittest.mock import Mock, patch
+
+from django.test.utils import override_settings
+from django.utils.timezone import now
+
+from hc.api.models import Channel, Check, Flip, Notification, Ping, TokenBucket
+from hc.test import BaseTestCase
+
+
+class NotifyNtfyTestCase(BaseTestCase):
+    def setUp(self) -> None:
+        super().setUp()
+
+        self.check = Check(project=self.project)
+        self.check.name = "Foo"
+        self.check.tags = "foo bar"
+        self.check.n_pings = 123
+        # Transport classes should use flip.new_status,
+        # so the status "paused" should not appear anywhere
+        self.check.status = "paused"
+        self.check.last_ping = now()
+        self.check.save()
+
+        self.ping = Ping(owner=self.check)
+        self.ping.created = now() - td(minutes=10)
+        self.ping.n = 112233
+        self.ping.remote_addr = "1.2.3.4"
+        self.ping.save()
+
+        self.channel = Channel(project=self.project)
+        self.channel.kind = "ntfy"
+        self.channel.value = json.dumps(
+            {
+                "url": "https://example.org",
+                "topic": "foo",
+                "priority": 5,
+                "priority_up": 1,
+            }
+        )
+        self.channel.save()
+        self.channel.checks.add(self.check)
+
+        self.flip = Flip(owner=self.check)
+        self.flip.created = now()
+        self.flip.old_status = "new"
+        self.flip.new_status = "down"
+        self.flip.reason = "timeout"
+
+    @patch("hc.api.transports.curl.request", autospec=True)
+    def test_it_works(self, mock_post: Mock) -> None:
+        mock_post.return_value.status_code = 200
+
+        self.channel.notify(self.flip)
+        assert Notification.objects.count() == 1
+
+        payload = mock_post.call_args.kwargs["json"]
+        self.assertEqual(payload["title"], "Foo is DOWN")
+        self.assertIn(
+            "Reason: success signal did not arrive on time, grace time passed.",
+            payload["message"],
+        )
+        self.assertIn("**Project:** Alices Project", payload["message"])
+        self.assertIn("**Tags:** foo, bar", payload["message"])
+        self.assertIn("**Period:** 1 day", payload["message"])
+        self.assertIn("**Total Pings:** 112233", payload["message"])
+        self.assertIn("**Last Ping:** Success, 10 minutes ago", payload["message"])
+
+        self.assertEqual(payload["actions"][0]["url"], self.check.cloaked_url())
+        self.assertNotIn("All the other checks are up.", payload["message"])
+
+    @patch("hc.api.transports.curl.request", autospec=True)
+    def test_it_handles_reason_fail(self, mock_post: Mock) -> None:
+        mock_post.return_value.status_code = 200
+
+        self.flip.reason = "fail"
+        self.channel.notify(self.flip)
+
+        payload = mock_post.call_args.kwargs["json"]
+        self.assertIn("Reason: received a failure signal.", payload["message"])
+
+    @patch("hc.api.transports.curl.request", autospec=True)
+    def test_it_reports_down_duration(self, mock_post: Mock) -> None:
+        mock_post.return_value.status_code = 200
+
+        self.flip.save()
+
+        up_flip = Flip(owner=self.check)
+        up_flip.created = self.flip.created + td(minutes=90)
+        up_flip.old_status = "down"
+        up_flip.new_status = "up"
+        self.channel.notify(up_flip)
+
+        payload = mock_post.call_args.kwargs["json"]
+        self.assertIn("The downtime lasted 1 hour, 30 minutes.", payload["message"])
+
+    @patch("hc.api.transports.curl.request", autospec=True)
+    def test_it_reports_last_pings_exit_code(self, mock_post: Mock) -> None:
+        mock_post.return_value.status_code = 200
+
+        self.ping.kind = "fail"
+        self.ping.exitstatus = 123
+        self.ping.save()
+
+        self.channel.notify(self.flip)
+
+        payload = mock_post.call_args.kwargs["json"]
+        self.assertIn("**Last Ping:** Exit status 123", payload["message"])
+
+    @patch("hc.api.transports.curl.request", autospec=True)
+    def test_it_escapes_special_characters_in_message(self, mock_post: Mock) -> None:
+        mock_post.return_value.status_code = 200
+
+        self.project.name = "Alice & Bob > Charlie"
+        self.project.save()
+
+        self.channel.notify(self.flip)
+
+        payload = mock_post.call_args.kwargs["json"]
+        self.assertIn("**Project:** Alice &amp; Bob &gt; Charlie", payload["message"])
+
+    @patch("hc.api.transports.curl.request", autospec=True)
+    def test_it_shows_cron_schedule_and_tz(self, mock_post: Mock) -> None:
+        mock_post.return_value.status_code = 200
+
+        self.check.kind = "cron"
+        self.check.tz = "Europe/Riga"
+        self.check.save()
+        self.channel.notify(self.flip)
+
+        payload = mock_post.call_args.kwargs["json"]
+        self.assertIn("**Schedule:** `* * * * *`", payload["message"])
+        self.assertIn("**Time Zone:** Europe/Riga", payload["message"])
+
+    @patch("hc.api.transports.curl.request", autospec=True)
+    def test_it_shows_oncalendar_schedule_and_tz(self, mock_post: Mock) -> None:
+        mock_post.return_value.status_code = 200
+
+        self.check.kind = "oncalendar"
+        self.check.schedule = "Mon 2-29"
+        self.check.tz = "Europe/Riga"
+        self.check.save()
+        self.channel.notify(self.flip)
+
+        payload = mock_post.call_args.kwargs["json"]
+        self.assertIn("**Schedule:** `Mon 2-29`", payload["message"])
+        self.assertIn("**Time Zone:** Europe/Riga", payload["message"])
+
+    @patch("hc.api.transports.curl.request", autospec=True)
+    def test_it_shows_all_other_checks_up_note(self, mock_post: Mock) -> None:
+        mock_post.return_value.status_code = 200
+
+        other = Check(project=self.project)
+        other.name = "Foobar"
+        other.status = "up"
+        other.last_ping = now() - td(minutes=61)
+        other.save()
+
+        self.channel.notify(self.flip)
+
+        payload = mock_post.call_args.kwargs["json"]
+        self.assertIn("All the other checks are up.", payload["message"])
+
+    @patch("hc.api.transports.curl.request", autospec=True)
+    def test_it_lists_other_down_checks(self, mock_post: Mock) -> None:
+        mock_post.return_value.status_code = 200
+
+        other = Check(project=self.project)
+        other.name = "Foobar"
+        other.status = "down"
+        other.last_ping = now() - td(minutes=61)
+        other.save()
+
+        self.channel.notify(self.flip)
+
+        payload = mock_post.call_args.kwargs["json"]
+        self.assertIn("The following checks are also down", payload["message"])
+        self.assertIn("Foobar", payload["message"])
+        self.assertIn("(last ping: an hour ago)", payload["message"])
+
+    @patch("hc.api.transports.curl.request", autospec=True)
+    def test_it_handles_other_checks_with_no_last_ping(self, mock_post: Mock) -> None:
+        mock_post.return_value.status_code = 200
+
+        Check.objects.create(project=self.project, status="down")
+
+        self.channel.notify(self.flip)
+
+        payload = mock_post.call_args.kwargs["json"]
+        self.assertIn("(last ping: never)", payload["message"])
+
+    @patch("hc.api.transports.curl.request", autospec=True)
+    def test_it_does_not_show_more_than_10_other_checks(self, mock_post: Mock) -> None:
+        mock_post.return_value.status_code = 200
+
+        for i in range(11):
+            other = Check(project=self.project)
+            other.name = f"Foobar #{i}"
+            other.status = "down"
+            other.last_ping = now() - td(minutes=61)
+            other.save()
+
+        self.channel.notify(self.flip)
+
+        payload = mock_post.call_args.kwargs["json"]
+        self.assertNotIn("Foobar", payload["message"])
+        self.assertIn("11 other checks are also down.", payload["message"])
+
+    @patch("hc.api.transports.curl.request", autospec=True)
+    def test_it_uses_access_token(self, mock_post: Mock) -> None:
+        mock_post.return_value.status_code = 200
+
+        self.channel.value = json.dumps(
+            {
+                "url": "https://example.org",
+                "topic": "foo",
+                "priority": 5,
+                "priority_up": 1,
+                "token": "tk_test",
+            }
+        )
+        self.channel.save()
+
+        self.channel.notify(self.flip)
+        assert Notification.objects.count() == 1
+
+        headers = mock_post.call_args.kwargs["headers"]
+        self.assertEqual(headers["Authorization"], "Bearer tk_test")
+
+    @override_settings(SECRET_KEY="test-secret")
+    @patch("hc.api.transports.curl.request", autospec=True)
+    def test_it_obeys_rate_limit(self, mock_post: Mock) -> None:
+        # "5ce7..." is sha1("https://example.org-foo-test-secret")
+        obj = TokenBucket(value="ntfy-5ce7382812a391e509699d832270d27729ca4bba")
+        obj.tokens = 0
+        obj.save()
+
+        self.channel.notify(self.flip)
+        n = Notification.objects.get()
+        self.assertEqual(n.error, "Rate limit exceeded")
+
+    @override_settings(NTFY_SH_TOKEN="test-default-token")
+    @patch("hc.api.transports.curl.request", autospec=True)
+    def test_it_uses_default_ntfy_sh_token(self, mock_post: Mock) -> None:
+        self.channel.value = json.dumps(
+            {
+                "url": "https://ntfy.sh",
+                "topic": "foo",
+                "priority": 5,
+                "priority_up": 1,
+            }
+        )
+        self.channel.save()
+        mock_post.return_value.status_code = 200
+
+        self.channel.notify(self.flip)
+
+        headers = mock_post.call_args.kwargs["headers"]
+        self.assertEqual(headers["Authorization"], "Bearer test-default-token")
+
+    @override_settings(NTFY_SH_TOKEN="test-default-token")
+    @patch("hc.api.transports.curl.request", autospec=True)
+    def test_uses_default_token_only_on_ntfy_sh(self, mock_post: Mock) -> None:
+        self.channel.save()
+        mock_post.return_value.status_code = 200
+
+        self.channel.notify(self.flip)
+
+        headers = mock_post.call_args.kwargs["headers"]
+        self.assertNotIn("Authorization", headers)

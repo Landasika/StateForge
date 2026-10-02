@@ -1,0 +1,488 @@
+from __future__ import annotations
+
+import email
+import json
+from datetime import datetime, timezone
+from datetime import timedelta as td
+from unittest.mock import Mock, patch
+
+import time_machine
+from django.conf import settings
+from django.core import mail
+from django.test.utils import override_settings
+
+from hc.api.models import Channel, Check, Flip, Notification, Ping
+from hc.test import BaseTestCase
+
+EPOCH = datetime(2020, 1, 1, tzinfo=timezone.utc)
+
+
+class NotifyEmailTestCase(BaseTestCase):
+    def setUp(self) -> None:
+        super().setUp()
+
+        self.check = Check(project=self.project)
+        self.check.name = "Daily Backup"
+        self.check.desc = "Line 1\nLine2"
+        self.check.tags = "foo bar"
+        # Transport classes should use flip.new_status,
+        # so the status "paused" should not appear anywhere
+        self.check.status = "paused"
+        self.check.last_ping = EPOCH
+        self.check.save()
+
+        self.ping = Ping(owner=self.check)
+        self.ping.created = EPOCH
+        self.ping.n = 112233
+        self.ping.remote_addr = "1.2.3.4"
+        self.ping.body_raw = b"Body Line 1\nBody Line 2"
+        self.ping.save()
+
+        self.channel = Channel(project=self.project)
+        self.channel.kind = "email"
+        self.channel.value = "alice@example.org"
+        self.channel.email_verified = True
+        self.channel.save()
+        self.channel.checks.add(self.check)
+
+        self.flip = Flip(owner=self.check)
+        self.flip.created = EPOCH + td(hours=1)
+        self.flip.old_status = "new"
+        self.flip.new_status = "down"
+        self.flip.reason = "timeout"
+
+    @override_settings(DEFAULT_FROM_EMAIL="alerts@example.org")
+    @time_machine.travel(EPOCH + td(hours=1))
+    def test_it_works(self) -> None:
+        self.channel.notify(self.flip)
+
+        n = Notification.objects.get()
+        self.assertEqual(n.error, "")
+
+        # And email should have been sent
+        self.assertEqual(len(mail.outbox), 1)
+
+        email = mail.outbox[0]
+        self.assertEqual(email.subject, "DOWN | Daily Backup")
+        self.assertEqual(email.to[0], "alice@example.org")
+        self.assertNotIn("X-Bounce-ID", email.extra_headers)
+        self.assertTrue("List-Unsubscribe" in email.extra_headers)
+        self.assertTrue("List-Unsubscribe-Post" in email.extra_headers)
+        self.assertTrue(email.extra_headers["Message-ID"].endswith("@example.org>"))
+
+        # Message
+        self.assertEmailContainsText("""The check "Daily Backup" has gone down.""")
+        self.assertEmailContainsHtml(""""Daily Backup" is DOWN""")
+        self.assertEmailContains("grace time passed")
+
+        # Description
+        self.assertEmailContainsText("Line 1\nLine2")
+        self.assertEmailContainsHtml("Line 1<br>Line2")
+
+        # Project
+        self.assertEmailContains("Alices Project")
+
+        # Tags
+        self.assertEmailContainsText("foo bar")
+        self.assertEmailContainsHtml("foo</code>")
+        self.assertEmailContainsHtml("bar</code>")
+
+        # Period
+        self.assertEmailContains("1 day")
+
+        # Source IP
+        self.assertEmailContains("from 1.2.3.4")
+
+        # Total pings
+        self.assertEmailContains("112233")
+
+        # Last ping time
+        self.assertEmailContains("an hour ago")
+
+        # Last ping body
+        self.assertEmailContainsText("Body Line 1\nBody Line 2")
+        self.assertEmailContainsHtml("Body Line 1<br>Body Line 2")
+
+        # Status change time
+        self.assertEmailContains("Wed, 01 Jan 2020 01:00:00 +0000")
+
+        # Check's code must not be in the plain text or html
+        self.assertEmailNotContains(str(self.check.code))
+
+    def test_it_reports_down_duration(self) -> None:
+        self.flip.save()
+
+        up_flip = Flip(owner=self.check)
+        up_flip.created = self.flip.created + td(minutes=90)
+        up_flip.old_status = "down"
+        up_flip.new_status = "up"
+        self.channel.notify(up_flip)
+
+        self.assertEmailContains("The downtime lasted 1 hour, 30 minutes.")
+
+    @time_machine.travel(EPOCH + td(hours=1))
+    def test_it_uses_users_preferred_timezone(self) -> None:
+        self.channel.value = "bob@example.org"
+        self.channel.save()
+
+        self.bobs_profile.tz = "Europe/Riga"
+        self.bobs_profile.save()
+        self.channel.notify(self.flip)
+
+        self.assertEmailContains("Wed, 01 Jan 2020 03:00:00 +0200")
+
+    @time_machine.travel(EPOCH + td(hours=1))
+    def test_it_falls_back_to_check_owners_timezone(self) -> None:
+        self.channel.value = "ops-notifications@example.org"
+        self.channel.save()
+
+        self.profile.tz = "Europe/Riga"
+        self.profile.save()
+        self.channel.notify(self.flip)
+
+        # ops-notifications@example.org does not have an account, so we cannot
+        # use its preferred time zone. Instead we should use the preferred
+        # time zone of the channel's owner (Alice)
+        self.assertEmailContains("Wed, 01 Jan 2020 03:00:00 +0200")
+
+    @override_settings(DEFAULT_FROM_EMAIL="alerts@example.org")
+    def test_it_handles_reason_failure(self) -> None:
+        self.flip.reason = "fail"
+        self.channel.notify(self.flip)
+
+        self.assertEmailContains("received a failure signal")
+
+    @override_settings(DEFAULT_FROM_EMAIL='"Alerts" <alerts@example.org>')
+    def test_it_message_id_generation_handles_angle_brackets(self) -> None:
+        self.channel.notify(self.flip)
+
+        email = mail.outbox[0]
+        self.assertTrue(email.extra_headers["Message-ID"].endswith("@example.org>"))
+
+    @override_settings(S3_BUCKET="test-bucket")
+    @patch("hc.api.models.get_object")
+    def test_it_loads_body_from_object_storage(self, get_object: Mock) -> None:
+        get_object.return_value = b"Body Line 1\nBody Line 2"
+
+        self.ping.object_size = 1000
+        self.ping.body_raw = None
+        self.ping.save()
+
+        self.channel.notify(self.flip)
+        self.assertEmailContainsHtml("Line 1<br>Line2")
+
+        code, n = get_object.call_args.args
+        self.assertEqual(code, str(self.check.code))
+        self.assertEqual(n, 112233)
+
+    @override_settings(S3_BUCKET="test-bucket")
+    @patch("hc.api.models.Ping.get_body_bytes")
+    def test_it_handles_getbodyerror_exception(self, get_body_bytes: Mock) -> None:
+        get_body_bytes.side_effect = Ping.GetBodyError()
+
+        self.ping.object_size = 1000
+        self.ping.body_raw = None
+        self.ping.save()
+
+        self.channel.notify(self.flip)
+        self.assertEmailContainsHtml("The request body data is being processed")
+
+    def test_it_shows_cron_schedule(self) -> None:
+        self.check.kind = "cron"
+        self.check.schedule = "0 18-23,0-8 * * *"
+        self.check.tz = "Europe/Riga"
+        self.check.save()
+
+        self.channel.notify(self.flip)
+
+        self.assertEmailContainsText("0 18-23,0-8 * * *")
+        self.assertEmailContainsHtml("<code>0 18-23,0-8 * * *</code>")
+        self.assertEmailContains("Europe/Riga")
+
+    def test_it_shows_oncalendar_schedule(self) -> None:
+        self.check.kind = "oncalendar"
+        self.check.schedule = "Mon 2-29"
+        self.check.tz = "Europe/Riga"
+        self.check.save()
+
+        self.channel.notify(self.flip)
+
+        self.assertEmailContainsText("Mon 2-29")
+        self.assertEmailContainsHtml("<code>Mon 2-29</code>")
+        self.assertEmailContains("Europe/Riga")
+
+    def test_it_truncates_long_body(self) -> None:
+        self.ping.body_raw = b"the start gets cut off" + b"X" * 10000
+        self.ping.save()
+
+        self.channel.notify(self.flip)
+
+        self.assertEmailContains("Showing the last 10000 bytes of 10022 bytes total.")
+        self.assertEmailNotContains("the start gets cut off")
+
+    def test_it_handles_missing_ping_object(self) -> None:
+        self.ping.delete()
+
+        self.channel.notify(self.flip)
+
+        self.assertEmailContainsHtml("Daily Backup")
+
+    def test_it_ignores_ping_after_flip(self) -> None:
+        self.ping.created = self.flip.created + td(minutes=5)
+        self.ping.save()
+
+        self.channel.notify(self.flip)
+
+        self.assertEmailNotContains("Last ping")
+        self.assertEmailNotContains("Last Ping")
+
+    def test_it_handles_identical_ping_and_flip_timestamp(self) -> None:
+        self.ping.created = self.flip.created
+        self.ping.save()
+
+        self.channel.notify(self.flip)
+
+        self.assertEmailContainsText("Last ping")
+        self.assertEmailContainsHtml("Last Ping")
+
+    def test_it_handles_missing_profile(self) -> None:
+        self.channel.value = "alice+notifications@example.org"
+        self.channel.save()
+
+        self.channel.notify(self.flip)
+
+        email = mail.outbox[0]
+        self.assertEqual(email.to[0], "alice+notifications@example.org")
+
+        self.assertEmailContains("Daily Backup")
+        self.assertEmailNotContains("Projects Overview")
+
+    def test_it_handles_json_value(self) -> None:
+        payload = {"value": "alice@example.org", "up": True, "down": True}
+        self.channel.value = json.dumps(payload)
+        self.channel.save()
+
+        self.channel.notify(self.flip)
+
+        # And email should have been sent
+        self.assertEqual(len(mail.outbox), 1)
+
+        email = mail.outbox[0]
+        self.assertEqual(email.to[0], "alice@example.org")
+
+    def test_it_reports_unverified_email(self) -> None:
+        self.channel.email_verified = False
+        self.channel.save()
+
+        self.channel.notify(self.flip)
+
+        # If an email is not verified, it should say so in the notification:
+        n = Notification.objects.get()
+        self.assertEqual(n.error, "Email not verified")
+
+    def test_it_checks_up_down_flags(self) -> None:
+        payload = {"value": "alice@example.org", "up": True, "down": False}
+        self.channel.value = json.dumps(payload)
+        self.channel.save()
+
+        self.channel.notify(self.flip)
+
+        # This channel should not notify on "down" events:
+        self.assertEqual(Notification.objects.count(), 0)
+        self.assertEqual(len(mail.outbox), 0)
+
+    def test_it_handles_amperstand(self) -> None:
+        self.check.name = "Foo & Bar"
+        self.check.save()
+
+        self.channel.notify(self.flip)
+
+        email = mail.outbox[0]
+        self.assertEqual(email.subject, "DOWN | Foo & Bar")
+
+    @override_settings(S3_BUCKET="test-bucket")
+    @patch("hc.api.models.get_object")
+    def test_it_handles_pending_body(self, get_object: Mock) -> None:
+        get_object.return_value = None
+
+        self.ping.object_size = 1000
+        self.ping.body_raw = None
+        self.ping.save()
+
+        with patch("hc.api.transports.time.sleep"):
+            self.channel.notify(self.flip)
+
+        self.assertEmailContains("The request body data is being processed")
+
+    def test_it_shows_ignored_nonzero_exitstatus(self) -> None:
+        self.ping.kind = "ign"
+        self.ping.exitstatus = 123
+        self.ping.save()
+
+        self.channel.notify(self.flip)
+
+        self.assertEmailContains("Ignored")
+
+    def test_it_handles_last_ping_log(self) -> None:
+        self.ping.kind = "log"
+        self.ping.save()
+
+        self.channel.notify(self.flip)
+
+        self.assertEmailContains("Log")
+
+    def test_it_handles_last_ping_exitstatus(self) -> None:
+        self.ping.kind = "fail"
+        self.ping.exitstatus = 123
+        self.ping.save()
+
+        self.channel.notify(self.flip)
+
+        self.assertEmailContains("Exit status 123")
+
+    @override_settings(EMAIL_MAIL_FROM_TMPL="%s@bounces.example.org")
+    def test_it_sets_custom_mail_from(self) -> None:
+        self.channel.notify(self.flip)
+
+        email = mail.outbox[0]
+        self.assertTrue(email.from_email.startswith("n."))
+        self.assertTrue(email.from_email.endswith("@bounces.example.org"))
+        # The From header should contain the display address
+        self.assertEqual(email.extra_headers["From"], settings.DEFAULT_FROM_EMAIL)
+        # There should be no X-Bounce-ID header
+        self.assertNotIn("X-Bounce-ID", email.extra_headers)
+
+    @override_settings(DEFAULT_FROM_EMAIL="alerts@example.org")
+    def test_it_displays_last_ping_subject_and_adds_attachment(self) -> None:
+        self.ping.scheme = "email"
+        self.ping.body_raw = b"""Subject: Foo bar baz
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua.
+
+"""
+        self.ping.save()
+
+        self.channel.notify(self.flip)
+
+        self.assertEmailContainsText("Last ping subject: Foo bar baz")
+        self.assertEmailContainsHtml("<b>Last Ping Subject</b><br>Foo bar baz")
+
+        self.assertEmailContains("See the attachment")
+        self.assertEmailNotContains("Lorem ipsum")
+
+        message = mail.outbox[0]
+        attachment = message.attachments[0]
+        self.assertIn("Lorem ipsum", attachment.content.as_string())
+
+    @override_settings(DEFAULT_FROM_EMAIL="alerts@example.org")
+    def test_it_removes_message_rfc822_parts_from_last_ping_body(self) -> None:
+        self.ping.scheme = "email"
+        self.ping.body_raw = b"""MIME-Version: 1.0
+Subject: Outer subject
+Content-Type: multipart/mixed; boundary="00000000000068ccbb0650421339"
+
+--00000000000068ccbb0650421339
+Content-Type: text/plain; charset="UTF-8"
+
+Hello 456
+
+--00000000000068ccbb0650421339
+Content-Type: message/rfc822; name="Hello.eml"
+Content-Disposition: attachment; filename="Hello.eml"
+
+MIME-Version: 1.0
+Subject: Inner subject
+Content-Type: text/plain; charset="UTF-8"
+
+Hello 123
+
+
+--00000000000068ccbb0650421339--
+"""
+        self.ping.save()
+
+        self.channel.notify(self.flip)
+
+        self.assertEmailContainsText("Last ping subject: Outer subject")
+        self.assertEmailContains("See the attachment")
+
+        message = mail.outbox[0]
+        attachment = message.attachments[0]
+        attachment_str = attachment.content.as_string()
+        self.assertIn("Outer subject", attachment_str)
+        self.assertIn("Hello 456", attachment_str)
+        # The message/rfc822 part should have been removed
+        self.assertNotIn("Inner subject", attachment_str)
+        self.assertNotIn("Hello 123", attachment_str)
+
+    @override_settings(DEFAULT_FROM_EMAIL="alerts@example.org")
+    @patch("hc.lib.emails.send")
+    def test_it_handles_non_ascii_in_last_ping_body(self, send: Mock) -> None:
+        self.ping.scheme = "email"
+        self.ping.body_raw = """Subject: testing
+
+glāžšķūņu rūķīši
+""".encode()
+        self.ping.save()
+
+        self.channel.notify(self.flip)
+
+        self.assertTrue(send.called)
+
+        # Make sure the assembled message serializes to bytes.
+        # If it does not, the real SMTP backend will throw an exception
+        message = send.call_args.args[0]
+        message.message(policy=email.policy.SMTP).as_bytes()
+
+    @patch("hc.lib.emails.send")
+    def test_it_wraps_long_8bit_body(self, send: Mock) -> None:
+        self.ping.scheme = "email"
+        self.ping.body_raw = f"""Subject: testing
+Content-Transfer-Encoding: 8bit
+
+{"0123456789" * 10}
+""".encode()
+        self.ping.save()
+
+        self.channel.notify(self.flip)
+
+        self.assertTrue(send.called)
+
+        # Make sure the email message has no lines longer than 80 characters
+        message = send.call_args.args[0]
+        eml = message.message(policy=email.policy.SMTP).as_bytes().decode()
+        for line in eml.split("\n"):
+            self.assertLess(len(line), 80)
+
+    @patch("hc.lib.emails.send")
+    def test_it_wraps_long_8bit_mime_part(self, send: Mock) -> None:
+        self.ping.scheme = "email"
+        self.ping.body_raw = f"""Subject: testing
+Content-Type: multipart/alternative; boundary="0000000000003d3077065730508f"
+
+--0000000000003d3077065730508f
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+
+{"0123456789" * 10}
+
+--0000000000003d3077065730508f
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+
+<div>{"0123456789" * 10}</div>
+
+--0000000000003d3077065730508f--
+""".encode()
+        self.ping.save()
+
+        self.channel.notify(self.flip)
+
+        self.assertTrue(send.called)
+
+        # Make sure the email message has no lines longer than 80 characters
+        message = send.call_args.args[0]
+        eml = message.message(policy=email.policy.SMTP).as_bytes().decode()
+        for line in eml.split("\n"):
+            self.assertLess(len(line), 80)
