@@ -22,3 +22,5 @@ crash-*
 corpus/
 .pycg-callgraph.json
 .pycg-*.json
+external/
+nohup.out
