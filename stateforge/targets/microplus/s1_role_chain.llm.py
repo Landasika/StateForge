@@ -1,6 +1,6 @@
 import json
 def _p(k, v):
-    return json.dumps({"status":"PROPOSED","source_kind":"JSON",
+    return json.dumps({"status":"PROPOSED","source_kind":"QUERY",
                        "source_key":k,"operation":"REPLACE",
                        "proposed_value":v,"rationale":"mock","confidence":0.9})
 class P:

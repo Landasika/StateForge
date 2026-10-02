@@ -1,0 +1,9 @@
+{"kind": "champion_new", "frontier": "s2_api_path.py::target::13-13::branch::1->s2_api_path.py::target::15-15::branch::1", "input_id": "01ba4719c80b6fe9", "old_distance": null, "new_distance": 0, "epoch": 0, "edge": null}
+{"edge": ["s2_api_path.py::target::5-5::block::1", "s2_api_path.py::target::8-11::block::1"], "created": 1790960683.78, "crossed": 1790960690.128, "crossing_seconds": 6.348}
+{"kind": "champion_new", "frontier": "s2_api_path.py::target::3-3::entry::1->s2_api_path.py::target::3-3::try::1", "input_id": "efdd30d1dda5a1a3", "old_distance": null, "new_distance": 0, "epoch": 0, "edge": null}
+{"kind": "champion_retire", "frontier": "s2_api_path.py::target::13-13::branch::1->s2_api_path.py::target::15-15::branch::1", "input_id": "01ba4719c80b6fe9", "old_distance": 0, "new_distance": null, "epoch": 0, "edge": null}
+{"edge": ["s2_api_path.py::target::13-13::branch::1", "s2_api_path.py::target::15-15::branch::1"], "created": 1790960692.844, "crossed": 1790960692.928, "crossing_seconds": 0.083}
+{"kind": "champion_new", "frontier": "s2_api_path.py::target::17-17::branch::1->s2_api_path.py::target::18-18::block::1", "input_id": "f3f18ab9f8ea910c", "old_distance": null, "new_distance": 0, "epoch": 0, "edge": null}
+{"edge": ["s2_api_path.py::target::15-15::branch::1", "s2_api_path.py::target::16-16::block::1"], "created": 1790960702.014, "crossed": 1790960702.128, "crossing_seconds": 0.114}
+{"kind": "champion_retire", "frontier": "s2_api_path.py::target::17-17::branch::1->s2_api_path.py::target::18-18::block::1", "input_id": "f3f18ab9f8ea910c", "old_distance": 0, "new_distance": null, "epoch": 0, "edge": null}
+{"edge": ["s2_api_path.py::target::17-17::branch::1", "s2_api_path.py::target::18-18::block::1"], "created": 1790960702.014, "crossed": 1790960702.4, "crossing_seconds": 0.386}

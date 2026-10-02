@@ -1,0 +1,217 @@
+{
+ "group": "B",
+ "mode": "feedback",
+ "epochs": 3,
+ "seed": 7,
+ "epoch_records": [
+  {
+   "epoch": 1,
+   "snapshots": [
+    {
+     "group": "B",
+     "epoch": 1,
+     "t": 2.01,
+     "executions": 212,
+     "blocks": 7,
+     "edges": 5,
+     "exec_seconds": 0.011,
+     "feedback_seconds": 1.934
+    },
+    {
+     "group": "B",
+     "epoch": 1,
+     "t": 4.01,
+     "executions": 428,
+     "blocks": 7,
+     "edges": 5,
+     "exec_seconds": 0.023,
+     "feedback_seconds": 3.913
+    },
+    {
+     "group": "B",
+     "epoch": 1,
+     "t": 6.01,
+     "executions": 641,
+     "blocks": 7,
+     "edges": 5,
+     "exec_seconds": 0.033,
+     "feedback_seconds": 5.891
+    },
+    {
+     "group": "B",
+     "epoch": 1,
+     "t": 8.02,
+     "executions": 857,
+     "blocks": 7,
+     "edges": 5,
+     "exec_seconds": 0.044,
+     "feedback_seconds": 7.874
+    }
+   ],
+   "executions": 857,
+   "blocks": 7,
+   "edges": 5,
+   "exec_seconds": 0.044,
+   "feedback_seconds": 7.874,
+   "candidates_saved": 2,
+   "wall": {
+    "start_offset": 0.0,
+    "end_offset": 9.127,
+    "subprocess_seconds": 9.127
+   },
+   "corpus_in": {
+    "files": 0,
+    "bytes": 0
+   },
+   "corpus_lf_after": {
+    "files": 0,
+    "bytes": 0
+   }
+  },
+  {
+   "epoch": 2,
+   "snapshots": [
+    {
+     "group": "B",
+     "epoch": 2,
+     "t": 2.01,
+     "executions": 204,
+     "blocks": 7,
+     "edges": 5,
+     "exec_seconds": 0.011,
+     "feedback_seconds": 1.936
+    },
+    {
+     "group": "B",
+     "epoch": 2,
+     "t": 4.01,
+     "executions": 422,
+     "blocks": 7,
+     "edges": 5,
+     "exec_seconds": 0.023,
+     "feedback_seconds": 3.917
+    },
+    {
+     "group": "B",
+     "epoch": 2,
+     "t": 6.02,
+     "executions": 624,
+     "blocks": 7,
+     "edges": 5,
+     "exec_seconds": 0.033,
+     "feedback_seconds": 5.904
+    },
+    {
+     "group": "B",
+     "epoch": 2,
+     "t": 8.03,
+     "executions": 832,
+     "blocks": 7,
+     "edges": 5,
+     "exec_seconds": 0.043,
+     "feedback_seconds": 7.888
+    }
+   ],
+   "executions": 832,
+   "blocks": 7,
+   "edges": 5,
+   "exec_seconds": 0.043,
+   "feedback_seconds": 7.888,
+   "candidates_saved": 0,
+   "wall": {
+    "start_offset": 9.127,
+    "end_offset": 18.264,
+    "subprocess_seconds": 9.136
+   },
+   "corpus_in": {
+    "files": 0,
+    "bytes": 0
+   },
+   "corpus_lf_after": {
+    "files": 0,
+    "bytes": 0
+   }
+  },
+  {
+   "epoch": 3,
+   "snapshots": [
+    {
+     "group": "B",
+     "epoch": 3,
+     "t": 2.0,
+     "executions": 216,
+     "blocks": 7,
+     "edges": 5,
+     "exec_seconds": 0.013,
+     "feedback_seconds": 1.928
+    },
+    {
+     "group": "B",
+     "epoch": 3,
+     "t": 4.0,
+     "executions": 430,
+     "blocks": 7,
+     "edges": 5,
+     "exec_seconds": 0.025,
+     "feedback_seconds": 3.904
+    },
+    {
+     "group": "B",
+     "epoch": 3,
+     "t": 6.0,
+     "executions": 653,
+     "blocks": 7,
+     "edges": 5,
+     "exec_seconds": 0.034,
+     "feedback_seconds": 5.887
+    },
+    {
+     "group": "B",
+     "epoch": 3,
+     "t": 8.01,
+     "executions": 882,
+     "blocks": 7,
+     "edges": 5,
+     "exec_seconds": 0.043,
+     "feedback_seconds": 7.873
+    }
+   ],
+   "executions": 882,
+   "blocks": 7,
+   "edges": 5,
+   "exec_seconds": 0.043,
+   "feedback_seconds": 7.873,
+   "candidates_saved": 0,
+   "wall": {
+    "start_offset": 18.264,
+    "end_offset": 27.386,
+    "subprocess_seconds": 9.122
+   },
+   "corpus_in": {
+    "files": 0,
+    "bytes": 0
+   },
+   "corpus_lf_after": {
+    "files": 0,
+    "bytes": 0
+   }
+  }
+ ],
+ "total_executions": 2571,
+ "total_exec_seconds": 0.13,
+ "total_feedback_seconds": 23.635,
+ "total_candidates_saved": 2,
+ "final_blocks": 7,
+ "final_edges": 5,
+ "group_start_offset": 0.0,
+ "wall_span": 27.386,
+ "novel_seed_gain": {
+  "sf_candidates_total": 2,
+  "sf_already_in_native": 0,
+  "sf_unique_vs_native": 2,
+  "novel_seed_gain": 1.0
+ },
+ "portfolio_champions": 0,
+ "portfolio_replacements": 0,
+ "corpus_dilution_ratio": 0.0
+}

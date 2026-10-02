@@ -1,0 +1,160 @@
+{
+ "group": "A",
+ "mode": "off",
+ "epochs": 1,
+ "seed": 107,
+ "epoch_records": [
+  {
+   "epoch": 1,
+   "snapshots": [
+    {
+     "group": "A",
+     "epoch": 1,
+     "t": 2.0,
+     "executions": 595122,
+     "blocks": 0,
+     "edges": 0,
+     "exec_seconds": 1.452,
+     "feedback_seconds": 0.0
+    },
+    {
+     "group": "A",
+     "epoch": 1,
+     "t": 4.0,
+     "executions": 1186703,
+     "blocks": 0,
+     "edges": 0,
+     "exec_seconds": 2.908,
+     "feedback_seconds": 0.0
+    },
+    {
+     "group": "A",
+     "epoch": 1,
+     "t": 6.0,
+     "executions": 1753668,
+     "blocks": 0,
+     "edges": 0,
+     "exec_seconds": 4.369,
+     "feedback_seconds": 0.0
+    },
+    {
+     "group": "A",
+     "epoch": 1,
+     "t": 8.0,
+     "executions": 2327098,
+     "blocks": 0,
+     "edges": 0,
+     "exec_seconds": 5.829,
+     "feedback_seconds": 0.0
+    },
+    {
+     "group": "A",
+     "epoch": 1,
+     "t": 10.0,
+     "executions": 2937770,
+     "blocks": 0,
+     "edges": 0,
+     "exec_seconds": 7.287,
+     "feedback_seconds": 0.0
+    },
+    {
+     "group": "A",
+     "epoch": 1,
+     "t": 12.0,
+     "executions": 3555172,
+     "blocks": 0,
+     "edges": 0,
+     "exec_seconds": 8.744,
+     "feedback_seconds": 0.0
+    },
+    {
+     "group": "A",
+     "epoch": 1,
+     "t": 14.0,
+     "executions": 4164434,
+     "blocks": 0,
+     "edges": 0,
+     "exec_seconds": 10.201,
+     "feedback_seconds": 0.0
+    },
+    {
+     "group": "A",
+     "epoch": 1,
+     "t": 16.0,
+     "executions": 4763658,
+     "blocks": 0,
+     "edges": 0,
+     "exec_seconds": 11.658,
+     "feedback_seconds": 0.0
+    },
+    {
+     "group": "A",
+     "epoch": 1,
+     "t": 18.0,
+     "executions": 5365532,
+     "blocks": 0,
+     "edges": 0,
+     "exec_seconds": 13.116,
+     "feedback_seconds": 0.0
+    },
+    {
+     "group": "A",
+     "epoch": 1,
+     "t": 20.0,
+     "executions": 5969122,
+     "blocks": 0,
+     "edges": 0,
+     "exec_seconds": 14.573,
+     "feedback_seconds": 0.0
+    },
+    {
+     "group": "A",
+     "epoch": 1,
+     "t": 22.0,
+     "executions": 6569673,
+     "blocks": 0,
+     "edges": 0,
+     "exec_seconds": 16.03,
+     "feedback_seconds": 0.0
+    },
+    {
+     "group": "A",
+     "epoch": 1,
+     "t": 24.0,
+     "executions": 7188688,
+     "blocks": 0,
+     "edges": 0,
+     "exec_seconds": 17.487,
+     "feedback_seconds": 0.0
+    }
+   ],
+   "executions": 7188688,
+   "blocks": 0,
+   "edges": 0,
+   "exec_seconds": 17.487,
+   "feedback_seconds": 0.0,
+   "candidates_saved": 0,
+   "wall": {
+    "start_offset": 0.0,
+    "end_offset": 25.062,
+    "subprocess_seconds": 25.062
+   },
+   "corpus_in": {
+    "files": 0,
+    "bytes": 0
+   },
+   "corpus_lf_after": {
+    "files": 0,
+    "bytes": 0
+   }
+  }
+ ],
+ "total_executions": 7188688,
+ "total_exec_seconds": 17.487,
+ "total_feedback_seconds": 0.0,
+ "total_candidates_saved": 0,
+ "final_blocks": 0,
+ "final_edges": 0,
+ "group_start_offset": 0.0,
+ "wall_span": 25.062
+}

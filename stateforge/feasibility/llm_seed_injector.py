@@ -92,6 +92,7 @@ def inject_llm_seeds(ir: ProgramIR, app_path: Path,
             continue
 
         # 构造种子并写入 corpus(唯一副作用)
+        # 后续 LLM 变异基于前一个成功注入的种子(渐进开门)
         hint = MutationHint(
             frontier_id=sf.frontier_id, guard_id=sf.guard.guard_id,
             source_kind=proposal.source_kind,
@@ -111,6 +112,7 @@ def inject_llm_seeds(ir: ProgramIR, app_path: Path,
                 interesting_reason="llm_proposal", origin="LLM")
             if cid:
                 (corpus_dir / cid).write_bytes(seed_bytes)
+                base_seed = seed           # 下一个 LLM 变异基于此(叠加)
                 records.append({"frontier": sf.frontier_id,
                                 "status": "INJECTED",
                                 "seed_id": cid,
