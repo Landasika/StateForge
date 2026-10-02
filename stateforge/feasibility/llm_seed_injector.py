@@ -13,8 +13,7 @@ from pathlib import Path
 from stateforge.core.ir import ProgramIR
 from stateforge.feasibility.guard_recovery import (_TestIndex,
                                                     recover_guard)
-from stateforge.feasibility.input_provenance import (
-    resolve_operand_source)
+from stateforge.feasibility.enhanced_provenance import resolve_enhanced
 from stateforge.feasibility.llm_solver import LLMSemanticSolver
 from stateforge.feasibility.proposal import ProposalStatus
 from stateforge.feasibility.proposal_validator import validate
@@ -70,8 +69,8 @@ def inject_llm_seeds(ir: ProgramIR, app_path: Path,
 
     for sf in stalled:
         block = ir.blocks[sf.edge[0]]
-        prov = resolve_operand_source(app_path, block.function,
-                                      sf.guard.lineno)
+        prov = resolve_enhanced(ir, app_path, block.function,
+                                 sf.guard.lineno)
         slice_ = build_slice(ir, sf, [], prov, app_path)
 
         try:

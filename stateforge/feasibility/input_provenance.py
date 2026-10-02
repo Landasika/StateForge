@@ -81,7 +81,7 @@ def _extract(expr: ast.expr) -> tuple[str, str] | None:
             and isinstance(expr.func.value.value, ast.Name) \
             and expr.func.value.value.id == "request" \
             and expr.func.value.attr in KIND_ATTR \
-            and len(expr.args) == 1 and isinstance(expr.args[0], ast.Constant):
+            and 1 <= len(expr.args) <= 2 and isinstance(expr.args[0], ast.Constant):
         return KIND_ATTR[expr.func.value.attr], str(expr.args[0].value)
     return None
 
