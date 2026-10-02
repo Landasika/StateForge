@@ -136,4 +136,4 @@ def _load_base_seed(corpus_dir: Path) -> dict:
                         return data
                 except (json.JSONDecodeError, UnicodeDecodeError):
                     continue
-    return {"query": {}}
+    return {"query": {}, "form": {}, "json": {}, "header": {}, "cookie": {}}

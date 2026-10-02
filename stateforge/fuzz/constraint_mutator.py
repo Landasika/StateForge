@@ -34,10 +34,7 @@ def apply_hint(seed: dict, hint: MutationHint) -> dict:
     section = _SECTION.get(hint.source_kind)
     if section is None or section not in seed:
         raise MutationError(f"种子缺少段: {hint.source_kind}")
-    fields = seed[section]
-    if hint.source_key not in fields:
-        raise MutationError(
-            f"FIELD_NOT_FOUND: {hint.source_kind}[{hint.source_key}]")
+    # LLM 可以创建当前种子中不存在的新字段(这正是它的价值)
     out = copy.deepcopy(seed)
     out[section][hint.source_key] = serialize_for(hint.source_kind,
                                                   hint.target_value)
