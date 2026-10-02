@@ -1,0 +1,217 @@
+{
+ "group": "B",
+ "mode": "feedback",
+ "epochs": 3,
+ "seed": 107,
+ "epoch_records": [
+  {
+   "epoch": 1,
+   "snapshots": [
+    {
+     "group": "B",
+     "epoch": 1,
+     "t": 2.0,
+     "executions": 222,
+     "blocks": 7,
+     "edges": 5,
+     "exec_seconds": 0.014,
+     "feedback_seconds": 1.93
+    },
+    {
+     "group": "B",
+     "epoch": 1,
+     "t": 4.01,
+     "executions": 459,
+     "blocks": 7,
+     "edges": 5,
+     "exec_seconds": 0.027,
+     "feedback_seconds": 3.905
+    },
+    {
+     "group": "B",
+     "epoch": 1,
+     "t": 6.01,
+     "executions": 694,
+     "blocks": 7,
+     "edges": 5,
+     "exec_seconds": 0.038,
+     "feedback_seconds": 5.883
+    },
+    {
+     "group": "B",
+     "epoch": 1,
+     "t": 8.01,
+     "executions": 934,
+     "blocks": 7,
+     "edges": 5,
+     "exec_seconds": 0.048,
+     "feedback_seconds": 7.866
+    }
+   ],
+   "executions": 934,
+   "blocks": 7,
+   "edges": 5,
+   "exec_seconds": 0.048,
+   "feedback_seconds": 7.866,
+   "candidates_saved": 2,
+   "wall": {
+    "start_offset": 0.0,
+    "end_offset": 9.138,
+    "subprocess_seconds": 9.138
+   },
+   "corpus_in": {
+    "files": 0,
+    "bytes": 0
+   },
+   "corpus_lf_after": {
+    "files": 0,
+    "bytes": 0
+   }
+  },
+  {
+   "epoch": 2,
+   "snapshots": [
+    {
+     "group": "B",
+     "epoch": 2,
+     "t": 2.01,
+     "executions": 226,
+     "blocks": 7,
+     "edges": 5,
+     "exec_seconds": 0.011,
+     "feedback_seconds": 1.937
+    },
+    {
+     "group": "B",
+     "epoch": 2,
+     "t": 4.01,
+     "executions": 466,
+     "blocks": 7,
+     "edges": 5,
+     "exec_seconds": 0.021,
+     "feedback_seconds": 3.923
+    },
+    {
+     "group": "B",
+     "epoch": 2,
+     "t": 6.02,
+     "executions": 700,
+     "blocks": 7,
+     "edges": 5,
+     "exec_seconds": 0.031,
+     "feedback_seconds": 5.906
+    },
+    {
+     "group": "B",
+     "epoch": 2,
+     "t": 8.02,
+     "executions": 922,
+     "blocks": 7,
+     "edges": 5,
+     "exec_seconds": 0.041,
+     "feedback_seconds": 7.886
+    }
+   ],
+   "executions": 922,
+   "blocks": 7,
+   "edges": 5,
+   "exec_seconds": 0.041,
+   "feedback_seconds": 7.886,
+   "candidates_saved": 0,
+   "wall": {
+    "start_offset": 9.139,
+    "end_offset": 18.287,
+    "subprocess_seconds": 9.148
+   },
+   "corpus_in": {
+    "files": 2,
+    "bytes": 2
+   },
+   "corpus_lf_after": {
+    "files": 4,
+    "bytes": 4
+   }
+  },
+  {
+   "epoch": 3,
+   "snapshots": [
+    {
+     "group": "B",
+     "epoch": 3,
+     "t": 2.0,
+     "executions": 214,
+     "blocks": 7,
+     "edges": 5,
+     "exec_seconds": 0.011,
+     "feedback_seconds": 1.932
+    },
+    {
+     "group": "B",
+     "epoch": 3,
+     "t": 4.01,
+     "executions": 432,
+     "blocks": 7,
+     "edges": 5,
+     "exec_seconds": 0.023,
+     "feedback_seconds": 3.916
+    },
+    {
+     "group": "B",
+     "epoch": 3,
+     "t": 6.02,
+     "executions": 662,
+     "blocks": 7,
+     "edges": 5,
+     "exec_seconds": 0.032,
+     "feedback_seconds": 5.902
+    },
+    {
+     "group": "B",
+     "epoch": 3,
+     "t": 8.02,
+     "executions": 889,
+     "blocks": 7,
+     "edges": 5,
+     "exec_seconds": 0.041,
+     "feedback_seconds": 7.888
+    }
+   ],
+   "executions": 889,
+   "blocks": 7,
+   "edges": 5,
+   "exec_seconds": 0.041,
+   "feedback_seconds": 7.888,
+   "candidates_saved": 0,
+   "wall": {
+    "start_offset": 18.288,
+    "end_offset": 27.414,
+    "subprocess_seconds": 9.126
+   },
+   "corpus_in": {
+    "files": 4,
+    "bytes": 4
+   },
+   "corpus_lf_after": {
+    "files": 4,
+    "bytes": 4
+   }
+  }
+ ],
+ "total_executions": 2745,
+ "total_exec_seconds": 0.13,
+ "total_feedback_seconds": 23.64,
+ "total_candidates_saved": 2,
+ "final_blocks": 7,
+ "final_edges": 5,
+ "group_start_offset": 0.0,
+ "wall_span": 27.414,
+ "novel_seed_gain": {
+  "sf_candidates_total": 2,
+  "sf_already_in_native": 2,
+  "sf_unique_vs_native": 0,
+  "novel_seed_gain": 0.0
+ },
+ "portfolio_champions": 0,
+ "portfolio_replacements": 0,
+ "corpus_dilution_ratio": 0.0
+}

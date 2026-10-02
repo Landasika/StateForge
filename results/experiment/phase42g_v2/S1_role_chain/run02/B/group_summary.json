@@ -1,0 +1,217 @@
+{
+ "group": "B",
+ "mode": "feedback",
+ "epochs": 3,
+ "seed": 207,
+ "epoch_records": [
+  {
+   "epoch": 1,
+   "snapshots": [
+    {
+     "group": "B",
+     "epoch": 1,
+     "t": 2.0,
+     "executions": 206,
+     "blocks": 12,
+     "edges": 9,
+     "exec_seconds": 0.012,
+     "feedback_seconds": 1.939
+    },
+    {
+     "group": "B",
+     "epoch": 1,
+     "t": 4.0,
+     "executions": 424,
+     "blocks": 12,
+     "edges": 9,
+     "exec_seconds": 0.021,
+     "feedback_seconds": 3.923
+    },
+    {
+     "group": "B",
+     "epoch": 1,
+     "t": 6.01,
+     "executions": 639,
+     "blocks": 12,
+     "edges": 9,
+     "exec_seconds": 0.029,
+     "feedback_seconds": 5.91
+    },
+    {
+     "group": "B",
+     "epoch": 1,
+     "t": 8.01,
+     "executions": 859,
+     "blocks": 12,
+     "edges": 10,
+     "exec_seconds": 0.037,
+     "feedback_seconds": 7.896
+    }
+   ],
+   "executions": 859,
+   "blocks": 12,
+   "edges": 10,
+   "exec_seconds": 0.037,
+   "feedback_seconds": 7.896,
+   "candidates_saved": 2,
+   "wall": {
+    "start_offset": 0.0,
+    "end_offset": 9.095,
+    "subprocess_seconds": 9.094
+   },
+   "corpus_in": {
+    "files": 0,
+    "bytes": 0
+   },
+   "corpus_lf_after": {
+    "files": 0,
+    "bytes": 0
+   }
+  },
+  {
+   "epoch": 2,
+   "snapshots": [
+    {
+     "group": "B",
+     "epoch": 2,
+     "t": 2.01,
+     "executions": 209,
+     "blocks": 12,
+     "edges": 10,
+     "exec_seconds": 0.012,
+     "feedback_seconds": 1.945
+    },
+    {
+     "group": "B",
+     "epoch": 2,
+     "t": 4.01,
+     "executions": 419,
+     "blocks": 12,
+     "edges": 10,
+     "exec_seconds": 0.021,
+     "feedback_seconds": 3.928
+    },
+    {
+     "group": "B",
+     "epoch": 2,
+     "t": 6.02,
+     "executions": 630,
+     "blocks": 12,
+     "edges": 10,
+     "exec_seconds": 0.03,
+     "feedback_seconds": 5.916
+    },
+    {
+     "group": "B",
+     "epoch": 2,
+     "t": 8.02,
+     "executions": 842,
+     "blocks": 12,
+     "edges": 10,
+     "exec_seconds": 0.039,
+     "feedback_seconds": 7.903
+    }
+   ],
+   "executions": 842,
+   "blocks": 12,
+   "edges": 10,
+   "exec_seconds": 0.039,
+   "feedback_seconds": 7.903,
+   "candidates_saved": 0,
+   "wall": {
+    "start_offset": 9.096,
+    "end_offset": 18.215,
+    "subprocess_seconds": 9.119
+   },
+   "corpus_in": {
+    "files": 2,
+    "bytes": 2
+   },
+   "corpus_lf_after": {
+    "files": 3,
+    "bytes": 3
+   }
+  },
+  {
+   "epoch": 3,
+   "snapshots": [
+    {
+     "group": "B",
+     "epoch": 3,
+     "t": 2.01,
+     "executions": 210,
+     "blocks": 12,
+     "edges": 10,
+     "exec_seconds": 0.012,
+     "feedback_seconds": 1.941
+    },
+    {
+     "group": "B",
+     "epoch": 3,
+     "t": 4.01,
+     "executions": 421,
+     "blocks": 12,
+     "edges": 10,
+     "exec_seconds": 0.021,
+     "feedback_seconds": 3.927
+    },
+    {
+     "group": "B",
+     "epoch": 3,
+     "t": 6.02,
+     "executions": 637,
+     "blocks": 12,
+     "edges": 10,
+     "exec_seconds": 0.03,
+     "feedback_seconds": 5.915
+    },
+    {
+     "group": "B",
+     "epoch": 3,
+     "t": 8.02,
+     "executions": 852,
+     "blocks": 12,
+     "edges": 10,
+     "exec_seconds": 0.039,
+     "feedback_seconds": 7.895
+    }
+   ],
+   "executions": 852,
+   "blocks": 12,
+   "edges": 10,
+   "exec_seconds": 0.039,
+   "feedback_seconds": 7.895,
+   "candidates_saved": 0,
+   "wall": {
+    "start_offset": 18.216,
+    "end_offset": 27.321,
+    "subprocess_seconds": 9.105
+   },
+   "corpus_in": {
+    "files": 3,
+    "bytes": 3
+   },
+   "corpus_lf_after": {
+    "files": 3,
+    "bytes": 3
+   }
+  }
+ ],
+ "total_executions": 2553,
+ "total_exec_seconds": 0.115,
+ "total_feedback_seconds": 23.694,
+ "total_candidates_saved": 2,
+ "final_blocks": 12,
+ "final_edges": 10,
+ "group_start_offset": 0.0,
+ "wall_span": 27.321,
+ "novel_seed_gain": {
+  "sf_candidates_total": 2,
+  "sf_already_in_native": 2,
+  "sf_unique_vs_native": 0,
+  "novel_seed_gain": 0.0
+ },
+ "portfolio_champions": 0,
+ "portfolio_replacements": 0,
+ "corpus_dilution_ratio": 0.0
+}
