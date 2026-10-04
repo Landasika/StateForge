@@ -1,0 +1,12 @@
+{"group": "A", "epoch": 1, "t": 2.0, "executions": 757538, "blocks": 0, "edges": 0, "exec_seconds": 1.249, "feedback_seconds": 0.0}
+{"group": "A", "epoch": 1, "t": 4.0, "executions": 1537880, "blocks": 0, "edges": 0, "exec_seconds": 2.524, "feedback_seconds": 0.0}
+{"group": "A", "epoch": 1, "t": 6.0, "executions": 2343464, "blocks": 0, "edges": 0, "exec_seconds": 3.804, "feedback_seconds": 0.0}
+{"group": "A", "epoch": 1, "t": 8.0, "executions": 3121886, "blocks": 0, "edges": 0, "exec_seconds": 5.085, "feedback_seconds": 0.0}
+{"group": "A", "epoch": 1, "t": 10.0, "executions": 3926400, "blocks": 0, "edges": 0, "exec_seconds": 6.365, "feedback_seconds": 0.0}
+{"group": "A", "epoch": 1, "t": 12.0, "executions": 4746392, "blocks": 0, "edges": 0, "exec_seconds": 7.652, "feedback_seconds": 0.0}
+{"group": "A", "epoch": 1, "t": 14.0, "executions": 5534518, "blocks": 0, "edges": 0, "exec_seconds": 8.931, "feedback_seconds": 0.0}
+{"group": "A", "epoch": 1, "t": 16.0, "executions": 6325950, "blocks": 0, "edges": 0, "exec_seconds": 10.212, "feedback_seconds": 0.0}
+{"group": "A", "epoch": 1, "t": 18.0, "executions": 7122158, "blocks": 0, "edges": 0, "exec_seconds": 11.489, "feedback_seconds": 0.0}
+{"group": "A", "epoch": 1, "t": 20.0, "executions": 7926612, "blocks": 0, "edges": 0, "exec_seconds": 12.765, "feedback_seconds": 0.0}
+{"group": "A", "epoch": 1, "t": 22.0, "executions": 8714980, "blocks": 0, "edges": 0, "exec_seconds": 14.04, "feedback_seconds": 0.0}
+{"group": "A", "epoch": 1, "t": 24.0, "executions": 9491394, "blocks": 0, "edges": 0, "exec_seconds": 15.313, "feedback_seconds": 0.0}

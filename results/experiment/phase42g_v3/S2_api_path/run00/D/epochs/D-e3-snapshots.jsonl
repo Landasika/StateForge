@@ -1,0 +1,4 @@
+{"group": "D", "epoch": 3, "t": 2.0, "executions": 231, "blocks": 7, "edges": 5, "exec_seconds": 0.01, "feedback_seconds": 1.939}
+{"group": "D", "epoch": 3, "t": 4.01, "executions": 469, "blocks": 7, "edges": 5, "exec_seconds": 0.019, "feedback_seconds": 3.927}
+{"group": "D", "epoch": 3, "t": 6.01, "executions": 706, "blocks": 7, "edges": 5, "exec_seconds": 0.027, "feedback_seconds": 5.912}
+{"group": "D", "epoch": 3, "t": 8.02, "executions": 932, "blocks": 7, "edges": 5, "exec_seconds": 0.038, "feedback_seconds": 7.896}
