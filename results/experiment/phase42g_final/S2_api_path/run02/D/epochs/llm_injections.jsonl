@@ -1,3 +1,0 @@
-{"frontier": "s2_api_path.py::target::13-13::branch::1->s2_api_path.py::target::15-15::branch::1", "status": "INJECTED", "seed_id": "3ca1c03873b50dad", "value": "/"}
-{"frontier": "s2_api_path.py::target::15-15::branch::1->s2_api_path.py::target::16-16::block::1", "status": "INJECTED", "seed_id": "3e9f23b7980bd422", "value": "/"}
-{"frontier": "s2_api_path.py::target::17-17::branch::1->s2_api_path.py::target::18-18::block::1", "status": "INJECTED", "seed_id": "a4cb706cada50136", "value": "v1"}

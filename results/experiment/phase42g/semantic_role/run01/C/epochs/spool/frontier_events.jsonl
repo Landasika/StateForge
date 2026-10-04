@@ -1,5 +1,0 @@
-{"kind": "champion_new", "frontier": "semantic_role.py::target::3-3::branch::1->semantic_role.py::target::4-4::branch::1", "input_id": "01ba4719c80b6fe9", "old_distance": null, "new_distance": 0, "epoch": 0, "edge": null}
-{"kind": "champion_retire", "frontier": "semantic_role.py::target::3-3::branch::1->semantic_role.py::target::4-4::branch::1", "input_id": "01ba4719c80b6fe9", "old_distance": 0, "new_distance": null, "epoch": 0, "edge": null}
-{"edge": ["semantic_role.py::target::3-3::branch::1", "semantic_role.py::target::4-4::branch::1"], "created": 1790875053.755, "crossed": 1790875059.665, "crossing_seconds": 5.91}
-{"kind": "champion_new", "frontier": "semantic_role.py::target::4-4::branch::1->semantic_role.py::target::5-5::block::1", "input_id": "e5ed04735741366b", "old_distance": null, "new_distance": 1, "epoch": 0, "edge": null}
-{"kind": "champion_replace", "frontier": "semantic_role.py::target::4-4::branch::1->semantic_role.py::target::5-5::block::1", "input_id": "1b73e027e8850cf4", "old_distance": 1, "new_distance": 0, "epoch": 0, "edge": null}

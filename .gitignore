@@ -1,26 +1,53 @@
-# ANOTA 解释器与构建产物(~GB 级,artifact 另存)
+# 只追踪 stateforge/ + 必要配置文件,其余全部忽略
+
+# 顾问反馈压缩包
+*.tar.gz
+*.tar
+*.zip
+
+# ANOTA 解释器(~GB 级)
 anota/
+
+# 外部克隆(第三方仓库)
+external/
+
+# 实验结果(大文件/二进制)
+results/
+exp/results/
+
+# fuzz 产物
+corpus/
+crash-*
+*.db
+*.sqlite3
+nohup.out
 
 # Python
 __pycache__/
 *.pyc
 .pytest_cache/
 .mypy_cache/
+*.egg-info/
 
-# StateForge 运行时
+# 运行时缓存
 stateforge/**/cache/
 stateforge/**/llm/cache/
-*.db
-*.sqlite3
 
-# 实验结果(二进制/大文件,另行保存)
-exp/results/
+# 文档 / 笔记 / 论文(非代码)
+notes/
+papers/
+plans/
+design.md
+*.md.tmp
 
-# 快照模板与 fuzz 产物
-tpl/
-crash-*
-corpus/
-.pycg-callgraph.json
-.pycg-*.json
-external/
-nohup.out
+# 临时
+*.swp
+*~
+.DS_Store
+
+# 例外:README 和 requirements 保留(不忽略)
+!README.md
+!requirements-test.txt
+!pyproject.toml
+!pytest.ini
+!LICENSE

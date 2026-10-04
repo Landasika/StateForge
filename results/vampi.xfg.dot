@@ -1,4 +1,0 @@
-digraph XFG {
-  rankdir=LR;
-  node [fontname="Helvetica"];
-}

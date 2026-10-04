@@ -1,3 +1,0 @@
-{"kind": "champion_new", "frontier": "s1_role_chain.py::target::13-13::returnsite::1->s1_role_chain.py::target::15-15::branch::1", "input_id": "01ba4719c80b6fe9", "old_distance": null, "new_distance": 0, "epoch": 0, "edge": null}
-{"edge": ["s1_role_chain.py::target::5-5::block::1", "s1_role_chain.py::target::8-11::block::1"], "created": 1790960978.102, "crossed": 1790960985.069, "crossing_seconds": 6.967}
-{"kind": "champion_new", "frontier": "s1_role_chain.py::target::3-3::entry::1->s1_role_chain.py::target::3-3::try::1", "input_id": "efdd30d1dda5a1a3", "old_distance": null, "new_distance": 0, "epoch": 0, "edge": null}

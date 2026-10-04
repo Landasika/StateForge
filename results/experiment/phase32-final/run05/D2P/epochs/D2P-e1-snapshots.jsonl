@@ -1,4 +1,0 @@
-{"group": "D2P", "epoch": 1, "t": 2.0, "executions": 362, "blocks": 65, "edges": 65, "exec_seconds": 0.007, "feedback_seconds": 1.914}
-{"group": "D2P", "epoch": 1, "t": 4.01, "executions": 722, "blocks": 65, "edges": 65, "exec_seconds": 0.014, "feedback_seconds": 3.897}
-{"group": "D2P", "epoch": 1, "t": 6.01, "executions": 1089, "blocks": 72, "edges": 73, "exec_seconds": 0.02, "feedback_seconds": 5.883}
-{"group": "D2P", "epoch": 1, "t": 8.01, "executions": 1472, "blocks": 72, "edges": 73, "exec_seconds": 0.027, "feedback_seconds": 7.863}
