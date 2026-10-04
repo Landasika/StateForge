@@ -105,8 +105,14 @@ def _focused_corpus(workdir: Path, out_dir: Path) -> Path:
 
 
 def _inject_llm_between_epochs(ir, workdir: Path, corpus_dir: Path,
-                               target: str) -> list[dict]:
-    """轮间 LLM 种子注入(不执行目标,只产种子写 corpus)。"""
+                               target: str,
+                               stall_tracker=None, epoch_num: int = 0,
+                               prev_blocks: int = 0, prev_edges: int = 0) -> list[dict]:
+    """轮间 LLM 种子注入(不执行目标,只产种子写 corpus)。
+
+    集成 StallTracker:只在 frontier 真正停滞(stall_window 轮无改善)
+    时触发 LLM,不是每轮都调。
+    """
     import json as _json
     from stateforge.feasibility.llm_seed_injector import inject_llm_seeds
 
@@ -114,10 +120,24 @@ def _inject_llm_between_epochs(ir, workdir: Path, corpus_dir: Path,
     if not state_path.exists():
         return []
     state = _json.loads(state_path.read_text(encoding="utf-8"))
+
+    # StallTracker 判定:这个 epoch 是否有真正的停滞
+    active_frontiers = {tuple(e) for e in state.get("edge_frontiers", [])
+                        if len(e) == 2}
+    cur_blocks = len(state.get("covered_blocks", []))
+    cur_edges = len(state.get("covered_edges", []))
+    new_blocks = cur_blocks - prev_blocks
+    new_edges = cur_edges - prev_edges
+
+    if stall_tracker is not None:
+        to_inject = stall_tracker.observe_epoch(
+            epoch_num, active_frontiers, new_blocks, new_edges)
+        if not to_inject:
+            return []                        # 没有停滞 frontier → 不调 LLM
+
     provider_path = Path(target).parent / (Path(target).stem + ".llm.py")
     if not provider_path.exists():
-        return []                        # 无 provider 配置 → 跳过
-    # provider 从靶目录加载(用户自定义 mock 或真 API)
+        return []                            # 无 provider → 跳过
     import importlib.util as _ilu
     spec = _ilu.spec_from_file_location("llm_provider", provider_path)
     mod = _ilu.module_from_spec(spec)
@@ -125,9 +145,13 @@ def _inject_llm_between_epochs(ir, workdir: Path, corpus_dir: Path,
     provider = mod.provider
 
     from stateforge.core.ir import ProgramIR
-    ir_obj = ProgramIR.from_json(ir)  # ir 是 JSON 路径,需加载
+    ir_obj = ProgramIR.from_json(ir)
     records = inject_llm_seeds(ir_obj, Path(target), state,
                                corpus_dir, provider)
+    if records and stall_tracker is not None:
+        for r in records:
+            edge = tuple(r.get("frontier", "->").split("->"))
+            stall_tracker.mark_injected(edge)
     if records:
         llm_log = workdir / "epochs" / "llm_injections.jsonl"
         with llm_log.open("a", encoding="utf-8") as fh:
@@ -149,16 +173,27 @@ def run_epochs(target: str, ir: str, workdir: Path, seconds_per_epoch: float,
     workdir.mkdir(parents=True, exist_ok=True)
     corpus_dir = workdir / "lf_corpus"
     corpus_dir.mkdir(exist_ok=True)
+
+    # StallTracker:policy=llm 时追踪前沿停滞,N 轮无改善才触发
+    stall_tracker = None
+    if policy == "llm":
+        from stateforge.feasibility.stall_tracker import StallTracker
+        stall_tracker = StallTracker(stall_window=2, max_llm_per_frontier=3)
+
+    prev_blocks = prev_edges = 0
     epoch_records = []
     for epoch in range(1, epochs + 1):
         in_dir = corpus_dir if epoch == 1 else workdir / f"corp_in_e{epoch}"
         if epoch > 1:
             in_dir.mkdir(parents=True, exist_ok=True)
 
-        # LLM 种子注入(先于语料准备;失败不阻塞)
+        # LLM 种子注入(StallTracker 判定后才触发;失败不阻塞)
         if policy == "llm" and epoch > 1:
             try:
-                _inject_llm_between_epochs(ir, workdir, corpus_dir, target)
+                _inject_llm_between_epochs(
+                    ir, workdir, corpus_dir, target,
+                    stall_tracker=stall_tracker, epoch_num=epoch,
+                    prev_blocks=prev_blocks, prev_edges=prev_edges)
             except Exception:              # noqa: BLE001
                 pass                       # 注入失败 → 照常跑下一轮
             if epoch % 2 == 0 and policy == "portfolio":
@@ -202,6 +237,8 @@ def run_epochs(target: str, ir: str, workdir: Path, seconds_per_epoch: float,
               "group_start_offset": round(epoch_records[0]["wall"]["start_offset"], 3),
               "wall_span": round(epoch_records[-1]["wall"]["end_offset"]
                                  - epoch_records[0]["wall"]["start_offset"], 3)}
+    if use_feedback and stall_tracker is not None:
+        result["stall_summary"] = stall_tracker.summary()
     if use_feedback:
         result["novel_seed_gain"] = _novel_seed_gain(workdir)
         # 3.2 诊断:组合规模/替换数;focused vs normal 的 Portfolio Yield
