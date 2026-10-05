@@ -87,9 +87,12 @@ class Provider:
             url, out = f"{self.base_url}/chat/completions", lambda r: r["choices"][0]["message"]["content"]
 
         last_exc: Exception | None = None
+        # 自签名代理(如本机 GLM 代理)可跳过验证:SF_LLM_SSL_VERIFY=false
+        _verify = os.getenv("SF_LLM_SSL_VERIFY", "true").lower() != "false"
         for _ in range(2):  # 1 次重试
             try:
-                resp = httpx.post(url, json=payload, headers=self.headers, timeout=120.0)
+                resp = httpx.post(url, json=payload, headers=self.headers,
+                                  timeout=120.0, verify=_verify)
                 resp.raise_for_status()
                 return out(resp.json())
             except Exception as exc:  # noqa: BLE001 —— 重试一次后抛给调用方降级
