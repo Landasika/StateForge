@@ -101,7 +101,7 @@ python -m stateforge.evaluation.experiment.p4_analysis \
     results/experiment/p4_formal --out results/experiment/p4_formal/p4_report.json
 ```
 
-预期:stdout 文本表 + `<out>.json`/`<out>.txt` 落盘,首行 `campaign dirs 3 | ablation dirs 3`;表值即 README v0.5 数字来源。
+预期:stdout 文本表 + 落盘——JSON 写于 `--out` 原样路径,文本表写于 `--out` 的 `.json`→`.txt` 后缀位(上命令得 `p4_report.json`+`p4_report.txt`;冻结权威件以无扩展名 `--out …/p4_report` 生成,得 `p4_report`+`p4_report.txt`);stdout 第 2 行含 `campaign dirs 3 | ablation dirs 3`(首行为标题行 `P4 formal analysis — <root>`);表值即 README v0.5 数字来源。
 
 ### SF-Micro 微基准(make demo)
 

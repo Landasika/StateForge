@@ -229,7 +229,7 @@ stateforge/
 
 **v0.5-evaluation 验收**:10-run 配对战役(3×10s/seed0=7):E−D1 块增益 t_state_chain +20.2、t_state_gate +22.0、vulnshop +99.9(median 98,10/0/0 全胜,AUC +0.0967);消融:规划器贡献 E−E-rand +2.4/+5.5/+65.6(真实应用上最大),R2 触发代价 |E−E-always| ≤1.1(≈零);vulnshop E 状态原子 union=4(注:该原子口径为 campaign 侧 AppModel 分派;消融侧三指标仅微靶路径可测,vulnshop 为未测)。**口径注(v0.5 起)**:B/C/D1/D2R/D2P 轮间语料结转自 v0.5 恢复(a0cc5bf..v0.4 期间失效),该窗口内上述臂的战役数字与 v0.5 及更早阶段不可直接比较;E 同窗口亦自 epoch 2 空 corp_in 起跑(结转门当时同样未覆盖 policy=state),该效应对 E 方向保守(缺结转只会低估 E 的覆盖);Phase-3 表中 D 族数字早于 a0cc5bf,口径一致可比;战役/消融数据在 results/experiment/p4_formal/(不入库),表值=p4_analysis 输出抄录
 
-**v1.0-release 验收**:./ci.sh 全链绿(fresh clone 440 passed / 2 skipped / 26 deselected;micro 全 1.00:静态 21/21 + 动态 5/5);开发树 441 passed / 1 skipped / 26 deselected;论文两版注入数字源=p4_report(114 数字 token 双版程序化同步;本机无 LaTeX 工具链,两版未编译——见文件头注);已知留档不修项 10 条见 .superpowers 工作区与 task-3 报告(主要为观感/文档级);**披露:papers/draft/{main,main-zh}.tex 经 git add -f 入库(原在 .gitignore),如需移出 git rm --cached 后自行保管**
+**v1.0-release 验收**:./ci.sh 全链绿(fresh clone 440 passed / 2 skipped / 26 deselected;micro 全 1.00:静态 21/21 + 动态 5/5);开发树 441 passed / 1 skipped / 26 deselected;论文两版注入数字源=p4_report(114 数字 token 双版程序化同步;本机无 LaTeX 工具链,两版未编译——见文件头注);已知留档不修项 10 条见 docs/known-debt.md(主要为观感/文档级);**披露:papers/draft/{main,main-zh}.tex 经 git add -f 入库(原在 .gitignore),如需移出 git rm --cached 后自行保管**
 
 **已知义务:** 语义标注缓存(`stateforge/solving/llm/cache/*.json`)键于 PROMPT_VERSION 与夹具内容——二者变更后需重跑生成器并提交新缓存,否则 fresh clone 回归"全 irrelevant"。缓存仅按显式路径提交(`git add stateforge/solving/llm/cache/<hash>.json`),勿在该目录使用 `git add -A`。
 
