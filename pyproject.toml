@@ -32,7 +32,7 @@ dev = [
     "matplotlib==3.10.0",  # experiment/plot_campaign.py
 ]
 fuzz = [
-    "atheris==3.1.0",      # 驱动侧 fuzz 引擎;sdist 编译需 clang
+    "atheris==3.1.0",      # 驱动侧 fuzz 引擎;无预编译 wheel 时 sdist 编译需 clang
 ]
 
 [tool.setuptools.packages.find]

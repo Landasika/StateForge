@@ -48,10 +48,10 @@ Mapper（轨迹 → 静态 ICFG 块/边映射，Phase-1 冻结）
 ## 快速开始
 
 ```bash
-# 安装（唯一依赖源：pyproject.toml；atheris 编译需 clang）
+# 安装（唯一依赖源：pyproject.toml；atheris 无预编译 wheel 时 sdist 编译需 clang）
 pip install -e ".[dev,test,fuzz]"
 
-# 跑全量测试（255 tests，26 个 anota 标记用例默认 deselect、在 ANOTA 解释器内另跑）
+# 跑全量测试（开发树 255 tests；fresh clone 254 passed + 2 skipped，差异见"冻结版本"节）
 pytest
 
 # 静态分析：构建 ICFG
@@ -62,6 +62,7 @@ python -m stateforge.cli feedback results/structural/program_ir.json trace.jsonl
 
 # 可视化：静态+动态叠图
 python -m stateforge.cli viz program_ir.json feedback.json --out coverage.dot
+# 可视化叠图（dot 命令可选，需系统 graphviz）
 dot -Tsvg coverage.dot -o coverage.svg
 
 # 微基准验证（21 用例，全部 1.00）
@@ -319,7 +320,7 @@ python -m stateforge.experiment.four_arm --out results/experiment --runs 3 --epo
 **v0.1-baseline 验证环境**:Python 3.13.5(anaconda)/ Ubuntu(Linux 6.8)/ clang 备用(atheris 实走 tuna wheel)/ pytest 8.3.4 · flask 3.1.0 · networkx 3.4.2 · elementpath 5.1.4 · httpx 0.28.1 · pydantic 2.11.7 · PyYAML 6.0.2(运行时)· matplotlib 3.10.0(dev)· atheris 3.1.0
 **验收数字**:开发树 255 passed / 1 skipped / 26 deselected;fresh clone 254 passed / 2 skipped / 26 deselected(差异=OWASP Benchmark 用例按设计跳过,external/ 不入 git);micro_benchmark 21 用例全 1.00(CFG/CALL/RET P&R + trace-accuracy 5/5)
 
-**已知义务:** 语义标注缓存(`stateforge/llm/cache/*.json`)键于 PROMPT_VERSION 与夹具内容——二者变更后需重跑生成器并提交新缓存,否则 fresh clone 回归"全 irrelevant"。
+**已知义务:** 语义标注缓存(`stateforge/llm/cache/*.json`)键于 PROMPT_VERSION 与夹具内容——二者变更后需重跑生成器并提交新缓存,否则 fresh clone 回归"全 irrelevant"。缓存仅按显式路径提交(`git add stateforge/llm/cache/<hash>.json`),勿在该目录使用 `git add -A`。
 
 ---
 
