@@ -5,10 +5,10 @@ from pathlib import Path
 import networkx as nx
 import pytest
 
-from stateforge.analyzer.analyzer import analyze
-from stateforge.graph.builder import build_sstg
-from stateforge.planner.backward import plan_backward
-from stateforge.planner.goals import GoalSpec, VULNSHOP_GOALS
+from stateforge.analysis.analyzer import analyze
+from stateforge.analysis.builder import build_sstg
+from stateforge.state.planning.backward import plan_backward
+from stateforge.state.planning.goals import GoalSpec, VULNSHOP_GOALS
 
 VULNSHOP = Path(__file__).parents[2] / "targets" / "vulnshop"
 

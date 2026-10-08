@@ -30,7 +30,7 @@ The command writes `program_ir.json` and `summary.json`. The IR is the shared
 contract for tracing, feedback, and visualisation; it should be built once and
 reused for an experiment.
 
-Map a trace artifact produced by `stateforge.fuzz.harness`:
+Map a trace artifact produced by `stateforge.fuzzing.harness`:
 
 ```bash
 PYTHONPATH=/home/landasika/icassp \
@@ -57,25 +57,31 @@ python -m stateforge.cli experiment targets/vulnshop \
 The Atheris boundary is intentionally thin:
 
 ```python
-from stateforge.fuzz.harness import run_one
+from stateforge.fuzzing.harness import run_one
 
 result = run_one(data, target_function, root=target_root)
 result.save_trace("trace.json")
 ```
 
-Use `stateforge.feedback.corpus.evaluate_seed` to attach a structural score to
-each executed seed and `stateforge.fuzz.atheris_runner.rank_corpus` to produce
+Use `stateforge.fuzzing.feedback.corpus.evaluate_seed` to attach a structural score to
+each executed seed and `stateforge.fuzzing.atheris_runner.rank_corpus` to produce
 deterministic corpus ordering metadata. No mutation or replacement fuzz loop is
 implemented in StateForge.
 
 ## Layout
 
 ```text
-core/       ProgramIR and artifact serialization
-static/     AST basic-block CFG and project ICFG
-dynamic/    ordered trace collection, mapping, coverage
-feedback/   overlay, frontier, distance, scoring, corpus metadata
-fuzz/       thin Atheris boundary and harness
+core/           ProgramIR and artifact serialization
+analysis/       static structure analysis: CFG/ICFG (analysis/static/),
+                semantic analyzer, SSTG graph builder/export
+runtime/        ordered trace collection, mapping, coverage, replay,
+                snapshot subpackage (runtime/snapshot/)
+fuzzing/        thin Atheris boundary and harness
+fuzzing/feedback/  overlay, frontier, distance, scoring, corpus metadata
+solving/        branch-feasibility solving; LLM subpackage (solving/llm/)
+state/          state extraction, annotation, planning (state/planning/)
+adapters/       target adapters (former fuzz/adapters/)
+evaluation/     benchmarks, experiment subpackage, viz subpackage
 ```
 
 The former state graph, LLM lifting, snapshot, and request-generation code is

@@ -1,9 +1,9 @@
 """P1-4:块/边按请求维度的计数。"""
 from stateforge.core.ir import ProgramIR, BasicBlock, FunctionIR, FlowEdge
-from stateforge.dynamic.mapper import map_trace
-from stateforge.dynamic.tracer import TraceEvent
-from stateforge.feedback.engine import compute_feedback
-from stateforge.feedback.overlay import build_overlay
+from stateforge.runtime.mapper import map_trace
+from stateforge.runtime.tracer import TraceEvent
+from stateforge.fuzzing.feedback.engine import compute_feedback
+from stateforge.fuzzing.feedback.overlay import build_overlay
 
 
 def _ir():

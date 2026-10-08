@@ -1,5 +1,5 @@
 """Phase-2 模块 2:CorpusManager——去重/持久化/导出。"""
-from stateforge.fuzz.corpus_manager import CorpusManager
+from stateforge.fuzzing.corpus_manager import CorpusManager
 
 
 def test_save_dedup_and_roundtrip(tmp_path):

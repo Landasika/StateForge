@@ -11,12 +11,12 @@ from pathlib import Path
 
 import pytest
 
-from stateforge.analyzer.analyzer import analyze
-from stateforge.executor.snapshot_replay import SnapshotReplay
-from stateforge.graph.builder import build_sstg
-from stateforge.planner.backward import plan_backward
-from stateforge.planner.goals import VULNSHOP_GOALS
-from stateforge.snapshot.client import CheckpointHandle
+from stateforge.analysis.analyzer import analyze
+from stateforge.runtime.snapshot_replay import SnapshotReplay
+from stateforge.analysis.builder import build_sstg
+from stateforge.state.planning.backward import plan_backward
+from stateforge.state.planning.goals import VULNSHOP_GOALS
+from stateforge.runtime.snapshot.client import CheckpointHandle
 
 pytestmark = pytest.mark.anota
 
@@ -47,7 +47,7 @@ def checkpoints(tmp_path_factory):
         tmp = tmp_path_factory.mktemp(f"snap-g{guards}")
         sock, db = tmp / "sf.sock", tmp / "shop.db"
         procs[guards] = subprocess.Popen(
-            [str(ANOTA_PY), "-m", "stateforge.snapshot.supervisor",
+            [str(ANOTA_PY), "-m", "stateforge.runtime.snapshot.supervisor",
              "--target", "vulnshop", "--sock", str(sock), "--port", "0",
              "--guards", str(guards), "--db", str(db)],
             cwd=str(REPO), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,

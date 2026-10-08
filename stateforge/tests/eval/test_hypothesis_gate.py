@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from stateforge.eval.hypothesis_gate import (
+from stateforge.evaluation.hypothesis_gate import (
     Hypothesis, VerificationResult, Verdict,
     annotate_ground_truth, build_hypotheses_from_analyzer,
     hypothesis_to_prompt, hypothesis_to_bundled_prompt,

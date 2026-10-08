@@ -12,8 +12,8 @@ from pathlib import Path
 import networkx as nx
 import pytest
 
-from stateforge.analyzer.analyzer import analyze
-from stateforge.analyzer.cfg import attach_anchors, build_cfg, build_xfg
+from stateforge.analysis.analyzer import analyze
+from stateforge.analysis.cfg import attach_anchors, build_cfg, build_xfg
 
 SRC = """
 def f(x):
@@ -103,7 +103,7 @@ def test_xfg_assembly(model):
 
 
 def test_xfg_export_dot(tmp_path, model):
-    from stateforge.analyzer.cfg import xfg_to_dot
+    from stateforge.analysis.cfg import xfg_to_dot
 
     xfg = build_xfg(model)
     out = tmp_path / "xfg.dot"
@@ -153,7 +153,7 @@ def test_xfg_state_links_preserved(model):
 
 # ------------------------------------------------- 数据流层:def-use + 参数源传播
 
-from stateforge.analyzer.cfg import (
+from stateforge.analysis.cfg import (
     anchor_param_influence,
     block_gates,
     reaching_definitions,

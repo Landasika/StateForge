@@ -6,9 +6,9 @@ from pathlib import Path
 import pytest
 
 from stateforge.core.ir import ProgramIR
-from stateforge.feasibility.enhanced_provenance import (
+from stateforge.solving.enhanced_provenance import (
     correlate_values, resolve_cross_function, resolve_enhanced)
-from stateforge.static.icfg import build_icfg
+from stateforge.analysis.static.icfg import build_icfg
 
 
 # ── ② 跨函数 ──

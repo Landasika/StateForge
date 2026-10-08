@@ -12,7 +12,7 @@ from pathlib import Path
 
 import pytest
 
-from stateforge.snapshot.client import CheckpointHandle
+from stateforge.runtime.snapshot.client import CheckpointHandle
 
 pytestmark = pytest.mark.anota
 
@@ -27,7 +27,7 @@ def root_ckpt(tmp_path_factory):
     db = tmp / "shop.db"
     sock = tmp / "sf.sock"
     proc = subprocess.Popen(
-        [str(ANOTA_PY), "-m", "stateforge.snapshot.supervisor",
+        [str(ANOTA_PY), "-m", "stateforge.runtime.snapshot.supervisor",
          "--target", "vulnshop", "--sock", str(sock), "--port", "0",
          "--guards", "0", "--db", str(db)],
         cwd=str(REPO), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,

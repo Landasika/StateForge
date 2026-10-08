@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from stateforge.dynamic.io import merge_events
-from stateforge.dynamic.tracer import TraceEvent
+from stateforge.runtime.io import merge_events
+from stateforge.runtime.tracer import TraceEvent
 
 
 def test_merge_events_reassigns_request_ids_and_indices(tmp_path: Path):

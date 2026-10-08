@@ -1,7 +1,7 @@
 """Tracer file-filter cache: correctness of the hot path."""
 from pathlib import Path
 
-from stateforge.dynamic.tracer import TraceSession
+from stateforge.runtime.tracer import TraceSession
 
 
 def test_events_use_resolved_paths_and_respect_root(tmp_path: Path):

@@ -3,7 +3,7 @@
 真值 expected_icfg.json 为人工按 Python 语义逐例核准后冻结(非生成回灌);
 try_except 为声明的保守近似(handler 自 try 入口可达)。
 """
-from stateforge.eval.micro_benchmark import evaluate
+from stateforge.evaluation.micro_benchmark import evaluate
 
 THRESHOLD = 1.0
 

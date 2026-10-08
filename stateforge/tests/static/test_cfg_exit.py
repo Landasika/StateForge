@@ -1,7 +1,7 @@
 """H1(P0 评审§11):所有 return terminal 必须显式连 function.exit。"""
 import ast
 
-from stateforge.static.cfg import build_function_cfg
+from stateforge.analysis.static.cfg import build_function_cfg
 
 
 def _build(src):

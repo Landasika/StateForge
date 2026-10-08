@@ -1,7 +1,7 @@
 """H3(评审§13,P0/P1):名字解析歧义时用预生成 callgraph(PyCG)消歧。"""
 from pathlib import Path
 
-from stateforge.static.icfg import build_icfg
+from stateforge.analysis.static.icfg import build_icfg
 
 SRC_A = '''\
 from b import get

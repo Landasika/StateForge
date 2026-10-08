@@ -1,9 +1,9 @@
 """Phase-3.1 单元:tracker 版本化 / oracle 距离与 UNREACHABLE / 评分与保留语义。"""
 from stateforge.core.ir import ProgramIR, BasicBlock, FunctionIR, FlowEdge
-from stateforge.dynamic.mapper import MappedTrace
-from stateforge.feedback.frontier_feedback import FrontierDirectedFeedback
-from stateforge.feedback.frontier_tracker import FrontierTracker
-from stateforge.feedback.distance_oracle import DistanceOracle
+from stateforge.runtime.mapper import MappedTrace
+from stateforge.fuzzing.feedback.frontier_feedback import FrontierDirectedFeedback
+from stateforge.fuzzing.feedback.frontier_tracker import FrontierTracker
+from stateforge.fuzzing.feedback.distance_oracle import DistanceOracle
 
 
 def _ir():

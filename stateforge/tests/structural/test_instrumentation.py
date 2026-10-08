@@ -1,7 +1,7 @@
 """Selective instrumentation with dedup."""
 from flask import Flask
 
-from stateforge.fuzz.instrumentation import Instrumenter
+from stateforge.fuzzing.instrumentation import Instrumenter
 
 
 class FakeAtheris:

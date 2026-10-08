@@ -1,9 +1,9 @@
 """H5(评审§17):边级前沿——dst 已覆盖但边从未走过也要报。"""
 from stateforge.core.ir import ProgramIR, BasicBlock, FunctionIR, FlowEdge
-from stateforge.feedback.engine import compute_feedback
-from stateforge.feedback.frontier import find_edge_frontiers
-from stateforge.feedback.overlay import Overlay
-from stateforge.dynamic.tracer import TraceEvent
+from stateforge.fuzzing.feedback.engine import compute_feedback
+from stateforge.fuzzing.feedback.frontier import find_edge_frontiers
+from stateforge.fuzzing.feedback.overlay import Overlay
+from stateforge.runtime.tracer import TraceEvent
 
 
 def _ir():

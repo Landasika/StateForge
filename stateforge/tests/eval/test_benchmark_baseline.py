@@ -13,7 +13,7 @@ pytestmark = pytest.mark.skipif(not REPO.exists(),
 
 
 def test_benchmark_baseline(tmp_path):
-    from stateforge.eval.benchmark_baseline import run_baseline
+    from stateforge.evaluation.benchmark_baseline import run_baseline
 
     payload = run_baseline(REPO, sample=12, out=tmp_path)
     # 静态:真实规模 + call/return 严格配对

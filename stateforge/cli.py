@@ -9,10 +9,10 @@ import sys
 
 from stateforge.core.ir import ProgramIR
 from stateforge.core.serialization import save_json, save_program_ir
-from stateforge.dynamic.io import merge_events
-from stateforge.dynamic.coverage import coverage
-from stateforge.feedback.engine import compute_feedback
-from stateforge.static.icfg import build_icfg
+from stateforge.runtime.io import merge_events
+from stateforge.runtime.coverage import coverage
+from stateforge.fuzzing.feedback.engine import compute_feedback
+from stateforge.analysis.static.icfg import build_icfg
 
 
 def analyze_cmd(target: str, out: str, callgraph_path: str | None = None) -> int:
@@ -45,7 +45,7 @@ def feedback_cmd(ir_path: str, trace_paths: list[str], out: str) -> int:
     ir_stale = False                                   # P1-7:陈旧检测
     root = ir.metadata.get("root")
     if root:
-        from stateforge.static.icfg import _source_hash
+        from stateforge.analysis.static.icfg import _source_hash
         try:
             ir_stale = _source_hash(Path(root)) != ir.metadata.get("source_hash")
         except OSError:
@@ -127,7 +127,7 @@ def main() -> int:
     if args.command == "experiment":
         return experiment_cmd(args.target, args.out, args.traces)
     if args.command == "viz":
-        from stateforge.viz.coverage_dot import coverage_dot
+        from stateforge.evaluation.viz.coverage_dot import coverage_dot
         ir_obj = ProgramIR.from_json(args.ir)
         fb = json.loads(Path(args.feedback).read_text(encoding="utf-8"))
         out = coverage_dot(ir_obj, fb, args.out)

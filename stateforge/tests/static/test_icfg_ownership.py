@@ -2,7 +2,7 @@
 import ast
 from pathlib import Path
 
-from stateforge.static.icfg import _iter_owned_calls, build_icfg
+from stateforge.analysis.static.icfg import _iter_owned_calls, build_icfg
 
 SRC = '''\
 def outer(x):

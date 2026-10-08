@@ -1,7 +1,7 @@
 """P1-7:source_hash 存在且内容变化后失效。"""
 import os
 
-from stateforge.static.icfg import _source_hash, build_icfg
+from stateforge.analysis.static.icfg import _source_hash, build_icfg
 
 
 def _app(tmp_path):

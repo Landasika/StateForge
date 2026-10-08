@@ -1,7 +1,7 @@
 """H6(评审§2):块 ID 用相对路径,跨机器稳定;file 字段仍绝对。"""
 from pathlib import Path
 
-from stateforge.static.icfg import build_icfg
+from stateforge.analysis.static.icfg import build_icfg
 
 SRC = "def h(u):\n    return helper(u)\n\n\ndef helper(x):\n    return x\n"
 

@@ -1,7 +1,7 @@
 """H2(评审§15,P0):line→块映射精确 line_numbers 优先,range 兜底。"""
 from stateforge.core.ir import ProgramIR, BasicBlock, FunctionIR
-from stateforge.dynamic.mapper import map_trace
-from stateforge.dynamic.tracer import TraceEvent
+from stateforge.runtime.mapper import map_trace
+from stateforge.runtime.tracer import TraceEvent
 
 
 def _ir():

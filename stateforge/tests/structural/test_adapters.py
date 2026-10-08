@@ -2,9 +2,9 @@
 import pytest
 from flask import Flask
 
-from stateforge.fuzz.adapters.base import TargetAdapter
-from stateforge.fuzz.adapters.callable import CallableAdapter
-from stateforge.fuzz.adapters.flask import FlaskAdapter
+from stateforge.adapters.base import TargetAdapter
+from stateforge.adapters.callable import CallableAdapter
+from stateforge.adapters.flask import FlaskAdapter
 
 
 class FakeAtheris:

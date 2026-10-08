@@ -10,15 +10,15 @@ import pytest
 
 SUBPACKAGES = [
     "stateforge.core",
-    "stateforge.analyzer",
-    "stateforge.graph",
-    "stateforge.planner",
-    "stateforge.fuzz",
-    "stateforge.executor",
-    "stateforge.snapshot",
-    "stateforge.oracle",
-    "stateforge.llm",
-    "stateforge.eval",
+    "stateforge.analysis",
+    "stateforge.analysis.static",
+    "stateforge.state.planning",
+    "stateforge.fuzzing",
+    "stateforge.runtime",
+    "stateforge.runtime.snapshot",
+    "stateforge.adapters",
+    "stateforge.solving.llm",
+    "stateforge.evaluation",
     "stateforge.targets",
 ]
 

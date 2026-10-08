@@ -1,7 +1,7 @@
 """P1-2:同块多 call 的 CS/RS 合成链保序;return helper() 特判;不造假边。"""
 from pathlib import Path
 
-from stateforge.static.icfg import build_icfg
+from stateforge.analysis.static.icfg import build_icfg
 
 MULTI = '''\
 def handler(u):

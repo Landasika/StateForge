@@ -5,9 +5,9 @@ from pathlib import Path
 import networkx as nx
 import pytest
 
-from stateforge.analyzer.analyzer import analyze
-from stateforge.graph.builder import build_sstg
-from stateforge.graph.export import to_dot, to_json
+from stateforge.analysis.analyzer import analyze
+from stateforge.analysis.builder import build_sstg
+from stateforge.analysis.export import to_dot, to_json
 
 VULNSHOP = Path(__file__).parents[2] / "targets" / "vulnshop"
 

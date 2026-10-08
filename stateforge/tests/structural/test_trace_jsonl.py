@@ -2,9 +2,9 @@
 import json
 from pathlib import Path
 
-from stateforge.dynamic.io import load_events
-from stateforge.dynamic.tracer import TraceEvent
-from stateforge.fuzz.atheris_runner import TraceJsonlWriter
+from stateforge.runtime.io import load_events
+from stateforge.runtime.tracer import TraceEvent
+from stateforge.fuzzing.atheris_runner import TraceJsonlWriter
 
 
 def test_writer_flushes_per_input_and_survives_no_close(tmp_path: Path):

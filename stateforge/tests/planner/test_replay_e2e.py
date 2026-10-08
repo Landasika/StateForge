@@ -13,12 +13,12 @@ from pathlib import Path
 import httpx
 import pytest
 
-from stateforge.analyzer.analyzer import analyze
-from stateforge.executor.replay import GoalResult, ReplayExecutor
-from stateforge.graph.builder import build_sstg
-from stateforge.planner.backward import plan_backward
-from stateforge.planner.checkers import CHECKERS
-from stateforge.planner.goals import VULNSHOP_GOALS
+from stateforge.analysis.analyzer import analyze
+from stateforge.runtime.replay import GoalResult, ReplayExecutor
+from stateforge.analysis.builder import build_sstg
+from stateforge.state.planning.backward import plan_backward
+from stateforge.state.planning.checkers import CHECKERS
+from stateforge.state.planning.goals import VULNSHOP_GOALS
 
 VULNSHOP = Path(__file__).parents[2] / "targets" / "vulnshop"
 ANOTA_PY = Path("/home/landasika/icassp/anota/ANOTA/ANOTA-interpreter/python")

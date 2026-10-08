@@ -11,7 +11,7 @@ from pathlib import Path
 
 import pytest
 
-from stateforge.feasibility.stall_tracker import StallTracker
+from stateforge.solving.stall_tracker import StallTracker
 
 
 class TestStallTracker:
@@ -60,8 +60,8 @@ class TestEndToEndCampaign:
 
     def test_c_vs_d_s2_api_path(self, tmp_path):
         """S2:D 在 stall 后注入 LLM 种子,Atheris 突破 C 卡住的 frontier。"""
-        from stateforge.experiment.epoch import run_epochs
-        from stateforge.static.icfg import build_icfg
+        from stateforge.evaluation.experiment.epoch import run_epochs
+        from stateforge.analysis.static.icfg import build_icfg
         import subprocess, sys
 
         fixture = Path(__file__).parents[2] / "fixtures" / "llm_loop" / "S2_api_path"

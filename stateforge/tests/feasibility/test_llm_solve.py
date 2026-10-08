@@ -4,10 +4,10 @@ from pathlib import Path
 
 import pytest
 
-from stateforge.feasibility.llm_solver import LLMSemanticSolver, _parse_llm_output
-from stateforge.feasibility.proposal import MutationProposal, ProposalStatus
-from stateforge.feasibility.proposal_trace import ProposalTraceRecorder
-from stateforge.feasibility.proposal_validator import validate
+from stateforge.solving.llm_solver import LLMSemanticSolver, _parse_llm_output
+from stateforge.solving.proposal import MutationProposal, ProposalStatus
+from stateforge.solving.proposal_trace import ProposalTraceRecorder
+from stateforge.solving.proposal_validator import validate
 
 LS = Path(__file__).parents[2] / "fixtures" / "ls_micro"
 
@@ -109,15 +109,15 @@ def _llm_response(status="PROPOSED", kind="QUERY", key="name", value="admin",
 
 def test_class1_deterministic_sufficient_llm_not_triggered(tmp_path):
     """LS01:x==731 确定性 solver 直接解决 → LLM 不该被调。"""
-    from stateforge.feasibility.solve_loop import solve_loop
-    from stateforge.static.icfg import build_icfg
+    from stateforge.solving.solve_loop import solve_loop
+    from stateforge.analysis.static.icfg import build_icfg
     d = LS / "LS01_deterministic_sufficient"
     res = solve_loop(d / "app.py", build_icfg(d),
                      json.loads((d / "input.json").read_text()))
     # 确定性求解成功(4.1 冻结链)
     assert res.target_reached
     # StagnationMonitor 不触发(DeterministicFailure=False)
-    from stateforge.feasibility.stagnation import StagnationMonitor
+    from stateforge.solving.stagnation import StagnationMonitor
     mon = StagnationMonitor(build_icfg(d), d / "app.py", window=50,
                             min_hits=10)
     mon.deterministic_failure = False
@@ -127,26 +127,26 @@ def test_class1_deterministic_sufficient_llm_not_triggered(tmp_path):
 
 def test_class2_llm_proposal_validated_and_executed(tmp_path):
     """LS02:user_+name 拼接(确定性 UNRESOLVED)→ LLM 解 name=admin。"""
-    from stateforge.feasibility.solve_loop import Request, _execute
-    from stateforge.feasibility.branch_observer import load_observed_target
-    from stateforge.dynamic.tracer import TraceSession
-    from stateforge.dynamic.mapper import map_trace
-    from stateforge.fuzz.constraint_mutator import apply_hint
-    from stateforge.feasibility.mutation_hint import MutationHint as MH
+    from stateforge.solving.solve_loop import Request, _execute
+    from stateforge.solving.branch_observer import load_observed_target
+    from stateforge.runtime.tracer import TraceSession
+    from stateforge.runtime.mapper import map_trace
+    from stateforge.fuzzing.constraint_mutator import apply_hint
+    from stateforge.solving.mutation_hint import MutationHint as MH
 
     d = LS / "LS02_string_concat"
     mod, obs = load_observed_target(d / "app.py")
     seed = json.loads((d / "input.json").read_text())
 
     # 1) 确定性 solver 在此靶上拒绝(拼接 = UNRESOLVED_TRANSFORM)
-    from stateforge.feasibility.solve_loop import solve_loop
-    from stateforge.static.icfg import build_icfg
+    from stateforge.solving.solve_loop import solve_loop
+    from stateforge.analysis.static.icfg import build_icfg
     res = solve_loop(d / "app.py", build_icfg(d), seed)
     hints = [e for e in res.events if e["stage"] == "HINT_GENERATED"]
     assert hints and hints[0]["hint_reason"] == "NOT_SINGLE_INPUT_SOLVABLE"
 
     # 2) LLM 被 mock 为正确 proposal:QUERY["name"] := "admin"
-    from stateforge.feasibility.stagnation import StagnationMonitor
+    from stateforge.solving.stagnation import StagnationMonitor
     provider = MockProvider(_llm_response(value="admin"))
     solver = LLMSemanticSolver(provider)
 
@@ -183,7 +183,7 @@ def test_class2_llm_proposal_validated_and_executed(tmp_path):
     assert candidate["query"]["name"] == "admin"
 
     # 4) 真实执行 + mapper 裁决
-    from stateforge.feasibility.solve_loop import solve_loop as _sl
+    from stateforge.solving.solve_loop import solve_loop as _sl
     res2 = _sl(d / "app.py", build_icfg(d), candidate)
     crossed = [e for e in res2.events if e["stage"] == "FRONTIER_CROSSED"]
     assert res2.target_reached, f"LLM proposal 应真实跨越: {res2.events}"

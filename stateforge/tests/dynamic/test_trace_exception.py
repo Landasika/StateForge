@@ -1,5 +1,5 @@
 """P1-3:tracer 采集 exception 事件。"""
-from stateforge.dynamic.tracer import TraceSession
+from stateforge.runtime.tracer import TraceSession
 
 
 def test_exception_event_recorded():
@@ -21,9 +21,9 @@ def test_exception_does_not_break_mapping(tmp_path):
     """exception 事件进 mapper 只落 unresolved,不产生假边。"""
     from pathlib import Path
 
-    from stateforge.dynamic.mapper import map_trace
-    from stateforge.dynamic.tracer import TraceEvent
-    from stateforge.static.icfg import build_icfg
+    from stateforge.runtime.mapper import map_trace
+    from stateforge.runtime.tracer import TraceEvent
+    from stateforge.analysis.static.icfg import build_icfg
 
     d = tmp_path / "app"
     d.mkdir()

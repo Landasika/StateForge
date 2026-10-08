@@ -3,10 +3,10 @@ import json
 from pathlib import Path
 
 from stateforge.core.ir import ProgramIR
-from stateforge.dynamic.mapper import map_trace
-from stateforge.dynamic.tracer import TraceSession
-from stateforge.fuzz.atheris_runner import TraceJsonlWriter, build_input_handler
-from stateforge.static.icfg import build_icfg
+from stateforge.runtime.mapper import map_trace
+from stateforge.runtime.tracer import TraceSession
+from stateforge.fuzzing.atheris_runner import TraceJsonlWriter, build_input_handler
+from stateforge.analysis.static.icfg import build_icfg
 
 
 class FakeAdapter:

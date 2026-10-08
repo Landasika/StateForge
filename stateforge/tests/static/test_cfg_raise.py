@@ -1,7 +1,7 @@
 """F1(封版轮):raise 语句终止控制流,不顺序落到后续语句。"""
 import ast
 
-from stateforge.static.cfg import build_function_cfg
+from stateforge.analysis.static.cfg import build_function_cfg
 
 
 def _build(src):

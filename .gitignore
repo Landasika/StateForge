@@ -37,8 +37,8 @@ stateforge/**/llm/cache/
 # analyzer 语义通道"缓存优先,无缓存+无 key → 全 irrelevant";缓存缺位时
 # fresh-clone 会丢 Session.authed_as 等标注 → 10 用例失败。缓存内容为
 # LLM 标注 JSON(label/relate,无机密),sha256 键,同码同夹具必命中。
-!stateforge/llm/cache/
-!stateforge/llm/cache/*.json
+!stateforge/solving/llm/cache/
+!stateforge/solving/llm/cache/*.json
 
 # 文档 / 笔记 / 论文(非代码)
 notes/

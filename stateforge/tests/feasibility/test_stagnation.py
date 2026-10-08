@@ -5,12 +5,12 @@ from pathlib import Path
 import pytest
 
 from stateforge.core.ir import ProgramIR, BasicBlock, FlowEdge, FunctionIR
-from stateforge.feasibility.branch_observer import BranchObservation
-from stateforge.feasibility.input_provenance import resolve_operand_source
-from stateforge.feasibility.plateau import PlateauDetector
-from stateforge.feasibility.semantic_slice import build_slice
-from stateforge.feasibility.stalled import find_stalled
-from stateforge.feasibility.stagnation import StagnationMonitor
+from stateforge.solving.branch_observer import BranchObservation
+from stateforge.solving.input_provenance import resolve_operand_source
+from stateforge.solving.plateau import PlateauDetector
+from stateforge.solving.semantic_slice import build_slice
+from stateforge.solving.stalled import find_stalled
+from stateforge.solving.stagnation import StagnationMonitor
 
 
 # ---------------------------------------------------------------- A plateau
@@ -103,7 +103,7 @@ def test_slice_seven_components_complete(tmp_path):
                    "    if x == 731:\n        return prize()\n"
                    "    return 0\n\ndef prize():\n    return 'hit'\n",
                    encoding="utf-8")
-    from stateforge.static.icfg import build_icfg
+    from stateforge.analysis.static.icfg import build_icfg
     ir = build_icfg(tmp_path)
     branch_id = next(b.id for b in ir.blocks.values()
                      if b.kind == "branch" and b.function == "h")
@@ -142,7 +142,7 @@ def test_trigger_requires_all_three(tmp_path):
                    "    if x == 731:\n        return prize()\n"
                    "    return 0\n\ndef prize():\n    return 'hit'\n",
                    encoding="utf-8")
-    from stateforge.static.icfg import build_icfg
+    from stateforge.analysis.static.icfg import build_icfg
     ir = build_icfg(tmp_path)
     mon = StagnationMonitor(ir, app, window=50, min_hits=10)
     mon.deterministic_failure = False

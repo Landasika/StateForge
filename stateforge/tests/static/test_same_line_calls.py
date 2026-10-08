@@ -1,7 +1,7 @@
 """H4(评审§14):同行多 call 的排序用 (lineno, col_offset);嵌套调用记限制。"""
 from pathlib import Path
 
-from stateforge.static.icfg import build_icfg
+from stateforge.analysis.static.icfg import build_icfg
 
 SAME_LINE = '''\
 def h(u):

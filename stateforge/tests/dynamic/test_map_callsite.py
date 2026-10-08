@@ -1,9 +1,9 @@
 """P1-2/P1-3:动态 call→CS→callee.entry、callee.exit→RS 的映射。"""
 from pathlib import Path
 
-from stateforge.dynamic.mapper import map_trace
-from stateforge.dynamic.tracer import TraceEvent
-from stateforge.static.icfg import build_icfg
+from stateforge.runtime.mapper import map_trace
+from stateforge.runtime.tracer import TraceEvent
+from stateforge.analysis.static.icfg import build_icfg
 
 SRC = '''\
 def handler(u):

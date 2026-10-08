@@ -13,16 +13,16 @@ from pathlib import Path
 import pytest
 
 from stateforge.core.ir import ProgramIR
-from stateforge.dynamic.mapper import map_trace
-from stateforge.dynamic.tracer import TraceSession
-from stateforge.static.icfg import build_icfg
+from stateforge.runtime.mapper import map_trace
+from stateforge.runtime.tracer import TraceSession
+from stateforge.analysis.static.icfg import build_icfg
 
 TARGET = Path(__file__).parents[2] / "targets" / "microplus" / "deep_branch.py"
 
 
 def _driver(tmp, corpus, out, seconds, mode, epoch, group, seed=7):
     subprocess.run(
-        [sys.executable, "-m", "stateforge.fuzz.entry_driver",
+        [sys.executable, "-m", "stateforge.fuzzing.entry_driver",
          str(TARGET), str(tmp / "ir.json"), str(corpus), str(out),
          "--seconds", str(seconds), "--mode", mode, "--seed", str(seed),
          "--epoch", str(epoch), "--group", group],
@@ -75,7 +75,7 @@ def test_closed_loop_candidate_save_replay_and_reinject(ir):
     blocks1 = snaps1[-1]["blocks"]
 
     # ---- 植入魔法种子(模拟 SF 发现 0x42 17 99 链)并导出下一轮语料 ----
-    from stateforge.fuzz.corpus_manager import CorpusManager
+    from stateforge.fuzzing.corpus_manager import CorpusManager
     cm = CorpusManager(out1 / "spool")
     magic = b"\x42\x17\x99"
     cm.save(magic, epoch=1, new_blocks=5, new_edges=4,

@@ -1,6 +1,6 @@
 """P1-5:viz 冒烟——dot 生成、覆盖着色、frontier 高亮。"""
 from stateforge.core.ir import ProgramIR, BasicBlock, FunctionIR, FlowEdge
-from stateforge.viz.coverage_dot import coverage_dot
+from stateforge.evaluation.viz.coverage_dot import coverage_dot
 
 
 def _ir():

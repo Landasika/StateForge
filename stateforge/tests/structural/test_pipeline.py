@@ -3,11 +3,11 @@
 from pathlib import Path
 
 from stateforge.core.ir import ProgramIR
-from stateforge.dynamic.coverage import coverage
-from stateforge.dynamic.mapper import map_trace
-from stateforge.dynamic.tracer import TraceEvent
-from stateforge.feedback.corpus import CorpusEntry, rank
-from stateforge.static.icfg import build_icfg
+from stateforge.runtime.coverage import coverage
+from stateforge.runtime.mapper import map_trace
+from stateforge.runtime.tracer import TraceEvent
+from stateforge.fuzzing.feedback.corpus import CorpusEntry, rank
+from stateforge.analysis.static.icfg import build_icfg
 
 
 def test_runtime_call_and_return_map_to_typed_edges(tmp_path: Path):

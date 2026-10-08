@@ -5,12 +5,12 @@ from pathlib import Path
 
 import pytest
 
-from stateforge.feasibility.branch_observer import BranchObservation
-from stateforge.feasibility.branch_solver import solve
-from stateforge.feasibility.input_provenance import resolve_operand_source
-from stateforge.feasibility.mutation_hint import MutationHint
-from stateforge.feasibility.solve_loop import solve_loop
-from stateforge.static.icfg import build_icfg
+from stateforge.solving.branch_observer import BranchObservation
+from stateforge.solving.branch_solver import solve
+from stateforge.solving.input_provenance import resolve_operand_source
+from stateforge.solving.mutation_hint import MutationHint
+from stateforge.solving.solve_loop import solve_loop
+from stateforge.analysis.static.icfg import build_icfg
 
 BS = Path(__file__).parents[2] / "fixtures" / "bs_micro"
 
@@ -92,7 +92,7 @@ def test_level5_refusals():
 # ---------------------------------------------------------------- Level 6
 
 def test_level6_field_isolation():
-    from stateforge.fuzz.constraint_mutator import (MutationError,
+    from stateforge.fuzzing.constraint_mutator import (MutationError,
                                                     apply_hint)
     seed = {"query": {"x": "20", "item": "book", "mode": "fast"},
             "form": {"csrf": "tok"}, "json": {"n": 1}}
@@ -210,7 +210,7 @@ def test_bs_refusals(case, reason):
 
 def test_micro_report_all_green():
     """SF-BranchSolveMicro 全 22 用例:overall=1.0、零失败。"""
-    from stateforge.eval.branchsolve_report import run_report
+    from stateforge.evaluation.branchsolve_report import run_report
     report = run_report()
     assert report["failures"] == []
     assert report["metrics"]["overall_accuracy"] == 1.0

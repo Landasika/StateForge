@@ -1,8 +1,8 @@
 """vulnshop adapter factory end-to-end (no atheris needed)."""
 from pathlib import Path
 
-from stateforge.fuzz.adapters.flask import FlaskAdapter
-from stateforge.fuzz.adapters.vulnshop import vulnshop_adapter
+from stateforge.adapters.flask import FlaskAdapter
+from stateforge.adapters.vulnshop import vulnshop_adapter
 
 ENDPOINTS = {"index", "register", "login", "me", "create_order", "read_order",
              "pay_order", "ship_order", "cancel_order", "read_coupon", "set_role"}

@@ -9,8 +9,8 @@ from pathlib import Path
 import pytest
 
 from stateforge.core.ir import ProgramIR
-from stateforge.feasibility.llm_seed_injector import inject_llm_seeds
-from stateforge.static.icfg import build_icfg
+from stateforge.solving.llm_seed_injector import inject_llm_seeds
+from stateforge.analysis.static.icfg import build_icfg
 
 FIXTURES = Path(__file__).parents[2] / "fixtures" / "llm_loop"
 
@@ -78,7 +78,7 @@ class TestSeedInjection:
 
     def test_injector_origin_is_llm(self, tmp_path):
         """P0-2 修复:注入种子的 origin 必须是 LLM,不是 NATIVE。"""
-        from stateforge.fuzz.corpus_manager import CorpusManager
+        from stateforge.fuzzing.corpus_manager import CorpusManager
         ir, app = _build_ir(FIXTURES / "S2_api_path")
         state = _coverage_state(ir)
         corpus_dir = tmp_path / "corpus"

@@ -66,10 +66,10 @@ python -m stateforge.cli viz program_ir.json feedback.json --out coverage.dot
 dot -Tsvg coverage.dot -o coverage.svg
 
 # 微基准验证（21 用例，全部 1.00）
-python -m stateforge.eval.micro_benchmark
+python -m stateforge.evaluation.micro_benchmark
 
 # 四臂实验（A/B/C/D 对照）
-python -m stateforge.experiment.four_arm --out results/experiment --runs 3 --epochs 3 --seconds 8
+python -m stateforge.evaluation.experiment.four_arm --out results/experiment --runs 3 --epochs 3 --seconds 8
 ```
 
 ---
@@ -89,175 +89,45 @@ python -m stateforge.experiment.four_arm --out results/experiment --runs 3 --epo
 
 ## 模块详解
 
-### `stateforge/core/` — 数据契约
+七域架构(P1 目录收敛后):**analysis / runtime / fuzzing / solving / state / adapters / evaluation**,外加原位不动的 core、cli、targets、fixtures、tests。
 
-| 文件 | 职责 |
-|------|------|
-| `ir.py` | **ProgramIR**：结构 IR（BasicBlock、FlowEdge、FunctionIR），与语义层 AppModel 解耦。块 ID 稳定格式 `relpath::func::lo-hi::kind::n`；FlowEdge 携带 kind（flow/true/false/call/return）、callsite_line、callee |
-| `model.py` | **AppModel**：语义 IR（StateCandidate、StateVar、Effect、Precondition、Guard、Sink），Phase-4.3 状态求解的数据基础 |
-| `serialization.py` | ProgramIR 与 AppModel 的 JSON 序列化/反序列化 |
+```text
+stateforge/
+├── core/           数据契约
+├── analysis/       静态分析域(原 analyzer/ + static/ + graph/ 合并)
+│   └── static/     CFG/ICFG 子包(cfg.py 名冲突按规则 8 以子包消解)
+├── runtime/        运行时域(原 dynamic/ + executor/ + snapshot/ 合并)
+│   └── snapshot/   ANOTA 快照子包
+├── fuzzing/        Fuzzing 集成域(原 fuzz/,adapters/ 提取后)
+│   └── feedback/   结构反馈子包(原 feedback/)
+├── solving/        求解域(原 feasibility/)
+│   └── llm/        LLM 基础设施子包(原 llm/)
+├── state/          状态域(原位,吸收 planner/ → state/planning/)
+│   └── annotation/ 语义标注子包
+├── adapters/       目标适配层(原 fuzz/adapters/)
+├── evaluation/     评测域(原 eval/ + experiment/ + viz/ 合并)
+│   ├── experiment/ 实验基础设施子包
+│   └── viz/        可视化子包
+├── cli.py          命令行入口
+├── targets/        测试靶场(原位不动)
+├── fixtures/       真值基准数据(原位不动)
+└── tests/          测试套件(原位不动)
+```
 
-### `stateforge/static/` — 静态分析（Phase-1 冻结）
-
-| 文件 | 职责 |
-|------|------|
-| `cfg.py` | **单函数 CFG 构建**：AST → 基本块（顺序/分支/循环/终止），break→loop_exit、continue→header 正确连边；稳定块 ID；Try/except 保守近似 |
-| `icfg.py` | **过程间 CFG（ICFG）**：PyCG 调用图 + 函数 CFG → 全程序 ICFG；CS/RS 合成节点保证同块多调用保序；unresolved_calls 记录不造假边；`_iter_owned_calls` 确保 AST ownership（嵌套函数/lambda 不误归属）；`_source_hash` 缓存失效判据 |
-
-### `stateforge/dynamic/` — 运行时采集与映射（Phase-1 冻结）
-
-| 文件 | 职责 |
-|------|------|
-| `tracer.py` | **执行轨迹采集**：`sys.settrace` 的 call/line/return/exception 事件逐请求隔离；JSONL 增量落盘（抗 libFuzzer `_Exit`）；文件前缀缓存优化热路径；`_SELF_FILE` 自排除防死锁 |
-| `mapper.py` | **轨迹 → ICFG 映射**：精确 `line_numbers` 优先、合成节点降权、range 兜底；调用栈逐请求清空；CS/RS 链对齐 |
-| `coverage.py` | **覆盖度量**：block/edge/call ratio（分母 = ProgramIR 执行边总数） |
-| `io.py` | **轨迹 I/O**：load_events 兼容 array/harness-object/JSONL 三格式；merge_events 跨文件去重并重编号 |
-
-### `stateforge/feedback/` — 反馈引擎（Phase-2/3 冻结）
-
-| 文件 | 职责 |
-|------|------|
-| `structural.py` | **P2 结构新颖度**：`S(x) = N_B(x) + N_E(x)`，先评分（对执行前快照）后更新全局；只计有静态支撑的边对 |
-| `frontier_tracker.py` | **P3 前沿追踪**：Edge Frontier（源块已覆盖、边未走过）+ Node Frontier；版本化；生命周期事件（created→crossed→crossing_seconds） |
-| `distance_oracle.py` | **P3 距离预言**：反向多源 BFS；按前沿版本缓存；UNREACHABLE 单列零分 |
-| `frontier_feedback.py` | **P3.1 前沿定向反馈**：`S = NB + NE + 1/(1+D)`，λ=1 冻结；先评分后 commit |
-| `frontier_portfolio.py` | **P3.2 前沿组合**：per-frontier 冠军（≤1/前沿）；Progress 事件驱动换冠军 |
-| `frontier.py` | **前沿检测**：Node Frontier + Edge Frontier 定义 |
-| `distance.py` | **最短路径距离**：反向 BFS（distance_to_targets） |
-| `overlay.py` | **覆盖叠加层**：covered_blocks/edges/hits/request_count |
-| `engine.py` | **反馈引擎**：compute_feedback(ir, events) → FeedbackReport（overlay + frontiers + distances + request_count） |
-| `corpus.py` | **语料排序**：种子评分与排序 |
-
-### `stateforge/feasibility/` — 分支可行性分析（Phase-4 核心）
-
-| 文件 | 职责 |
-|------|------|
-| `guard_ir.py` | **BranchGuard IR**：guard_id/source_block/target_block/polarity/expression/op/lineno/col_offset/status |
-| `guard_recovery.py` | **前沿 → Guard 恢复**：branch 块反解原文件 AST 的 test 表达式；支持 ==/!=/</<=/>/>=/truthy/not/In/NotIn；chained/BoolOp → UNSUPPORTED 不猜 |
-| `branch_observer.py` | **运行时操作数观测**：AST 重写 if/while test → `_sf_cmp(gid, op, lhs, rhs)` 调用；操作数按原始求值序各求值一次；不支持表达式原样保留；gid 与静态恢复同键 |
-| `branch_distance.py` | **门内梯度距离**：公式实验前冻结（Eq=|x−y|，Lt=max(0,x−y+1) 等）；desired-false = 相反谓词；d_norm = d/(d+1) 唯一口径；字符串 Eq 0/1 |
-| `input_provenance.py` | **输入溯源（静态）**：QUERY/FORM/JSON/HEADER/COOKIE 五源 + int/float/str/strip/lower/upper 变换链；guard 前直线赋值；分支重定义→SOURCE_AMBIGUOUS；`.get(key, default)` 双参支持 |
-| `enhanced_provenance.py` | **增强溯源**：②跨函数静态追踪（ICFG call 边→caller→实参→变量赋值→模式匹配）+ ③动态值关联（守卫操作数值 vs 种子字段值）；优先级：函数内 > 跨函数 > 值关联 > UNKNOWN |
-| `branch_solver.py` | **约束求解**：冻结规则表（Eq→C、Lt→C−1、Gt→C+1、desired-false=补谓词）；RHS 输入先 canonicalize（_SWAP）再翻极性；字符串仅 Eq/Ne |
-| `mutation_hint.py` | **MutationHint IR**：frontier_id/guard_id/source_kind/source_key/current/target/operator/polarity/reason/confidence/transform_chain |
-| `semantic_slice.py` | **前沿语义切片**：七项 JSON（目标前沿/Guard AST/局部 CFG/后向数据流/输入源/运行时值+距离历史 M=10/失败突变史） |
-| `plateau.py` | **覆盖平台检测**：W=2000 冻结；ΔBB=ΔEdge=ΔCrossing=0 → STAGNATED；滞回：仅 frontier crossing 解锁 |
-| `stalled.py` | **停滞前沿发现**：N=100 冻结；源块 hit≥N ∧ 边未观测 ∧ guard 可恢复 |
-| `stagnation.py` | **触发组合器**：Plateau ∧ Stalled ∧ DeterministicFailure → 触发并携带切片 |
-| `proposal.py` | **MutationProposal IR**：五状态（PROPOSED/INSUFFICIENT_EVIDENCE/STATE_REQUIRED/UNSUPPORTED/INVALID_OUTPUT） |
-| `llm_solver.py` | **LLM 调用**：prompt 冻结；JSON 解析（markdown 围栏剥离）；LLM 只产 proposal 不做 oracle |
-| `proposal_validator.py` | **信任边界**：provenance 成功→严格对齐 source kind/key；失败→引号包裹 key 匹配 backward_dataflow 文本；operation 仅 REPLACE；不重复失败突变 |
-| `proposal_trace.py` | **Proposal Trace**：JSONL 逐条 flush（trigger/distance before/after/latency/tokens） |
-| `solve_loop.py` | **确定性求解循环**：frontier→guard→operand→provenance→solve→mutate→execute→mapper 裁决 FRONTIER_CROSSED；嵌套前沿迭代（F1→solve→cross→F2→solve→cross→target） |
-| `llm_seed_injector.py` | **LLM 种子注入器**：停滞 frontier→切片→LLM→校验→种子写入 Atheris corpus（不执行目标）；UNSUPPORTED guard 不跳过；LLM 种子叠加（渐进开门） |
-
-### `stateforge/fuzz/` — Fuzzing 集成
-
-| 文件 | 职责 |
-|------|------|
-| `entry_driver.py` | **Atheris 子进程入口**：off/measure/feedback/frontier 四模式；选择性插桩（只打目标模块）；全局覆盖跨 epoch 持久化 |
-| `instrumentation.py` | **选择性字节码插桩**：Instrumenter（code-key 去重防二次改写） |
-| `corpus_manager.py` | **语料管理**：内容哈希去重；原始字节持久化；origin=NATIVE/LLM lineage 追踪 |
-| `candidates.py` | **候选采集器**：逐输入捕获+评分+保留（P2 模式） |
-| `frontier_collector.py` | **前沿采集器**：逐输入捕获+组合挑战+保留（P3.1 模式） |
-| `constraint_mutator.py` | **约束变异器**：MutationHint → 新种子（深拷贝只改目标字段；QUERY/FORM/HEADER/COOKIE 字符串域、JSON 原生类型；LLM 可创建新字段） |
-
-### `stateforge/fuzz/adapters/` — 目标适配层
-
-| 文件 | 职责 |
-|------|------|
-| `base.py` | **TargetAdapter Protocol**：`prepare(atheris)` + `execute(data: bytes)` |
-| `generic_web.py` | **通用 Web 适配器**（40 行）：bytes → JSON → HTTP 请求；自动检测 Flask(.open) vs Django(HTTP_前缀)；适配任意 WSGI 应用 |
-| `callable.py` | **可调用适配器**：bytes → 函数参数 |
-| `flask.py` | **Flask 适配器**：路由枚举+路径参数预填+字节驱动 body |
-| `vulnshop.py` | **vulnshop 靶场适配**：预注册用户+Bearer 认证+路由 body 映射 |
-
-### `stateforge/experiment/` — 实验基础设施
-
-| 文件 | 职责 |
-|------|------|
-| `epoch.py` | **Epoch 控制**：固定时间预算起 Atheris 子进程；语料交接（B=libFuzzer 结转、C=SF∪结转、D=+LLM 轮间注入）；墙钟记录；跨 epoch 累计；NovelSeedGain |
-| `runner.py` | **多臂实验**：A_native/A_measure/B/C/D1/D2R/D2P 七组同种子配对 |
-| `campaign.py` | **正式战役**：N runs 配对种子 + AUC/分位曲线 + paired deltas + manifest |
-| `recorder.py` | **实验记录器**：覆盖-时间采样 + 候选事件 + exec/feedback 分项计时 |
-| `four_arm.py` | **四臂简化实验**：A/B/C/D 对照 |
-| `plot_campaign.py` | **曲线图**：Coverage-vs-Time（dataviz 调色板过检） |
-
-### `stateforge/eval/` — 评估基准
-
-| 文件 | 职责 |
-|------|------|
-| `micro_benchmark.py` | **SF-Micro 真值基准**：21 用例静态 P&R 全 1.00 + 5 用例动态 trace-accuracy 全 1.00 |
-| `branchsolve_report.py` | **BranchSolve 报告**：22 用例七指标（GuardRecovery/Operand/Provenance/Hint/Candidate/BranchSatisfaction/FrontierCrossing accuracy） |
-| `benchmark_baseline.py` | **OWASP Benchmark 基线**：全仓 ICFG + flask test_client 采样 + 覆盖/前沿 |
-
-### `stateforge/analyzer/` — 语义分析（Phase-4.3 素材）
-
-| 文件 | 职责 |
-|------|------|
-| `analyzer.py` | **语义分析入口**：analyze(target) → AppModel（LLM lifting + state selection + invariant） |
-| `patterns.py` | **候选模式匹配**：8 种数据流模式（直读/链式 JSON get 等）→ StateCandidate |
-| `selector.py` | **确定性选择器**：固定类别→策略映射，无阈值 |
-| `cfg.py` | **XFG 执行流图**（委托 static/cfg.py）：过程内 CFG + 锚点钉块 + 跨端点状态虚边 |
-| `pycg_bridge.py` | **PyCG 桥接**：预生成调用图 JSON → ICFG callee 消歧 |
-
-### `stateforge/llm/` — LLM 基础设施
-
-| 文件 | 职责 |
-|------|------|
-| `provider.py` | **双协议 Provider**：OpenAI 兼容 + Anthropic；缓存+降级 |
-| `lifting.py` | **语义提升**：label(candidates) 六类标签 + relate() 有界关系 |
-| `real_provider.py` | **Real/Mock Provider**：env-var 配置（STATEFORGE_LLM_API_KEY 等）；MockLLMProvider 预设响应序列 |
-
-### `stateforge/targets/` — 测试靶场
-
-| 目录 | 应用 | 说明 |
-|------|------|------|
-| `vulnshop/` | 自建 Flask 靶场 | 11 路由，5 类 PoC（workflow_bypass/payment_bypass/privilege 等） |
-| `vampi/` | OWASP VAmPI | 14 端点 Flask API |
-| `dsvw/` | DSVW | ~20 端点 |
-| `pygoat/` | PyGoat | Django 4.2 OWASP Top-10 |
-| `realworld/` | RealWorld Conduit | generic_target.py（71 行 Atheris 靶函数） |
-| `microplus/` | 微靶集合 | hash_gates/misleading_subtree/semantic_concat/role/url/s1/s2 |
-
-### `stateforge/tests/` — 测试套件（255 tests）
-
-| 目录 | 覆盖 |
-|------|------|
-| `tests/static/` | CFG/ICFG/ownership/callsite_chain/relative_ids/source_hash/buy_acceptance |
-| `tests/dynamic/` | trace_exception/map_callsite/map_exact_ownership |
-| `tests/feedback/` | structural/frontier/edge_frontier/request_counts |
-| `tests/feasibility/` | guard_recovery/observer/distance/branch_solve/enhanced_provenance/stagnation |
-| `tests/fuzz/` | corpus_manager |
-| `tests/integration/` | llm_seed_injector/real_llm_smoke(gated) |
-| `tests/structural/` | adapters/instrumentation/pipeline/trace_io/tracer_perf |
-| `tests/viz/` | coverage_dot 格式校验 |
-
-### `stateforge/fixtures/` — 真值基准数据
-
-| 目录 | 内容 |
-|------|------|
-| `micro/` | SF-Micro 21 用例（if/loop/break/call/return/try/recursion 等）+ expected_icfg.json + expected_trace.json |
-| `bs_micro/` | BS01-BS22 BranchSolve 真值（query/form/json/header/cookie/int/float/strip/嵌套/rhs/unsupported） |
-| `ls_micro/` | LS01-LS04 LLM 三类（deterministic/transform/state_guard） |
-| `llm_loop/` | T1-T6 + S1/S2（LLM 覆盖循环微靶） |
-| `sf_branch_micro/` | Guard 恢复 10 用例 |
-| `buy_app/` | /buy 验收最小 Flask 应用 |
-
-### `stateforge/viz/` — 可视化
-
-| 文件 | 职责 |
-|------|------|
-| `coverage_dot.py` | 静态+动态叠图：覆盖块着色/hit 分档、未覆盖灰、frontier 红粗、call/return 紫 |
-
-### `stateforge/cli.py` — 命令行入口
-
-| 命令 | 功能 |
-|------|------|
-| `analyze` | 构建 ICFG（无 LLM 依赖） |
-| `feedback` | 轨迹 → 覆盖/前沿/距离 |
-| `experiment` | 静态+动态一键 |
-| `viz` | 叠图 dot 导出 |
+| 域 | 一句职责 |
+|----|---------|
+| `stateforge/core/` | 数据契约:ProgramIR(结构 IR)+ AppModel(语义 IR)+ JSON 序列化 |
+| `stateforge/analysis/` | 静态分析域:单函数 CFG 与全程序 ICFG(`analysis/static/`)、语义分析入口与模式匹配(`analyzer.py`/`patterns.py`/`selector.py`)、SSTG 图构建导出(`builder.py`/`export.py`)、XFG 执行流图(`cfg.py`) |
+| `stateforge/runtime/` | 运行时域:`sys.settrace` 逐请求轨迹采集(`tracer.py`)、轨迹→ICFG 精确映射(`mapper.py`)、覆盖度量(`coverage.py`)、轨迹 I/O(`io.py`)、回放(`replay.py`/`snapshot_replay.py`)、快照子包(`runtime/snapshot/`) |
+| `stateforge/fuzzing/` | Fuzzing 集成域:Atheris 子进程入口(`entry_driver.py`)、选择性字节码插桩、语料管理/候选/前沿采集、约束变异器;含结构反馈子包 `fuzzing/feedback/`(P2 结构新颖度 + P3 前沿定向距离/组合/预算) |
+| `stateforge/solving/` | 求解域(P4 分支可行性):Guard 恢复→操作数观测→门内距离→输入溯源→约束求解→变异提示→停滞触发→LLM 种子注入;含 LLM 基础设施子包 `solving/llm/`(双协议 Provider/语义提升/缓存) |
+| `stateforge/state/` | 状态域:状态提取与语义模型、会话访问/状态溯源、标注子包 `state/annotation/`、规划子包 `state/planning/`(原 planner/) |
+| `stateforge/adapters/` | 目标适配层:TargetAdapter 协议 + 通用 Web/Flask/可调用/vulnshop 适配器(bytes → 目标可执行) |
+| `stateforge/evaluation/` | 评测域:SF-Micro 真值基准、BranchSolve 报告、OWASP Benchmark 基线、多臂实验子包 `evaluation/experiment/`、可视化子包 `evaluation/viz/` |
+| `stateforge/cli.py` | 命令行入口:analyze / feedback / experiment / viz |
+| `stateforge/targets/` | 测试靶场:vulnshop / vampi / dsvw / pygoat / realworld / microplus(原位不动) |
+| `stateforge/fixtures/` | 真值基准数据:micro / bs_micro / ls_micro / llm_loop / sf_branch_micro / buy_app(原位不动) |
+| `stateforge/tests/` | 测试套件(255 tests;子目录名沿用旧模块名为历史组织,import 已全部指向新路径) |
 
 ---
 
@@ -320,7 +190,7 @@ python -m stateforge.experiment.four_arm --out results/experiment --runs 3 --epo
 **v0.1-baseline 验证环境**:Python 3.13.5(anaconda)/ Ubuntu(Linux 6.8)/ clang 备用(atheris 实走 tuna wheel)/ pytest 8.3.4 · flask 3.1.0 · networkx 3.4.2 · elementpath 5.1.4 · httpx 0.28.1 · pydantic 2.11.7 · PyYAML 6.0.2(运行时)· matplotlib 3.10.0(dev)· atheris 3.1.0
 **验收数字**:开发树 255 passed / 1 skipped / 26 deselected;fresh clone 254 passed / 2 skipped / 26 deselected(差异=OWASP Benchmark 用例按设计跳过,external/ 不入 git);micro_benchmark 21 用例全 1.00(CFG/CALL/RET P&R + trace-accuracy 5/5)
 
-**已知义务:** 语义标注缓存(`stateforge/llm/cache/*.json`)键于 PROMPT_VERSION 与夹具内容——二者变更后需重跑生成器并提交新缓存,否则 fresh clone 回归"全 irrelevant"。缓存仅按显式路径提交(`git add stateforge/llm/cache/<hash>.json`),勿在该目录使用 `git add -A`。
+**已知义务:** 语义标注缓存(`stateforge/solving/llm/cache/*.json`)键于 PROMPT_VERSION 与夹具内容——二者变更后需重跑生成器并提交新缓存,否则 fresh clone 回归"全 irrelevant"。缓存仅按显式路径提交(`git add stateforge/solving/llm/cache/<hash>.json`),勿在该目录使用 `git add -A`。
 
 ---
 

@@ -14,7 +14,7 @@ from pathlib import Path
 
 import pytest
 
-from stateforge.analyzer.analyzer import analyze
+from stateforge.analysis.analyzer import analyze
 from stateforge.core.model import AppModel
 
 GOLDEN = Path(__file__).parents[2] / "targets" / "vulnshop" / "golden" / "AppModel.golden.json"

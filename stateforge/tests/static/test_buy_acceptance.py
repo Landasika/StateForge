@@ -9,9 +9,9 @@ import sys
 from pathlib import Path
 from types import SimpleNamespace
 
-from stateforge.dynamic.tracer import TraceSession
-from stateforge.feedback.engine import compute_feedback
-from stateforge.static.icfg import build_icfg
+from stateforge.runtime.tracer import TraceSession
+from stateforge.fuzzing.feedback.engine import compute_feedback
+from stateforge.analysis.static.icfg import build_icfg
 
 FIXTURE = Path(__file__).parents[2] / "fixtures" / "buy_app"
 

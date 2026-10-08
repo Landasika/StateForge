@@ -1,6 +1,6 @@
 """Phase-4.1 Level 2/3 验收:运行时观测 + 门内梯度距离。"""
-from stateforge.feasibility.branch_distance import branch_distance
-from stateforge.feasibility.branch_observer import load_observed_target
+from stateforge.solving.branch_distance import branch_distance
+from stateforge.solving.branch_observer import load_observed_target
 import textwrap
 
 MICRO_EQ = textwrap.dedent('''

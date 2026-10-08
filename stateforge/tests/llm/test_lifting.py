@@ -8,9 +8,9 @@ import json
 import pytest
 
 from stateforge.core.model import StateCandidate
-from stateforge.llm import cache
-from stateforge.llm.lifting import LiftResult, label, relate
-from stateforge.llm.provider import Provider
+from stateforge.solving.llm import cache
+from stateforge.solving.llm.lifting import LiftResult, label, relate
+from stateforge.solving.llm.provider import Provider
 
 
 class FakeProvider(Provider):

@@ -1,6 +1,6 @@
 """Phase-2 模块 1:StructuralFeedback——先评分后更新;unresolved 边不计。"""
-from stateforge.dynamic.mapper import MappedTrace
-from stateforge.feedback.structural import StructuralFeedback
+from stateforge.runtime.mapper import MappedTrace
+from stateforge.fuzzing.feedback.structural import StructuralFeedback
 
 
 def _trace(pairs, blocks):

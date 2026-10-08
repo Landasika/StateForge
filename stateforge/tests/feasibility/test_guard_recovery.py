@@ -3,8 +3,8 @@ from pathlib import Path
 
 import pytest
 
-from stateforge.feasibility.guard_recovery import recover_frontier_guards
-from stateforge.static.icfg import build_icfg
+from stateforge.solving.guard_recovery import recover_frontier_guards
+from stateforge.analysis.static.icfg import build_icfg
 
 MICRO = Path(__file__).parents[2] / "fixtures" / "sf_branch_micro"
 
