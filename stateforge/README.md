@@ -50,6 +50,14 @@ python -m stateforge.cli experiment targets/vulnshop \
   --out results/vulnshop --trace trace.json
 ```
 
+Extract session-state variables, predicates, abstract domains, and static
+transition candidates (dynamic edges are recorded by `TransitionRecorder`
+at fuzz time):
+
+```bash
+python -m stateforge.cli state targets/vulnshop --out results/state.json
+```
+
 ## Python integration
 
 The Atheris boundary is intentionally thin:

@@ -102,6 +102,27 @@ def experiment_cmd(target: str, out: str, trace_paths: list[str] | None = None) 
     return 0
 
 
+def state_cmd(target: str, out: str) -> int:
+    """Session 状态面:变量/访问/谓词/域 + 静态迁移候选(P3-M2)。
+
+    动态迁移边不在静态产物中——由 state.transition.TransitionRecorder
+    在 fuzz 期填充 StateRegistry.edges(见 result["transitions"]["note"])。
+    """
+    from stateforge.state.observer import run_state_analysis
+    root = Path(target).resolve()
+    result = run_state_analysis(root)
+    payload = dict(result)
+    payload["target"] = str(root)
+    outpath = Path(out)
+    outpath.parent.mkdir(parents=True, exist_ok=True)
+    save_json(payload, outpath)
+    print(f"[state] variables={result['n_variables']} "
+          f"predicates={result['n_predicates']} "
+          f"candidates={len(result['transitions']['static_candidates'])}")
+    print(f"[out] {out}")
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="StateForge structural feedback")
     parser.add_argument("-v", "--verbose", action="store_true",
@@ -124,12 +145,19 @@ def main() -> int:
     viz.add_argument("ir")
     viz.add_argument("feedback")
     viz.add_argument("--out", default="results/coverage.dot")
+    state = sub.add_parser("state",
+                           help="session-state variables/predicates/domains "
+                                "+ static transition candidates (P3-M2)")
+    state.add_argument("target")
+    state.add_argument("--out", default="results/state.json")
     args = parser.parse_args()
     setup_logging(args.verbose)
     if args.command == "analyze":
         return analyze_cmd(args.target, args.out, args.callgraph)
     if args.command == "experiment":
         return experiment_cmd(args.target, args.out, args.traces)
+    if args.command == "state":
+        return state_cmd(args.target, args.out)
     if args.command == "viz":
         from stateforge.evaluation.viz.coverage_dot import coverage_dot
         ir_obj = ProgramIR.from_json(args.ir)

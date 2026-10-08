@@ -23,7 +23,7 @@
 | C3 | MappedTrace / Coverage | runtime.mapper.map_trace / runtime.coverage → fuzzing.feedback.*、cli feedback payload | 内存 | 内部 | —(仅 feedback.json 中投影) |
 | C4 | StructuralFeedback / Observation | fuzzing.feedback.structural → entry_driver 采集器 | 内存 | 内部 | —(全局覆盖落盘归 C8) |
 | C5 | MutationProposal JSONL | solving.proposal_trace.ProposalTraceRecorder → 离线审计聚合(评测域) | JSONL | 演进 | `proposal_trace.jsonl` |
-| C6 | StateFact / StructuredPredicate JSON | state.extractor → state.index → state.annotation(5B LLM 输入) | JSON-ready dict | 演进 | 由调用方决定(现状内存传递) |
+| C6 | StateFact / StructuredPredicate JSON | state.extractor → state.index → state.annotation(5B LLM 输入);P3-M2 起 run_state_analysis(`transitions`)→ cli state | JSON-ready dict | 演进 | 由调用方决定(现状内存传递;cli state 落盘 `<out>/state.json`) |
 | C7 | LLM cache JSON | solving.llm.cache.put(lifting label/relate)→ cache.get(缓存优先通道) | JSON 单行 | 冻结 | `stateforge/solving/llm/cache/<sha256>.json`(随仓) |
 | C8 | corpus + global_state.json | fuzzing.corpus_manager / fuzzing.entry_driver → export_seed_dir(libFuzzer)、evaluation.experiment.epoch | bytes + JSONL + JSON | 演进 | `spool/seeds/<cid>`、`spool/meta.jsonl`、`global_state.json` |
 | C9 | 实验记录 JSONL | fuzzing.recorder.ExperimentRecorder → evaluation.experiment.epoch | JSONL | 演进 | `<group>-e<N>-snapshots.jsonl`、`<group>-e<N>-candidates.jsonl` |
@@ -193,6 +193,16 @@
 ```
 
 **演进语义:** 13 键为当前闭集;加键须给缺省。`from_dict` 仅 `StructuredPredicate` 提供(`state/model.py:54-56`),fact 本身无反序列化器——消费端只读 dict。
+
+### P3-M2 扩展:run_state_analysis `transitions` 字段(state.json)—— 演进
+
+`state.observer.run_state_analysis`(`state/observer.py:98`)的返回 dict 增 `transitions` 键(只加不改,既有键不动),随 `cli state <dir> --out state.json` 落盘:
+
+- `transitions.static_candidates`:`StaticCandidate.to_dict`(`state/transition.py:100`)4 键 —— `function` `var` `op` `evidence`;op ∈ `set`/`update`(session 变异 × 所属函数)或 `guard:<OP>(<value>)`(守卫谓词,如 `guard:EQ(admin)`);evidence = `["<file>:<line>"]`。证据级——不声称运行时确认。
+- `transitions.note`:动态边说明——动态迁移边不在静态产物中,由 `state.transition.TransitionRecorder.observe()`(`state/transition.py:55`)在 fuzz 期写入 `StateRegistry.edges`(去重键 `(from_key, to_key, trigger)`,evidence 固定 `["dynamic:state-diff"]`)。
+- `TransitionEdge`(`state/transition.py:31`)4 键:`from_key` `to_key` `trigger` `evidence`;from/to 用 `AbstractState.canonical_key`(与节点去重键同词表),会话边界由 `TransitionRecorder.new_session()` 显式重置。
+
+执行面:`tests/state/test_state_m2.py`。
 
 ---
 
