@@ -19,7 +19,7 @@ import sys
 import time
 from pathlib import Path
 
-from stateforge.core.log import get_logger
+from stateforge.core.log import get_logger, setup_logging
 
 logger = get_logger(__name__)
 
@@ -136,7 +136,10 @@ def main() -> int:
     parser.add_argument("repo", help="path to BenchmarkPython checkout")
     parser.add_argument("--sample", type=int, default=60)
     parser.add_argument("--out", default="results/benchmarkpython")
+    parser.add_argument("-v", "--verbose", action="store_true",
+                        help="DEBUG logging on stderr (default INFO)")
     args = parser.parse_args()
+    setup_logging(args.verbose)
     run_baseline(args.repo, args.sample, args.out)
     return 0
 

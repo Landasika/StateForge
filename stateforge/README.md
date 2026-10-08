@@ -22,7 +22,6 @@ Python source
 Build a stable static artifact:
 
 ```bash
-PYTHONPATH=/home/landasika/icassp \
 python -m stateforge.cli analyze targets/vulnshop --out results/vulnshop
 ```
 
@@ -33,7 +32,6 @@ reused for an experiment.
 Map a trace artifact produced by `stateforge.fuzzing.harness`:
 
 ```bash
-PYTHONPATH=/home/landasika/icassp \
 python -m stateforge.cli feedback \
   results/vulnshop/program_ir.json trace-1.json trace-2.json \
   --out results/vulnshop/feedback.json
@@ -84,7 +82,7 @@ adapters/       target adapters (former fuzz/adapters/)
 evaluation/     benchmarks, experiment subpackage, viz subpackage
 ```
 
-The former state graph, LLM lifting, snapshot, and request-generation code is
-not part of the structural feedback path. It remains outside the CLI as legacy
-compatibility code so first-stage experiments have one reproducible algorithmic
-boundary.
+The state graph, LLM lifting, snapshot, and request-generation capabilities
+live in their domains (`solving/llm/`, `state/`, `runtime/snapshot/`) and
+coexist with the CLI main chain. They are delivered code; a subset is not yet
+wired into CLI subcommands.
