@@ -155,11 +155,21 @@ class TestReachedSemantics:
         """create 的 `UPDATE coupons SET used=1`(202,值盲锚点)→ 判达。"""
         assert "Coupon.used=True" in self._reached_with_lines(vs_ir, [202])
 
-    def test_login_entry_marks_authed(self, vs_ir):
-        """authed 原子锚点 = login 端点行(153;模型 Effect 锚点)——
-        过近似:401 失败路径也覆盖(文档化边界)。"""
+    def test_authed_anchor_is_success_return_not_401(self, vs_ir):
+        """authed 锚点 = login **成功 return**(161,token 签发路径):入口
+        (153)与 401 早退(160)覆盖都不判达——state_atoms 指标仅 E 臂
+        采集,入口锚点会让 401 失败也判达、E 臂自肥。"""
+        got = self._reached_with_lines(vs_ir, [153, 160])
+        assert "Session.authed_as=<authed>" not in got
         assert "Session.authed_as=<authed>" in self._reached_with_lines(
-            vs_ir, [153])
+            vs_ir, [161])
+
+    def test_ifexp_conditional_assign_is_not_value_anchor(self, vs_ir):
+        """IfExp 条件赋值(254,`"PAID" if paid>=total else 旧值`)不是值
+        匹配锚点——覆盖该行不蕴含写了 PAID(部分支付走 else 支写旧值),
+        且值子树里的下标键常量不是写值;无条件赋值(256)才是。"""
+        assert "Order.status=PAID" not in self._reached_with_lines(vs_ir, [254])
+        assert "Order.status=PAID" in self._reached_with_lines(vs_ir, [256])
 
     def test_all_atoms_reached_disables_injection(self, vs_ir, tmp_path):
         """R2-a 镜像:全部词表原子判达 → 零注入。"""

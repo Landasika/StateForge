@@ -114,9 +114,12 @@ def target(data: bytes) -> None:
     except (json.JSONDecodeError, UnicodeDecodeError):
         return _legacy(data)                   # 非 JSON 字节 → legacy 面
     if isinstance(seed, dict) and isinstance(seed.get("steps"), list):
-        for step in seed["steps"]:             # 整种子直喂(驱动逐步分派为主)
-            if isinstance(step, dict):
-                _request(step)
+        try:                                    # 与单请求面同款:fuzz 输入
+            for step in seed["steps"]:          # 不得把 crash 泄给引擎
+                if isinstance(step, dict):
+                    _request(step)
+        except Exception:                       # noqa: BLE001
+            pass
         return
     if isinstance(seed, dict) and isinstance(seed.get("path"), str):
         try:

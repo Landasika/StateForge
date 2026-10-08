@@ -28,13 +28,18 @@ C10 序列种子;M1/M2 微靶合成路径保持原样,分派只看 AppModel 可�
    判消费侧;AppModel 原子的守卫锚点在 vulnshop 落在 `if guards:` 块内
    (vuln 变体死代码),消费侧代理会永远报未达。镜像改为生产侧:**原子
    的写点代码已覆盖 ⇒ 该状态至少短暂成立过**。锚点两级:
-   (a) 值匹配(优先):模型 Effect(var,value) 的 (file,line);及
-       mutating 端点函数内"值为该字面量"的赋值(`status = "PAID"`)。
+   (a) 值匹配(优先):模型 Effect(var,value) 的 (file,line);右侧为
+       该字面量**常量**的无条件赋值(`status = "PAID"`);及 execute
+       字符串里的字面写(`attr='value'`)。IfExp/下标/表达式值不算
+       值匹配——覆盖该行不蕴含写了该值(条件赋值的 else 支写旧值),
+       值子树里的下标键常量也不是写值。
    (b) 值盲(仅当 (a) 为空):mutating 端点函数内提及该属性的写语句
        (赋值目标含属性名 / execute 字符申含 `attr=`)。参数化写
        (`UPDATE users SET role=?`)静态无值,只能值盲——对多值变量可能
        超前判达,属诚实记录的过近似。
-   已知过近似:authed 原子锚点 = login 端点行(401 失败路径也覆盖)。
+   authed 原子锚点 = login 的**成功 return 行**(token 签发路径,函数
+   末 return;早退 401 行不算)——state_atoms 指标仅 policy=state 臂
+   采集,入口行锚点会让 401 也判达、E 臂自肥。
 
 4. **?槽保持符号**:渲染步不代入 `?var`(BindingContext 会把未绑定槽
    变 None),保持 `"?token"` 字面——靶侧(targets/vulnshop/fuzz_target.py
@@ -87,8 +92,29 @@ class AppModelPath:
 # ----------------------------------------------------------- 模型构建(零 LLM)
 
 
-def _complete_auth_chain(model: AppModel) -> None:
-    """§2:触追踪实体且非公共路由 → 需认证;/auth/login → 产认证。"""
+def _success_return_line(model: AppModel, app_root: Path, ep) -> int:
+    """端点函数最后一条 return 的行号(早退错误惯用法:末 return=成功路径)。
+
+  authed 判达锚点用:入口/401 早退行覆盖 ≠ 登录成功;token 签发的
+  成功 return 只在凭证正确时执行。函数解析不出 → 回退端点行(过近似)。
+    """
+    src = _abs_source(ep.file, app_root)
+    funcs = _functions_by_file(model, app_root)
+    fn = funcs.get(str(src), {}).get(ep.func) if src is not None else None
+    if fn is None:
+        return ep.line
+    returns = [n.lineno for n in ast.walk(fn) if isinstance(n, ast.Return)]
+    return max(returns) if returns else ep.line
+
+
+def _complete_auth_chain(model: AppModel, app_root: Path) -> None:
+    """§2:触追踪实体且非公共路由 → 需认证;/auth/login → 产认证。
+
+    login 的认证 Effect 锚在**成功 return 行**(_success_return_line):
+    入口行连 401 失败也覆盖,会让 policy=state 臂的 authed 判达自肥
+    (state_atoms 指标仅 E 臂采集,不对称膨胀);成功 return 只在签发
+    token 时覆盖。
+    """
     entities = {p.var.split(".", 1)[0] for ep in model.endpoints
                 for p in ep.preconditions if "." in p.var}
     entities |= {e.var.split(".", 1)[0] for ep in model.endpoints
@@ -112,7 +138,8 @@ def _complete_auth_chain(model: AppModel) -> None:
                 not any(e.var == _AUTH_VAR for e in ep.effects):
             ep.effects.append(Effect(
                 var=_AUTH_VAR, op="set", key="username",
-                file=ep.file, line=ep.line))
+                file=ep.file,
+                line=_success_return_line(model, app_root, ep)))
 
 
 def _abs_source(file: str, app_root: Path) -> Path | None:
@@ -160,7 +187,10 @@ def _target_text(node) -> str:
 def _write_sites(fn: ast.FunctionDef, attr: str, value: str):
     """函数内 attr 的写语句 → yield (行号, "value"|"attr")。
 
-    value:值为原子字面量的赋值,或 execute 字符串里 `attr='value'`。
+    value:**右侧为该字面量常量的无条件赋值**(`status = "PAID"`,或
+          execute 字符串里 `attr='value'`)。IfExp/下标/表达式值一律
+          不算值匹配——覆盖该行不蕴含"写了该值"(部分支付走 else 支
+          仍写旧 status),且值子树里的下标键常量("status")不是写值。
     attr :赋值目标提及 attr,或 execute 字符串里 `attr=`(值盲)。
     """
     word = re.compile(rf"\b{re.escape(attr)}\b")
@@ -171,10 +201,10 @@ def _write_sites(fn: ast.FunctionDef, attr: str, value: str):
         if isinstance(node, ast.Assign) and node.targets:
             if not word.search(_target_text(node.targets[0])):
                 continue
-            consts = {c.value for c in ast.walk(node.value)
-                      if isinstance(c, ast.Constant)
-                      and isinstance(c.value, str)}
-            yield node.lineno, ("value" if value in consts else "attr")
+            const = node.value
+            is_value = isinstance(const, ast.Constant) \
+                and isinstance(const.value, str) and const.value == value
+            yield node.lineno, ("value" if is_value else "attr")
         elif isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) \
                 and node.func.attr in _SQL_EXECUTE:
             hit = None
@@ -234,7 +264,7 @@ def _appmodel_path(resolved_target: str) -> AppModelPath | None:
         model = extract_flask(app_root)
         if not model.endpoints:
             return None              # 非 Flask 靶(微靶)→ 微路径接管
-        _complete_auth_chain(model)
+        _complete_auth_chain(model, app_root)
         model.invariants = derive_invariants(model)
         sstg = build_sstg(model)
         return AppModelPath(target=target, app_root=app_root, model=model,
