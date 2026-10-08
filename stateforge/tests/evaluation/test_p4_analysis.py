@@ -176,6 +176,28 @@ def fx(tmp_path):
                    {"epoch": 2, "status": "INJECT_ALWAYS", "new_atoms": ["B1"]},
                    {"goal": "B1", "path": "appmodel", "status": "INJECTED",
                     "seed_id": f"s{k}"}] for k in range(3)})
+    # ---- t_c:TRIGGER_NET_ZERO 措辞守卫例(微靶实况:E-always 账本有
+    # INJECTED/DUPLICATE 但 0 INJECT_ALWAYS——旁路只在 new_atoms 非空时
+    # 审计,覆盖代理不见新原子 → 旁路从未开火但无条件注入)
+    _write_abl(root, "t_c",
+               {"E": [40, 41], "E-always": [40, 41]},
+               {"E": [["C1"], ["C1"]], "E-always": [["C1"], ["C1"]]},
+               {"E": [2, 2], "E-always": [2, 2]},
+               ledgers={("E-always", 0): [
+                   {"goal": "C1", "path": "appmodel", "status": "INJECTED",
+                    "seed_id": "c0"},
+                   {"goal": "C1", "path": "appmodel", "status": "DUPLICATE"}],
+                   ("E-always", 1): [
+                   {"goal": "C1", "path": "appmodel", "status": "INJECTED",
+                    "seed_id": "c1"}]})
+    # ---- t_n:NO_LEDGER_EVIDENCE 例(全零差但对照臂无任何账本文件)
+    _write_abl(root, "t_n",
+               {"E": [50, 50], "E-rand": [50, 50]},
+               {"E": [["N1"], ["N1"]], "E-rand": [["N1"], ["N1"]]},
+               {"E": [1, 1], "E-rand": [1, 1]})
+    # ---- 幻影靶:IR 脚手架 abl_ir_scratch(同前缀、无 state_ablation.json)
+    (root / "abl_ir_scratch").mkdir()
+    (root / "abl_ir_scratch" / "ir.json").write_text("{}", encoding="utf-8")
     # ---- t_orphan:仅 campaign,无消融目录(诚实缺省路径)
     _write_camp(root, "t_orphan",
                 [_camp_row(7, 9, 0.40, 10, 0.45),
@@ -272,6 +294,30 @@ class TestNulls:
         assert n["evidence"]["statuses"]["INJECTED"] == 3
         assert n["evidence"]["statuses"]["INJECT_ALWAYS"] == 3
 
+    def test_trigger_null_bypass_never_fired(self, fx):
+        """微靶实况措辞守卫:INJECT_ALWAYS=0 且 INJECTED>0 → 不写
+        "bypass engaged"(与 0 边界证据自相矛盾),改为 never-fired +
+        无条件注入;evidence 计数不变。"""
+        rep = _load(fx)
+        n = _nulls(rep)["t_c:trigger_value"]
+        assert n["reason_code"] == "TRIGGER_NET_ZERO"
+        assert "bypass never fired" in n["reason"]
+        assert "bypass engaged" not in n["reason"]
+        assert "unconditionally" in n["reason"]
+        assert n["evidence"]["statuses"].get("INJECTED") == 2
+        assert "INJECT_ALWAYS" not in n["evidence"]["statuses"]
+        # 有 INJECT_ALWAYS 的案例仍走旁路措辞(t_b 不回归)
+        assert "bypass engaged" in _nulls(rep)["t_b:trigger_value"]["reason"]
+
+    def test_no_ledger_evidence_case(self, fx):
+        """全零差但对照臂无任何 state_injections.jsonl → NO_LEDGER_EVIDENCE
+        (ledgers_found=0,statuses 空表,诚实挂起)。"""
+        rep = _load(fx)
+        n = _nulls(rep)["t_n:planner_contribution"]
+        assert n["reason_code"] == "NO_LEDGER_EVIDENCE"
+        assert n["evidence"]["ledgers_found"] == 0
+        assert n["evidence"]["statuses"] == {}
+
 
 # ------------------------------------------------------- 消融:配对统计
 
@@ -319,9 +365,21 @@ class TestCoverage:
         assert rep["coverage"]["campaign_dirs"] == [
             str(fx / "camp_t_a"), str(fx / "camp_t_b"), str(fx / "camp_t_orphan")]
         assert rep["coverage"]["ablation_dirs"] == [
-            str(fx / "abl_t_a"), str(fx / "abl_t_b")]
+            str(fx / "abl_t_a"), str(fx / "abl_t_b"),
+            str(fx / "abl_t_c"), str(fx / "abl_t_n")]
         # 无消融靶的 state_gain 仍照常配对
         assert t["campaign"]["state_gain"]["final_blocks"]["mean"] == 1.0
+
+    def test_phantom_abl_dirs_skipped(self, fx):
+        """abl_* 无 state_ablation.json(IR 脚手架 abl_ir_*)→ discover
+        跳过:不进 targets、不进 ablation_dirs / ablations_without_campaign。"""
+        rep = _load(fx)
+        assert "ir_scratch" not in rep["targets"]
+        assert all(not Path(p).name.startswith("abl_ir_")
+                   for p in rep["coverage"]["ablation_dirs"])
+        assert "ir_scratch" not in \
+            rep["coverage"]["ablations_without_campaign"]
+        assert {"t_a", "t_b", "t_c", "t_n", "t_orphan"} <= set(rep["targets"])
 
 
 class TestReadOnlyAndText:

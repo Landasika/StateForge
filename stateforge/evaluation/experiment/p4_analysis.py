@@ -35,7 +35,8 @@ p4_formal 目录内的任何路径):
 - 零差 null:全零配对差 → null-with-reason,溯源审计账本
   (state_injections.jsonl)状态计数:
       R2A_VACUOUS          旁路已开却 0 INJECTED(R2-(a) vacuous)
-      TRIGGER_NET_ZERO     旁路有写入仍逐 run 打平(触发纪律净零)
+      TRIGGER_NET_ZERO     有写入仍逐 run 打平(触发纪律净零;INJECT_ALWAYS=0
+                           时措辞 = "bypass never fired,无条件注入",与证据自洽)
       PLANNER_NET_ZERO     随机序列臂与 E 打平(规划器管线净零)
       STATE_NEVER_ENGAGED  E 臂 0 INJECTED(状态机制从未介入)
       STATE_GAIN_NET_ZERO  有注入仍与 D1 打平
@@ -155,7 +156,11 @@ def _all_zero(p: dict) -> bool:
 
 
 def discover(root: Path) -> tuple[dict[str, Path], dict[str, Path]]:
-    """<root>/camp_* 与 <root>/abl_* → ({target: dir}, {target: dir})。"""
+    """<root>/camp_* 与 <root>/abl_* → ({target: dir}, {target: dir})。
+
+    abl_* 目录须含 state_ablation.json 才算真消融产物——IR 脚手架
+    (如 abl_ir_*)落同前缀的临时目录会被幻影靶污染报告,跳过。
+    """
     camps: dict[str, Path] = {}
     abls: dict[str, Path] = {}
     if not Path(root).is_dir():
@@ -166,7 +171,8 @@ def discover(root: Path) -> tuple[dict[str, Path], dict[str, Path]]:
         if d.name.startswith(CAMP_PREFIX):
             camps[d.name[len(CAMP_PREFIX):]] = d
         elif d.name.startswith(ABL_PREFIX):
-            abls[d.name[len(ABL_PREFIX):]] = d
+            if (d / "state_ablation.json").is_file():
+                abls[d.name[len(ABL_PREFIX):]] = d
     return camps, abls
 
 
@@ -310,10 +316,21 @@ def _abl_null(abl_dir: Path, key: str, other: str,
                       f"in {other} ledgers)")
         else:
             code = "TRIGGER_NET_ZERO"
-            reason = (f"R2-(b) bypass engaged ({st.get('INJECT_ALWAYS', 0)} "
-                      f"boundaries, {st['INJECTED']} seeds written) yet E "
-                      f"matched it on all {b['n']} paired runs — trigger "
-                      f"discipline net-zero on this target")
+            always = st.get("INJECT_ALWAYS", 0)
+            if always:
+                reason = (f"R2-(b) bypass engaged ({always} boundaries, "
+                          f"{st['INJECTED']} seeds written) yet E matched it "
+                          f"on all {b['n']} paired runs — trigger "
+                          f"discipline net-zero on this target")
+            else:
+                # 微靶实况:旁路只在 new_atoms 非空时审计 INJECT_ALWAYS,
+                # 覆盖代理不见新原子 → 0 条,但 E-always 无条件注入
+                # (INJECTED>0)。措辞必须与证据自洽,不写"bypass engaged"。
+                reason = (f"bypass never fired (0 new-atom boundaries); "
+                          f"E-always injected unconditionally "
+                          f"({st['INJECTED']} seeds) yet E matched it on "
+                          f"all {b['n']} paired runs — trigger discipline "
+                          f"net-zero on this target")
     else:                                          # PLANNER
         if st.get("INJECTED", 0) == 0:
             code = "PLANNER_NET_ZERO"
