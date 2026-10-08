@@ -54,6 +54,10 @@ pip install -e ".[dev,test,fuzz]"
 # 跑全量测试（开发树 255 tests；fresh clone 254 passed + 2 skipped，差异见"冻结版本"节）
 pytest
 
+# 本地 CI：make test 等价 pytest；make verify = ./ci.sh 完整验收链（临时 clone→venv→install→pytest→micro_benchmark，输出三验收数字）
+make test
+make verify
+
 # 静态分析：构建 ICFG
 python -m stateforge.cli analyze <目标目录> --out results/structural
 

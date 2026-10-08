@@ -57,3 +57,5 @@ design.md
 !pyproject.toml
 !pytest.ini
 !LICENSE
+!Makefile
+!ci.sh
