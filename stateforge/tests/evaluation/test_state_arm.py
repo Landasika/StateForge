@@ -223,10 +223,23 @@ class TestEpochStateBoundary:
 class TestStateArmReport:
     @pytest.fixture()
     def run_dir(self, ir_path, tmp_path) -> Path:
-        """合成 five-arm run 目录:gate 靶、单 run、E 侧带真覆盖+账本。"""
+        """合成 five-arm run 目录:gate 靶、单 run、E 侧带真覆盖+账本;
+        D 侧带浅覆盖(守卫真分支不在内)作同机制阴性对照。"""
+        from stateforge.solving.state_seed_injector import (reached_state_atoms,
+                                                            synthesize_micro_model)
         ir = build_icfg(STATEFUL_DIR)
         covered = [bid for bid, b in ir.blocks.items()
                    if b.file.endswith("t_state_gate.py")]
+        guard_lines: set = set()
+        for g in synthesize_micro_model(GATE).guards:
+            guard_lines |= set(g.body_lines)
+        shallow = [bid for bid, b in ir.blocks.items()
+                   if b.file.endswith("t_state_gate.py")
+                   and not (set(range(b.start_line, b.end_line + 1))
+                            & guard_lines)]
+        assert shallow and len(shallow) < len(covered)
+        assert reached_state_atoms(ir, GATE,
+                                   {"covered_blocks": shallow}) == set()
         rd = tmp_path / "runX"
         (rd / "ir").mkdir(parents=True)
         (rd / "run_manifest.json").write_text(json.dumps({
@@ -245,6 +258,10 @@ class TestStateArmReport:
         (rd / "t_state_gate" / "run00" / "E" / "epochs"
          / "state_ledger.json").write_text(json.dumps(
             {"epoch": 3, "atoms": ["Session.role=admin"]}), encoding="utf-8")
+        (rd / "t_state_gate" / "run00" / "D" / "epochs"
+         / "global_state.json").write_text(json.dumps(
+            {"covered_blocks": shallow, "covered_edges": []}),
+            encoding="utf-8")
         return rd
 
     def test_report_keys_and_state_triple(self, run_dir):
@@ -268,7 +285,8 @@ class TestStateArmReport:
         # 深状态块:受门函数 gate_granted 的已覆盖块(入口谓词已满足)
         assert st["deep_state_blocks"] >= 1
         assert "gate_granted" in st["deep_functions"]
-        # D 无状态注入:覆盖代理对照(无账本无覆盖 → 0)
+        # D 覆盖代理对照:D 有浅覆盖(机制真跑)但守卫真分支未覆盖 →
+        # 判达 0 —— 阴性对照,非"缺产物"的平凡真
         assert entry["state"]["D_coverage_proxy"]["atoms_reached"] == 0
 
     def test_report_text_and_json_output(self, run_dir, tmp_path, capsys):
@@ -328,7 +346,8 @@ class TestFiveArmE2E:
                                .read_text(encoding="utf-8"))
             d_sum = json.loads((rd / "D" / "group_summary.json")
                                .read_text(encoding="utf-8"))
-            # E 拿到序列种子 → 状态原子判达;D 无状态机制 → 0/缺省
+            # E 拿到序列种子 → 状态原子判达;D 的 group_summary 无状态机制
+            # (结构缺键;同机制的"D 是否判达"由下方报告代理断言钉)
             assert e_sum.get("state_atoms_reached", 0) == 1
             assert e_sum.get("state_atoms") == ["Session.uid=True"]
             assert d_sum.get("state_atoms_reached", 0) == 0
@@ -348,3 +367,7 @@ class TestFiveArmE2E:
         assert st["deep_state_blocks"] >= 1
         assert ["POST login", "Session.uid=True", "set"] in st["transitions"]
         assert len(entry["state"]["E_runs"]) == 2
+        # 同机制 D 对照(真实 run 数据,审查 Important 修):D 无注入,但
+        # "是否判达"用与 E 同一覆盖代理机制算出并钉为 0 —— "同机制 E>D"
+        # 不再依赖 group_summary 结构缺键的平凡真
+        assert entry["state"]["D_coverage_proxy"]["atoms_reached"] == 0

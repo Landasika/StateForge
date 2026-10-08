@@ -10,14 +10,20 @@ group_summary.json` + `epochs/` 产物),输出紧凑对比:既有 blocks/edges
 
 1. state_atoms_reached —— reached_state_atoms(ir, target, 末轮
    global_state.json):守卫真分支区域已有覆盖块即判达(覆盖代理,注入器
-   docstring §3);并集 epochs/state_ledger.json 账本原子(历史边界判达
-   不因末轮状态回退)。
+   docstring §3);并集 epochs/state_ledger.json 的账本原子。注意:账本
+   是逐边界**覆写**的末边界快照(epoch.py:196),并集只能找回"末边界仍
+   判达"的原子——若覆盖跨两个边界回退(早边界判达、末边界与末轮均不
+   再判达),该原子会从指标中丢失(口径宁小勿大,fail-safe)。
 2. transitions_observed —— SSTG 上以已达原子为状态端的边,去重为
    (from, to, trigger) 三元组:
      produces(action→atom, atom 已达)→ (action, atom, effect_op)
        = 观测到该 op 置位该会话状态;
      requires(action→atom, atom 已达)→ (atom, action, pre_op)
        = 观测到守卫前件满足下受门 op 过门。
+   隐含假设:每原子恰一条守卫(现微靶族成立)。同原子多守卫时,
+   requires 三元组会为未真正执行过的受门 op 计数(判达只证状态成立,
+   不证该 op 此次过门)——届时须借 deep-block 机制(真分支块覆盖)逐
+   守卫设门,而非本去重。
 3. deep_state_blocks —— 入口谓词已满足的深状态载荷覆盖块:已达守卫真
    分支区域(GuardInfo.body_lines)内的覆盖块 + 真分支调用的模块级函数
    (受门函数,如 gate_granted)内的覆盖块(R3:深状态块归属 = 入口
