@@ -11,7 +11,7 @@ import sys
 import time
 from pathlib import Path
 
-from stateforge.core.log import get_logger
+from stateforge.core.log import get_logger, setup_logging
 from stateforge.evaluation.hypothesis_gate import (
     Hypothesis, VerificationResult, Verdict, TriState, Mitigation,
     build_hypotheses_from_analyzer, annotate_ground_truth,
@@ -180,5 +180,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--n", type=int, default=10)
     parser.add_argument("--out", default="/tmp/hvg_pilot")
+    parser.add_argument("-v", "--verbose", action="store_true",
+                        help="DEBUG logging on stderr (default INFO)")
     args = parser.parse_args()
+    setup_logging(args.verbose)
     run_pilot(args.n, args.out)
