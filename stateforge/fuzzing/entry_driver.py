@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import importlib.util
+import json
 import sys
 from pathlib import Path
 
@@ -27,6 +28,55 @@ def _load_target(path: str):
     sys.modules["sf_target"] = mod
     spec.loader.exec_module(mod)
     return mod.target
+
+
+# ------------------------------------------------ C10 序列种子（P3-T2）分派
+
+
+def decode_sequence_seed(data: bytes) -> list | None:
+    """C10 消费端解码：bytes → 序列步列表；非序列种子 → None。
+
+    序列种子 = {"steps": [<单请求 dict>, ...]}（R1 裁决：前缀步素状态，
+    末步=当前请求）。分派只看 "steps" 键存在且值为 list——legacy 单请求
+    契约（{"query","form","json","header","cookie"}）保持冻结，凡非序列
+    输入一律由调用方原字节透传，行为逐字节不变（四臂非回归门）。
+    """
+    try:
+        seed = json.loads(data)
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return None
+    if isinstance(seed, dict) and isinstance(seed.get("steps"), list):
+        return seed["steps"]
+    return None
+
+
+def encode_sequence_seed(steps: list) -> bytes:
+    """C10 序列种子构造（steps → bytes）。T3 state 注入器落盘时必须
+    复用同一 builder，保证与消费端解码逐字节互认。"""
+    return json.dumps({"steps": list(steps)}, ensure_ascii=False,
+                      sort_keys=True).encode("utf-8")
+
+
+def execute_sequence(target, steps: list) -> None:
+    """按序逐步执行：每步经序列化走与单请求完全相同的 target(data) 执行面。
+
+    会话连续性 = 进程内持久：adapter 持有的 app/test_client、或靶模块的
+    会话态跨调用存活，无需显式 cookie jar。空 steps = 零执行；非 dict 步
+    原样序列化喂靶（由靶自己的错误路径消化）。单步异常不在此吞——与
+    legacy 一致由外层 handler 统一吞掉（不向引擎泄 crash）。
+    """
+    for step in steps:
+        target(json.dumps(step, ensure_ascii=False,
+                          sort_keys=True).encode("utf-8"))
+
+
+def dispatch_seed(target, data: bytes) -> None:
+    """C10 分派入口：含 "steps" 的 JSON dict → 序列执行；否则原字节透传。"""
+    steps = decode_sequence_seed(data)
+    if steps is None:
+        target(data)                          # legacy：逐字节不变
+        return
+    execute_sequence(target, steps)
 
 
 def main() -> int:
@@ -49,6 +99,11 @@ def main() -> int:
     import sys as _sys
     _target_module = _sys.modules["sf_target"]
 
+    def dispatch(data: bytes) -> None:
+        # C10 分派：序列种子按序多步执行；其余输入原字节透传给 target
+        # （legacy 单请求路径行为逐字节不变——四臂非回归门）。
+        dispatch_seed(target, data)
+
     def _make_recorder():
         return ExperimentRecorder(args.out_dir, args.group, args.epoch)
 
@@ -60,7 +115,7 @@ def main() -> int:
         def handler(data: bytes) -> None:
             t0 = time.monotonic()
             try:
-                target(data)
+                dispatch(data)
             except Exception:                # noqa: BLE001
                 pass
             recorder.tick(time.monotonic() - t0, 0.0, 0, 0, False, None, 0)
@@ -107,7 +162,7 @@ def main() -> int:
                                           on_save=_dump_state)
 
             def handler(data: bytes) -> None:
-                collector.handle(target, data)
+                collector.handle(dispatch, data)
         else:
             corpus = (CorpusManager(Path(args.out_dir) / "spool")
                       if args.mode == "feedback" else None)
@@ -116,7 +171,7 @@ def main() -> int:
                                            on_save=_dump_state)
 
             def handler(data: bytes) -> None:
-                collector.handle(target, data)
+                collector.handle(dispatch, data)
 
     # 原生覆盖必须开(否则盲变异、语料不增长);用选择性插桩只打目标模块——
     # instrument_all 会把解释器全量模块插桩,启动 ~30s 且与 tracer 冲突风险高。

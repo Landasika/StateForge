@@ -70,9 +70,9 @@ def _app(tmp_path: Path) -> Path:
 
 
 def test_c0_protocols_md_sections_pinned():
-    """PROTOCOLS.md 规范文与执行面同在:C1-C9 小节与三级词汇缺一即漂移。"""
+    """PROTOCOLS.md 规范文与执行面同在:C1-C10 小节与三级词汇缺一即漂移。"""
     text = PROTOCOLS_MD.read_text(encoding="utf-8")
-    for i in range(1, 10):
+    for i in range(1, 11):
         assert re.search(rf"^## C{i}\b", text, flags=re.M), (
             f"PROTOCOLS.md 缺 C{i} 小节")
     for grade in ("冻结", "演进", "内部"):
@@ -414,3 +414,39 @@ def test_c9_recorder_jsonl_schema(tmp_path):
                                    "feedback_seconds", "feedback_overhead",
                                    "throughput_exec_s", "blocks", "edges",
                                    "candidates_saved"}
+
+
+# ------------------------------------------------- C10 序列种子 JSON(演进)
+
+
+def test_c10_sequence_seed_consumer_pin():
+    """C10 消费端钉扎(生产者=T3 state 注入器,待接):经驱动同款真实
+    encode/decode/dispatch 路径 round-trip,钉 steps 形状与分派语义。
+
+    诚实标注:当前仓内尚无 C10 生产者,本测试用驱动自带的
+    encode_sequence_seed(T3 届时必须复用的同一 builder)构造样本,
+    属消费侧 pin;生产者接入后应改走 T3 真实产出路径。
+    """
+    from stateforge.fuzzing.entry_driver import (decode_sequence_seed,
+                                                 dispatch_seed,
+                                                 encode_sequence_seed)
+
+    steps = [{"json": {"op": "login", "user": "alice"}},
+             {"json": {"op": "profile"}}]
+    raw = encode_sequence_seed(steps)                  # 生产侧 builder(共享)
+    payload = json.loads(raw)
+    assert list(payload.keys()) == ["steps"]           # 顶层只含 steps
+    assert isinstance(payload["steps"], list)
+    assert all(isinstance(s, dict) for s in payload["steps"])
+    assert all(set(s) <= {"query", "form", "json", "header", "cookie"}
+               for s in payload["steps"])              # 步=单请求 dict(冻结词汇)
+
+    parsed = decode_sequence_seed(raw)                 # 消费端解码(驱动同函数)
+    assert parsed == steps
+    assert decode_sequence_seed(b'{"json":{}}') is None    # 非序列→legacy 透传
+    assert decode_sequence_seed(b'{"steps":5}') is None
+    assert decode_sequence_seed(b"\x00\xff") is None
+
+    seen = []                                          # 分派语义:按序逐步执行
+    dispatch_seed(lambda d: seen.append(json.loads(d)), raw)
+    assert seen == steps

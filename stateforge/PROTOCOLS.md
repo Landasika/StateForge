@@ -27,6 +27,7 @@
 | C7 | LLM cache JSON | solving.llm.cache.put(lifting label/relate)→ cache.get(缓存优先通道) | JSON 单行 | 冻结 | `stateforge/solving/llm/cache/<sha256>.json`(随仓) |
 | C8 | corpus + global_state.json | fuzzing.corpus_manager / fuzzing.entry_driver → export_seed_dir(libFuzzer)、evaluation.experiment.epoch | bytes + JSONL + JSON | 演进 | `spool/seeds/<cid>`、`spool/meta.jsonl`、`global_state.json` |
 | C9 | 实验记录 JSONL | fuzzing.recorder.ExperimentRecorder → evaluation.experiment.epoch | JSONL | 演进 | `<group>-e<N>-snapshots.jsonl`、`<group>-e<N>-candidates.jsonl` |
+| C10 | 序列种子 JSON(steps) | (规划)state 注入器(P3-T3,待接)→ fuzzing.entry_driver 解码分派、targets.stateful.* 靶 | JSON | 演进 | corpus 种子文件(`lf_corpus/<cid>`、`spool/seeds/<cid>`) |
 
 ---
 
@@ -286,6 +287,36 @@ ChampionRecord 四键:`input_id` `distance` `epoch` `frontier_version`(`frontier
 
 ---
 
+## C10 序列种子 JSON(steps)—— 演进
+
+| | |
+|---|---|
+| 生产者 | (规划)`epoch.py` 轮间 state 注入器(P3-T3,待接):plan_backward 的有序 PlanStep → `{"steps":[…]}` bytes 写入 corpus;落盘必须复用 `encode_sequence_seed`(`fuzzing/entry_driver.py`,与消费端同一 builder)。**当前仓内尚无生产者**——协议测试为消费侧钉扎(`test_c10_sequence_seed_consumer_pin`,docstring 已注明) |
+| 消费者 | `fuzzing/entry_driver.decode_sequence_seed` + `dispatch_seed`(libFuzzer handler 入口,三模式一致:`entry_driver.py` dispatch);`targets/stateful/t_state_*.py` 靶本体(整体 steps 重放语义,与驱动逐步分派等价) |
+| 格式 | JSON 单行(`json.dumps({"steps": […]}, ensure_ascii=False, sort_keys=True)`);作为一条 libFuzzer 输入整体变异 |
+| 执行面 | `test_protocols.py::test_c10_sequence_seed_consumer_pin`、`tests/fuzzing/test_sequence_seeds.py` |
+
+键集:
+
+- 顶层:`steps`(唯一键,list,可为空)
+- `steps[i]` = **单请求 dict,即 C-legacy 冻结契约** `{"query","form","json","header","cookie"}` 的子集;序列里前缀步素状态,末步=当前请求
+
+最小示例(`encode_sequence_seed` 实际输出,sort_keys 键序):
+
+```json
+{"steps": [{"json": {"op": "login", "user": "alice"}}, {"json": {"op": "profile"}}]}
+```
+
+**演进语义与分派纪律(R1 冻结裁决):**
+
+- 分派只看 `"steps"` 键存在且值为 list:是→按序逐步执行,每步经 `json.dumps` 走与单请求**同一** `target(data)` 执行面;否→**原字节透传**,legacy 单请求路径行为逐字节不变(四臂非回归门)。
+- 会话连续性 = 进程内持久:adapter 持有的 app/test_client、靶模块级会话态跨步存活;Atheris 仍是唯一执行引擎,整条序列是一次输入,序列变异即状态空间探索(涌现)。
+- 覆盖口径 = 序列全程并集:所有步在同一 handler 调用、同一 TraceSession 请求窗口内执行,coverage 计数自然累加(R3)。
+- 畸形输入确定性:`steps: []` = 零执行;非 dict 步原样序列化喂靶(靶自己的错误路径消化);`steps` 非 list → 按 legacy 透传;单步异常由外层 handler 统一吞,不向引擎泄 crash。
+- 加字段安全(演进):顶层可加新键(消费端只按 `steps` 分派);`steps[i]` 内沿用单请求契约的演进纪律。
+
+---
+
 ## 执行面
 
 ```bash
@@ -293,4 +324,4 @@ ChampionRecord 四键:`input_id` `distance` `epoch` `frontier_version`(`frontier
 python -m pytest stateforge/tests/test_protocols.py -v
 ```
 
-`test_protocols.py` 对 C1/C2/C7(冻结)断言 round-trip 字节稳定;对 C5/C6/C8/C9(演进)断言键集与缺省兼容;对 C3/C4(内部)断言 dataclass 形状;另以 `test_c0_protocols_md_sections_pinned` 锁定本文 C1–C9 小节存在性——文档删节而测试不删即红,两向同步。
+`test_protocols.py` 对 C1/C2/C7(冻结)断言 round-trip 字节稳定;对 C5/C6/C8/C9/C10(演进)断言键集与缺省兼容;对 C3/C4(内部)断言 dataclass 形状;另以 `test_c0_protocols_md_sections_pinned` 锁定本文 C1–C10 小节存在性——文档删节而测试不删即红,两向同步。
