@@ -19,6 +19,10 @@ import sys
 import time
 from pathlib import Path
 
+from stateforge.core.log import get_logger
+
+logger = get_logger(__name__)
+
 
 def _iter_rules(flask_app, sample: int):
     rules = sorted(
@@ -71,7 +75,7 @@ def run_baseline(repo: str | Path, sample: int = 60, out: str | Path = "results/
                         else:
                             client.post(rule, data={})
                     except Exception as exc:            # noqa: BLE001
-                        print(f"[warn] {method} {rule}: {exc}")
+                        logger.warning(f"[warn] {method} {rule}: {exc}")
                     evs = [e for e in session.events if e.request_id == req_id]
                 records.append({"request_id": rid, "route": rule, "method": method,
                                 "events": [e.__dict__ for e in evs]})

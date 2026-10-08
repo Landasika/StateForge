@@ -11,11 +11,14 @@ import sys
 import time
 from pathlib import Path
 
+from stateforge.core.log import get_logger
 from stateforge.evaluation.hypothesis_gate import (
     Hypothesis, VerificationResult, Verdict, TriState, Mitigation,
     build_hypotheses_from_analyzer, annotate_ground_truth,
     hypothesis_to_prompt, hypothesis_to_bundled_prompt,
     repository_audit_prompt, score_hva)
+
+logger = get_logger(__name__)
 
 
 def parse_verdict(raw: str, hid: str) -> VerificationResult:
@@ -103,7 +106,7 @@ def run_pilot(n_hyp=10, out_dir="/tmp/hvg_pilot"):
     from stateforge.solving.llm.provider import Provider
     provider = Provider.from_env()
     if provider is None:
-        print("ERROR: Provider not configured")
+        logger.error("ERROR: Provider not configured")
         return
 
     out = Path(out_dir)
@@ -112,7 +115,7 @@ def run_pilot(n_hyp=10, out_dir="/tmp/hvg_pilot"):
     # 生成 hypothesis
     app_dir = "stateforge/targets/vulnshop"
     all_hyps = build_hypotheses_from_analyzer(app_dir)
-    print(f"Generated {len(all_hyps)} hypotheses from vulnshop")
+    logger.info(f"Generated {len(all_hyps)} hypotheses from vulnshop")
 
     # GT(vulnshop 已知漏洞)
     gt = {
@@ -131,31 +134,31 @@ def run_pilot(n_hyp=10, out_dir="/tmp/hvg_pilot"):
     gt_file.write_text(json.dumps(gt))
     annotate_ground_truth(all_hyps, gt_file)
     confirmed = sum(1 for h in all_hyps if h.gt_verdict == Verdict.CONFIRMED)
-    print(f"Ground truth: {confirmed} confirmed, "
+    logger.info(f"Ground truth: {confirmed} confirmed, "
           f"{len(all_hyps) - confirmed} not-confirmed")
 
     # 取前 n_hyp 个
     hyps = all_hyps[:n_hyp]
-    print(f"Pilot: {len(hyps)} hypotheses\n")
+    logger.info(f"Pilot: {len(hyps)} hypotheses\n")
 
     # Arm C: Isolated
-    print("─── Arm C: Isolated ───")
+    logger.info("─── Arm C: Isolated ───")
     c_results, c_meta = run_isolated(provider, hyps, app_dir)
     c_scores = score_hva(c_results, hyps)
-    print(f"HVA={c_scores['hva']:.2f} HCR={c_scores['hcr']:.2f} "
+    logger.info(f"HVA={c_scores['hva']:.2f} HCR={c_scores['hcr']:.2f} "
           f"EGR={c_scores['egr']:.2f} time={c_meta['time']}s")
     for r in c_results:
         h = next((h for h in hyps if h.hid == r.hid), None)
         gt_v = h.gt_verdict.value if h else "?"
         mark = "✓" if r.verdict == (h.gt_verdict if h else Verdict.UNCERTAIN) else "✗"
-        print(f"  {mark} {r.hid}: verdict={r.verdict.value:10s} gt={gt_v:10s} "
+        logger.debug(f"  {mark} {r.hid}: verdict={r.verdict.value:10s} gt={gt_v:10s} "
               f"evidence={len(r.evidence)}")
 
     # Arm B: Bundled
-    print("\n─── Arm B: Bundled ───")
+    logger.info("\n─── Arm B: Bundled ───")
     b_results, b_meta = run_bundled(provider, hyps, app_dir)
     b_scores = score_hva(b_results, hyps)
-    print(f"HVA={b_scores['hva']:.2f} HCR={b_scores['hcr']:.2f} "
+    logger.info(f"HVA={b_scores['hva']:.2f} HCR={b_scores['hcr']:.2f} "
           f"EGR={b_scores['egr']:.2f} time={b_meta['time']}s")
 
     # 汇总
@@ -169,7 +172,7 @@ def run_pilot(n_hyp=10, out_dir="/tmp/hvg_pilot"):
         "model": provider.model,
     }
     (out / "pilot_report.json").write_text(json.dumps(report, indent=1))
-    print(f"\n[out] {out / 'pilot_report.json'}")
+    logger.info(f"\n[out] {out / 'pilot_report.json'}")
 
 
 if __name__ == "__main__":

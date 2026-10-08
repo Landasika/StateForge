@@ -90,6 +90,8 @@ LLM 语义求解(Phase 4.2)经 4 个环境变量配置;`stateforge/config.py` �
 | `STATEFORGE_LLM_MODEL` | `glm-4-flash` | 模型名 |
 | `STATEFORGE_LLM_TIMEOUT` | `30` | 请求超时(秒;按 int 收敛,小数字符串报错) |
 
+日志:库侧诊断走 `logging` 输出到 stderr(`stateforge.core.log` 统一入口 `get_logger`;默认 INFO,静默直到 CLI 调 `setup_logging`)。`python -m stateforge.cli -v/--verbose` 开 DEBUG;CLI 用户面向输出(命令结果/表格)仍走 stdout print,两者不混流。
+
 ---
 
 ## 项目阶段

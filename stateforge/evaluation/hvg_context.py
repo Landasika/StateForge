@@ -11,10 +11,13 @@ import re
 import time
 from pathlib import Path
 
+from stateforge.core.log import get_logger
 from stateforge.evaluation.hypothesis_gate import (
     Hypothesis, VerificationResult, Verdict, TriState, Mitigation,
     build_hypotheses_from_analyzer, annotate_ground_truth,
     score_hva)
+
+logger = get_logger(__name__)
 
 
 # ── 源码上下文构建 ──
@@ -212,7 +215,7 @@ def run_p2(n_hyp=10, out_dir="/tmp/hvg_p2"):
     from stateforge.solving.llm.provider import Provider
     provider = Provider.from_env()
     if provider is None:
-        print("ERROR: Provider not configured")
+        logger.error("ERROR: Provider not configured")
         return
 
     out = Path(out_dir)
@@ -239,30 +242,30 @@ def run_p2(n_hyp=10, out_dir="/tmp/hvg_p2"):
     annotate_ground_truth(all_hyps, gt_file)
     hyps = all_hyps[:n_hyp]
     confirmed = sum(1 for h in hyps if h.gt_verdict == Verdict.CONFIRMED)
-    print(f"Hypotheses: {len(hyps)} ({confirmed} confirmed GT)")
-    print(f"Model: {provider.model}\n")
+    logger.info(f"Hypotheses: {len(hyps)} ({confirmed} confirmed GT)")
+    logger.info(f"Model: {provider.model}\n")
 
     report = {"n": len(hyps), "model": provider.model, "arms": {}}
 
     for arm in ("A0", "A1", "A2"):
-        print(f"─── Arm {arm} ───")
+        logger.info(f"─── Arm {arm} ───")
         results, meta = run_arm(provider, hyps, app_path, arm)
         scores = score_with_ecr_esr(results, hyps)
-        print(f"  HVA={scores['hva']:.2f} HCR={scores['hcr']:.2f} "
+        logger.info(f"  HVA={scores['hva']:.2f} HCR={scores['hcr']:.2f} "
               f"ECR={scores['ecr']:.2f} time={meta['time']}s")
         for r in results:
             h = next((h for h in hyps if h.hid == r.hid), None)
             gt_v = h.gt_verdict.value if h else "?"
             mark = "✓" if r.verdict == (h.gt_verdict if h else Verdict.UNCERTAIN) else "✗"
-            print(f"  {mark} {r.hid}: {r.verdict.value:10s} gt={gt_v:10s} ev={len(r.evidence)}")
+            logger.debug(f"  {mark} {r.hid}: {r.verdict.value:10s} gt={gt_v:10s} ev={len(r.evidence)}")
         report["arms"][arm] = {
             "scores": scores, "meta": meta,
             "results": [{"hid": r.hid, "verdict": r.verdict.value,
                          "evidence": r.evidence} for r in results]}
-        print()
+        logger.info("")
 
     (out / "p2_report.json").write_text(json.dumps(report, indent=1))
-    print(f"[out] {out / 'p2_report.json'}")
+    logger.info(f"[out] {out / 'p2_report.json'}")
 
 
 if __name__ == "__main__":

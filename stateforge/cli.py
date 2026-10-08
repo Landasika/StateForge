@@ -8,6 +8,7 @@ from pathlib import Path
 import sys
 
 from stateforge.core.ir import ProgramIR
+from stateforge.core.log import setup_logging
 from stateforge.core.serialization import save_json, save_program_ir
 from stateforge.runtime.io import merge_events
 from stateforge.runtime.coverage import coverage
@@ -103,6 +104,8 @@ def experiment_cmd(target: str, out: str, trace_paths: list[str] | None = None) 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="StateForge structural feedback")
+    parser.add_argument("-v", "--verbose", action="store_true",
+                        help="DEBUG logging on stderr (default INFO)")
     sub = parser.add_subparsers(dest="command", required=True)
     analyze = sub.add_parser("analyze", help="build a stable ProgramIR/ICFG")
     analyze.add_argument("target")
@@ -122,6 +125,7 @@ def main() -> int:
     viz.add_argument("feedback")
     viz.add_argument("--out", default="results/coverage.dot")
     args = parser.parse_args()
+    setup_logging(args.verbose)
     if args.command == "analyze":
         return analyze_cmd(args.target, args.out, args.callgraph)
     if args.command == "experiment":
