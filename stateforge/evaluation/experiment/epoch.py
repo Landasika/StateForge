@@ -200,11 +200,15 @@ def _llm_audit(workdir: Path, record: dict) -> None:
     """llm 接缝审计(P5 终清扫):同 _state_audit 形状,落 llm 台账。
 
     接缝异常先记 SEAM_ERROR 再照常跑下一轮(语义与修前 pass 一致,
-    只补审计痕,不改控制流)。
+    只补审计痕,不改控制流);审计落盘自身失败(如 epochs/ 不可写)静默
+    放弃——审计痕是尽力而为,不得反噬 run(P5 修复轮 1)。
     """
-    path = workdir / "epochs" / "llm_injections.jsonl"
-    with path.open("a", encoding="utf-8") as fh:
-        fh.write(json.dumps(record, ensure_ascii=False) + "\n")
+    try:
+        path = workdir / "epochs" / "llm_injections.jsonl"
+        with path.open("a", encoding="utf-8") as fh:
+            fh.write(json.dumps(record, ensure_ascii=False) + "\n")
+    except OSError:
+        pass
 
 
 def _state_boundary(workdir: Path, epoch: int, injected: int) -> dict:

@@ -45,16 +45,47 @@ create_app = _APP_MOD.create_app
 # 每进程/每模块独立 DB(重启语义:状态不跨子进程结转)
 _DB = Path(tempfile.gettempdir()) / f"vulnshop_{os.getpid()}_{__name__}.db"
 
-# 退出清理(P5 终清扫):DB 必须活满进程生命周期(fuzz 子进程重启语义
-# 依赖它),只在进程退出时删。选型 = atexit + 注册表去重:
-# - 本进程各加载形态(`__name__` 不同 → 路径不同)逐路径注册,进程退出
-#   时统一 unlink;子进程逐 epoch 新起,各自退出即清自己的 DB;
-# - 模块重载(_load 同款 fresh-module 模式重执行本模块)不会误触发清理
-#   ——atexit 只在进程退出时到期;重载仅可能重复登记同路径,注册表
-#   (模块级 set)在单次加载内去重,跨重载的重复登记由幂等 unlink
-#   (缺失忽略)兜底,无害;
-# - kill -9 等异常终止不经过 atexit,残留 <pid> 名字含死进程 pid,不由
-#   本机制回收(诚实边界:本机制只清自己活时创建的文件)。
+
+def _sweep_dead_pid_dbs() -> None:
+    """死 pid 机会清扫(P5-T3 修复轮 1):删 owner 已死的残留 DB。
+
+    生产路径的 epoch 子进程经 atheris.Fuzz() 由 libFuzzer _Exit 终止
+    (entry_driver.py:4/:188,recorder.py:3——两类产物靠逐行 flush 存活,
+    正是为此),finally/atexit 被绕过,故 atexit 钩子在该路径**不到期**;
+    本清扫在模块载入(新进程本就要重建同形状态)时按名字里的 pid 判活
+    补删,同时覆盖 kill -9。存活判定 os.kill(pid,0):
+    ProcessLookupError=死(删);PermissionError(EPERM)=在(他人所有,
+    不动);零信号成功=在(不动)。pid 复用 → 误判存活 → 留残文件
+    (保守不删)。纯靶内机制,evaluation 侧零耦合。
+    """
+    for cand in Path(tempfile.gettempdir()).glob("vulnshop_*_*.db"):
+        owner = cand.name.split("_")[1]        # 形如 vulnshop_<pid>_<mod>.db
+        if not owner.isdigit():
+            continue
+        try:
+            os.kill(int(owner), 0)
+        except ProcessLookupError:
+            pass                               # 死 pid → 下方删除
+        except OSError:
+            continue                           # EPERM = 存活(他人所有)→ 不动
+        else:
+            continue                           # 存活 → 不动
+        try:
+            cand.unlink()
+        except OSError:
+            pass                               # 竞态/权限 → 幂等忽略
+
+
+_sweep_dead_pid_dbs()
+
+# 干净退出补扫(P5 终清扫):体面退出(如测试进程)立刻删自己的 DB,
+# 不等下一个进程的清扫。注意生产路径(entry_driver 子进程)经
+# atheris.Fuzz() 的 libFuzzer _Exit 绕过 atexit——该钩子只覆盖干净退出;
+# epoch 子进程的 DB 由上方死 pid 清扫回收(机制互补,注释在 _sweep)。
+# 模块重载(_load 同款 fresh-module 模式重执行本模块)不会误触发清理
+# ——atexit 只在进程退出时到期;重载仅可能重复登记同路径,注册表
+# (模块级 set)在单次加载内去重,跨重载的重复登记由幂等 unlink
+# (缺失忽略)兜底,无害。
 _DB_CLEANUP_REGISTERED: set[str] = set()
 
 
