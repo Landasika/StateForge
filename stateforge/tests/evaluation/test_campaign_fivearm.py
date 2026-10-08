@@ -139,11 +139,74 @@ class TestCampaignEAggregation:
         q = summary["questions"]
         assert q["state_gain_final_blocks"]["mean"] == 15   # 65 − 50
         assert q["state_gain_final_blocks"]["n"] == 2
-        assert q["state_gain_auc_norm"] == q["state_gain_auc_norm"]
+        # mock 曲线空 → 全组 AUC 恒 0 → 配对差 stats 确定性(钉全值)
+        assert q["state_gain_auc_norm"] == {"mean": 0.0, "median": 0.0,
+                                            "stdev": 0.0,
+                                            "iqr": [0.0, 0.0], "n": 2}
         assert q["paired_deltas"]["E_minus_D1"] == [0.0, 0.0]  # mock 曲线空
         # 既有配对键原样(非回归)
         assert set(q["paired_deltas"]) == {"D1_minus_C", "D2P_minus_D2R",
                                            "E_minus_D1"}
+
+
+# ------------------------------------------------- 聚合抗键偏斜(P4-T2 修)
+
+
+class TestCampaignKeySkew:
+    """per-run 可选键的键偏斜:state_atoms_reached 按设计可缺
+    (epoch.py _final_state_atoms 无覆盖态/异常 → None → 键缺省)。
+    修前聚合键集取 per_run[0]:正偏斜(run0 有、后续 run 缺)→ 全部
+    fuzzing 跑完后 KeyError,summary/curves 均不落盘;反偏斜(run0 缺)
+    → 字段被静默丢弃。修后 = 各 run 键集并集 + 缺 run 过滤取值。
+    """
+
+    def test_optional_state_key_skew_both_directions(self, monkeypatch,
+                                                     tmp_path, ir_path):
+        from stateforge.evaluation.experiment import campaign as campaign_mod
+        from stateforge.evaluation.experiment import runner
+
+        def make_fake(has_atoms_per_run):
+            def fake_run_experiment(target, ir, run_dir, epochs, seconds,
+                                    seed):
+                run_dir.mkdir(parents=True)
+                k = (seed - 7) // 100                # run 序号(seed0=7)
+                groups = {}
+                for name in runner.GROUPS:
+                    g = {"total_executions": 100, "wall_span": 2.0,
+                         "final_blocks": 50, "final_edges": 5,
+                         "total_feedback_seconds": 0.0}
+                    if name == "E":
+                        g["state_injections_total"] = 2    # policy=state 恒有
+                        if has_atoms_per_run[k]:           # 判达按设计可缺
+                            g["state_atoms_reached"] = 1
+                    groups[name] = g
+                    gd = run_dir / name
+                    gd.mkdir()
+                    (gd / "group_summary.json").write_text(json.dumps(
+                        {"epoch_records": [
+                            {"wall": {"start_offset": 0.0}, "snapshots": []}],
+                         **g}), encoding="utf-8")
+                return {"groups": groups}
+            return fake_run_experiment
+
+        def run_with(flags, out):
+            monkeypatch.setattr(campaign_mod, "run_experiment",
+                                make_fake(flags))
+            return campaign_mod.run_campaign(str(GATE), str(ir_path), out,
+                                             runs=2, epochs=2, seconds=3.0,
+                                             seed0=7)
+
+        # 正偏斜:run0 判达、run1 缺键 → 聚合完成,stats 只算有的 run
+        agg = run_with([True, False], tmp_path / "skew_fwd")["aggregate"]["E"]
+        assert agg["state_injections_total"]["n"] == 2      # 恒有键:全 run
+        assert agg["state_atoms_reached"]["n"] == 1         # 缺 run 被过滤
+        assert agg["state_atoms_reached"]["mean"] == 1
+
+        # 反偏斜:run0 缺键 → 字段从 run1 恢复,不静默丢弃
+        agg = run_with([False, True], tmp_path / "skew_inv")["aggregate"]["E"]
+        assert "state_atoms_reached" in agg
+        assert agg["state_atoms_reached"]["n"] == 1
+        assert agg["state_atoms_reached"]["mean"] == 1
 
 
 # ------------------------------- synthesize_micro_model memo(同文件收口)

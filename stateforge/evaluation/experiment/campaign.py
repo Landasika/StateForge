@@ -155,9 +155,18 @@ def run_campaign(target: str, ir_path: str, out: Path, runs: int, epochs: int,
                "questions": {}}
     for group in ("A_native", "A_measure", "B", "C", "D1", "D2R", "D2P",
                   "E"):
+        # per-run 可选键(state_atoms_reached 按设计可缺:epoch.py 末轮
+        # _final_state_atoms 无覆盖态/异常 → None → 键缺省)抗键偏斜:
+        # 键集取各 run 并集、取值过滤缺 run(_stats 再容错 None)。
+        # 修前键集=per_run[0]:正偏斜(后续 run 缺键)→ 全部 fuzzing 跑完
+        # 后 KeyError 且 summary/curves 均不落盘;反偏斜(run0 缺)→ 字段
+        # 被静默丢弃。键排序保证 summary.json 键序确定。novel_seed_gain
+        # 仍排除(dict 值,questions 里单独汇总)。
+        keys = sorted({k for r in per_run for k in r[group]
+                       if k != "novel_seed_gain"})
         summary["aggregate"][group] = {
-            k: _stats([r[group][k] for r in per_run])
-            for k in per_run[0][group] if k != "novel_seed_gain"}
+            k: _stats([r[group][k] for r in per_run if k in r[group]])
+            for k in keys}
     # 四问
     q = summary["questions"]
     q["tracing_overhead"] = {
