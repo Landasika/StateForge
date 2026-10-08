@@ -327,14 +327,7 @@ python -m stateforge.experiment.four_arm --out results/experiment --runs 3 --epo
 
 ## 依赖
 
-```
-atheris>=3.1
-flask>=3.1
-pytest>=8
-networkx>=3.4
-elementpath>=5
-```
-
+依赖唯一来源是 `pyproject.toml`（extras：`dev` / `test` / `fuzz`，版本=实装验证值）。安装见[快速开始](#快速开始)。ANOTA 解释器侧（anota/ CPython fork）锁定栈另见 `stateforge/requirements-anota.txt`，不属于本项目 extras。
 ## License
 
 Proprietary — Research use only.
