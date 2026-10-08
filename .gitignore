@@ -47,6 +47,9 @@ plans/
 design.md
 *.md.tmp
 
+# make artifact 产物(R10:清单为构建产物,不入库)
+artifact-manifest.sha256
+
 # 临时
 *.swp
 *~
@@ -59,3 +62,4 @@ design.md
 !LICENSE
 !Makefile
 !ci.sh
+!ARTIFACT.md
