@@ -48,11 +48,10 @@ Mapper（轨迹 → 静态 ICFG 块/边映射，Phase-1 冻结）
 ## 快速开始
 
 ```bash
-# 安装
-pip install -e .
-pip install -r requirements-test.txt
+# 安装（唯一依赖源：pyproject.toml；atheris 编译需 clang）
+pip install -e ".[dev,test,fuzz]"
 
-# 跑全量测试（205 tests）
+# 跑全量测试（255 tests，26 个 anota 标记用例默认 deselect、在 ANOTA 解释器内另跑）
 pytest
 
 # 静态分析：构建 ICFG
@@ -220,7 +219,7 @@ python -m stateforge.experiment.four_arm --out results/experiment --runs 3 --epo
 | `realworld/` | RealWorld Conduit | generic_target.py（71 行 Atheris 靶函数） |
 | `microplus/` | 微靶集合 | hash_gates/misleading_subtree/semantic_concat/role/url/s1/s2 |
 
-### `stateforge/tests/` — 测试套件（205 tests）
+### `stateforge/tests/` — 测试套件（255 tests）
 
 | 目录 | 覆盖 |
 |------|------|
@@ -324,7 +323,7 @@ python -m stateforge.experiment.four_arm --out results/experiment --runs 3 --epo
 - **Oracle**：ANOTA 解释器（CPython 3.10.13 fork，NDSS'25）
 - **静态分析**：Python AST + PyCG（ICSE'21）
 - **LLM**：OpenAI 兼容 / Anthropic 双协议（GLM/Claude/local 可换）
-- **测试框架**：pytest（205 tests 全绿）
+- **测试框架**：pytest（255 tests 全绿）
 
 ## 依赖
 

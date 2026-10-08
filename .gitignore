@@ -45,9 +45,8 @@ design.md
 *~
 .DS_Store
 
-# 例外:README 和 requirements 保留(不忽略)
+# 例外:README 等必要配置保留(不忽略)
 !README.md
-!requirements-test.txt
 !pyproject.toml
 !pytest.ini
 !LICENSE

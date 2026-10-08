@@ -10,11 +10,22 @@ requires-python = ">=3.10"
 license = { text = "Proprietary" }
 
 [project.optional-dependencies]
+# P0 基线冻结(2026-10-08):驱动侧依赖全部收口于此,版本=实装验证值。
+# ANOTA 解释器侧(anota/, CPython 3.10.13 fork)锁定栈另见
+# stateforge/requirements-anota.txt,不属于本表。
 test = [
-    "flask>=3.1",
-    "pytest>=8",
-    "elementpath>=5",
-    "networkx>=3.4",
+    "pytest==8.3.4",
+    "flask==3.1.0",
+    "networkx==3.4.2",
+    "elementpath==5.1.4",  # OWASP BenchmarkPython 部分用例
+    "httpx==0.28.1",       # llm/provider.py 直连 GLM API(HTTP 客户端,无 LLM SDK)
+    "pydantic==2.11.7",
+]
+dev = [
+    "stateforge[test]",
+]
+fuzz = [
+    "atheris==3.1.0",      # 驱动侧 fuzz 引擎;sdist 编译需 clang
 ]
 
 [tool.setuptools.packages.find]
