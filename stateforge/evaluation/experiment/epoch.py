@@ -128,7 +128,9 @@ def _inject_llm_between_epochs(ir, workdir: Path, corpus_dir: Path,
 
 def _inject_state_seeds_between_epochs(ir, workdir: Path, corpus_dir: Path,
                                         target: str,
-                                        epoch_num: int = 0) -> int:
+                                        epoch_num: int = 0,
+                                        trigger: str = "r2",
+                                        injector=None) -> int:
     """轮间 state 序列种子注入(P3-T3,policy="state" 专用;零 LLM)。
 
     R2 触发(与 llm 臂的 StallTracker 判停同形、状态粒度):
@@ -139,6 +141,14 @@ def _inject_state_seeds_between_epochs(ir, workdir: Path, corpus_dir: Path,
     状态节点记账 = 覆盖代理(守卫真分支块已覆盖 ⇒ 原子判达):
     entry_driver 不产会话观测,补观测即膨胀驱动(裁决禁止);机制与
     诚实边界见 solving/state_seed_injector.py 模块 docstring §3。
+
+    P4-T4 消融接缝(可选参,缺省 = E 基线行为逐字节不变):
+      trigger="always" —— E-always 臂:旁路 R2-(b)(有进展也注入),
+          R2-(a) 仍由 injector 的 goal 派生保留;旁路时审计
+          INJECT_ALWAYS(带 new_atoms,与 SKIP 同形可查)。
+      injector=callable —— E-rand 臂:注入策略钩子,以与
+          inject_state_seeds 同一契约 (ir, target, state, corpus_dir,
+          budget=STATE_BUDGET) 调用、返回写入数。
     """
     import json as _json
     from stateforge.core.ir import ProgramIR
@@ -162,13 +172,19 @@ def _inject_state_seeds_between_epochs(ir, workdir: Path, corpus_dir: Path,
         _json.dumps({"epoch": epoch_num, "atoms": sorted(now)}),
         encoding="utf-8")
 
-    if now - prior:                             # R2(b):上轮有新状态节点
-        _state_audit(workdir, {"epoch": epoch_num,
-                               "status": "SKIP_R2_PROGRESS",
-                               "new_atoms": sorted(now - prior)})
-        return 0
-    return inject_state_seeds(ir_obj, Path(target), state, corpus_dir,
-                              budget=STATE_BUDGET)
+    new_atoms = sorted(now - prior)
+    if new_atoms:
+        if trigger == "always":                 # P4-T4 E-always:旁路 R2-(b)
+            _state_audit(workdir, {"epoch": epoch_num,
+                                   "status": "INJECT_ALWAYS",
+                                   "new_atoms": new_atoms})
+        else:                                   # R2(b):上轮有新状态节点
+            _state_audit(workdir, {"epoch": epoch_num,
+                                   "status": "SKIP_R2_PROGRESS",
+                                   "new_atoms": new_atoms})
+            return 0
+    inj = inject_state_seeds if injector is None else injector
+    return inj(ir_obj, Path(target), state, corpus_dir, budget=STATE_BUDGET)
 
 
 def _state_audit(workdir: Path, record: dict) -> None:
@@ -222,7 +238,8 @@ def _final_state_atoms(ir, target: str, workdir: Path) -> set | None:
 def run_epochs(target: str, ir: str, workdir: Path, seconds_per_epoch: float,
                epochs: int, seed: int, group: str, mode: str,
                use_feedback: bool, t0: float | None = None,
-               policy: str = "reinjection") -> dict:
+               policy: str = "reinjection", state_trigger: str = "r2",
+               state_injector=None) -> dict:
     """跑一组(单 epoch 连续或多 epoch 重启),返回含墙钟与累计的完整记录。
 
     policy:reinjection(默认)=公共语料联合结转;llm/state=轮间种子注入
@@ -230,6 +247,11 @@ def run_epochs(target: str, ir: str, workdir: Path, seconds_per_epoch: float,
     reinjection 等价——原 D2-P focused 语义(偶数轮 focused_in)自 a0cc5bf
     起因分支嵌进 policy==llm 门内而不可达,已随 _focused_corpus 一并删除
     (R6:公平优先于历史连续)。
+
+    state_trigger / state_injector(P4-T4 消融接缝,仅 policy="state" 消费,
+    缺省 = E 基线行为逐字节不变):见
+    _inject_state_seeds_between_epochs docstring(trigger="r2"|"always";
+    injector=注入策略钩子,E-rand 的随机采样器经此接入)。
     """
     t0 = t0 if t0 is not None else time.monotonic()
     workdir.mkdir(parents=True, exist_ok=True)
@@ -263,7 +285,8 @@ def run_epochs(target: str, ir: str, workdir: Path, seconds_per_epoch: float,
         if policy == "state" and epoch > 1:
             try:
                 n_inj = _inject_state_seeds_between_epochs(
-                    ir, workdir, corpus_dir, target, epoch_num=epoch)
+                    ir, workdir, corpus_dir, target, epoch_num=epoch,
+                    trigger=state_trigger, injector=state_injector)
                 boundary = _state_boundary(workdir, epoch, n_inj)
             except Exception as exc:        # noqa: BLE001
                 _state_audit(workdir, {"epoch": epoch, "event": "SEAM_ERROR",
