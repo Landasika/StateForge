@@ -4,6 +4,8 @@ A_native : 连续裸跑(off)——原生吞吐参照(TracingOverhead 分母)
 A_measure: 连续 + 计量(measure)——与 B/C 同开销的覆盖基线
 B        : 按 epoch 重启 + 计量(measure),libFuzzer 语料结转——重启效应
 C        : 按 epoch 重启 + 计量 + SF 种子重注入(feedback)——反馈净效果
+D1/D2R/D2P:前沿定向家族(frontier);E = frontier + feedback + policy=state
+           (state 规划器序列注入,零 LLM)——与 four_arm 的 E 同配置
 """
 
 from __future__ import annotations
@@ -16,7 +18,7 @@ from pathlib import Path
 
 from stateforge.evaluation.experiment.epoch import run_epochs
 
-GROUPS = ("A_native", "A_measure", "B", "C", "D1", "D2R", "D2P")
+GROUPS = ("A_native", "A_measure", "B", "C", "D1", "D2R", "D2P", "E")
 
 
 def run_experiment(target: str, ir: str, out: Path, epochs: int,
@@ -53,6 +55,12 @@ def run_experiment(target: str, ir: str, out: Path, epochs: int,
     report["groups"]["D2P"] = run_epochs(
         target, ir, out / "D2P", seconds_per_epoch, epochs, seed, "D2P",
         mode="frontier", use_feedback=True, t0=t0, policy="portfolio")
+    # E = four_arm 的 E 同配置:frontier + feedback,轮间换 state 规划器
+    # 序列注入(零 LLM、确定性)。campaign 侧配对对照 = D1(唯一差异 =
+    # policy,见 campaign.py state_gain 注释)
+    report["groups"]["E"] = run_epochs(
+        target, ir, out / "E", seconds_per_epoch, epochs, seed, "E",
+        mode="frontier", use_feedback=True, t0=t0, policy="state")
     (out / "experiment.json").write_text(
         json.dumps(report, indent=1, ensure_ascii=False), encoding="utf-8")
     return report

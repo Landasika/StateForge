@@ -6,6 +6,11 @@ P1    absolute + normalized AUC;manifest(commit/解释器/atheris/种子/预算/
       target 与 IR 哈希);统一 curves.csv(A_measure/B/C)
 四问汇总:①tracing 开销 ②重启代价(B−A_measure) ③反馈增益(C−B)
       ④NovelSeedGain(SF 种子对 native 语料的信息增量)
+P4-T2 E 臂接入(policy=state,零 LLM):state_gain = E−D1(campaign 无
+      LLM 臂,four_arm 的 E−D 在此无对应物;D1 = 纯 directed frontier,
+      与 E 唯一差异 = policy=state → 配对差即 state 注入净贡献,D2R 与
+      D1 配置恒等故取 D1 维持与 directed_gain=D1−C 命名连续);
+      state 字段(state_atoms_reached/state_injections_total)出现即进聚合表
 """
 
 from __future__ import annotations
@@ -139,11 +144,17 @@ def run_campaign(target: str, ir_path: str, out: Path, runs: int, epochs: int,
                     norm_e / max(total_edges, 1), 4)
             if "novel_seed_gain" in g:
                 rec[group]["novel_seed_gain"] = g["novel_seed_gain"]
+            # P4-T2:状态字段(policy=state 臂的 group_summary 字段)出现
+            # 即收进 per-run 行 → 聚合表;非 state 臂无此键(诚实缺省)
+            for k in ("state_atoms_reached", "state_injections_total"):
+                if k in g:
+                    rec[group][k] = g[k]
         per_run.append(rec)
 
     summary = {"manifest": manifest, "per_run": per_run, "aggregate": {},
                "questions": {}}
-    for group in ("A_native", "A_measure", "B", "C", "D1", "D2R", "D2P"):
+    for group in ("A_native", "A_measure", "B", "C", "D1", "D2R", "D2P",
+                  "E"):
         summary["aggregate"][group] = {
             k: _stats([r[group][k] for r in per_run])
             for k in per_run[0][group] if k != "novel_seed_gain"}
@@ -181,19 +192,26 @@ def run_campaign(target: str, ir_path: str, out: Path, runs: int, epochs: int,
         [r["D2P"]["final_blocks"] - r["D2R"]["final_blocks"] for r in per_run])
     q["portfolio_gain_auc_norm"] = _stats(
         [r["D2P"]["auc_blocks_norm"] - r["D2R"]["auc_blocks_norm"] for r in per_run])
+    # E−D1 = state 规划器注入净贡献(对照选择依据见模块 docstring P4-T2 行)
+    q["state_gain_final_blocks"] = _stats(
+        [r["E"]["final_blocks"] - r["D1"]["final_blocks"] for r in per_run])
+    q["state_gain_auc_norm"] = _stats(
+        [r["E"]["auc_blocks_norm"] - r["D1"]["auc_blocks_norm"] for r in per_run])
     q["paired_deltas"] = {
         "D1_minus_C": [round(r["D1"]["auc_blocks_norm"] - r["C"]["auc_blocks_norm"], 4)
                        for r in per_run],
         "D2P_minus_D2R": [round(r["D2P"]["auc_blocks_norm"] - r["D2R"]["auc_blocks_norm"], 4)
-                          for r in per_run]}
+                          for r in per_run],
+        "E_minus_D1": [round(r["E"]["auc_blocks_norm"] - r["D1"]["auc_blocks_norm"], 4)
+                       for r in per_run]}
     q["novel_seed_gain"] = {
         "sf_total": sum(x["sf_candidates_total"] for x in nsg),
         "sf_unique": sum(x["sf_unique_vs_native"] for x in nsg),
         "gain_mean": _stats([x["novel_seed_gain"] for x in nsg
                              if x["novel_seed_gain"] is not None])}
-    # 统一曲线 CSV(墙钟,1s 桶,A_measure/B/C)
+    # 统一曲线 CSV(墙钟,1s 桶,A_measure/B/C/D 家族/E)
     csv = ["group,t,blocks_mean,blocks_p25,blocks_p75"]
-    for group in ("A_measure", "B", "C", "D1", "D2R", "D2P"):
+    for group in ("A_measure", "B", "C", "D1", "D2R", "D2P", "E"):
         grid = {t: [] for t in range(0, int(horizon) + 1)}
         for k in range(runs):
             pts = _curve_points(out / f"run{k:02d}", group)

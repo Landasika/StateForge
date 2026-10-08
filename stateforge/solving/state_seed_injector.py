@@ -53,6 +53,7 @@ import ast
 import hashlib
 import json
 from dataclasses import dataclass, field, replace
+from functools import lru_cache
 from pathlib import Path
 
 import networkx as nx
@@ -316,12 +317,17 @@ def _parse_guard_op(raw: str) -> tuple[str, str | None] | None:
 # --------------------------------------------------------------- 合成主入口
 
 
-def synthesize_micro_model(target) -> MicroStateModel | None:
-    """靶源码 → 规划器输入(AppModel + SSTG + op/守卫归属)。
+@lru_cache(maxsize=None)
+def _synthesized_model(resolved_target: str) -> MicroStateModel | None:
+    """synthesize_micro_model 的 memo 体(resolved 绝对路径 str 为键)。
 
-    非 op 分派靶(无 `op == "..."` 请求词表)→ None(诚实跳过)。
+    静态合成(M1/M2 run_state_analysis + AST 归属 + build_sstg)对同一
+    静态靶文件结果不变:10-run 战役里每个轮间边界经 reached_state_atoms
+    (1 次)+ inject_state_seeds(2 次)至多触发 3 次合成,重复解析纯属
+    浪费(P4-T2 memo)。缓存对象被调用方共享是安全的——本模块与
+    state_arm_report/plan_backward 均只读 model/sstg,无原地修改。
     """
-    path = Path(target)
+    path = Path(resolved_target)
     if not path.is_file():
         return None
     tree = _parse(path)
@@ -408,6 +414,22 @@ def synthesize_micro_model(target) -> MicroStateModel | None:
         micro.guards.append(replace(g, atom=_requires_atom(
             sstg, f"POST {g.op}", g.var, part)))
     return micro
+
+
+def synthesize_micro_model(target) -> MicroStateModel | None:
+    """靶源码 → 规划器输入(AppModel + SSTG + op/守卫归属)。
+
+    非 op 分派靶(无 `op == "..."` 请求词表)→ None(诚实跳过)。
+    Memo(P4-T2,体见 _synthesized_model):按 resolved target path 缓存,
+    同靶跨 str/Path 调用归一到同一键 → 同一模型对象;测试改写靶文件后
+    需重算时调 `synthesize_micro_model.cache_clear()`。
+    """
+    return _synthesized_model(str(Path(target).resolve()))
+
+
+# memo 控制面挂到公开名上(测试/工具清缓存或观测命中率,不必摸私有体)
+synthesize_micro_model.cache_clear = _synthesized_model.cache_clear
+synthesize_micro_model.cache_info = _synthesized_model.cache_info
 
 
 def _requires_atom(sstg: nx.MultiDiGraph, action: str, var: str,
