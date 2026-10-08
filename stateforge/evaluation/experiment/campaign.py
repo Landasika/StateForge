@@ -16,6 +16,9 @@ P4-T4b --groups 子集(GROUPS 常量不变):--groups "D1,E" 只跑子集臂,
       诚实缺省(不造空行、不 0 填充),summary/curves 照常落盘。
       缺省(None)= 全 GROUPS,campaign 对 run_experiment 仍以既有 6 参
       形式调用(不带 groups kwarg,替身兼容)。
+P4-T6b 空 IR 守卫(main):ir 的 blocks=0 → parser.error(退出码 2)点名
+      IR 路径并提示套件目录 analyze 口径(P4 首跑曾于错 analyze 路径的
+      0 块 IR 上静默烧完全程;守卫只在 CLI 入口,库函数不受影响)。
 """
 
 from __future__ import annotations
@@ -297,6 +300,14 @@ def main(argv: list[str] | None = None) -> int:
             parser.error(f"--groups 无效: {unknown or '空子集'};"
                          f" 有效组: {', '.join(GROUPS)}")
         groups = requested
+    # 空 IR 守卫(P4-T6b):0 块 IR 会让战役不报错地烧完全程——启动前载入
+    # IR 校验,blocks=0 → parser.error 点名 IR 路径并提示套件目录 analyze
+    # 口径(单文件/错目录的 IR 支不起战役分母)。
+    if not ProgramIR.from_json(args.ir).blocks:
+        parser.error(
+            f"IR 无块(blocks=0): {args.ir};请对靶套件目录重新 analyze——"
+            "`python -m stateforge.cli analyze <suite-dir> "
+            "--out results/structural`,再以其 program_ir.json 作为 ir 参数")
     s = run_campaign(args.target, args.ir, Path(args.out), args.runs,
                      args.epochs, args.seconds, args.seed0, groups=groups)
     print(json.dumps(s["questions"], indent=1, ensure_ascii=False))

@@ -78,6 +78,9 @@ python -m stateforge.evaluation.micro_benchmark
 
 # 四臂实验（A/B/C/D 对照）
 python -m stateforge.evaluation.experiment.four_arm --out results/experiment --runs 3 --epochs 3 --seconds 8
+
+# 五臂战役（E=状态臂；--groups 可只跑子集臂，如正式口径 "D1,E"；ir 须为套件目录 analyze 的 program_ir.json）
+python -m stateforge.evaluation.experiment.campaign <target.py> results/structural/program_ir.json --out results/experiment/campaign --runs 10 --epochs 3 --seconds 10 --groups D1,E
 ```
 
 ---
@@ -212,6 +215,7 @@ stateforge/
 | `v0.2-normalized` | P1 工程规范化（2026-10-08）：目录收敛七域架构；本地 CI（Makefile+ci.sh）；config 单一入口（stateforge/config.py）；logging 约定（core/log.py+cli -v） |
 | `v0.3-architecture` | P2 架构收敛（2026-10-08）：三搬移解环；ARCHITECTURE.md 分层规范+import 边界测试（例外登记制）；PROTOCOLS.md 九契约+schema 稳定性测试；清扫（config 统一 legacy 族等 7 项） |
 | `v0.4-stateful-core` | P3 stateful fuzzing 核心（2026-10-08）：M2 迁移发现；序列种子契约 C10；规划器→序列种子注入（policy=state）；实验臂 E+状态三指标 |
+| `v0.5-evaluation` | P4 评测规范化（2026-10-08）：B/C 结转协议修复；campaign 五臂+消融；vulnshop AppModel 真路径；10-run 正式战役与论文口径表 |
 
 **v0.1-baseline 验证环境**:Python 3.13.5(anaconda)/ Ubuntu(Linux 6.8)/ clang 备用(atheris 实走 tuna wheel)/ pytest 8.3.4 · flask 3.1.0 · networkx 3.4.2 · elementpath 5.1.4 · httpx 0.28.1 · pydantic 2.11.7 · PyYAML 6.0.2(运行时)· matplotlib 3.10.0(dev)· atheris 3.1.0
 **验收数字**:开发树 255 passed / 1 skipped / 26 deselected;fresh clone 254 passed / 2 skipped / 26 deselected(差异=OWASP Benchmark 用例按设计跳过,external/ 不入 git);micro_benchmark 21 用例全 1.00(CFG/CALL/RET P&R + trace-accuracy 5/5)
@@ -221,6 +225,8 @@ stateforge/
 **v0.3-architecture 验收**:./ci.sh 全链绿(fresh clone 285 passed, 2 skipped, 26 deselected;micro_benchmark 静态 21/21 + 动态 5/5 全 1.00);开发树 286 passed / 1 skipped / 26 deselected;新增测试 31 项(边界 4+协议 17+config 10);零既有测试断言改动、零算法改动
 
 **v0.4-stateful-core 验收**:./ci.sh 全链绿(fresh clone 349 passed, 2 skipped, 26 deselected;micro 静态 21/21+动态 5/5);开发树 350 passed/1 skipped/26 deselected;五臂 spot(口径:2 runs × 3 epochs × 5s 小样本):E−D=+16/+19 块,状态原子判达 E 4/4 run vs D 0/4 run(同机制),B–D 块/边同种子逐数一致;A 吞吐差 ≤7.7%(短预算噪声带);口径注:非 session 靶(microplus)E 落后 D,状态主张限定 stateful 靶族;t_state_shop 零注入=M1 session 词汇边界(5A DB 域守卫不可见)。臂 E 现仅经 `four_arm --suite stateful` 提供;campaign 战役组套(`runner.GROUPS`)未含 state 臂(P4 范围)
+
+**v0.5-evaluation 验收**:10-run 配对战役(3×10s/seed0=7):E−D1 块增益 t_state_chain +20.2、t_state_gate +22.0、vulnshop +99.9(median 98,10/0/0 全胜,AUC +0.0967);消融:规划器贡献 E−E-rand +2.4/+5.5/+65.6(真实应用上最大),R2 触发代价 E−E-always ≤1.1(≈零);vulnshop E 状态原子 union=4。**口径注(v0.5 起)**:B/C 臂含轮间语料结转(修复 P1 起预存混淆),与更早阶段数字不可直接比较;战役/消融数据在 results/experiment/p4_formal/(不入库),表值=p4_analysis 输出抄录
 
 **已知义务:** 语义标注缓存(`stateforge/solving/llm/cache/*.json`)键于 PROMPT_VERSION 与夹具内容——二者变更后需重跑生成器并提交新缓存,否则 fresh clone 回归"全 irrelevant"。缓存仅按显式路径提交(`git add stateforge/solving/llm/cache/<hash>.json`),勿在该目录使用 `git add -A`。
 

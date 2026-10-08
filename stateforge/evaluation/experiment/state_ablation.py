@@ -44,6 +44,10 @@ R8 裁决(采样设计,docstring 即契约):
 用法:
     python -m stateforge.evaluation.experiment.state_ablation <target.py>
         <ir.json> --out <dir> [--runs 2 --epochs 3 --seconds 3 --seed0 7]
+
+P4-T6b 空 IR 守卫(main):ir 的 blocks=0 → parser.error(退出码 2)点名
+      IR 路径并提示套件目录 analyze 口径(同 campaign;守卫只在 CLI 入口,
+      库函数 run_ablation 不受影响)。
 """
 
 from __future__ import annotations
@@ -55,6 +59,7 @@ import random
 import statistics
 from pathlib import Path
 
+from stateforge.core.ir import ProgramIR
 from stateforge.fuzzing.corpus_manager import CorpusManager
 from stateforge.fuzzing.entry_driver import encode_sequence_seed
 from stateforge.solving.state_seed_injector import (NEUTRAL, STATE_BUDGET,
@@ -383,7 +388,7 @@ def render_text(report: dict) -> str:
     return "\n".join(lines)
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description="P4-T4 消融臂:E / E-rand(随机序列)/ E-always(恒注入)")
     parser.add_argument("target")
@@ -396,7 +401,15 @@ def main() -> int:
     parser.add_argument("--max-len", dest="max_len", type=int,
                         default=RAND_MAX_LEN,
                         help="E-rand 随机序列长度上界(U{1..max_len})")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
+    # 空 IR 守卫(P4-T6b,同 campaign):0 块 IR 会让三臂不报错地跑空——
+    # 启动前载入 IR 校验,blocks=0 → parser.error 点名 IR 路径并提示套件
+    # 目录 analyze 口径。
+    if not ProgramIR.from_json(args.ir).blocks:
+        parser.error(
+            f"IR 无块(blocks=0): {args.ir};请对靶套件目录重新 analyze——"
+            "`python -m stateforge.cli analyze <suite-dir> "
+            "--out results/structural`,再以其 program_ir.json 作为 ir 参数")
     report = run_ablation(args.target, args.ir, Path(args.out), runs=args.runs,
                           epochs=args.epochs, seconds=args.seconds,
                           seed0=args.seed0, max_len=args.max_len)
