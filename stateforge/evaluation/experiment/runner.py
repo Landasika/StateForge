@@ -47,7 +47,9 @@ def run_experiment(target: str, ir: str, out: Path, epochs: int,
     report["groups"]["D2R"] = run_epochs(
         target, ir, out / "D2R", seconds_per_epoch, epochs, seed, "D2R",
         mode="frontier", use_feedback=True, t0=t0, policy="reinjection")
-    # D2-P:组合冠军 + focused portfolio epoch(外部预算分配)
+    # D2-P:组合冠军(policy=portfolio;原 focused 偶数轮语义已随
+    # _focused_corpus 死分支删除——P4-T1 R6 结转统一后与 D2R 同语义,
+    # 臂名保留维持 run 目录连续性)
     report["groups"]["D2P"] = run_epochs(
         target, ir, out / "D2P", seconds_per_epoch, epochs, seed, "D2P",
         mode="frontier", use_feedback=True, t0=t0, policy="portfolio")

@@ -70,40 +70,6 @@ def _novel_seed_gain(workdir: Path) -> dict:
             "novel_seed_gain": round((total - overlap) / total, 4) if total else None}
 
 
-def _focused_corpus(workdir: Path, out_dir: Path) -> Path:
-    """D2-P focused epoch 语料:当前 per-frontier 冠军 + 最近 8 个新结构种子。
-
-    外部 epoch 级预算分配(顾问 §4/§5):不碰 Atheris 调度器,只决定本 epoch
-    的起始语料 = 把 wall-clock 预算直接交给 StateForge 选出的种子。
-    """
-    import json as _json
-    out = workdir / "focused_in"
-    out.mkdir(exist_ok=True)
-    for f in out.iterdir():
-        f.unlink()
-    spool = out_dir / "spool"
-    state_p = out_dir / "global_state.json"
-    champs: dict[str, str] = {}          # frontier -> input_id
-    if state_p.exists():
-        champs = {f: r["input_id"] for f, r in
-                  _json.loads(state_p.read_text(encoding="utf-8"))
-                  .get("portfolio", {}).get("champions", {}).items()}
-    seeds = spool / "seeds"
-    novel_recent: list[str] = []
-    if (spool / "meta.jsonl").exists():
-        for line in (spool / "meta.jsonl").read_text(encoding="utf-8").splitlines():
-            if line.strip():
-                m = _json.loads(line)
-                if m["interesting_reason"] in ("new_blocks", "new_edges"):
-                    novel_recent.append(m["input_id"])
-    want = set(champs.values()) | set(novel_recent[-8:])
-    for cid in want:
-        seed_file = seeds / cid
-        if seed_file.exists():
-            (out / cid).write_bytes(seed_file.read_bytes())
-    return out
-
-
 def _inject_llm_between_epochs(ir, workdir: Path, corpus_dir: Path,
                                target: str,
                                stall_tracker=None, epoch_num: int = 0,
@@ -259,8 +225,11 @@ def run_epochs(target: str, ir: str, workdir: Path, seconds_per_epoch: float,
                policy: str = "reinjection") -> dict:
     """跑一组(单 epoch 连续或多 epoch 重启),返回含墙钟与累计的完整记录。
 
-    policy:reinjection=语料联合结转(D2-R);portfolio=奇数轮正常、偶数轮
-    focused(冠军组合+少量新结构,D2-P 外部预算分配)。
+    policy:reinjection(默认)=公共语料联合结转;llm/state=轮间种子注入
+    (注入先于结转,注入种子经公共路径进下一轮);portfolio=P4-T1 起与
+    reinjection 等价——原 D2-P focused 语义(偶数轮 focused_in)自 a0cc5bf
+    起因分支嵌进 policy==llm 门内而不可达,已随 _focused_corpus 一并删除
+    (R6:公平优先于历史连续)。
     """
     t0 = t0 if t0 is not None else time.monotonic()
     workdir.mkdir(parents=True, exist_ok=True)
@@ -280,7 +249,9 @@ def run_epochs(target: str, ir: str, workdir: Path, seconds_per_epoch: float,
         if epoch > 1:
             in_dir.mkdir(parents=True, exist_ok=True)
 
-        # LLM 种子注入(StallTracker 判定后才触发;失败不阻塞)
+        # ---- policy 专属轮间注入(先于结转:注入写 corpus_dir,才能被下方
+        # 公共结转带入下一轮;llm/state 互斥,各臂至多走其一)
+        boundary = None
         if policy == "llm" and epoch > 1:
             try:
                 _inject_llm_between_epochs(
@@ -289,19 +260,6 @@ def run_epochs(target: str, ir: str, workdir: Path, seconds_per_epoch: float,
                     prev_blocks=prev_blocks, prev_edges=prev_edges)
             except Exception:              # noqa: BLE001
                 pass                       # 注入失败 → 照常跑下一轮
-            if epoch % 2 == 0 and policy == "portfolio":
-                in_dir.mkdir(parents=True, exist_ok=True)
-                in_dir = _focused_corpus(workdir, workdir / "epochs")
-            elif use_feedback:
-                CorpusManager(workdir / "epochs" / "spool").export_seed_dir(
-                    in_dir, extra=[corpus_dir])
-            else:
-                for f in corpus_dir.iterdir():
-                    shutil.copy2(f, in_dir / f.name)
-
-        # state 序列种子注入(P3-T3,R2 触发;与 llm 注入平级——
-        # 默认路径 off/feedback/frontier/llm 不经过此分支,字节不变)
-        boundary = None
         if policy == "state" and epoch > 1:
             try:
                 n_inj = _inject_state_seeds_between_epochs(
@@ -313,10 +271,16 @@ def run_epochs(target: str, ir: str, workdir: Path, seconds_per_epoch: float,
                 boundary = {"epoch": epoch, "atoms_reached": None,
                             "injected": 0, "status": "SEAM_ERROR",
                             "error": str(exc)}
-            if use_feedback:                  # 对齐 llm 臂结转:spool 冠军 ∪ lf_corpus
+
+        # ---- 轮间语料结转(R6 统一,公共路径):P4-T1 起 B/C/D/E 多轮臂
+        # 同一语义——feedback 开 = spool∪corpus,否则仅 corpus(含本轮注入
+        # 种子)。修复 a0cc5bf 引入的混淆因子:结转原先在 policy==llm 门内,
+        # B/C 自 epoch 2 起空 corp_in 起跑。A 单 epoch 不经此路径。
+        if epoch > 1:
+            if use_feedback:
                 CorpusManager(workdir / "epochs" / "spool").export_seed_dir(
                     in_dir, extra=[corpus_dir])
-            else:                             # 无反馈:仅 lf_corpus(含注入种子)结转
+            else:
                 for f in corpus_dir.iterdir():
                     if f.is_file():
                         shutil.copy2(f, in_dir / f.name)
@@ -358,28 +322,14 @@ def run_epochs(target: str, ir: str, workdir: Path, seconds_per_epoch: float,
         result["stall_summary"] = stall_tracker.summary()
     if use_feedback:
         result["novel_seed_gain"] = _novel_seed_gain(workdir)
-        # 3.2 诊断:组合规模/替换数;focused vs normal 的 Portfolio Yield
+        # 3.2 诊断:组合规模/替换数(portfolio_yield 已随 _focused_corpus
+        # 死分支删除——focused/normal 轮不再有语义区分,P4-T1)
         state_p = workdir / "epochs" / "global_state.json"
         if state_p.exists():
             pf = __import__("json").loads(
                 state_p.read_text(encoding="utf-8")).get("portfolio", {})
             result["portfolio_champions"] = len(pf.get("champions", {}))
             result["portfolio_replacements"] = pf.get("replacement_count", 0)
-        if policy == "portfolio" and len(epoch_records) >= 2:
-            focused = [r for i, r in enumerate(epoch_records) if (i + 1) % 2 == 0]
-            normal = [r for i, r in enumerate(epoch_records) if (i + 1) % 2 == 1]
-            def _yield(recs, idxs):
-                # 相邻差分:每 epoch 内新增块 = 本轮末 − 上轮末(全局累计口径)
-                allb = [r["blocks"] for r in epoch_records]
-                gained = sum(allb[i] - allb[i - 1] if i > 0 else allb[0]
-                             for i in idxs)
-                secs = seconds_per_epoch * len(idxs)
-                return round(gained / max(secs, 1e-9), 3)
-            result["portfolio_yield"] = {
-                "focused": _yield(focused, [i for i in range(len(epoch_records))
-                                            if (i + 1) % 2 == 0]),
-                "normal": _yield(normal, [i for i in range(len(epoch_records))
-                                          if (i + 1) % 2 == 1])}
         last_in = epoch_records[-1].get("corpus_in", {})
         lf_files = _dir_stats(corpus_dir)["files"]
         result["corpus_dilution_ratio"] = round(
