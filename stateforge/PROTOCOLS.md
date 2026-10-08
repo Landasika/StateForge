@@ -267,7 +267,7 @@ ChampionRecord 四键:`input_id` `distance` `epoch` `frontier_version`(`frontier
 
 | | |
 |---|---|
-| 生产者 | `ExperimentRecorder.tick`(`fuzzing/recorder.py:38-63`):candidates 行(`:47-50`)、snapshots 行(`:54-60`),均 `json.dumps(…, ensure_ascii=False)` 逐行 flush 抗 `_Exit`;epoch 汇总 `summary()`(`:65-78`)由 EpochController 落盘 |
+| 生产者 | `ExperimentRecorder.tick`(`fuzzing/recorder.py:45-82`;P3-T4 增可选 `state_atoms_reached`/`state_injections` 参数):candidates 行(`:60-64`)、snapshots 行(`:66-81`),均 `json.dumps(…, ensure_ascii=False)` 逐行 flush 抗 `_Exit`;epoch 汇总 `summary()`(`:84-101`)由 EpochController 落盘 |
 | 消费者 | `evaluation/experiment/epoch._load_epoch_summary`(`epoch.py:42-58`,只按 `last.get(键, 缺省)` 读末行快照、按行数计 candidates) |
 | 格式 | JSONL |
 | 执行面 | `test_protocols.py::test_c9_recorder_jsonl_schema` |
@@ -278,12 +278,19 @@ ChampionRecord 四键:`input_id` `distance` `epoch` `frontier_version`(`frontier
 - snapshots 行(8 键):`group` `epoch` `t` `executions` `blocks` `edges` `exec_seconds` `feedback_seconds`
 - `summary()`(11 键,内存 dict):`group` `epoch` `wall_seconds` `executions` `exec_seconds` `feedback_seconds` `feedback_overhead` `throughput_exec_s` `blocks` `edges` `candidates_saved`
 
+P3-T4 演进(可选键,缺省不出现——上面键集与 pin 不变):`tick` 增可选
+`state_atoms_reached`/`state_injections` 参数(state 臂轮间接缝的状态
+记账:覆盖代理判达原子数 / 序列种子注入数)。二者非逐执行量、演进级:
+传入即粘滞(`recorder.py:54-58`),此后 snapshots 行与 `summary()` 持续
+携带同名键;调用方为 `epoch.py` state 分支的轮间边界(epoch 记录
+`rec["state"]`、group_summary `state_atoms_reached`/`state_injections_total`)。
+
 ```jsonl
 {"group": "x", "epoch": 0, "t": 2.01, "executions": 120, "blocks": 3, "edges": 4, "exec_seconds": 1.98, "feedback_seconds": 0.4}
 {"input_id": "9f86d081884c7d65", "epoch": 0, "score": 2}
 ```
 
-**演进语义:** 消费端全 `.get` 缺省(`epoch.py:52-57`),加键安全;文件名模式 `<group>-e<epoch>-{snapshots,candidates}.jsonl` 由构造器决定(`recorder.py:33-36`),消费端按同名拼路径。
+**演进语义:** 消费端全 `.get` 缺省(`epoch.py:52-57`),加键安全;文件名模式 `<group>-e<epoch>-{snapshots,candidates}.jsonl` 由构造器决定(`recorder.py:40-43`),消费端按同名拼路径。
 
 ---
 

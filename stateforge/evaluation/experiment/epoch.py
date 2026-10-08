@@ -211,6 +211,48 @@ def _state_audit(workdir: Path, record: dict) -> None:
         fh.write(json.dumps(record, ensure_ascii=False) + "\n")
 
 
+def _state_boundary(workdir: Path, epoch: int, injected: int) -> dict:
+    """P3-T4:轮间状态摘要(演进级)——进 epoch 记录的 rec["state"]。
+
+    数据源 = state 分支刚落盘的产物,不重算:state_ledger.json 的 atoms
+    即本边界覆盖代理判达的原子数;state_injections.jsonl 末行为本边界的
+    SKIP_R2_PROGRESS 记账时带 new_atoms。
+    """
+    out: dict = {"epoch": epoch, "atoms_reached": None, "injected": injected}
+    ledger = workdir / "epochs" / "state_ledger.json"
+    if ledger.exists():
+        out["atoms_reached"] = len(json.loads(
+            ledger.read_text(encoding="utf-8")).get("atoms", []))
+    audit = workdir / "epochs" / "state_injections.jsonl"
+    if audit.exists():
+        lines = audit.read_text(encoding="utf-8").splitlines()
+        if lines:
+            last = json.loads(lines[-1])
+            if last.get("epoch") == epoch \
+                    and last.get("status") == "SKIP_R2_PROGRESS":
+                out["status"] = "SKIP_R2_PROGRESS"
+                out["new_atoms"] = last.get("new_atoms", [])
+    return out
+
+
+def _final_state_atoms(ir, target: str, workdir: Path) -> set | None:
+    """P3-T4:末轮覆盖判达的状态原子(同 injector 机制,报告同源)。
+
+    指标失败不掩盖执行结果:任何异常 → None(字段缺省)。
+    """
+    state_path = workdir / "epochs" / "global_state.json"
+    if not state_path.exists():
+        return None
+    try:
+        from stateforge.core.ir import ProgramIR
+        from stateforge.solving.state_seed_injector import reached_state_atoms
+        return reached_state_atoms(
+            ProgramIR.from_json(ir), Path(target),
+            json.loads(state_path.read_text(encoding="utf-8")))
+    except Exception:                          # noqa: BLE001
+        return None
+
+
 def run_epochs(target: str, ir: str, workdir: Path, seconds_per_epoch: float,
                epochs: int, seed: int, group: str, mode: str,
                use_feedback: bool, t0: float | None = None,
@@ -259,13 +301,18 @@ def run_epochs(target: str, ir: str, workdir: Path, seconds_per_epoch: float,
 
         # state 序列种子注入(P3-T3,R2 触发;与 llm 注入平级——
         # 默认路径 off/feedback/frontier/llm 不经过此分支,字节不变)
+        boundary = None
         if policy == "state" and epoch > 1:
             try:
-                _inject_state_seeds_between_epochs(
+                n_inj = _inject_state_seeds_between_epochs(
                     ir, workdir, corpus_dir, target, epoch_num=epoch)
+                boundary = _state_boundary(workdir, epoch, n_inj)
             except Exception as exc:        # noqa: BLE001
                 _state_audit(workdir, {"epoch": epoch, "event": "SEAM_ERROR",
                                        "error": str(exc)})  # 失败留审计痕,照常跑
+                boundary = {"epoch": epoch, "atoms_reached": None,
+                            "injected": 0, "status": "SEAM_ERROR",
+                            "error": str(exc)}
             if use_feedback:                  # 对齐 llm 臂结转:spool 冠军 ∪ lf_corpus
                 CorpusManager(workdir / "epochs" / "spool").export_seed_dir(
                     in_dir, extra=[corpus_dir])
@@ -289,6 +336,8 @@ def run_epochs(target: str, ir: str, workdir: Path, seconds_per_epoch: float,
                        "subprocess_seconds": round(end_off - start_off, 3)}
         rec["corpus_in"] = in_stats
         rec["corpus_lf_after"] = _dir_stats(corpus_dir)
+        if boundary is not None:              # P3-T4:演进级状态摘要进 epoch 记录
+            rec["state"] = boundary
         epoch_records.append(rec)
     # P0-5:跨 epoch 累计
     totals = {k: sum(r[k] for r in epoch_records) for k in
@@ -336,6 +385,13 @@ def run_epochs(target: str, ir: str, workdir: Path, seconds_per_epoch: float,
         result["corpus_dilution_ratio"] = round(
             max(last_in.get("files", 0) - lf_files, 0) /
             max(last_in.get("files", 0), 1), 3)
+    if policy == "state":                     # P3-T4:状态三指标汇总口径
+        result["state_injections_total"] = sum(
+            r.get("state", {}).get("injected", 0) for r in epoch_records)
+        final = _final_state_atoms(ir, target, workdir)
+        if final is not None:
+            result["state_atoms_reached"] = len(final)
+            result["state_atoms"] = sorted(final)
     (workdir / "group_summary.json").write_text(
         json.dumps(result, indent=1, ensure_ascii=False), encoding="utf-8")
     return result
