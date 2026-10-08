@@ -160,6 +160,57 @@ def _inject_llm_between_epochs(ir, workdir: Path, corpus_dir: Path,
     return records
 
 
+def _inject_state_seeds_between_epochs(ir, workdir: Path, corpus_dir: Path,
+                                        target: str,
+                                        epoch_num: int = 0) -> int:
+    """轮间 state 序列种子注入(P3-T3,policy="state" 专用;零 LLM)。
+
+    R2 触发(与 llm 臂的 StallTracker 判停同形、状态粒度):
+      (a) 未达深状态原子存在——injector 内部 goal 派生(全部 requires
+          原子 − 已达原子),无 goal 即零写入;
+      (b) 上一轮无新状态节点——`epochs/state_ledger.json` 差分
+          (本函数每轮先记账再判定;不用 PlateauDetector)。
+    状态节点记账 = 覆盖代理(守卫真分支块已覆盖 ⇒ 原子判达):
+    entry_driver 不产会话观测,补观测即膨胀驱动(裁决禁止);机制与
+    诚实边界见 solving/state_seed_injector.py 模块 docstring §3。
+    """
+    import json as _json
+    from stateforge.core.ir import ProgramIR
+    from stateforge.solving.state_seed_injector import (STATE_BUDGET,
+                                                        inject_state_seeds,
+                                                        reached_state_atoms)
+
+    state_path = workdir / "epochs" / "global_state.json"
+    if not state_path.exists():
+        return 0                                # mode=off 等无覆盖态 → 跳过
+    state = _json.loads(state_path.read_text(encoding="utf-8"))
+    ir_obj = ProgramIR.from_json(ir)
+
+    ledger_path = workdir / "epochs" / "state_ledger.json"
+    prior: set = set()
+    if ledger_path.exists():
+        prior = set(_json.loads(
+            ledger_path.read_text(encoding="utf-8")).get("atoms", []))
+    now = reached_state_atoms(ir_obj, Path(target), state)
+    ledger_path.write_text(
+        _json.dumps({"epoch": epoch_num, "atoms": sorted(now)}),
+        encoding="utf-8")
+
+    if now - prior:                             # R2(b):上轮有新状态节点
+        _state_audit(workdir, {"epoch": epoch_num,
+                               "status": "SKIP_R2_PROGRESS",
+                               "new_atoms": sorted(now - prior)})
+        return 0
+    return inject_state_seeds(ir_obj, Path(target), state, corpus_dir,
+                              budget=STATE_BUDGET)
+
+
+def _state_audit(workdir: Path, record: dict) -> None:
+    path = workdir / "epochs" / "state_injections.jsonl"
+    with path.open("a", encoding="utf-8") as fh:
+        fh.write(json.dumps(record, ensure_ascii=False) + "\n")
+
+
 def run_epochs(target: str, ir: str, workdir: Path, seconds_per_epoch: float,
                epochs: int, seed: int, group: str, mode: str,
                use_feedback: bool, t0: float | None = None,
@@ -205,6 +256,18 @@ def run_epochs(target: str, ir: str, workdir: Path, seconds_per_epoch: float,
             else:
                 for f in corpus_dir.iterdir():
                     shutil.copy2(f, in_dir / f.name)
+
+        # state 序列种子注入(P3-T3,R2 触发;与 llm 注入平级——
+        # 默认路径 off/feedback/frontier/llm 不经过此分支,字节不变)
+        if policy == "state" and epoch > 1:
+            try:
+                _inject_state_seeds_between_epochs(
+                    ir, workdir, corpus_dir, target, epoch_num=epoch)
+            except Exception:              # noqa: BLE001
+                pass                       # 注入失败 → 照常跑下一轮
+            for f in corpus_dir.iterdir():   # state 臂自结转:lf_corpus(含注入
+                if f.is_file():              # 种子)→ 本轮起始语料;共享结转
+                    shutil.copy2(f, in_dir / f.name)  # 分支为 llm 门控,此处自取
 
         in_stats = _dir_stats(in_dir)
         start_off = time.monotonic() - t0

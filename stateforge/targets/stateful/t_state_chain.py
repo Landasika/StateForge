@@ -5,14 +5,19 @@ P3-T2 C10 双 schema：
   整体 steps 时也可内部重放，语义等价）；
 - legacy 单请求 dict：既有行为，先验状态 = 进程内当前态（默认空）。
 
-会话连续性 = 模块级 _SESSION 进程内持久（同 adapter 持有 app/client 的
+会话连续性 = 模块级会话态进程内持久（同 adapter 持有 app/client 的
 进程内语义）；reset_state() 供测试与多会话隔离。深块 deep_state_profile
 只被"先 login 后 profile"的序列打开——单请求词法无论怎么变异都摸不到。
+
+P3-T3：会话态以 M1 状态分析词汇书写（持有者名 `session`，`_SESSION` 为
+同一 dict 的兼容别名；守卫走 `x = session.get(k)` + `if x:` 惯用法），
+`run_state_analysis` 可读本靶——state 种子注入器的静态输入。
 """
 
 import json
 
 _SESSION = {}      # 进程内会话态（跨 target() 调用持久）
+session = _SESSION  # M1 分析词汇：session 名下的同一 dict（别名不改行为）
 HITS = []          # 分支命中留痕（函数名即标记；测试断言用）
 
 
@@ -55,11 +60,12 @@ def _handle(seed) -> None:
     if op == "login":
         user = body.get("user", "")
         if isinstance(user, str) and user:
-            _SESSION["uid"] = user
+            session["uid"] = user               # M1 词汇：session[...] 写
             HITS.append("login_ok")
             login_ok()
     elif op == "profile":
-        if _SESSION.get("uid"):                 # 深块门：仅步1已置态时可达
+        uid = session.get("uid")
+        if uid:                                 # 深块门：仅步1已置态时可达
             HITS.append("deep_state_profile")
             deep_state_profile()
         else:

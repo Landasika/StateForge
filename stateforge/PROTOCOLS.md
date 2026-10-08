@@ -27,7 +27,7 @@
 | C7 | LLM cache JSON | solving.llm.cache.put(lifting label/relate)→ cache.get(缓存优先通道) | JSON 单行 | 冻结 | `stateforge/solving/llm/cache/<sha256>.json`(随仓) |
 | C8 | corpus + global_state.json | fuzzing.corpus_manager / fuzzing.entry_driver → export_seed_dir(libFuzzer)、evaluation.experiment.epoch | bytes + JSONL + JSON | 演进 | `spool/seeds/<cid>`、`spool/meta.jsonl`、`global_state.json` |
 | C9 | 实验记录 JSONL | fuzzing.recorder.ExperimentRecorder → evaluation.experiment.epoch | JSONL | 演进 | `<group>-e<N>-snapshots.jsonl`、`<group>-e<N>-candidates.jsonl` |
-| C10 | 序列种子 JSON(steps) | (规划)state 注入器(P3-T3,待接)→ fuzzing.entry_driver 解码分派、targets.stateful.* 靶 | JSON | 演进 | corpus 种子文件(`lf_corpus/<cid>`、`spool/seeds/<cid>`) |
+| C10 | 序列种子 JSON(steps) | `solving/state_seed_injector.inject_state_seeds`(P3-T3,经 `epoch.py::_inject_state_seeds_between_epochs`,policy="state")→ fuzzing.entry_driver 解码分派、targets.stateful.* 靶 | JSON | 演进 | corpus 种子文件(`lf_corpus/<cid>`、`state_spool/seeds/<cid>`) |
 
 ---
 
@@ -291,7 +291,7 @@ ChampionRecord 四键:`input_id` `distance` `epoch` `frontier_version`(`frontier
 
 | | |
 |---|---|
-| 生产者 | (规划)`epoch.py` 轮间 state 注入器(P3-T3,待接):plan_backward 的有序 PlanStep → `{"steps":[…]}` bytes 写入 corpus;落盘必须复用 `encode_sequence_seed`(`fuzzing/entry_driver.py`,与消费端同一 builder)。**当前仓内尚无生产者**——协议测试为消费侧钉扎(`test_c10_sequence_seed_consumer_pin`,docstring 已注明) |
+| 生产者 | `solving/state_seed_injector.py::inject_state_seeds`(P3-T3 已接):M1/M2 状态分析 + op 分派归属 → 合成 SSTG(`analysis/builder.build_sstg`,builder 零改动)→ `plan_backward(reach_state)` → `BindingContext.render_step` → 单请求 dict 序列;轮间接缝 `epoch.py::_inject_state_seeds_between_epochs`(policy="state",R2 触发:未达深状态原子 且 上轮无新状态节点)。落盘复用 `encode_sequence_seed`(`fuzzing/entry_driver.py`,与消费端同一 builder),经 CorpusManager spool(`state_spool`)+ 直写 corpus;审计 `epochs/state_injections.jsonl` |
 | 消费者 | `fuzzing/entry_driver.decode_sequence_seed` + `dispatch_seed`(libFuzzer handler 入口,三模式一致:`entry_driver.py` dispatch);`targets/stateful/t_state_*.py` 靶本体(整体 steps 重放语义,与驱动逐步分派等价) |
 | 格式 | JSON 单行(`json.dumps({"steps": […]}, ensure_ascii=False, sort_keys=True)`);作为一条 libFuzzer 输入整体变异 |
 | 执行面 | `test_protocols.py::test_c10_sequence_seed_consumer_pin`、`tests/fuzzing/test_sequence_seeds.py` |

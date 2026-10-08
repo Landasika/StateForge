@@ -6,11 +6,18 @@ P3-T2 C10 双 schema（与 t_state_chain 同约定）：
 
 深块 gate_granted 只被"role=admin 的会话 + admin_panel"序列打开——这是
 「等价单请求种子打不开、序列种子能打开」的旗舰验证靶。
+
+P3-T3：会话态以 M1 状态分析词汇书写——模块级持有者名 `session`
+（`_SESSION` 为同一 dict 的兼容别名，T2 测试锚点不变），守卫走
+`x = session.get(k)` + `if x == v` 的 provenance 惯用法，使
+`run_state_analysis`（谓词/守卫/变异候选）可读本靶——规划器→序列种子
+注入（solving/state_seed_injector.py）的静态输入即来自此词汇。
 """
 
 import json
 
 _SESSION = {}      # 进程内会话态（跨 target() 调用持久）
+session = _SESSION  # M1 分析词汇：session 名下的同一 dict（别名不改行为）
 HITS = []          # 分支命中留痕（函数名即标记；测试断言用）
 
 
@@ -53,11 +60,12 @@ def _handle(seed) -> None:
     if op == "login":
         role = body.get("role", "")
         if isinstance(role, str) and role:
-            _SESSION["role"] = role
+            session["role"] = role              # M1 词汇：session[...] 写
             HITS.append("login_ok")
             login_ok()
     elif op == "admin_panel":
-        if _SESSION.get("role") == "admin":     # 401 式守卫：会话谓词判定
+        role = session.get("role")
+        if role == "admin":                     # 401 式守卫：会话谓词判定
             HITS.append("gate_granted")
             gate_granted()
         else:
