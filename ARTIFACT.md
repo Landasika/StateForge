@@ -28,13 +28,13 @@ pip install -e ".[dev,test,fuzz]"      # 唯一依赖源:pyproject.toml
 pytest                                 # 全量测试
 ```
 
-预期:全量测试绿。计数随阶段增长,本文不硬编码——**以 README「冻结版本」节验收行与 pytest 汇总行为准**。26 个 `anota` 标记用例默认 deselect(ANOTA 解释器侧不在本 artifact 验收链内);少量 skipped 为 external/ 不入库按设计跳过。
+预期:全量测试绿。计数随阶段增长,本文不硬编码——**以 README「冻结版本」节验收行与 pytest 汇总行为准**。少量 `anota` 标记用例(计数见 pytest 汇总行)默认 deselect——ANOTA 解释器侧不在本 artifact 验收链内;少量 skipped 为 external/ 不入库按设计跳过。
 
 一键验收(等价于上面四步 + 微基准):`./ci.sh`(或 `make verify`)。
 
 ## Reproducing the tables / 复现实验表
 
-每小节对应一张冻结表;命令为真实 CLI 口径,预期 headline **引用 README「冻结版本」节的数字**。统计容差口径统一见[Badges 节](#badges--徽章映射):fuzzing 数字有随机性,复现判定看配对差方向与量级带,非逐位相等。
+每小节对应一张冻结表;命令为真实 CLI 口径,预期 headline **引用 README「冻结版本」节的数字**。统计容差口径统一见[Badges 节](#badges--徽章映射):fuzzing 数字有随机性,复现判定看配对差方向与量级,非逐位相等。
 
 ### 五臂 spot(four_arm)
 
@@ -46,7 +46,7 @@ python -m stateforge.evaluation.experiment.four_arm \
     --runs 2 --epochs 3 --seconds 5
 ```
 
-预期 headline:每靶打印 `B/C/D/E` 块均值与差值行——README v0.4 验收记录 **E−D=+16/+19 块(两状态靶)、状态原子判达 E 4/4 run vs D 0/4 run(同机制)**。口径注:非 session 靶(microplus 套件)上 E 落后 D,状态主张限定 stateful 靶族。
+预期 headline:每靶打印 `B/C/D/E` 块均值与差值行——README v0.4 验收记录 **E−D=+16/+19 块(两状态靶)、状态原子判达 E 4/4 run vs D 0/4 run(同机制)**;口径注(README v0.4 注):当时 D 臂 LLM 注入因判停缺陷未实际触发,D 实效=定向反馈,E−D 即 E vs 定向反馈。口径注:非 session 靶(microplus 套件)上 E 落后 D,状态主张限定 stateful 靶族。
 
 ### 正式战役(campaign --groups D1,E)
 
@@ -88,6 +88,8 @@ python -m stateforge.evaluation.experiment.state_ablation \
     --runs 10 --epochs 3 --seconds 10
 ```
 
+t_state_gate 同理换名;vulnshop 用 `stateforge/targets/vulnshop/fuzz_target.py` + 其 IR(`ir_vulnshop/program_ir.json`,上一节已 analyze),**三靶各跑一次**——下方分析节的 `campaign dirs 3 | ablation dirs 3` 以此为前提。
+
 预期 headline(README v0.5 验收):规划器贡献 **E−E-rand +2.4/+5.5/+65.6**(t_state_chain/t_state_gate/vulnshop,真实应用上最大);R2 触发代价 **|E−E-always| ≤1.1**(≈零)。注:vulnshop 的消融三状态指标为未测(见已知限制)。
 
 ### 分析(p4_analysis)
@@ -117,13 +119,15 @@ make demo    # = python -m stateforge.evaluation.micro_benchmark
 
 预期:临时 clone → venv → install → pytest → micro_benchmark 全链绿,尾部打印三验收数字(pytest 汇总行 / micro 静态+动态)。这就是 Badge **Available** 的执行面。
 
+完整性清单:`make artifact` 产 `artifact-manifest.sha256`(全部 tracked 文件)。校验注意:`sha256sum -c` 会跟随符号链接,需先过滤 symlink 行(仓内唯一一处)——`grep -v 'themes/aurora/static' artifact-manifest.sha256 | sha256sum -c -`。
+
 ## Badges / 徽章映射
 
 | Badge | 含义 | 本 artifact 的执行面 |
 |-------|------|--------------------|
 | **Available** | artifact 可得、可安装、可跑测试 | fresh clone + `pip install -e ".[dev,test,fuzz]"` + pytest 全绿 = `./ci.sh` 全链绿 |
 | **Functional** | 声称的功能可被评估者独立触发 | `make demo`(微基准)+ 五臂 spot(four_arm)+ 正式战役命令(campaign)在评估者环境全部可跑通,产物结构完整(curves.csv / summary.json / manifest.json) |
-| **Reproduced** | 冻结表数字可复现 | 10-run 战役数字落在 README「冻结版本」节报道值的随机容差带内;判定口径 = **配对差方向**(E−D1 三靶全胜/多数胜)+ 量级带,非逐位相等 |
+| **Reproduced** | 冻结表数字可复现 | 10-run 战役数字落在 README「冻结版本」节报道值的随机容差内(定性判据:方向一致 + 量级相当,README 报点值);判定口径 = **配对差方向**(E−D1 三靶全胜/多数胜)+ 量级,非逐位相等 |
 
 统计口径注:战役/消融数字含随机性(fuzzing 时间预算与调度噪声),同一 `--seed0 7` 下跨机器也非逐位可复现;**方向性结论(E > D1)与数量级差应稳定复现**。
 
