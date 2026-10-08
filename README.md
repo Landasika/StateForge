@@ -62,6 +62,9 @@ make verify
 # 静态分析：构建 ICFG
 python -m stateforge.cli analyze <目标目录> --out results/structural
 
+# 状态发现（M2 迁移发现：session 变量/谓词/域）
+python -m stateforge.cli state <目标目录> --out results/state.json
+
 # 运行时反馈：执行轨迹 → 覆盖/前沿
 python -m stateforge.cli feedback results/structural/program_ir.json trace.jsonl --out feedback.json
 
@@ -144,7 +147,7 @@ stateforge/
 | `stateforge/state/` | 状态域:状态提取与语义模型、会话访问/状态溯源、标注子包 `state/annotation/`、规划子包 `state/planning/`(原 planner/) |
 | `stateforge/adapters/` | 目标适配层:TargetAdapter 协议 + 通用 Web/Flask/可调用/vulnshop 适配器(bytes → 目标可执行) |
 | `stateforge/evaluation/` | 评测域:SF-Micro 真值基准、BranchSolve 报告、OWASP Benchmark 基线、多臂实验子包 `evaluation/experiment/`、可视化子包 `evaluation/viz/` |
-| `stateforge/cli.py` | 命令行入口:analyze / feedback / experiment / viz |
+| `stateforge/cli.py` | 命令行入口:analyze / feedback / experiment / viz / state |
 | `stateforge/targets/` | 测试靶场:vulnshop / vampi / dsvw / pygoat / realworld / microplus(原位不动) |
 | `stateforge/fixtures/` | 真值基准数据:micro / bs_micro / ls_micro / llm_loop / sf_branch_micro / buy_app(原位不动) |
 | `stateforge/tests/` | 测试套件(全量绿,计数见冻结版本节;子目录名沿用旧模块名为历史组织,import 已全部指向新路径) |
@@ -208,6 +211,7 @@ stateforge/
 | `v0.1-baseline` | P0 基线冻结（2026-10-08）：Phase-1~4.3 M1 全量能力；依赖收口 pyproject（extras dev/test/fuzz）；fresh-clone → venv → install → pytest → demo 验收通过 |
 | `v0.2-normalized` | P1 工程规范化（2026-10-08）：目录收敛七域架构；本地 CI（Makefile+ci.sh）；config 单一入口（stateforge/config.py）；logging 约定（core/log.py+cli -v） |
 | `v0.3-architecture` | P2 架构收敛（2026-10-08）：三搬移解环；ARCHITECTURE.md 分层规范+import 边界测试（例外登记制）；PROTOCOLS.md 九契约+schema 稳定性测试；清扫（config 统一 legacy 族等 7 项） |
+| `v0.4-stateful-core` | P3 stateful fuzzing 核心（2026-10-08）：M2 迁移发现；序列种子契约 C10；规划器→序列种子注入（policy=state）；实验臂 E+状态三指标 |
 
 **v0.1-baseline 验证环境**:Python 3.13.5(anaconda)/ Ubuntu(Linux 6.8)/ clang 备用(atheris 实走 tuna wheel)/ pytest 8.3.4 · flask 3.1.0 · networkx 3.4.2 · elementpath 5.1.4 · httpx 0.28.1 · pydantic 2.11.7 · PyYAML 6.0.2(运行时)· matplotlib 3.10.0(dev)· atheris 3.1.0
 **验收数字**:开发树 255 passed / 1 skipped / 26 deselected;fresh clone 254 passed / 2 skipped / 26 deselected(差异=OWASP Benchmark 用例按设计跳过,external/ 不入 git);micro_benchmark 21 用例全 1.00(CFG/CALL/RET P&R + trace-accuracy 5/5)
@@ -215,6 +219,8 @@ stateforge/
 **v0.2-normalized 验收**:./ci.sh 全链绿(fresh clone 254 passed / 2 skipped / 26 deselected;micro_benchmark 静态 21/21 + 动态 5/5 全 1.00);开发树 255/1/26;零测试断言改动(tests 仅 import 路径机械同步)、零算法改动(ANOTA 侧零引用)
 
 **v0.3-architecture 验收**:./ci.sh 全链绿(fresh clone 285 passed, 2 skipped, 26 deselected;micro_benchmark 静态 21/21 + 动态 5/5 全 1.00);开发树 286 passed / 1 skipped / 26 deselected;新增测试 31 项(边界 4+协议 17+config 10);零既有测试断言改动、零算法改动
+
+**v0.4-stateful-core 验收**:./ci.sh 全链绿(fresh clone 349 passed, 2 skipped, 26 deselected;micro 静态 21/21+动态 5/5);开发树 350 passed/1 skipped/26 deselected;五臂 spot:E−D=+16/+19 块,状态原子 E 4/4 vs D 0/4(同机制),A–D 同种子逐位一致;口径注:非 session 靶(microplus)E 落后 D,状态主张限定 stateful 靶族;t_state_shop 零注入=M1 session 词汇边界(5A DB 域守卫不可见)
 
 **已知义务:** 语义标注缓存(`stateforge/solving/llm/cache/*.json`)键于 PROMPT_VERSION 与夹具内容——二者变更后需重跑生成器并提交新缓存,否则 fresh clone 回归"全 irrelevant"。缓存仅按显式路径提交(`git add stateforge/solving/llm/cache/<hash>.json`),勿在该目录使用 `git add -A`。
 
