@@ -311,6 +311,7 @@ ChampionRecord 四键:`input_id` `distance` `epoch` `frontier_version`(`frontier
 
 - 分派只看 `"steps"` 键存在且值为 list:是→按序逐步执行,每步经 `json.dumps` 走与单请求**同一** `target(data)` 执行面;否→**原字节透传**,legacy 单请求路径行为逐字节不变(四臂非回归门)。
 - 会话连续性 = 进程内持久:adapter 持有的 app/test_client、靶模块级会话态跨步存活;Atheris 仍是唯一执行引擎,整条序列是一次输入,序列变异即状态空间探索(涌现)。
+- 跨输入策略:无逐输入重置——状态在 libFuzzer 输入间延续(进程内);需干净态的实验以 target 的 reset_state() 显式重置(见各靶 docstring)。
 - 覆盖口径 = 序列全程并集:所有步在同一 handler 调用、同一 TraceSession 请求窗口内执行,coverage 计数自然累加(R3)。
 - 畸形输入确定性:`steps: []` = 零执行;非 dict 步原样序列化喂靶(靶自己的错误路径消化);`steps` 非 list → 按 legacy 透传;单步异常由外层 handler 统一吞,不向引擎泄 crash。
 - 加字段安全(演进):顶层可加新键(消费端只按 `steps` 分派);`steps[i]` 内沿用单请求契约的演进纪律。

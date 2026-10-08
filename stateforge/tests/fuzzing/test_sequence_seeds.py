@@ -263,9 +263,35 @@ def test_coverage_union_over_sequence_steps(tmp_path):
     assert len(rids) == 1
 
 
+# --------------------------------------- 跨输入状态延续（真实 fuzzing 期语义）
+
+
+def test_state_persists_across_libfuzzer_inputs_until_reset():
+    """钉扎：libFuzzer 输入间**无逐输入重置**——输入1 的会话态延续到输入2。
+
+    驱动分派是通用面，不可能知道靶的 reset_state()，因此真实 fuzzing 期
+    状态在输入间进程内延续（这正是序列探索状态空间的载体）。对照：需
+    干净态的实验必须显式 reset_state()。全程走真实 dispatch 面（与
+    entry_driver 同一函数），不直接调靶。
+    """
+    mod = _load("t_state_gate")
+
+    # 真实 fuzzing 期语义：两次输入之间无任何重置
+    dispatch_seed(mod.target, _seq(
+        {"json": {"op": "login", "user": "root", "role": "admin"}}))
+    dispatch_seed(mod.target, b'{"json": {"op": "admin_panel"}}')
+    assert mod.HITS == ["login_ok", "gate_granted"]   # 输入2 借输入1 残留态开门
+
+    # 对照组：reset_state() 之后的同词法输入2 只被门拒
+    mod.reset_state()
+    dispatch_seed(mod.target, _seq(
+        {"json": {"op": "login", "user": "root", "role": "admin"}}))
+    mod.reset_state()
+    dispatch_seed(mod.target, b'{"json": {"op": "admin_panel"}}')
+    assert mod.HITS == ["unauthorized"]               # 干净态：深块不可达
+
+
 # --------------------------------------------- legacy 靶抽查（四臂非回归门）
-
-
 def test_legacy_target_spot_check_microplus_deep_branch():
     """legacy 靶（microplus deep_branch，字节门）经 dispatch 行为与裸调一致。"""
     mod = _load("deep_branch")
