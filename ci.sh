@@ -29,7 +29,7 @@ source "$SF_CI_DIR/venv/bin/activate"
 echo "== [3/5] pip install -e \".[dev,test,fuzz]\""
 python -m pip install -e ".[dev,test,fuzz]"
 
-echo "== [4/5] pytest(fresh clone:预期 254 passed / 2 skipped / 26 deselected)"
+echo "== [4/5] pytest(fresh clone:预期全绿;数字随阶段测试数增长,以 pytest 汇总行为准)"
 if ! PYTEST_TAIL="$("${SANITIZE_ENV[@]}" python -m pytest 2>&1 \
         | tee "$SF_CI_DIR/pytest.log" | tail -n 1)"; then
     echo "pytest FAILED(末 40 行见下)" >&2
