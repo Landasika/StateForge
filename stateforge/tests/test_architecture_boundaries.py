@@ -2,8 +2,9 @@
 
 规范文见 stateforge/ARCHITECTURE.md:L0 core | L1 analysis | L1.5 state |
 L2 runtime | L2.5 fuzzing/adapters | L3 solving | L4 evaluation, cli。
-规则:只允许向下引用(高层 → 严格更低层)与同层对等互引(fuzzing⇄adapters、
-evaluation⇔cli);向上引用一律违规,除非登记于 ARCHITECTURE.md 例外登记表。
+规则:只允许向下引用(高层 → 严格更低层);同层跨域仅允许两个有向对
+(adapters→fuzzing、cli→evaluation,见 PEER_EDGES);向上引用一律违规,
+除非登记于 ARCHITECTURE.md 例外登记表。
 扫描范围 stateforge/**/*.py,排除 targets/ fixtures/ tests/(数据域与测试
 可任意引用);动态边(subprocess -m / __import__)AST 不可见,不在此测。
 """
@@ -35,9 +36,14 @@ LAYERS = {
 UNLAYERED_DOMAINS = {"config", "targets"}
 EXCLUDED_TOP_DIRS = {"targets", "fixtures", "tests", "__pycache__"}
 
-# 依赖汇(③):evaluation/adapters 不得被管线域反向依赖,入边只许来自对等
-# 入口域(cli、evaluation;evaluation 面 -m 驱动如 acceptance.py 属 L4 评测
-# 入口,P2-T1 裁定其归位评测面)与 tests。
+# 同层有向白名单(规则 2):同层跨域引用仅此两对放行——adapters→fuzzing
+# (适配器取插桩器)、cli→evaluation(viz 子命令);反向(fuzzing→adapters、
+# evaluation→cli)为违规,重新引入须登记例外表。
+PEER_EDGES = {("adapters", "fuzzing"), ("cli", "evaluation")}
+
+# 依赖汇(③):evaluation/adapters 不得被管线域反向依赖,入边只许来自
+# 白名单对等入口(cli)与 tests;evaluation 面 -m 驱动如 acceptance.py 属
+# L4 评测入口,其对 adapters 的引用按 T1 裁定 3 放行。
 SINK_DOMAINS = {"evaluation", "adapters"}
 SINK_ALLOWED_SOURCES = SINK_DOMAINS | {"cli", "tests"}
 
@@ -47,7 +53,8 @@ SINK_ALLOWED_SOURCES = SINK_DOMAINS | {"cli", "tests"}
 ALLOWED_EXCEPTIONS = {
     ("stateforge.analysis.analyzer", "solving"),                          # 行1 标注边界
     ("stateforge.state.planning.checkers", "stateforge.runtime.replay"),  # 行2 GoalResult 仅类型
-    ("stateforge.runtime.snapshot.supervisor", "targets"),                # 行3 靶场硬编码(P3 注入候选)
+    # 行3 仅锁/登记用:targets 不入分层,规则②不会过滤到它;此行撑起条数锁与来源锁
+    ("stateforge.runtime.snapshot.supervisor", "targets"),
 }
 
 
@@ -61,16 +68,30 @@ def _domain_of(module: str) -> str:
     return parts[1] if len(parts) > 1 else "stateforge"   # 裸 import stateforge → 包根
 
 
+def _is_internal(module: str) -> bool:
+    # 精确段匹配,避免误吞 stateforge_extra 等兄弟包
+    return module == "stateforge" or module.startswith("stateforge.")
+
+
 def _imports(py_path: Path):
-    """yield (lineno, imported_module);AST 级提取,动态边天然不可见。"""
+    """yield (lineno, imported_module);AST 级提取,动态边天然不可见。
+
+    包根形式 `from stateforge import X` 逐名解析为 `stateforge.X`,
+    使其同样产生域级边(否则 _domain_of 落在包根、绕过全部规则)。
+    """
     tree = ast.parse(py_path.read_text(encoding="utf-8"))
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
             for alias in node.names:
-                if alias.name.startswith("stateforge"):
+                if _is_internal(alias.name):
                     yield node.lineno, alias.name
         elif isinstance(node, ast.ImportFrom) and node.level == 0:
-            if node.module and node.module.startswith("stateforge"):
+            if not _is_internal(node.module or ""):
+                continue
+            if node.module == "stateforge":
+                for alias in node.names:
+                    yield node.lineno, f"stateforge.{alias.name}"
+            else:
                 yield node.lineno, node.module
 
 
@@ -103,7 +124,9 @@ def test_no_upward_import_outside_registered_exceptions():
             continue
         if fdom not in LAYERS or tdom not in LAYERS:   # config/targets/包根不入分层
             continue
-        if LAYERS[tdom] <= LAYERS[fdom]:               # 严格向下,或同层对等互引
+        if LAYERS[tdom] < LAYERS[fdom]:                # 严格向下
+            continue
+        if (fdom, tdom) in PEER_EDGES:                 # 同层有向白名单
             continue
         if any(src == es and (tdom == et or target == et or target.startswith(et + "."))
                for es, et in ALLOWED_EXCEPTIONS):      # 已登记例外
