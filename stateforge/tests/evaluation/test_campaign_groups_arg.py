@@ -81,11 +81,13 @@ class TestGroupsSubsetPropagation:
         assert s["aggregate"]["E"]["final_blocks"]["mean"] == 65
         assert s["aggregate"]["E"]["state_injections_total"]["n"] == 2
 
-        # questions:涉缺组的键整体缺省;D1/E 配对(state_gain)照常
+        # questions:涉缺组的键整体缺省;D1/E 配对(state_gain)照常;
+        # novel_seed_gain 亦诚实缺省(C 未跑 → 不造 sf_total=0 零行)
         assert "tracing_overhead" not in s["questions"]
         assert "restart_penalty_final_blocks" not in s["questions"]
         assert "feedback_gain_final_blocks" not in s["questions"]
         assert "portfolio_gain_final_blocks" not in s["questions"]
+        assert "novel_seed_gain" not in s["questions"]
         assert s["questions"]["state_gain_final_blocks"]["mean"] == 15  # 65−50
         assert s["questions"]["paired_deltas"] == {"E_minus_D1": [0.0, 0.0]}
 
@@ -93,8 +95,14 @@ class TestGroupsSubsetPropagation:
         on_disk = json.loads((tmp_path / "camp" / "summary.json")
                              .read_text(encoding="utf-8"))
         assert set(on_disk["aggregate"]) == {"D1", "E"}
-        assert (tmp_path / "camp" / "curves.csv").read_text(
-            encoding="utf-8").startswith("group,t,blocks_mean")
+        curves = (tmp_path / "camp" / "curves.csv").read_text(
+            encoding="utf-8")
+        assert curves.startswith("group,t,blocks_mean")
+        # I2(终审前向修):curves 只含实际跑过的组——未跑组不落全零行
+        # (修前固定七组元组无 ran 守卫,为每个未跑组落 horizon+1 行 0)
+        curve_groups = {row.split(",")[0] for row in
+                        curves.splitlines()[1:] if row}
+        assert curve_groups == {"D1", "E"}
 
         # 缺省(groups=None)路径零漂移:run_experiment 仍以既有 6 参
         # 形式调用(替身签名不带 groups → 多传 kwarg 即 TypeError);

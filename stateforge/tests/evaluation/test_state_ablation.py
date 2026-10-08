@@ -530,3 +530,33 @@ class TestRunAblation:
                     if x.strip()]
             injected = [r for r in audit if r.get("status") == "INJECTED"]
             assert len(injected) <= STATE_BUDGET      # budget 封顶同源
+
+    def test_report_discloses_atoms_measurability(self, ir_path, tmp_path):
+        """I3(终审前向修):微靶报告落盘 state_atoms_measurable=True;
+        无微模型靶(AppModel)为 False + 附注,render_text 三指标列
+        渲染 "-"(未测),不显示为测得 0。"""
+        from stateforge.evaluation.experiment.state_ablation import (
+            render_text, run_ablation)
+        ir_p, _ = ir_path
+        rep = run_ablation(str(GATE), str(ir_p), tmp_path / "ab3",
+                           runs=1, epochs=1, seconds=1.0)
+        assert rep["state_atoms_measurable"] is True   # 微靶可测
+        assert "state_atoms_note" not in rep
+        # 无微模型靶:render_text 纯函数,直接喂合成报告形状
+        fake = {"target": "vs.py", "runs": 1, "epochs": 1, "seconds": 1.0,
+                "state_atoms_measurable": False,
+                "state_atoms_note": "状态原子三指标仅微靶路径可测;本靶无微模型"
+                                    "(synthesize_micro_model=None,AppModel 路径),"
+                                    "atoms/transitions/deep_blocks 为未测,非测得零",
+                "arms": {a: {"mean_blocks": 10, "mean_edges": 9,
+                             "state": {"atoms_reached": 0,
+                                       "transitions_observed": 0,
+                                       "deep_state_blocks": 0},
+                             "per_run": {"run00": {"injections_total": 1}}}
+                         for a in ("E", "E-rand", "E-always")},
+                "pairwise": {"E_minus_E-rand": {"blocks": 1.0, "atoms": 0.0},
+                             "E_minus_E-always": {"blocks": 0.0, "atoms": 0.0}}}
+        text = render_text(fake)
+        assert "注: 状态原子三指标仅微靶路径可测" in text
+        assert "n/a(未测:无微模型)" in text
+        assert "atoms=0" not in text                    # 不显示测得 0

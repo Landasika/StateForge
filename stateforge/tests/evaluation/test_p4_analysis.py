@@ -83,9 +83,11 @@ def _write_camp(root, target, rows, run_atoms=None, ledgers=None):
     return d
 
 
-def _write_abl(root, target, arms_blocks, arms_atoms, arms_inj, ledgers=None):
+def _write_abl(root, target, arms_blocks, arms_atoms, arms_inj, ledgers=None,
+               target_path=None):
     """state_ablation.py state_ablation.json 形状(arms+state_runs;pairwise
-    留空——分析脚本按 per_run 自行配对,不消费 writer 的聚合)。"""
+    留空——分析脚本按 per_run 自行配对,不消费 writer 的聚合)。
+    target_path 可覆盖 target 字段(I3 可测性重判需要真实存在的路径)。"""
     d = root / f"abl_{target}"
     d.mkdir(parents=True)
     runs = len(next(iter(arms_blocks.values())))
@@ -114,9 +116,9 @@ def _write_abl(root, target, arms_blocks, arms_atoms, arms_inj, ledgers=None):
                                "deep_functions": []},
                      "mean_blocks": round(sum(blocks) / runs, 1),
                      "mean_edges": 40.0}
-    rep = {"target": f"{target}.py", "ir": "ir.json", "runs": runs,
-           "epochs": 3, "seconds": 3.0, "seed0": 7, "mode": "frontier",
-           "arms": arms, "pairwise": {}}
+    rep = {"target": target_path or f"{target}.py", "ir": "ir.json",
+           "runs": runs, "epochs": 3, "seconds": 3.0, "seed0": 7,
+           "mode": "frontier", "arms": arms, "pairwise": {}}
     (d / "state_ablation.json").write_text(json.dumps(rep), encoding="utf-8")
     for (arm, k), recs in (ledgers or {}).items():
         rd = d / f"run{k:02d}" / arm / "epochs"
@@ -350,6 +352,69 @@ class TestAblation:
         assert pc["blocks"]["mean"] == 1.6667       # 5/3,round 4
         assert pc["blocks"]["wins"] == 3
         assert pc["atoms"]["mean"] == 1.0
+
+
+# --------------------------------------- I3:无微模型靶的 atoms 未测口径
+
+
+class TestUnmeasuredAtoms:
+    """AppModel/Flask 靶(无微模型)的消融 atoms 三指标 = 结构性零
+    (state_metrics 早退 _EMPTY_STATE),非测得零——p4_analysis 按
+    state_ablation.json 的 target 重判可测性:atoms 置 null、文本表
+    "-" / n/a 并附注;靶路径不可寻 → 无法判定,数字保持原样。
+    """
+
+    @pytest.fixture()
+    def vs_fx(self, tmp_path):
+        """单靶小夹具:E/E-rand/E-always 各 2 run,atoms 全零(结构性),
+        target 指向真实存在但 synthesize_micro_model=None 的文件。"""
+        root = tmp_path / "p4_formal"
+        root.mkdir()
+        no_micro = tmp_path / "appmodel_like.py"
+        no_micro.write_text("import flask\napp = flask.Flask(__name__)\n",
+                            encoding="utf-8")
+        return root, _write_abl(
+            root, "t_vs",
+            {"E": [30, 31], "E-rand": [28, 28], "E-always": [30, 31]},
+            {"E": [[], []], "E-rand": [[], []], "E-always": [[], []]},
+            {"E": [2, 2], "E-rand": [2, 2], "E-always": [2, 2]},
+            target_path=str(no_micro))
+
+    def test_atoms_rendered_unmeasured_not_zero(self, vs_fx):
+        from stateforge.evaluation.experiment import p4_analysis
+        root, _ = vs_fx
+        rep = p4_analysis.analyze(root)
+        ab = rep["targets"]["t_vs"]["ablation"]
+        assert ab["atoms_measurable"] is False
+        assert ab["atoms_note"]                          # 披露附注在场
+        for arm in ("E", "E-rand", "E-always"):
+            assert ab["arms"][arm]["atoms_union_count"] is None
+            assert ab["arms"][arm]["atoms_union"] is None
+            assert ab["arms"][arm]["mean_blocks"]["n"] == 2   # blocks 照常
+        for key in ("planner_contribution", "trigger_value"):
+            assert ab[key]["atoms"] is None               # 配对 atoms 未测
+            assert ab[key]["blocks"]["n"] == 2            # blocks 配对照常
+        text = p4_analysis.render_text(rep)
+        assert "atoms n/a" in text                        # 文本表不显示测得 0
+        assert "非测得零" in text
+        # 修前形状不复现:atoms_union_count 不再是整数 0 的测得零口径
+        assert "atoms_union_count\": 0" not in json.dumps(rep)
+
+    def test_unresolvable_target_keeps_numbers_verbatim(self, vs_fx):
+        """target 路径不可寻 → atoms_measurable=None(无法判定,不猜),
+        数字与旧口径逐字一致(t_a 形状的相对路径即此情形)。"""
+        from stateforge.evaluation.experiment import p4_analysis
+        root, abl = vs_fx
+        rep = json.loads((abl / "state_ablation.json").read_text(
+            encoding="utf-8"))
+        rep["target"] = "no/such/t_vs.py"                 # 不可寻
+        (abl / "state_ablation.json").write_text(json.dumps(rep),
+                                                 encoding="utf-8")
+        out = p4_analysis.analyze(root)
+        ab = out["targets"]["t_vs"]["ablation"]
+        assert ab["atoms_measurable"] is None
+        assert "atoms_note" not in ab
+        assert ab["arms"]["E"]["atoms_union_count"] == 0  # 原样,不改写
 
 
 # ------------------------------------------------------- 覆盖 / 只读 / 文本 / CLI

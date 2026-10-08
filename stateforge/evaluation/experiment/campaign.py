@@ -1,4 +1,4 @@
-"""Phase-2 战役(评审修订版):四组配对 + 公平指标 + manifest。
+"""Phase-2 战役(评审修订版):八组配对 + 公平指标 + manifest。
 
 P0-3  Edge 分母读 ProgramIR(EXECUTION_EDGE_KINDS),删除 ×1.2 估计
 P0-4  Coverage-vs-Time 用真实墙钟(epoch 起止偏移由 controller 记录)
@@ -245,14 +245,22 @@ def run_campaign(target: str, ir_path: str, out: Path, runs: int, epochs: int,
             round(r["E"]["auc_blocks_norm"] - r["D1"]["auc_blocks_norm"], 4)
             for r in per_run]
     q["paired_deltas"] = paired
-    q["novel_seed_gain"] = {
-        "sf_total": sum(x["sf_candidates_total"] for x in nsg),
-        "sf_unique": sum(x["sf_unique_vs_native"] for x in nsg),
-        "gain_mean": _stats([x["novel_seed_gain"] for x in nsg
-                             if x["novel_seed_gain"] is not None])}
-    # 统一曲线 CSV(墙钟,1s 桶,A_measure/B/C/D 家族/E)
+    # novel_seed_gain 诚实缺省:C 未跑(子集战役)→ 不造 sf_total=0 的
+    # 零行(与缺组问题整体缺省同口径)
+    if nsg:
+        q["novel_seed_gain"] = {
+            "sf_total": sum(x["sf_candidates_total"] for x in nsg),
+            "sf_unique": sum(x["sf_unique_vs_native"] for x in nsg),
+            "gain_mean": _stats([x["novel_seed_gain"] for x in nsg
+                                 if x["novel_seed_gain"] is not None])}
+    # 统一曲线 CSV(墙钟,1s 桶,A_measure/B/C/D 家族/E)。I2(v0.5 后
+    # 修复):未跑组不落全零行——修前固定七组元组无 ran 守卫,--groups
+    # 子集战役曾为每个未跑组落 horizon+1 行全 0(与诚实缺省口径相悖,
+    # 且毒化 plot_campaign 的均值带);现仅落实际跑过的组。
     csv = ["group,t,blocks_mean,blocks_p25,blocks_p75"]
     for group in ("A_measure", "B", "C", "D1", "D2R", "D2P", "E"):
+        if group not in ran:
+            continue               # 未跑组:不造全零曲线行
         grid = {t: [] for t in range(0, int(horizon) + 1)}
         for k in range(runs):
             pts = _curve_points(out / f"run{k:02d}", group)
@@ -300,10 +308,20 @@ def main(argv: list[str] | None = None) -> int:
             parser.error(f"--groups 无效: {unknown or '空子集'};"
                          f" 有效组: {', '.join(GROUPS)}")
         groups = requested
-    # 空 IR 守卫(P4-T6b):0 块 IR 会让战役不报错地烧完全程——启动前载入
-    # IR 校验,blocks=0 → parser.error 点名 IR 路径并提示套件目录 analyze
-    # 口径(单文件/错目录的 IR 支不起战役分母)。
-    if not ProgramIR.from_json(args.ir).blocks:
+    # 空/坏 IR 守卫(P4-T6b + 终审前向修):0 块 IR 会让战役不报错地烧完
+    # 全程——启动前载入 IR 校验,blocks=0 → parser.error 点名 IR 路径并
+    # 提示套件目录 analyze 口径(单文件/错目录的 IR 支不起战役分母);
+    # IR 损坏/不可读(缺文件、坏 JSON、坏形状)原先直接 traceback,
+    # 现同口径 parser.error(退出码 2),不进实验。
+    try:
+        ir_blocks = ProgramIR.from_json(args.ir).blocks
+    except Exception as exc:                    # noqa: BLE001
+        parser.error(f"IR 无法载入: {args.ir}"
+                     f"({type(exc).__name__}: {exc});请对靶套件目录重新"
+                     " analyze——`python -m stateforge.cli analyze <suite-dir> "
+                     "--out results/structural`,再以其 program_ir.json "
+                     "作为 ir 参数")
+    if not ir_blocks:
         parser.error(
             f"IR 无块(blocks=0): {args.ir};请对靶套件目录重新 analyze——"
             "`python -m stateforge.cli analyze <suite-dir> "

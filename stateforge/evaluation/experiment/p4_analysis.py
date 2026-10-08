@@ -42,6 +42,15 @@ p4_formal 目录内的任何路径):
       STATE_GAIN_NET_ZERO  有注入仍与 D1 打平
       NO_LEDGER_EVIDENCE   零差但无账本可溯源(诚实挂起)
 
+状态原子可测性披露(终审 I3):消融半边的 atoms 三指标仅微靶路径可测
+      (state_metrics 在 synthesize_micro_model=None 的 AppModel/Flask 靶
+      上早退 _EMPTY_STATE → 结构性零,非测得零)。analyze_ablation 按
+      state_ablation.json 的 target 字段重判可测性(同款分派,只读);
+      无微模型的靶:arms[*].atoms_* 与配对 atoms 置 null、文本表渲染
+      "-"/n/a 并附注;靶路径不可寻 → 无法判定,数字保持原样(不猜)。
+      campaign 半边 E 原子经 reached_state_atoms 的 AppModel 分派另径
+      可测(vulnshop union=4 即该路径产物),两侧口径不同源。
+
 用法:
     python -m stateforge.evaluation.experiment.p4_analysis <p4_formal_dir>
         [--out report.json]
@@ -293,12 +302,35 @@ def analyze_campaign(camp_dir: Path) -> dict | None:
 # --------------------------------------------------------------- 消融半边
 
 
+def _atoms_measurable(target) -> bool | None:
+    """消融 atoms 三指标可测性(同 state_metrics 的微靶分派;只读重判)。
+
+    AppModel/Flask 靶(如 vulnshop)无微模型 → state_metrics 早退
+    _EMPTY_STATE,消融 atoms 是结构性零而非测得零。True=微靶可测;
+    False=无微模型(未测);None=靶路径不可寻,无法判定(不猜)。
+    相对路径按 cwd 解析(正式产物 target 为仓库根相对路径)。
+    """
+    from stateforge.solving.state_seed_injector import synthesize_micro_model
+    if not isinstance(target, str) or not target:
+        return None
+    p = Path(target)
+    if not p.is_absolute():
+        p = Path.cwd() / p
+    if not p.is_file():
+        return None
+    try:
+        return synthesize_micro_model(p) is not None
+    except Exception:                          # noqa: BLE001
+        return None
+
+
 def _abl_null(abl_dir: Path, key: str, other: str,
               paired: dict | None) -> dict | None:
     """消融对比全零差 → null-with-reason(溯源对照臂审计账本)。"""
     if paired is None:
         return None
-    b, a = paired["blocks"], paired["atoms"]
+    b = paired["blocks"]
+    a = paired["atoms"] if paired["atoms"] is not None else {"mean": None}
     if not _all_zero(b):
         return None
     ev = _tally(sorted(Path(abl_dir).glob(f"run*/{other}")))
@@ -356,6 +388,8 @@ def analyze_ablation(abl_dir: Path) -> dict | None:
     arms_json = rep["arms"]
     all_runs = sorted({r for a in arms_json.values() if isinstance(a, dict)
                        for r in (a.get("per_run") or {})})
+    # I3:atoms 三指标可测性重判(无微模型靶 → 未测,null/-,非测得零)
+    atoms_ok = _atoms_measurable(rep.get("target"))
 
     def col(arm: str, key: str) -> list:
         per = arms_json[arm].get("per_run") or {}
@@ -376,8 +410,10 @@ def analyze_ablation(abl_dir: Path) -> dict | None:
         arms_out[arm] = {
             "mean_blocks": _stats(col(arm, "blocks")),
             "mean_edges": _stats(col(arm, "edges")),
-            "atoms_union_count": len(union_atoms(arm)),
-            "atoms_union": union_atoms(arm),
+            "atoms_union_count": (len(union_atoms(arm))
+                                  if atoms_ok is not False else None),
+            "atoms_union": (union_atoms(arm)
+                            if atoms_ok is not False else None),
             "injections_total": sum(v for v in inj
                                     if isinstance(v, (int, float)))}
 
@@ -385,18 +421,26 @@ def analyze_ablation(abl_dir: Path) -> dict | None:
         if "E" not in arms_json or other not in arms_json:
             return None
         return {"blocks": _paired(col("E", "blocks"), col(other, "blocks")),
-                "atoms": _paired(col("E", "atoms_reached"),
-                                 col(other, "atoms_reached"))}
+                "atoms": (_paired(col("E", "atoms_reached"),
+                                  col(other, "atoms_reached"))
+                          if atoms_ok is not False else None)}
 
     pc, tv = pair("E-rand"), pair("E-always")
     nulls = [n for n in (_abl_null(abl_dir, PLANNER, "E-rand", pc),
                          _abl_null(abl_dir, TRIGGER, "E-always", tv))
              if n is not None]
     runs = rep.get("runs")
-    return {"dir": str(abl_dir),
-            "runs": runs if isinstance(runs, int) else len(all_runs),
-            "mode": rep.get("mode"), "arms": arms_out,
-            PLANNER: pc, TRIGGER: tv, "nulls": nulls}
+    section: dict = {"dir": str(abl_dir),
+                     "runs": runs if isinstance(runs, int) else len(all_runs),
+                     "mode": rep.get("mode"), "atoms_measurable": atoms_ok,
+                     "arms": arms_out,
+                     PLANNER: pc, TRIGGER: tv, "nulls": nulls}
+    if atoms_ok is False:
+        section["atoms_note"] = (
+            "状态原子三指标仅微靶路径可测;本靶无微模型"
+            "(synthesize_micro_model=None,AppModel 路径),atoms 为未测"
+            "(null),非测得零")
+    return section
 
 
 # --------------------------------------------------------------- 聚合
@@ -507,22 +551,30 @@ def render_text(report: dict) -> str:
             lines.append("  arm       blocks±stdev    atoms_union  injections")
             for arm in sorted(ab["arms"]):
                 a = ab["arms"][arm]
+                atoms_cell = (a["atoms_union_count"]
+                              if a["atoms_union_count"] is not None else "-")
                 lines.append(f"  {arm:<9} {_pm(a['mean_blocks']):<15} "
-                             f"{a['atoms_union_count']:<12} "
+                             f"{atoms_cell!s:<12} "
                              f"{a['injections_total']}")
+            if ab.get("atoms_measurable") is False:
+                lines.append(f"  atoms n/a — {ab.get('atoms_note')}")
             for key, label, other in ((PLANNER, "planner contribution", "E-rand"),
                                       (TRIGGER, "trigger value", "E-always")):
                 p = ab.get(key)
                 if not p:
                     continue
-                b, a = p["blocks"], p["atoms"]
+                b = p["blocks"]
+                if p["atoms"] is not None:
+                    a = p["atoms"]
+                    atoms_txt = (f"atoms mean={_signed(a['mean'])}"
+                                 f" n={a['n']} wins={a['wins']}")
+                else:                       # I3:无微模型靶,atoms 未测
+                    atoms_txt = "atoms n/a(未测:无微模型)"
                 lines.append(f"  E−{other} ({label}): blocks"
                              f" mean={_signed(b['mean'])}"
                              f" median={_signed(b['median'])}"
                              f" stdev={_fmt(b['stdev'])} n={b['n']}"
-                             f" wins/ties/losses={_wtl(b)} | atoms"
-                             f" mean={_signed(a['mean'])} n={a['n']}"
-                             f" wins={a['wins']}")
+                             f" wins/ties/losses={_wtl(b)} | {atoms_txt}")
         if not camp and not ab:
             lines.append("  (no campaign / ablation artifacts found)")
         for n in e.get("nulls", ()):

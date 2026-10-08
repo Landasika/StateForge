@@ -17,6 +17,7 @@ R6 裁决:结转公共化(spool∪corpus,feedback 开时),公平优先于历史�
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import pytest
@@ -134,3 +135,110 @@ class TestLLMInjectionBeforeStaging:
             b'{"query": {"op": "llm"}}'                  # 注入种子进下一轮
         assert (in2 / cid).read_bytes() == CHAMPION      # spool 冠军同轮入选
         assert (wd / "lf_corpus" / "llm_seed_marker").exists()  # 回拷主语料
+
+
+# --------------------- llm 臂:判停差分基线接线(I4,终审前向修)
+
+
+class TestStallDetectionWiring:
+    """prev_blocks/prev_edges 逐轮前移(滞后一轮):new_blocks/new_edges
+    = 刚结束那轮的真增量——有进展重置、无进展累计停滞,stall_window 轮
+    后 to_inject 非空 → provider 被调 → llm_injections.jsonl 落盘。
+
+    修前:基线恒 0 → new=累计覆盖 → StallTracker 永远见"有进展" →
+    llm 臂从未触发过注入(任何战役)。
+    """
+
+    def _fake_driver_factory(self, growth: dict[int, int], frontier: tuple):
+        """剧本化驱动:第 e 轮新增 growth[e] 块(覆盖跨轮累计,与真驱动
+        的 global_state 持久化同形),frontier 全程在场。"""
+        from stateforge.evaluation.experiment import epoch as epoch_mod
+
+        def fake_driver(target, ir, corpus_dir, out_dir, seconds, mode, seed,
+                        group, epoch):
+            n_blocks = 1 + sum(v for e, v in growth.items() if e <= epoch)
+            out_dir.mkdir(parents=True, exist_ok=True)
+            (out_dir / "global_state.json").write_text(json.dumps({
+                "covered_blocks": [f"b{i}" for i in range(n_blocks)],
+                "covered_edges": [[f"b{i}", f"b{i+1}"]
+                                  for i in range(n_blocks - 1)],
+                "edge_frontiers": [list(frontier)]}), encoding="utf-8")
+            (out_dir / f"{group}-e{epoch}-snapshots.jsonl").write_text(
+                json.dumps({"group": group, "epoch": epoch, "t": 0.1,
+                            "executions": 10, "blocks": n_blocks,
+                            "edges": n_blocks - 1, "exec_seconds": 0.1,
+                            "feedback_seconds": 0.0}) + "\n",
+                encoding="utf-8")
+
+        return fake_driver
+
+    @staticmethod
+    def _mock_provider_and_injector(tmp_path, monkeypatch):
+        """靶旁伪 provider 文件 + inject_llm_seeds 替身(记录调用,
+        返回一条 INJECTED 记录;frontier 串与剧本一致)。"""
+        import stateforge.solving.llm_seed_injector as inj_mod
+        tgt = tmp_path / "tgt_llm.py"
+        tgt.write_text("def target(data):\n    return\n", encoding="utf-8")
+        (tmp_path / "tgt_llm.llm.py").write_text(
+            "provider = 'mock-provider'\n", encoding="utf-8")
+        calls: list[dict] = []
+
+        def fake_inject(ir_obj, target, state, corpus_dir, provider):
+            calls.append({"provider": provider,
+                          "frontiers": state.get("edge_frontiers")})
+            return [{"status": "INJECTED", "frontier": "f0->f1",
+                     "seed_id": "llm_seed_0"}]
+
+        monkeypatch.setattr(inj_mod, "inject_llm_seeds", fake_inject)
+        return tgt, calls
+
+    def test_stall_accumulates_and_injects_after_no_growth(
+            self, ir_path, tmp_path, monkeypatch):
+        """剧本:轮1 增长 1 块(累计 2),轮 2-4 零增长 → 边界2 见进展
+        (重置)、边界3/4 连续停滞 → 边界4 to_inject 开火,provider 被调,
+        llm_injections.jsonl 落盘,stall_summary 记账。"""
+        from stateforge.evaluation.experiment import epoch as epoch_mod
+
+        monkeypatch.setattr(epoch_mod, "_run_driver",
+                            self._fake_driver_factory({1: 1}, ("f0", "f1")))
+        tgt, calls = self._mock_provider_and_injector(tmp_path, monkeypatch)
+        wd = tmp_path / "wd_stall"
+        res = epoch_mod.run_epochs(str(tgt), str(ir_path), wd,
+                                   seconds_per_epoch=0.05, epochs=4, seed=7,
+                                   group="DLLM", mode="frontier",
+                                   use_feedback=True, policy="llm")
+        # 增量口径:边界 2/3/4 的 new_blocks = 2/0/0(边界2 基线为 0 =
+        # 轮1 全部覆盖;修前恒为累计值 2/2/2 → 永见"进展")
+        hist = res["stall_summary"]["history"]
+        assert [h["new_blocks"] for h in hist] == [2, 0, 0]
+        # 停滞累计(≥窗口计数):边界3 累计 1、边界4 达窗口 2 → 开火
+        assert [h["stalled"] for h in hist] == [0, 0, 1]
+        assert [h["injecting"] for h in hist] == [0, 0, 1]
+        # provider 真被调 + 注入账本落盘 + tracker 记账
+        assert len(calls) == 1 and calls[0]["provider"] == "mock-provider"
+        llm_log = wd / "epochs" / "llm_injections.jsonl"
+        recs = [json.loads(x) for x in
+                llm_log.read_text(encoding="utf-8").splitlines()]
+        assert recs and recs[0]["status"] == "INJECTED"
+        assert res["stall_summary"]["total_llm_calls"] == 1
+
+    def test_growth_resets_stall_no_injection(self, ir_path, tmp_path,
+                                              monkeypatch):
+        """对照剧本:每轮持续增长 → 各边界 new>0 → 永不累计停滞,
+        provider 不被调(有进展重置语义,修前后的行为分界钉)。"""
+        from stateforge.evaluation.experiment import epoch as epoch_mod
+
+        monkeypatch.setattr(
+            epoch_mod, "_run_driver",
+            self._fake_driver_factory({1: 1, 2: 2, 3: 3, 4: 4}, ("f0", "f1")))
+        tgt, calls = self._mock_provider_and_injector(tmp_path, monkeypatch)
+        wd = tmp_path / "wd_grow"
+        res = epoch_mod.run_epochs(str(tgt), str(ir_path), wd,
+                                   seconds_per_epoch=0.05, epochs=4, seed=7,
+                                   group="DLLM", mode="frontier",
+                                   use_feedback=True, policy="llm")
+        hist = res["stall_summary"]["history"]
+        assert all(h["new_blocks"] > 0 for h in hist)
+        assert all(h["stalled"] == 0 and h["injecting"] == 0 for h in hist)
+        assert calls == []                          # 判停未触发 → 不调 LLM
+        assert not (wd / "epochs" / "llm_injections.jsonl").exists()

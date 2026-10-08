@@ -1,4 +1,4 @@
-"""Phase-2 模块 6(评审修订版):四组配对实验。
+"""Phase-2 模块 6(评审修订版):八组配对实验。
 
 A_native : 连续裸跑(off)——原生吞吐参照(TracingOverhead 分母)
 A_measure: 连续 + 计量(measure)——与 B/C 同开销的覆盖基线
@@ -86,7 +86,7 @@ def run_experiment(target: str, ir: str, out: Path, epochs: int,
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Phase-2 四组配对实验")
+    parser = argparse.ArgumentParser(description="Phase-2 八组配对实验")
     parser.add_argument("target")
     parser.add_argument("ir")
     parser.add_argument("--out", required=True)

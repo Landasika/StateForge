@@ -78,6 +78,9 @@ def _inject_llm_between_epochs(ir, workdir: Path, corpus_dir: Path,
 
     集成 StallTracker:只在 frontier 真正停滞(stall_window 轮无改善)
     时触发 LLM,不是每轮都调。
+    prev_blocks/prev_edges = 上上轮末的累计覆盖(run_epochs 滞后一轮滚存,
+    I4 修复):new_blocks/new_edges 即刚结束那轮的真增量,有进展重置、
+    无进展累计停滞。
     """
     import json as _json
     from stateforge.solving.llm_seed_injector import inject_llm_seeds
@@ -264,7 +267,8 @@ def run_epochs(target: str, ir: str, workdir: Path, seconds_per_epoch: float,
         from stateforge.solving.stall_tracker import StallTracker
         stall_tracker = StallTracker(stall_window=2, max_llm_per_frontier=3)
 
-    prev_blocks = prev_edges = 0
+    prev_blocks = prev_edges = 0        # 判停差分基线(滞后一轮,见循环尾注释)
+    last_blocks = last_edges = 0        # 本轮记录(下一轮变为差分基线)
     epoch_records = []
     for epoch in range(1, epochs + 1):
         in_dir = corpus_dir if epoch == 1 else workdir / f"corp_in_e{epoch}"
@@ -326,6 +330,15 @@ def run_epochs(target: str, ir: str, workdir: Path, seconds_per_epoch: float,
         if boundary is not None:              # P3-T4:演进级状态摘要进 epoch 记录
             rec["state"] = boundary
         epoch_records.append(rec)
+        # I4(v0.5 后修复):llm 判停差分基线逐轮前移。边界 N 读到的
+        # global_state 是第 N−1 轮末的累计覆盖,基线必须是第 N−2 轮末的
+        # 记录,new_blocks 才是第 N−1 轮的真增量——故基线滞后一轮
+        # (prev←上轮记录,再滚存本轮)。修前基线恒 0 → new=累计值 →
+        # StallTracker 永远见"有进展",llm 臂从未触发过注入;若不滞后
+        # (prev 直取本轮记录),边界上 cur−prev 恒 0,判停退化为
+        # "前沿在场必停滞",同样背离设计(有进展应重置)。
+        prev_blocks, prev_edges = last_blocks, last_edges
+        last_blocks, last_edges = rec["blocks"], rec["edges"]
     # P0-5:跨 epoch 累计
     totals = {k: sum(r[k] for r in epoch_records) for k in
               ("executions", "exec_seconds", "feedback_seconds",

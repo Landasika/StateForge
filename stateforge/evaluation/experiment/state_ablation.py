@@ -47,7 +47,15 @@ R8 裁决(采样设计,docstring 即契约):
 
 P4-T6b 空 IR 守卫(main):ir 的 blocks=0 → parser.error(退出码 2)点名
       IR 路径并提示套件目录 analyze 口径(同 campaign;守卫只在 CLI 入口,
-      库函数 run_ablation 不受影响)。
+      库函数 run_ablation 不受影响)。终审前向修:IR 损坏/不可读(缺文件、
+      坏 JSON、坏形状)同口径 parser.error,不进实验。
+
+状态原子三指标可测性披露(终审 I3):atoms/transitions/deep_blocks 三指标
+      仅微靶路径可测——state_metrics 在 synthesize_micro_model 为 None
+      (AppModel/Flask 靶,如 vulnshop)时早退 _EMPTY_STATE,消融报告中的
+      零是**未测**而非测得零;run_ablation 落盘 state_atoms_measurable
+      标志(False 时附 state_atoms_note),campaign 侧 E 原子经
+      reached_state_atoms 的 AppModel 分派另径可测,两侧口径不同源。
 """
 
 from __future__ import annotations
@@ -287,10 +295,21 @@ def run_ablation(target: str, ir: str, out: Path, runs: int = 2,
 
     out = Path(out)
     out.mkdir(parents=True, exist_ok=True)
+    # I3 可测性披露:微靶才有三指标;AppModel 靶 state_metrics 早退
+    # _EMPTY_STATE → 结构性零。靶文件不可寻 → None(无法判定,不猜)。
+    tgt = Path(target)
+    atoms_measurable = (synthesize_micro_model(tgt) is not None
+                        if tgt.is_file() else None)
     report: dict = {"target": str(target), "ir": str(ir), "runs": runs,
                     "epochs": epochs, "seconds": seconds, "seed0": seed0,
                     "mode": mode, "arms": {a: {"per_run": {}} for a in ARMS},
-                    "pairwise": {}}
+                    "pairwise": {},
+                    "state_atoms_measurable": atoms_measurable}
+    if atoms_measurable is False:
+        report["state_atoms_note"] = (
+            "状态原子三指标仅微靶路径可测;本靶无微模型"
+            "(synthesize_micro_model=None,AppModel 路径),"
+            "atoms/transitions/deep_blocks 为未测,非测得零")
 
     for k in range(runs):
         seed = seed0 + k * 100
@@ -363,6 +382,7 @@ def run_ablation(target: str, ir: str, out: Path, runs: int = 2,
 
 
 def render_text(report: dict) -> str:
+    unmeasured = report.get("state_atoms_measurable") is False
     lines: list[str] = [
         f"state ablation — {report['target']} "
         f"(runs={report['runs']} epochs={report['epochs']} "
@@ -374,17 +394,25 @@ def render_text(report: dict) -> str:
         st = a.get("state", {})
         inj = sum(a["per_run"][f"run{k:02d}"]["injections_total"]
                   for k in range(report["runs"]))
+        # I3:无微模型靶的三指标为未测 → "-"(不显示为测得 0)
+        atoms = "-" if unmeasured else st.get("atoms_reached", 0)
+        trans = "-" if unmeasured else st.get("transitions_observed", 0)
+        deep = "-" if unmeasured else st.get("deep_state_blocks", 0)
         lines.append(
             f"{arm:<9} {a['mean_blocks']!s:<11} {a['mean_edges']!s:<10} "
-            f"{st.get('atoms_reached', 0)!s:<6} "
-            f"{st.get('transitions_observed', 0)!s:<12} "
-            f"{st.get('deep_state_blocks', 0)!s:<12} {inj}")
+            f"{atoms!s:<6} "
+            f"{trans!s:<12} "
+            f"{deep!s:<12} {inj}")
+    if unmeasured:
+        lines.append(f"注: {report.get('state_atoms_note')}")
     pw = report["pairwise"]
     for key, desc in (("E_minus_E-rand", "planner contribution"),
                       ("E_minus_E-always", "R2 trigger value")):
         if key in pw:
+            atoms_txt = ("n/a(未测:无微模型)" if unmeasured
+                         else f"{pw[key]['atoms']:+.1f}")
             lines.append(f"{key}: blocks={pw[key]['blocks']:+.1f} "
-                         f"atoms={pw[key]['atoms']:+.1f}  ({desc})")
+                         f"atoms={atoms_txt}  ({desc})")
     return "\n".join(lines)
 
 
@@ -402,10 +430,19 @@ def main(argv: list[str] | None = None) -> int:
                         default=RAND_MAX_LEN,
                         help="E-rand 随机序列长度上界(U{1..max_len})")
     args = parser.parse_args(argv)
-    # 空 IR 守卫(P4-T6b,同 campaign):0 块 IR 会让三臂不报错地跑空——
-    # 启动前载入 IR 校验,blocks=0 → parser.error 点名 IR 路径并提示套件
-    # 目录 analyze 口径。
-    if not ProgramIR.from_json(args.ir).blocks:
+    # 空/坏 IR 守卫(P4-T6b,同 campaign + 终审前向修):0 块 IR 会让三臂
+    # 不报错地跑空——启动前载入 IR 校验,blocks=0 → parser.error 点名 IR
+    # 路径并提示套件目录 analyze 口径;IR 损坏/不可读(缺文件、坏 JSON、
+    # 坏形状)原先直接 traceback,现同口径 parser.error(退出码 2)。
+    try:
+        ir_blocks = ProgramIR.from_json(args.ir).blocks
+    except Exception as exc:                    # noqa: BLE001
+        parser.error(f"IR 无法载入: {args.ir}"
+                     f"({type(exc).__name__}: {exc});请对靶套件目录重新"
+                     " analyze——`python -m stateforge.cli analyze <suite-dir> "
+                     "--out results/structural`,再以其 program_ir.json "
+                     "作为 ir 参数")
+    if not ir_blocks:
         parser.error(
             f"IR 无块(blocks=0): {args.ir};请对靶套件目录重新 analyze——"
             "`python -m stateforge.cli analyze <suite-dir> "
