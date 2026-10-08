@@ -29,6 +29,7 @@ test = [
 ]
 dev = [
     "stateforge[test]",
+    "matplotlib==3.10.0",  # experiment/plot_campaign.py
 ]
 fuzz = [
     "atheris==3.1.0",      # 驱动侧 fuzz 引擎;sdist 编译需 clang
