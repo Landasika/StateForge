@@ -206,9 +206,12 @@ stateforge/
 | `phase3-structural-freeze` | 前沿定向（10 runs 停止规则） |
 | `phase4.2-llm-loop-complete` | LLM 覆盖循环（12/12 Mock E2E + 6 targets） |
 | `v0.1-baseline` | P0 基线冻结（2026-10-08）：Phase-1~4.3 M1 全量能力；依赖收口 pyproject（extras dev/test/fuzz）；fresh-clone → venv → install → pytest → demo 验收通过 |
+| `v0.2-normalized` | P1 工程规范化（2026-10-08）：目录收敛七域架构；本地 CI（Makefile+ci.sh）；config 单一入口（stateforge/config.py）；logging 约定（core/log.py+cli -v） |
 
 **v0.1-baseline 验证环境**:Python 3.13.5(anaconda)/ Ubuntu(Linux 6.8)/ clang 备用(atheris 实走 tuna wheel)/ pytest 8.3.4 · flask 3.1.0 · networkx 3.4.2 · elementpath 5.1.4 · httpx 0.28.1 · pydantic 2.11.7 · PyYAML 6.0.2(运行时)· matplotlib 3.10.0(dev)· atheris 3.1.0
 **验收数字**:开发树 255 passed / 1 skipped / 26 deselected;fresh clone 254 passed / 2 skipped / 26 deselected(差异=OWASP Benchmark 用例按设计跳过,external/ 不入 git);micro_benchmark 21 用例全 1.00(CFG/CALL/RET P&R + trace-accuracy 5/5)
+
+**v0.2-normalized 验收**:./ci.sh 全链绿(fresh clone 254 passed / 2 skipped / 26 deselected;micro_benchmark 静态 21/21 + 动态 5/5 全 1.00);开发树 255/1/26;零测试改动、零算法改动(ANOTA 侧零引用)
 
 **已知义务:** 语义标注缓存(`stateforge/solving/llm/cache/*.json`)键于 PROMPT_VERSION 与夹具内容——二者变更后需重跑生成器并提交新缓存,否则 fresh clone 回归"全 irrelevant"。缓存仅按显式路径提交(`git add stateforge/solving/llm/cache/<hash>.json`),勿在该目录使用 `git add -A`。
 
