@@ -224,7 +224,7 @@
 | 格式 | bytes + JSONL + JSON |
 | 执行面 | `test_protocols.py::test_c8_corpus_meta_jsonl_schema_and_roundtrip`、`test_c8_global_state_frontier_mode_roundtrip`、`test_c8_global_state_feedback_mode_shape` |
 
-### C8.1 spool/meta.jsonl(CorpusEntryMeta,`fuzzing/corpus_manager.py:17-33`,13 键)
+### C8.1 spool/meta.jsonl(CorpusEntryMeta,`fuzzing/corpus_manager.py:17-33`,14 键)
 
 `input_id` `epoch` `discovered_blocks` `discovered_edges` `new_blocks` `new_edges` `structural_score` `saved_at` `distance` `nearest_frontier` `interesting_reason` `origin` `parent_seed_id` `llm_attempt_id`
 

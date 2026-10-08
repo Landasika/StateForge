@@ -1,6 +1,6 @@
 """provider.py —— SF6-T1 双供应商适配(ADR-0008:httpx 直调,不引 SDK)。
 
-环境配置(优先级从高到低):
+环境配置(优先级从高到低,解析统一走 stateforge.config.legacy_provider_settings):
   SF_LLM_PROVIDER ∈ {anthropic, openai-compatible}   显式指定
   ANTHROPIC_API_KEY(+可选 ANTHROPIC_BASE_URL)         → anthropic(x-api-key)
   ANTHROPIC_AUTH_TOKEN + ANTHROPIC_BASE_URL           → anthropic(Bearer;本机代理形态)
@@ -12,10 +12,11 @@
 
 from __future__ import annotations
 
-import os
 from typing import Any
 
 import httpx
+
+from stateforge.config import legacy_provider_settings
 
 
 class Provider:
@@ -31,28 +32,20 @@ class Provider:
 
     @classmethod
     def from_env(cls) -> "Provider | None":
-        explicit = os.getenv("SF_LLM_PROVIDER")
-        anthropic_key = os.getenv("ANTHROPIC_API_KEY")
-        anthropic_token = os.getenv("ANTHROPIC_AUTH_TOKEN")
-        anthropic_base = os.getenv("ANTHROPIC_BASE_URL")
-        openai_key = os.getenv("OPENAI_API_KEY")
-        openai_base = os.getenv("SF_LLM_BASE_URL")
-        model = os.getenv("SF_LLM_MODEL", "claude-sonnet-5")
-        max_calls = int(os.getenv("SF_LLM_MAX_CALLS", "64"))
-
-        if explicit == "anthropic" or (not explicit and (anthropic_key or anthropic_token)):
-            if anthropic_key:
-                headers = {"x-api-key": anthropic_key, "anthropic-version": "2023-06-01"}
+        s = legacy_provider_settings()
+        if s.provider == "anthropic" or (not s.provider and (s.anthropic_api_key or s.anthropic_auth_token)):
+            if s.anthropic_api_key:
+                headers = {"x-api-key": s.anthropic_api_key, "anthropic-version": "2023-06-01"}
             else:
-                headers = {"Authorization": f"Bearer {anthropic_token}",
+                headers = {"Authorization": f"Bearer {s.anthropic_auth_token}",
                            "anthropic-version": "2023-06-01"}
-            base = (anthropic_base or "https://api.anthropic.com").rstrip("/")
-            return cls("anthropic", base, headers, model, max_calls)
-        if explicit == "openai-compatible" or (not explicit and openai_key and openai_base):
+            return cls("anthropic", s.anthropic_base_url, headers,
+                       s.anthropic_model, s.max_calls)
+        if s.provider == "openai-compatible" or (not s.provider and s.openai_api_key and s.openai_base_url):
             return cls(
-                "openai-compatible", openai_base.rstrip("/"),
-                {"Authorization": f"Bearer {openai_key}"},
-                os.getenv("SF_LLM_MODEL", "glm-4.6"), max_calls,
+                "openai-compatible", s.openai_base_url.rstrip("/"),
+                {"Authorization": f"Bearer {s.openai_api_key}"},
+                s.openai_model, s.max_calls,
             )
         return None
 
@@ -88,7 +81,7 @@ class Provider:
 
         last_exc: Exception | None = None
         # 自签名代理(如本机 GLM 代理)可跳过验证:SF_LLM_SSL_VERIFY=false
-        _verify = os.getenv("SF_LLM_SSL_VERIFY", "true").lower() != "false"
+        _verify = legacy_provider_settings().ssl_verify
         for _ in range(2):  # 1 次重试
             try:
                 resp = httpx.post(url, json=payload, headers=self.headers,

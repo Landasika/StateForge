@@ -1,15 +1,16 @@
-"""T+6 acceptance driver.  Usage:
-    PYTHONPATH=/home/landasika/icassp python -m stateforge.evaluation.acceptance [args]
+"""T+6 acceptance driver.  Usage(仓库根):
+    python -m stateforge.evaluation.acceptance [args]
 libFuzzer args pass through, e.g. `-runs=500` or `-max_total_time=10`.
 """
 from __future__ import annotations
 
 import sys
+from pathlib import Path
 
 from stateforge.adapters.vulnshop import vulnshop_adapter
 from stateforge.fuzzing.atheris_runner import run_atheris
 
-ROOT = "/home/landasika/icassp/stateforge/targets/vulnshop"
+ROOT = Path(__file__).resolve().parents[1] / "targets" / "vulnshop"
 
 
 def main() -> int:

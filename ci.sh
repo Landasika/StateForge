@@ -10,8 +10,13 @@ SF_CI_DIR="$(mktemp -d /tmp/sf-ci.XXXXXX)"
 trap 'rm -rf "$SF_CI_DIR"' EXIT
 
 # pytest/demo 运行时屏蔽 LLM 凭据(无 key 路径 = fresh-clone 验收口径)
+# 屏蔽 legacy 族:ANTHROPIC_* + SF_LLM_{PROVIDER,BASE_URL,MODEL,MAX_CALLS,SSL_VERIFY}
+# + OPENAI_API_KEY(=provider.py 实际变量名);STATEFORGE_LLM_* 不屏蔽——
+# 验收链自身 config 面由测试构造 fake,不依赖宿主环境。
 SANITIZE_ENV=(env -u ANTHROPIC_API_KEY -u ANTHROPIC_BASE_URL
-              -u ANTHROPIC_AUTH_TOKEN -u ANTHROPIC_MODEL)
+              -u ANTHROPIC_AUTH_TOKEN -u ANTHROPIC_MODEL
+              -u SF_LLM_PROVIDER -u SF_LLM_BASE_URL -u SF_LLM_MODEL
+              -u SF_LLM_MAX_CALLS -u SF_LLM_SSL_VERIFY -u OPENAI_API_KEY)
 
 echo "== [1/5] clone $REPO_ROOT -> $SF_CI_DIR/src"
 git clone -q "$REPO_ROOT" "$SF_CI_DIR/src"

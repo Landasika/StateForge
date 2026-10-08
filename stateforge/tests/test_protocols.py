@@ -237,6 +237,9 @@ def test_c5_proposal_trace_jsonl_schema(tmp_path):
     assert row["proposal"] is None
     assert json.dumps(row, ensure_ascii=False) == line    # 键序稳定可复算
     assert ProposalStatus("PROPOSED").value == "PROPOSED"  # 五状态枚举冻结值
+    assert {s.value for s in ProposalStatus} == {          # 五态闭集
+        "PROPOSED", "INSUFFICIENT_EVIDENCE", "STATE_REQUIRED",
+        "UNSUPPORTED", "INVALID_OUTPUT"}
 
 
 # ------------------------------------ C6 StateFact/StructuredPredicate(演进)

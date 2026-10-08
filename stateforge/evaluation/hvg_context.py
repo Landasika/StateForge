@@ -262,7 +262,7 @@ def run_p2(n_hyp=10, out_dir="/tmp/hvg_p2"):
             "scores": scores, "meta": meta,
             "results": [{"hid": r.hid, "verdict": r.verdict.value,
                          "evidence": r.evidence} for r in results]}
-        logger.info("")
+        logger.debug("")
 
     (out / "p2_report.json").write_text(json.dumps(report, indent=1))
     logger.info(f"[out] {out / 'p2_report.json'}")
