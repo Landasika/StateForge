@@ -1,5 +1,5 @@
 """T+6 acceptance driver.  Usage:
-    PYTHONPATH=/home/landasika/icassp python -m stateforge.fuzzing.acceptance [args]
+    PYTHONPATH=/home/landasika/icassp python -m stateforge.evaluation.acceptance [args]
 libFuzzer args pass through, e.g. `-runs=500` or `-max_total_time=10`.
 """
 from __future__ import annotations

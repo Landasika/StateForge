@@ -20,7 +20,7 @@ from stateforge.solving.branch_solver import solve
 from stateforge.solving.guard_recovery import _TestIndex, recover_guard
 from stateforge.solving.input_provenance import (apply_transforms,
                                                      resolve_operand_source)
-from stateforge.solving.mutation_hint import MutationHint
+from stateforge.fuzzing.mutation_hint import MutationHint
 from stateforge.fuzzing.feedback.frontier_tracker import FrontierTracker
 from stateforge.fuzzing.constraint_mutator import MutationError, apply_hint
 

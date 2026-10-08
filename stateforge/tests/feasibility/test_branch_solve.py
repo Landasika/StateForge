@@ -8,7 +8,7 @@ import pytest
 from stateforge.solving.branch_observer import BranchObservation
 from stateforge.solving.branch_solver import solve
 from stateforge.solving.input_provenance import resolve_operand_source
-from stateforge.solving.mutation_hint import MutationHint
+from stateforge.fuzzing.mutation_hint import MutationHint
 from stateforge.solving.solve_loop import solve_loop
 from stateforge.analysis.static.icfg import build_icfg
 

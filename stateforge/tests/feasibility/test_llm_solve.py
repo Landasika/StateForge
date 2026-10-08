@@ -132,7 +132,7 @@ def test_class2_llm_proposal_validated_and_executed(tmp_path):
     from stateforge.runtime.tracer import TraceSession
     from stateforge.runtime.mapper import map_trace
     from stateforge.fuzzing.constraint_mutator import apply_hint
-    from stateforge.solving.mutation_hint import MutationHint as MH
+    from stateforge.fuzzing.mutation_hint import MutationHint as MH
 
     d = LS / "LS02_string_concat"
     mod, obs = load_observed_target(d / "app.py")

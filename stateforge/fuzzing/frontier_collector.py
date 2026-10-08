@@ -7,7 +7,7 @@ import time
 from stateforge.core.ir import ProgramIR
 from stateforge.runtime.mapper import map_trace
 from stateforge.runtime.tracer import TraceSession
-from stateforge.evaluation.experiment.recorder import ExperimentRecorder
+from stateforge.fuzzing.recorder import ExperimentRecorder
 from stateforge.fuzzing.feedback.frontier_feedback import FrontierDirectedFeedback
 from stateforge.fuzzing.corpus_manager import CorpusManager
 

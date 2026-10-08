@@ -20,7 +20,7 @@ from stateforge.solving.proposal_validator import validate
 from stateforge.fuzzing.constraint_mutator import (MutationError,
                                                 apply_hint)
 from stateforge.fuzzing.corpus_manager import CorpusManager
-from stateforge.solving.mutation_hint import MutationHint
+from stateforge.fuzzing.mutation_hint import MutationHint
 
 
 def inject_llm_seeds(ir: ProgramIR, app_path: Path,

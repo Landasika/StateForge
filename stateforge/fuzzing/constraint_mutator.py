@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import json
 
-from stateforge.solving.mutation_hint import MutationHint
+from stateforge.fuzzing.mutation_hint import MutationHint
 
 _SECTION = {"QUERY": "query", "FORM": "form", "JSON": "json",
             "HEADER": "header", "COOKIE": "cookie"}

@@ -10,7 +10,7 @@
 from __future__ import annotations
 
 from stateforge.solving.branch_observer import BranchObservation
-from stateforge.solving.mutation_hint import MutationHint
+from stateforge.fuzzing.mutation_hint import MutationHint
 
 _FLIP = {"Eq": "NotEq", "NotEq": "Eq", "Lt": "GtE", "GtE": "Lt",
          "LtE": "Gt", "Gt": "LtE"}
