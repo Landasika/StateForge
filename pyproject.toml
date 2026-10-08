@@ -9,6 +9,12 @@ description = "Structural execution-graph feedback for coverage-guided fuzzing (
 requires-python = ">=3.10"
 license = { text = "Proprietary" }
 
+# 运行时依赖:analyzer 运行代码(idioms.py / openapi_adapter.py)模块级 import yaml。
+# 开发机 anaconda 自带 PyYAML,曾掩盖缺声明——fresh-clone 验收暴露,故显式收口。
+dependencies = [
+    "PyYAML==6.0.2",
+]
+
 [project.optional-dependencies]
 # P0 基线冻结(2026-10-08):驱动侧依赖全部收口于此,版本=实装验证值。
 # ANOTA 解释器侧(anota/, CPython 3.10.13 fork)锁定栈另见
