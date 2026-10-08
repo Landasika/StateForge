@@ -388,6 +388,48 @@ class TestEpochSeam:
         assert not (wd / "epochs" / "state_ledger.json").exists()
         assert _sequence_seeds(wd / "lf_corpus") == []
 
+    def test_state_arm_stages_spool_champions_with_feedback(self, ir_path,
+                                                            tmp_path):
+        """修 1(Important):state+use_feedback 的轮间结转对齐 llm 臂——
+        spool 反馈冠军 ∪ lf_corpus 都进下一轮起始语料(不得只拷 lf_corpus,
+        否则 state 臂在语料结转上严格弱于其它多轮臂)。"""
+        from stateforge.evaluation.experiment.epoch import run_epochs
+        from stateforge.fuzzing.corpus_manager import CorpusManager
+        ir_p, _ = ir_path
+        wd = tmp_path / "wd_spool"
+        champion = b'{"json": {"op": "login", "role": "admin"}}'
+        cm = CorpusManager(wd / "epochs" / "spool")     # 预置一个冠军种子
+        cid = cm.save(champion, epoch=1, new_blocks=2, new_edges=1,
+                      discovered_blocks=5, discovered_edges=4)
+        assert cid
+        run_epochs(str(GATE), str(ir_p), wd, seconds_per_epoch=2.0, epochs=2,
+                   seed=7, group="S", mode="feedback", use_feedback=True,
+                   policy="state")
+        in2 = wd / "corp_in_e2"
+        assert (in2 / cid).read_bytes() == champion     # spool 冠军入选下轮
+        assert _sequence_seeds(in2)                     # 注入的序列种子也入选
+
+    def test_seam_error_audited_and_run_continues(self, ir_path, tmp_path,
+                                                  monkeypatch):
+        """修 2(Minor):接缝异常不再无声吞——留 SEAM_ERROR 审计行,
+        且注入失败照常跑下一轮(与 llm 接缝容错同形)。"""
+        from stateforge.evaluation.experiment import epoch as epoch_mod
+        ir_p, _ = ir_path
+        wd = tmp_path / "wd_err"
+        (wd / "epochs").mkdir(parents=True)
+
+        def boom(*args, **kwargs):
+            raise RuntimeError("seam fault")
+
+        monkeypatch.setattr(epoch_mod, "_inject_state_seeds_between_epochs", boom)
+        res = epoch_mod.run_epochs(str(GATE), str(ir_p), wd,
+                                   seconds_per_epoch=1.0, epochs=2, seed=7,
+                                   group="E", mode="off", use_feedback=False,
+                                   policy="state")
+        assert len(res["epoch_records"]) == 2           # 两轮都跑完
+        audit = (wd / "epochs" / "state_injections.jsonl").read_text()
+        assert "SEAM_ERROR" in audit and "seam fault" in audit
+
 
 # ------------------------------------------------- E2E:完整轮间闭环(旗舰)
 

@@ -263,11 +263,16 @@ def run_epochs(target: str, ir: str, workdir: Path, seconds_per_epoch: float,
             try:
                 _inject_state_seeds_between_epochs(
                     ir, workdir, corpus_dir, target, epoch_num=epoch)
-            except Exception:              # noqa: BLE001
-                pass                       # 注入失败 → 照常跑下一轮
-            for f in corpus_dir.iterdir():   # state 臂自结转:lf_corpus(含注入
-                if f.is_file():              # 种子)→ 本轮起始语料;共享结转
-                    shutil.copy2(f, in_dir / f.name)  # 分支为 llm 门控,此处自取
+            except Exception as exc:        # noqa: BLE001
+                _state_audit(workdir, {"epoch": epoch, "event": "SEAM_ERROR",
+                                       "error": str(exc)})  # 失败留审计痕,照常跑
+            if use_feedback:                  # 对齐 llm 臂结转:spool 冠军 ∪ lf_corpus
+                CorpusManager(workdir / "epochs" / "spool").export_seed_dir(
+                    in_dir, extra=[corpus_dir])
+            else:                             # 无反馈:仅 lf_corpus(含注入种子)结转
+                for f in corpus_dir.iterdir():
+                    if f.is_file():
+                        shutil.copy2(f, in_dir / f.name)
 
         in_stats = _dir_stats(in_dir)
         start_off = time.monotonic() - t0
