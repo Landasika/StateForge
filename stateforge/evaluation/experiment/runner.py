@@ -22,45 +22,64 @@ GROUPS = ("A_native", "A_measure", "B", "C", "D1", "D2R", "D2P", "E")
 
 
 def run_experiment(target: str, ir: str, out: Path, epochs: int,
-                   seconds_per_epoch: float, seed: int) -> dict:
+                   seconds_per_epoch: float, seed: int,
+                   groups: tuple[str, ...] | None = None) -> dict:
+    """跑一组配对臂;groups=None → 全 GROUPS(P4:--groups 子集透传,
+    GROUPS 常量不变;子集逐名校验,未知/空 → ValueError 列有效组)。"""
+    if groups is None:
+        groups = GROUPS
+    else:
+        groups = tuple(groups)
+        unknown = [g for g in groups if g not in GROUPS]
+        if unknown or not groups:
+            raise ValueError(f"未知组 {unknown or '空子集'};"
+                             f" 有效组: {', '.join(GROUPS)}")
     out.mkdir(parents=True, exist_ok=True)
     total = epochs * seconds_per_epoch
     t0 = __import__("time").monotonic()
     report = {"target": target, "ir": str(ir), "seed": seed, "epochs": epochs,
               "seconds_per_epoch": seconds_per_epoch, "groups": {}}
     # A_native / A_measure:连续单进程(epochs=1, 总时长)
-    report["groups"]["A_native"] = run_epochs(
-        target, ir, out / "A_native", total, 1, seed, "A_native",
-        mode="off", use_feedback=False, t0=t0)
-    report["groups"]["A_measure"] = run_epochs(
-        target, ir, out / "A_measure", total, 1, seed, "A_measure",
-        mode="measure", use_feedback=False, t0=t0)
-    report["groups"]["B"] = run_epochs(
-        target, ir, out / "B", seconds_per_epoch, epochs, seed, "B",
-        mode="measure", use_feedback=False, t0=t0)
-    report["groups"]["C"] = run_epochs(
-        target, ir, out / "C", seconds_per_epoch, epochs, seed, "C",
-        mode="feedback", use_feedback=True, t0=t0)
+    if "A_native" in groups:
+        report["groups"]["A_native"] = run_epochs(
+            target, ir, out / "A_native", total, 1, seed, "A_native",
+            mode="off", use_feedback=False, t0=t0)
+    if "A_measure" in groups:
+        report["groups"]["A_measure"] = run_epochs(
+            target, ir, out / "A_measure", total, 1, seed, "A_measure",
+            mode="measure", use_feedback=False, t0=t0)
+    if "B" in groups:
+        report["groups"]["B"] = run_epochs(
+            target, ir, out / "B", seconds_per_epoch, epochs, seed, "B",
+            mode="measure", use_feedback=False, t0=t0)
+    if "C" in groups:
+        report["groups"]["C"] = run_epochs(
+            target, ir, out / "C", seconds_per_epoch, epochs, seed, "C",
+            mode="feedback", use_feedback=True, t0=t0)
     # D1 = 3.1(frontier,全局冠军语义已被组合取代,行为兼容:组合挑战最近前沿)
-    report["groups"]["D1"] = run_epochs(
-        target, ir, out / "D1", seconds_per_epoch, epochs, seed, "D1",
-        mode="frontier", use_feedback=True, t0=t0)
+    if "D1" in groups:
+        report["groups"]["D1"] = run_epochs(
+            target, ir, out / "D1", seconds_per_epoch, epochs, seed, "D1",
+            mode="frontier", use_feedback=True, t0=t0)
     # D2-R:组合冠军,普通重注入(语料联合结转)
-    report["groups"]["D2R"] = run_epochs(
-        target, ir, out / "D2R", seconds_per_epoch, epochs, seed, "D2R",
-        mode="frontier", use_feedback=True, t0=t0, policy="reinjection")
+    if "D2R" in groups:
+        report["groups"]["D2R"] = run_epochs(
+            target, ir, out / "D2R", seconds_per_epoch, epochs, seed, "D2R",
+            mode="frontier", use_feedback=True, t0=t0, policy="reinjection")
     # D2-P:组合冠军(policy=portfolio;原 focused 偶数轮语义已随
     # _focused_corpus 死分支删除——P4-T1 R6 结转统一后与 D2R 同语义,
     # 臂名保留维持 run 目录连续性)
-    report["groups"]["D2P"] = run_epochs(
-        target, ir, out / "D2P", seconds_per_epoch, epochs, seed, "D2P",
-        mode="frontier", use_feedback=True, t0=t0, policy="portfolio")
+    if "D2P" in groups:
+        report["groups"]["D2P"] = run_epochs(
+            target, ir, out / "D2P", seconds_per_epoch, epochs, seed, "D2P",
+            mode="frontier", use_feedback=True, t0=t0, policy="portfolio")
     # E = four_arm 的 E 同配置:frontier + feedback,轮间换 state 规划器
     # 序列注入(零 LLM、确定性)。campaign 侧配对对照 = D1(唯一差异 =
     # policy,见 campaign.py state_gain 注释)
-    report["groups"]["E"] = run_epochs(
-        target, ir, out / "E", seconds_per_epoch, epochs, seed, "E",
-        mode="frontier", use_feedback=True, t0=t0, policy="state")
+    if "E" in groups:
+        report["groups"]["E"] = run_epochs(
+            target, ir, out / "E", seconds_per_epoch, epochs, seed, "E",
+            mode="frontier", use_feedback=True, t0=t0, policy="state")
     (out / "experiment.json").write_text(
         json.dumps(report, indent=1, ensure_ascii=False), encoding="utf-8")
     return report

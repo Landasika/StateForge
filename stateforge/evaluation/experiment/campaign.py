@@ -11,6 +11,11 @@ P4-T2 E 臂接入(policy=state,零 LLM):state_gain = E−D1(campaign 无
       与 E 唯一差异 = policy=state → 配对差即 state 注入净贡献,D2R 与
       D1 配置恒等故取 D1 维持与 directed_gain=D1−C 命名连续);
       state 字段(state_atoms_reached/state_injections_total)出现即进聚合表
+P4-T4b --groups 子集(GROUPS 常量不变):--groups "D1,E" 只跑子集臂,
+      逐名校验(非法 → parser.error 列有效组);聚合/questions 对缺组
+      诚实缺省(不造空行、不 0 填充),summary/curves 照常落盘。
+      缺省(None)= 全 GROUPS,campaign 对 run_experiment 仍以既有 6 参
+      形式调用(不带 groups kwarg,替身兼容)。
 """
 
 from __future__ import annotations
@@ -25,7 +30,7 @@ from pathlib import Path
 
 from stateforge.core.ir import ProgramIR
 from stateforge.evaluation.experiment.epoch import EXECUTION_EDGE_KINDS
-from stateforge.evaluation.experiment.runner import run_experiment
+from stateforge.evaluation.experiment.runner import GROUPS, run_experiment
 
 
 def _sha(path: Path) -> str:
@@ -96,7 +101,8 @@ def _stats(vals):
 
 
 def run_campaign(target: str, ir_path: str, out: Path, runs: int, epochs: int,
-                 seconds: float, seed0: int) -> dict:
+                 seconds: float, seed0: int,
+                 groups: tuple[str, ...] | None = None) -> dict:
     out.mkdir(parents=True, exist_ok=True)
     ir = ProgramIR.from_json(ir_path)
     total_blocks = len(ir.blocks)
@@ -118,7 +124,10 @@ def run_campaign(target: str, ir_path: str, out: Path, runs: int, epochs: int,
         seed = seed0 + k * 100
         run_dir = out / f"run{k:02d}"
         print(f"[campaign] run {k + 1}/{runs} seed={seed}", flush=True)
-        rep = run_experiment(target, ir_path, run_dir, epochs, seconds, seed)
+        # groups=None → 不带 kwarg(既有 6 参替身/调用兼容);子集 → 显式传
+        exp_kwargs = {} if groups is None else {"groups": groups}
+        rep = run_experiment(target, ir_path, run_dir, epochs, seconds, seed,
+                             **exp_kwargs)
         rec = {"seed": seed}
         for group, g in rep["groups"].items():
             rec[group] = {
@@ -153,8 +162,12 @@ def run_campaign(target: str, ir_path: str, out: Path, runs: int, epochs: int,
 
     summary = {"manifest": manifest, "per_run": per_run, "aggregate": {},
                "questions": {}}
-    for group in ("A_native", "A_measure", "B", "C", "D1", "D2R", "D2P",
-                  "E"):
+    # 本战役实际跑过的组(--groups 子集时为 GROUPS 真子集):缺组诚实
+    # 缺省——聚合不造空行、涉缺组的问题整体缺省(见各 guard)。
+    ran = {g for r in per_run for g in r}
+    for group in GROUPS:
+        if group not in ran:
+            continue
         # per-run 可选键(state_atoms_reached 按设计可缺:epoch.py 末轮
         # _final_state_atoms 无覆盖态/异常 → None → 键缺省)抗键偏斜:
         # 键集取各 run 并集、取值过滤缺 run(_stats 再容错 None)。
@@ -169,20 +182,25 @@ def run_campaign(target: str, ir_path: str, out: Path, runs: int, epochs: int,
             for k in keys}
     # 四问
     q = summary["questions"]
-    q["tracing_overhead"] = {
-        "a_native_tput": _stats([r["A_native"]["throughput"] for r in per_run]),
-        "a_measure_tput": _stats([r["A_measure"]["throughput"] for r in per_run]),
-        "ratio_measure_over_native": round(
-            statistics.mean([r["A_measure"]["throughput"] for r in per_run]) /
-            max(statistics.mean([r["A_native"]["throughput"] for r in per_run]),
-                1e-9), 5)}
-    q["restart_penalty_final_blocks"] = _stats(
-        [r["B"]["final_blocks"] - r["A_measure"]["final_blocks"] for r in per_run])
-    q["feedback_gain_final_blocks"] = _stats(
-        [r["C"]["final_blocks"] - r["B"]["final_blocks"] for r in per_run])
-    q["feedback_gain_auc_norm"] = _stats(
-        [r["C"]["auc_blocks_norm"] - r["B"]["auc_blocks_norm"] for r in per_run])
+    if {"A_native", "A_measure"} <= ran:
+        q["tracing_overhead"] = {
+            "a_native_tput": _stats([r["A_native"]["throughput"] for r in per_run]),
+            "a_measure_tput": _stats([r["A_measure"]["throughput"] for r in per_run]),
+            "ratio_measure_over_native": round(
+                statistics.mean([r["A_measure"]["throughput"] for r in per_run]) /
+                max(statistics.mean([r["A_native"]["throughput"] for r in per_run]),
+                    1e-9), 5)}
+    if {"A_measure", "B"} <= ran:
+        q["restart_penalty_final_blocks"] = _stats(
+            [r["B"]["final_blocks"] - r["A_measure"]["final_blocks"] for r in per_run])
+    if {"B", "C"} <= ran:
+        q["feedback_gain_final_blocks"] = _stats(
+            [r["C"]["final_blocks"] - r["B"]["final_blocks"] for r in per_run])
+        q["feedback_gain_auc_norm"] = _stats(
+            [r["C"]["auc_blocks_norm"] - r["B"]["auc_blocks_norm"] for r in per_run])
     for gname in ("D2R", "D2P"):
+        if gname not in ran:
+            continue
         runs_g = []
         for k, r in enumerate(per_run):
             gs = json.loads((out / f"run{k:02d}" / gname / "group_summary.json")
@@ -192,27 +210,38 @@ def run_campaign(target: str, ir_path: str, out: Path, runs: int, epochs: int,
                            "yield": gs.get("portfolio_yield"),
                            "cdr": gs.get("corpus_dilution_ratio")})
         q[f"diagnostics_{gname}"] = runs_g
-    nsg = [r["C"]["novel_seed_gain"] for r in per_run if "novel_seed_gain" in r["C"]]
-    q["directed_gain_final_blocks"] = _stats(
-        [r["D1"]["final_blocks"] - r["C"]["final_blocks"] for r in per_run])
-    q["directed_gain_auc_norm"] = _stats(
-        [r["D1"]["auc_blocks_norm"] - r["C"]["auc_blocks_norm"] for r in per_run])
-    q["portfolio_gain_final_blocks"] = _stats(
-        [r["D2P"]["final_blocks"] - r["D2R"]["final_blocks"] for r in per_run])
-    q["portfolio_gain_auc_norm"] = _stats(
-        [r["D2P"]["auc_blocks_norm"] - r["D2R"]["auc_blocks_norm"] for r in per_run])
+    nsg = [r["C"]["novel_seed_gain"] for r in per_run
+           if "C" in r and "novel_seed_gain" in r["C"]]
+    if {"C", "D1"} <= ran:
+        q["directed_gain_final_blocks"] = _stats(
+            [r["D1"]["final_blocks"] - r["C"]["final_blocks"] for r in per_run])
+        q["directed_gain_auc_norm"] = _stats(
+            [r["D1"]["auc_blocks_norm"] - r["C"]["auc_blocks_norm"] for r in per_run])
+    if {"D2R", "D2P"} <= ran:
+        q["portfolio_gain_final_blocks"] = _stats(
+            [r["D2P"]["final_blocks"] - r["D2R"]["final_blocks"] for r in per_run])
+        q["portfolio_gain_auc_norm"] = _stats(
+            [r["D2P"]["auc_blocks_norm"] - r["D2R"]["auc_blocks_norm"] for r in per_run])
     # E−D1 = state 规划器注入净贡献(对照选择依据见模块 docstring P4-T2 行)
-    q["state_gain_final_blocks"] = _stats(
-        [r["E"]["final_blocks"] - r["D1"]["final_blocks"] for r in per_run])
-    q["state_gain_auc_norm"] = _stats(
-        [r["E"]["auc_blocks_norm"] - r["D1"]["auc_blocks_norm"] for r in per_run])
-    q["paired_deltas"] = {
-        "D1_minus_C": [round(r["D1"]["auc_blocks_norm"] - r["C"]["auc_blocks_norm"], 4)
-                       for r in per_run],
-        "D2P_minus_D2R": [round(r["D2P"]["auc_blocks_norm"] - r["D2R"]["auc_blocks_norm"], 4)
-                          for r in per_run],
-        "E_minus_D1": [round(r["E"]["auc_blocks_norm"] - r["D1"]["auc_blocks_norm"], 4)
-                       for r in per_run]}
+    if {"D1", "E"} <= ran:
+        q["state_gain_final_blocks"] = _stats(
+            [r["E"]["final_blocks"] - r["D1"]["final_blocks"] for r in per_run])
+        q["state_gain_auc_norm"] = _stats(
+            [r["E"]["auc_blocks_norm"] - r["D1"]["auc_blocks_norm"] for r in per_run])
+    paired = {}
+    if {"C", "D1"} <= ran:
+        paired["D1_minus_C"] = [
+            round(r["D1"]["auc_blocks_norm"] - r["C"]["auc_blocks_norm"], 4)
+            for r in per_run]
+    if {"D2R", "D2P"} <= ran:
+        paired["D2P_minus_D2R"] = [
+            round(r["D2P"]["auc_blocks_norm"] - r["D2R"]["auc_blocks_norm"], 4)
+            for r in per_run]
+    if {"D1", "E"} <= ran:
+        paired["E_minus_D1"] = [
+            round(r["E"]["auc_blocks_norm"] - r["D1"]["auc_blocks_norm"], 4)
+            for r in per_run]
+    q["paired_deltas"] = paired
     q["novel_seed_gain"] = {
         "sf_total": sum(x["sf_candidates_total"] for x in nsg),
         "sf_unique": sum(x["sf_unique_vs_native"] for x in nsg),
@@ -244,7 +273,7 @@ def run_campaign(target: str, ir_path: str, out: Path, runs: int, epochs: int,
     return summary
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("target")
     parser.add_argument("ir")
@@ -253,9 +282,23 @@ def main() -> int:
     parser.add_argument("--epochs", type=int, default=3)
     parser.add_argument("--seconds", type=float, default=10.0)
     parser.add_argument("--seed0", type=int, default=7)
-    args = parser.parse_args()
+    parser.add_argument(
+        "--groups", default=None,
+        help="逗号分隔的 GROUPS 子集,如 'D1,E'(缺省=全部八组)")
+    args = parser.parse_args(argv)
+    # --groups 校验:逐名 ∈ GROUPS,非法/空 → parser.error(退出码 2)
+    # 并列出全部有效组名;合法子集保持给定序传给 run_campaign。
+    groups = None
+    if args.groups is not None:
+        requested = tuple(g.strip() for g in args.groups.split(",")
+                          if g.strip())
+        unknown = [g for g in requested if g not in GROUPS]
+        if unknown or not requested:
+            parser.error(f"--groups 无效: {unknown or '空子集'};"
+                         f" 有效组: {', '.join(GROUPS)}")
+        groups = requested
     s = run_campaign(args.target, args.ir, Path(args.out), args.runs,
-                     args.epochs, args.seconds, args.seed0)
+                     args.epochs, args.seconds, args.seed0, groups=groups)
     print(json.dumps(s["questions"], indent=1, ensure_ascii=False))
     return 0
 
