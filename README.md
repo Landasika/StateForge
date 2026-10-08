@@ -38,6 +38,7 @@ Mapper（轨迹 → 静态 ICFG 块/边映射，Phase-1 冻结）
 ## 目录
 
 - [快速开始](#快速开始)
+- [配置](#配置)
 - [项目阶段](#项目阶段)
 - [模块详解](#模块详解)
 - [实验结果](#实验结果)
@@ -75,6 +76,19 @@ python -m stateforge.evaluation.micro_benchmark
 # 四臂实验（A/B/C/D 对照）
 python -m stateforge.evaluation.experiment.four_arm --out results/experiment --runs 3 --epochs 3 --seconds 8
 ```
+
+---
+
+## 配置
+
+LLM 语义求解(Phase 4.2)经 4 个环境变量配置;`stateforge/config.py` 是唯一读取入口(`from stateforge.config import llm_settings`),代码侧不散读 `os.environ`。
+
+| 变量 | 默认 | 用途 |
+|------|------|------|
+| `STATEFORGE_LLM_API_KEY` | `""`(空串) | API 密钥;未配置时 `configured=False`,LLM 求解自动降级规则标注,链路不阻塞 |
+| `STATEFORGE_LLM_BASE_URL` | `https://open.bigmodel.cn/api/paas/v4` | OpenAI 兼容端点(尾部 `/` 自动去除) |
+| `STATEFORGE_LLM_MODEL` | `glm-4-flash` | 模型名 |
+| `STATEFORGE_LLM_TIMEOUT` | `30` | 请求超时(秒;按 int 收敛,小数字符串报错) |
 
 ---
 

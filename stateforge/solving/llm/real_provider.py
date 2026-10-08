@@ -1,5 +1,7 @@
-"""Phase-4.2-F:Real LLM Provider(env-var 配置,极薄——只序列化/调用/解析)。
+"""Phase-4.2-F:Real LLM Provider(极薄——只序列化/调用/解析)。
 
+配置经 stateforge/config.py 统一入口(`from stateforge.config import llm_settings`),
+本文件不直接读环境变量。
 不做 validation/mutation/coverage/retry;错误包装为 ProviderError,
 由 coverage_loop 统一降级为 INVALID_OUTPUT。
 """
@@ -7,8 +9,9 @@
 from __future__ import annotations
 
 import json
-import os
 from pathlib import Path
+
+from stateforge.config import llm_settings
 
 
 class ProviderError(Exception):
@@ -16,21 +19,23 @@ class ProviderError(Exception):
 
 
 class RealLLMProvider:
-    """调本机 GLM 代理(OpenAI 兼容)或远程 API;env-var 控制。
+    """调本机 GLM 代理(OpenAI 兼容)或远程 API;配置走 config.llm_settings。
 
-    STATEFORGE_LLM_API_KEY   必填
+    解析顺序:显式 kwargs > STATEFORGE_LLM_* 环境变量 > 内置默认(config.py):
+    STATEFORGE_LLM_API_KEY   默认空串(未配置 → configured=False → 规则降级)
     STATEFORGE_LLM_BASE_URL  默认 https://open.bigmodel.cn/api/paas/v4
     STATEFORGE_LLM_MODEL     默认 glm-4-flash
     STATEFORGE_LLM_TIMEOUT   默认 30 秒
     """
 
-    def __init__(self):
-        self.api_key = os.environ.get("STATEFORGE_LLM_API_KEY", "")
-        self.base_url = os.environ.get(
-            "STATEFORGE_LLM_BASE_URL",
-            "https://open.bigmodel.cn/api/paas/v4").rstrip("/")
-        self.model = os.environ.get("STATEFORGE_LLM_MODEL", "glm-4-flash")
-        self.timeout = int(os.environ.get("STATEFORGE_LLM_TIMEOUT", "30"))
+    def __init__(self, *, api_key: str | None = None, base_url: str | None = None,
+                 model: str | None = None, timeout: float | None = None):
+        cfg = llm_settings(api_key=api_key, base_url=base_url,
+                           model=model, timeout=timeout)
+        self.api_key = cfg.api_key
+        self.base_url = cfg.base_url
+        self.model = cfg.model
+        self.timeout = cfg.timeout
 
     @property
     def configured(self) -> bool:
