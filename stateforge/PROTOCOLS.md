@@ -304,15 +304,15 @@ epoch 记录 `rec["state"]` → group_summary.json 的
 
 | | |
 |---|---|
-| 生产者 | `solving/state_seed_injector.py::inject_state_seeds`(P3-T3 已接):M1/M2 状态分析 + op 分派归属 → 合成 SSTG(`analysis/builder.build_sstg`,builder 零改动)→ `plan_backward(reach_state)` → `BindingContext.render_step` → 单请求 dict 序列;轮间接缝 `epoch.py::_inject_state_seeds_between_epochs`(policy="state",R2 触发:未达深状态原子 且 上轮无新状态节点)。落盘复用 `encode_sequence_seed`(`fuzzing/entry_driver.py`,与消费端同一 builder),经 CorpusManager spool(`state_spool`)+ 直写 corpus;审计 `epochs/state_injections.jsonl` |
-| 消费者 | `fuzzing/entry_driver.decode_sequence_seed` + `dispatch_seed`(libFuzzer handler 入口,三模式一致:`entry_driver.py` dispatch);`targets/stateful/t_state_*.py` 靶本体(整体 steps 重放语义,与驱动逐步分派等价) |
+| 生产者 | `solving/state_seed_injector.py::inject_state_seeds`(P3-T3 已接):M1/M2 状态分析 + op 分派归属 → 合成 SSTG(`analysis/builder.build_sstg`,builder 零改动)→ `plan_backward(reach_state)` → `BindingContext.render_step` → 单请求 dict 序列;轮间接缝 `epoch.py::_inject_state_seeds_between_epochs`(policy="state",R2 触发:未达深状态原子 且 上轮无新状态节点)。落盘复用 `encode_sequence_seed`(`fuzzing/entry_driver.py`,与消费端同一 builder),经 CorpusManager spool(`state_spool`)+ 直写 corpus;审计 `epochs/state_injections.jsonl`。**P4-T3 双路径(R7)**:靶目录可提出 AppModel(extract_flask 有 Flask 端点)→ 真路径 `solving/vulnshop_state_bridge.py`(确定性认证链完备化 + `build_sstg` + `plan_backward`,零 LLM;判达=写点覆盖代理,值匹配锚点优先/值盲锚点限 mutating 端点;无可规划原子 → `NO_PLAN` 审计不占预算);分派只看 AppModel 可用性,微靶路径行为不变 |
+| 消费者 | `fuzzing/entry_driver.decode_sequence_seed` + `dispatch_seed`(libFuzzer handler 入口,三模式一致:`entry_driver.py` dispatch);`targets/stateful/t_state_*.py` 靶本体(整体 steps 重放语义,与驱动逐步分派等价);`targets/vulnshop/fuzz_target.py` 请求 dict 面(P4-T3:method/path 步 → Flask `test_request_context` 全栈,`?slot` 运行期绑定表 + `extract` 回填;legacy 字节面 = `adapters/flask.FlaskAdapter` 路由枚举,无免费认证) |
 | 格式 | JSON 单行(`json.dumps({"steps": […]}, ensure_ascii=False, sort_keys=True)`);作为一条 libFuzzer 输入整体变异 |
 | 执行面 | `test_protocols.py::test_c10_sequence_seed_consumer_pin`、`test_protocols.py::test_c10_producer_artifact_round_trip`、`tests/fuzzing/test_sequence_seeds.py` |
 
 键集:
 
 - 顶层:`steps`(唯一键,list,可为空)
-- `steps[i]` = **单请求 dict,即 C-legacy 冻结契约** `{"query","form","json","header","cookie"}` 的子集;序列里前缀步素状态,末步=当前请求
+- `steps[i]` = **单请求 dict**:微靶路径 = C-legacy 冻结契约 `{"query","form","json","header","cookie"}` 的子集;AppModel 路径(P4-T3 演进)在此之上加 `method`/`path`(HTTP 动词与路由,`<int:x>` 已代入或为 `?slot` 符号)与 `extract`(响应键 → `?slot` 回填);序列里前缀步素状态,末步=当前请求
 
 最小示例(`encode_sequence_seed` 实际输出,sort_keys 键序):
 
@@ -328,6 +328,7 @@ epoch 记录 `rec["state"]` → group_summary.json 的
 - 覆盖口径 = 序列全程并集:所有步在同一 handler 调用、同一 TraceSession 请求窗口内执行,coverage 计数自然累加(R3)。
 - 畸形输入确定性:`steps: []` = 零执行;非 dict 步原样序列化喂靶(靶自己的错误路径消化);`steps` 非 list → 按 legacy 透传;单步异常由外层 handler 统一吞,不向引擎泄 crash。
 - 加字段安全(演进):顶层可加新键(消费端只按 `steps` 分派);`steps[i]` 内沿用单请求契约的演进纪律。
+- `?slot` 符号槽(P4-T3,AppModel 路径):生产者不代入未绑定槽(代入即 None 化),保持 `"?token"`/`"/orders/?oid/pay"` 字面落盘;消费端(靶模块绑定表)运行期代入并经 `extract` 回填——绑定是靶侧进程内状态,同 `@fresh` 一样跨步持久、跨输入延续。审计 `state_injections.jsonl` 的 AppModel 行带 `path: "appmodel"` 与 `steps: ["METHOD route",…]`(NO_PLAN 行 steps 为空)。
 
 ---
 

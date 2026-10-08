@@ -20,6 +20,13 @@
 
 设计裁决(docstring 即契约,详见任务报告):
 
+0. **R7 双路径(P4-T3)**:靶目录能被 `extract_flask` 提出 Flask 端点 →
+   AppModel 真路径(`vulnshop_state_bridge`:确定性认证完备化 →
+   `build_sstg` → `plan_backward` → 请求 dict 步,判达=写点覆盖代理,
+   ?槽保持符号由靶侧运行期绑定);否则走下列微靶合成路径,行为不变。
+   分派只看 AppModel 可用性(`appmodel_path(target) is not None`),
+   无靶名特判。
+
 1. **SSTG 合成(soft-producer 语义)**:微靶无 AppModel。op 分派
    (`op == "login"` 分支)给动作词表;M2 静态候选给"哪行 SET/守卫哪个
    session 变量";二者按行号 join 归属到 op。写者×守卫值 join 出
@@ -64,6 +71,8 @@ from stateforge.core.model import (AppModel, Effect, Endpoint, Param,
                                    PlanStep, Precondition)
 from stateforge.fuzzing.corpus_manager import CorpusManager
 from stateforge.fuzzing.entry_driver import encode_sequence_seed
+from stateforge.solving.vulnshop_state_bridge import (
+    AppModelPath, appmodel_path, reached_atoms, render_seed)
 from stateforge.state.observer import run_state_analysis
 from stateforge.state.planning.backward import plan_backward
 from stateforge.state.planning.binding import BindingContext
@@ -482,7 +491,15 @@ def _covered_lines(ir: ProgramIR, target: Path, state: dict) -> set[int]:
 
 
 def reached_state_atoms(ir, target, state: dict) -> set[str]:
-    """已达状态原子:守卫真分支块已覆盖(覆盖代理记账,见模块 docstring §3)。"""
+    """已达状态原子(覆盖代理记账,见模块 docstring §3)。
+
+    R7 双路径:AppModel 可用(靶目录提出 Flask 端点)→ 写点覆盖代理
+    (vulnshop_state_bridge.reached_atoms);否则微路径守卫真分支代理,
+    行为不变。分派只看 AppModel 可用性,无靶名特判。
+    """
+    amp = appmodel_path(target)
+    if amp is not None:
+        return reached_atoms(ir, state, amp)
     micro = synthesize_micro_model(target)
     ir_obj = _coerce_ir(ir)
     if micro is None or ir_obj is None:
@@ -559,13 +576,74 @@ def _audit(audit_path: Path, record: dict) -> None:
         fh.write(json.dumps(record, ensure_ascii=False) + "\n")
 
 
+def _appmodel_goals(amp: AppModelPath, reached: set[str]) -> list[str]:
+    """goal 派生:全部 requires 原子 − 已达原子,字典序(确定性)。"""
+    return sorted(set(amp.atoms) - reached)
+
+
+def _inject_appmodel(ir, amp: AppModelPath, state: dict, corpus_dir,
+                     budget: int) -> int:
+    """AppModel 路径注入(P4-T3):未达原子 → plan_backward → C10 请求链。
+
+    与微路径同款落盘纪律(spool + 内容哈希去重 + 审计 JSONL);差异:
+    - goal = 单原子(而非受门 op);步 = 请求 dict(method/path/...),
+      ?槽保持符号由靶侧运行期绑定(bridge §4);
+    - 无可规划链(coverage-gap 原子)→ NO_PLAN 审计,不占写入预算。
+    """
+    if budget <= 0:
+        return 0
+    reached = reached_atoms(ir, state, amp)        # 覆盖块 → 行 → 锚点判达
+    goals = _appmodel_goals(amp, reached)
+
+    corpus_dir = Path(corpus_dir)
+    corpus_dir.mkdir(parents=True, exist_ok=True)
+    spool = CorpusManager(corpus_dir.parent / "state_spool")
+    audit_path = corpus_dir.parent / "epochs" / "state_injections.jsonl"
+    salt = hashlib.sha256(
+        str(amp.target.resolve()).encode("utf-8")).hexdigest()[:8]
+
+    written = 0
+    for atom in goals:
+        if written >= budget:
+            break
+        record = {"goal": atom, "path": "appmodel"}
+        try:
+            steps = render_seed(amp, atom, salt)
+        except Exception as exc:                          # noqa: BLE001
+            _audit(audit_path, {**record,
+                                "status": f"PLAN_ERROR_{type(exc).__name__}"})
+            continue
+        record["steps"] = [f"{s.get('method', 'GET')} {s.get('path', '')}"
+                           for s in steps]
+        if not steps:                              # coverage-gap:无生产者
+            _audit(audit_path, {**record, "status": "NO_PLAN"})
+            continue
+        data = encode_sequence_seed(steps)
+        cid = spool.save(data, epoch=0, new_blocks=0, new_edges=0,
+                         discovered_blocks=0, discovered_edges=0,
+                         interesting_reason="state_plan", origin="STATE")
+        if cid:
+            (corpus_dir / cid).write_bytes(data)
+            written += 1
+            _audit(audit_path, {**record, "status": "INJECTED", "seed_id": cid})
+        else:
+            _audit(audit_path, {**record, "status": "DUPLICATE"})
+    return written
+
+
 def inject_state_seeds(ir, target, state: dict, corpus_dir,
                        budget: int = STATE_BUDGET) -> int:
     """未达深状态原子 → 规划 → C10 序列种子写入语料;返回写入数。
 
     goal 派生(内部):全部 requires 原子 − 已达原子(覆盖代理);
     R2 的触发另一半(上轮无新状态节点)由 epoch 侧账本判定,不在本函数。
+
+    R7 双路径:AppModel 可用 → 真路径(extract_flask→build_sstg→
+    plan_backward,bridge 渲染请求链);否则微靶 M1/M2 合成路径不变。
     """
+    amp = appmodel_path(target)
+    if amp is not None:
+        return _inject_appmodel(ir, amp, state, corpus_dir, budget)
     micro = synthesize_micro_model(target)
     if micro is None or budget <= 0:
         return 0

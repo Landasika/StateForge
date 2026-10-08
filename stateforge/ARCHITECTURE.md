@@ -12,7 +12,7 @@
 └─────────────────────────────┬──────────────────────────────┘
                               ▼
 ┌────────────────────────────────────────────────────────────┐
-│ L3    solving(求解域:Guard→距离→溯源→约束→LLM 种子注入)      │
+│ L3    solving(求解域:Guard→距离→溯源→约束→种子注入)          │
 └─────────────────────────────┬──────────────────────────────┘
                               ▼
 ┌────────────────────────────────────────────────────────────┐
@@ -49,7 +49,7 @@
 | L2 | `stateforge/runtime/` | 运行时域:sys.settrace 轨迹采集、轨迹→ICFG 映射、覆盖度量、回放与快照子包 |
 | L2.5 | `stateforge/fuzzing/` | Fuzzing 集成域:Atheris 子进程入口、选择性插桩、语料/候选/前沿、结构反馈子包 |
 | L2.5 | `stateforge/adapters/` | 目标适配层:TargetAdapter 协议 + 通用 Web/Flask/可调用/vulnshop 适配器 |
-| L3 | `stateforge/solving/` | 求解域:Guard 恢复→操作数→距离→溯源→约束→变异提示→停滞触发→LLM 种子注入 |
+| L3 | `stateforge/solving/` | 求解域:Guard 恢复→操作数→距离→溯源→约束→变异提示→停滞触发→种子注入(状态序列种子双路径:微靶 M1/M2 合成 / AppModel 真路径 `vulnshop_state_bridge`,P4-T3;LLM 种子注入) |
 | L4 | `stateforge/evaluation/` | 评测域:SF-Micro 真值基准、BranchSolve 报告、Benchmark 基线、实验与可视化子包 |
 | L4 | `stateforge/cli.py` | 命令行入口:analyze / feedback / experiment / viz / state |
 
