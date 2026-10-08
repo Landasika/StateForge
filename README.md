@@ -52,7 +52,7 @@ Mapper（轨迹 → 静态 ICFG 块/边映射，Phase-1 冻结）
 # 安装（唯一依赖源：pyproject.toml；atheris 无预编译 wheel 时 sdist 编译需 clang）
 pip install -e ".[dev,test,fuzz]"
 
-# 跑全量测试（开发树 255 tests；fresh clone 254 passed + 2 skipped，差异见"冻结版本"节；26 个 anota 标记用例默认 deselect、在 ANOTA 解释器内另跑）
+# 跑全量测试（计数随阶段增长，以"冻结版本"节为准；26 个 anota 标记用例默认 deselect、在 ANOTA 解释器内另跑）
 pytest
 
 # 本地 CI：make test 等价 pytest；make verify = ./ci.sh 完整验收链（临时 clone→venv→install→pytest→micro_benchmark，输出三验收数字）
@@ -147,7 +147,7 @@ stateforge/
 | `stateforge/cli.py` | 命令行入口:analyze / feedback / experiment / viz |
 | `stateforge/targets/` | 测试靶场:vulnshop / vampi / dsvw / pygoat / realworld / microplus(原位不动) |
 | `stateforge/fixtures/` | 真值基准数据:micro / bs_micro / ls_micro / llm_loop / sf_branch_micro / buy_app(原位不动) |
-| `stateforge/tests/` | 测试套件(255 tests;子目录名沿用旧模块名为历史组织,import 已全部指向新路径) |
+| `stateforge/tests/` | 测试套件(全量绿,计数见冻结版本节;子目录名沿用旧模块名为历史组织,import 已全部指向新路径) |
 
 ---
 
@@ -226,7 +226,7 @@ stateforge/
 - **Oracle**：ANOTA 解释器（CPython 3.10.13 fork，NDSS'25）
 - **静态分析**：Python AST + PyCG（ICSE'21）
 - **LLM**：OpenAI 兼容 / Anthropic 双协议（GLM/Claude/local 可换）
-- **测试框架**：pytest（255 tests 全绿）
+- **测试框架**：pytest（全绿）
 
 ## 依赖
 

@@ -53,7 +53,7 @@
 | L4 | `stateforge/evaluation/` | 评测域:SF-Micro 真值基准、BranchSolve 报告、Benchmark 基线、实验与可视化子包 |
 | L4 | `stateforge/cli.py` | 命令行入口:analyze / feedback / experiment / viz |
 
-**域外(不入分层):** `stateforge/config.py` 是配置叶(唯一 importer 为 `solving/llm/real_provider.py`);`stateforge/targets/`(靶场)与 `stateforge/fixtures/`(真值数据)是数据域,不是可依赖层;`stateforge/tests/` 可任意引用,均不在边界扫描范围。
+**域外(不入分层):** `stateforge/config.py` 是配置叶(importer 为 `solving/llm/real_provider.py` 与 `solving/llm/provider.py`);`stateforge/targets/`(靶场)与 `stateforge/fixtures/`(真值数据)是数据域,不是可依赖层;`stateforge/tests/` 可任意引用,均不在边界扫描范围。
 
 ---
 
@@ -61,7 +61,7 @@
 
 1. **只允许向下引用**:任何模块只能 import 严格更低层(数值更小)的域,以及**自域**(含子包)。
 2. **同层仅允许两个有向对**:同层跨域引用默认违规,白名单只有 adapters→fuzzing(适配器取 `fuzzing.instrumentation` 插桩器)与 cli→evaluation(viz 子命令);反向(fuzzing→adapters、evaluation→cli 静态边)已在 P2-T1 解环清除,重新引入须按例外登记。
-3. **向上引用 = 违规**:边界测试对"高层 → 严格更低层"以外的一切跨域引用报错,唯一豁免是下方例外登记表。
+3. **向上引用 = 违规**:边界测试对"高层 → 严格更低层"以外的一切跨域引用报错,豁免=下方例外登记表与规则 2 的两个同层有向对。
 4. **动态边静态不可见**:subprocess `-m`、`__import__` 等运行时边不入静态扫描,但必须在例外表登记留痕(下表第 4 行)。
 5. **例外条数互锁**:例外登记表数据行数 == 测试内 `len(ALLOWED_EXCEPTIONS) + 2`(第 4、5 行为静态扫描不可见的留痕行,只入表、不入测试例外集)。
 

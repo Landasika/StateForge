@@ -30,8 +30,9 @@ LAYERS = {
     "cli": 4,
 }
 
-# 不入分层的域:config=配置叶(唯一 importer solving/llm/real_provider),
-# targets=靶场数据域(引用须登记,见 ARCHITECTURE.md 例外表第 3 行)。
+# 不入分层的域:config=配置叶(importer 为 solving/llm/real_provider 与
+# solving/llm/provider 两处),targets=靶场数据域(引用须登记,见
+# ARCHITECTURE.md 例外表第 3 行)。
 # fixtures/tests 整目录不在扫描范围。
 UNLAYERED_DOMAINS = {"config", "targets"}
 EXCLUDED_TOP_DIRS = {"targets", "fixtures", "tests", "__pycache__"}
@@ -42,7 +43,7 @@ EXCLUDED_TOP_DIRS = {"targets", "fixtures", "tests", "__pycache__"}
 PEER_EDGES = {("adapters", "fuzzing"), ("cli", "evaluation")}
 
 # 依赖汇(③):evaluation/adapters 不得被管线域反向依赖,入边只许来自
-# 白名单对等入口(cli)与 tests;evaluation 面 -m 驱动如 acceptance.py 属
+# 白名单对等入口(cli);evaluation 面 -m 驱动如 acceptance.py 属
 # L4 评测入口,其对 adapters 的引用按 T1 裁定 3 放行。
 SINK_DOMAINS = {"evaluation", "adapters"}
 SINK_ALLOWED_SOURCES = SINK_DOMAINS | {"cli", "tests"}

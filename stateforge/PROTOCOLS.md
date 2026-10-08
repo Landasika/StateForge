@@ -201,7 +201,7 @@
 | | |
 |---|---|
 | 生产者 | `solving/llm/cache.put`(`solving/llm/cache.py:28-32`):单行 `json.dumps({"text", "prompt_version"}, ensure_ascii=False)`;文件名 = `sha256(json.dumps({"v": prompt_version, "facts": …}, sort_keys=True, ensure_ascii=False))`(`cache.py:15-18`)。`facts` 形态由 `lifting.py` 定义:label 列(`:75-79`)、relate 字典(`:181-193`),外层再包 `{"kind": …, "facts": …}` 作缓存键 |
-| 消费者 | `cache.get`(`cache.py:21-25`)——`lifting.label`/`relate` 的缓存优先通道(`lifting.py:82`、`:196`);README「已知义务」(`README.md:216`) |
+| 消费者 | `cache.get`(`cache.py:21-25`)——`lifting.label`/`relate` 的缓存优先通道(`lifting.py:82`、`:196`);README「已知义务」(`README.md:219`) |
 | 格式 | JSON 单行(无 indent) |
 | 执行面 | `test_protocols.py::test_c7_llm_cache_schema_and_key_derivation`、`test_c7_llm_cache_shipped_files_obligation` |
 

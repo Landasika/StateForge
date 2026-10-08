@@ -18,6 +18,7 @@ import dataclasses
 import hashlib
 import importlib.util
 import json
+import re
 from pathlib import Path
 
 from stateforge.cli import analyze_cmd
@@ -72,7 +73,8 @@ def test_c0_protocols_md_sections_pinned():
     """PROTOCOLS.md 规范文与执行面同在:C1-C9 小节与三级词汇缺一即漂移。"""
     text = PROTOCOLS_MD.read_text(encoding="utf-8")
     for i in range(1, 10):
-        assert f"## C{i}" in text, f"PROTOCOLS.md 缺 C{i} 小节"
+        assert re.search(rf"^## C{i}\b", text, flags=re.M), (
+            f"PROTOCOLS.md 缺 C{i} 小节")
     for grade in ("冻结", "演进", "内部"):
         assert grade in text
 
