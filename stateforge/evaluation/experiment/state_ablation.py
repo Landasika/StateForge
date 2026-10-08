@@ -311,6 +311,20 @@ def run_ablation(target: str, ir: str, out: Path, runs: int = 2,
             "(synthesize_micro_model=None,AppModel 路径),"
             "atoms/transitions/deep_blocks 为未测,非测得零")
 
+    # 溯源(P5 终清扫):campaign 同款 manifest 字段(commit/branch/python/
+    # atheris/靶与 IR 哈希/预算)进消融摘要——修前 state_ablation.json 只有
+    # target/ir 路径,与 campaign 产物(manifest.json)溯源不对称。同包协作
+    # 复用 campaign._manifest(形状同源不另起炉灶;git/包版本不可用时的
+    # "unknown"/异常口径与 campaign 一致),evaluation-internal。
+    from stateforge.evaluation.experiment.campaign import _manifest
+
+    class _MArgs:                                    # _manifest 的 args 形
+        pass
+    margs = _MArgs()
+    margs.runs, margs.epochs = runs, epochs
+    margs.seconds, margs.seed0 = seconds, seed0
+    report["manifest"] = _manifest(target, ir, out, margs)
+
     for k in range(runs):
         seed = seed0 + k * 100
         run = f"run{k:02d}"

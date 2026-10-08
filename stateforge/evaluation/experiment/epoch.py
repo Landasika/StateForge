@@ -196,6 +196,17 @@ def _state_audit(workdir: Path, record: dict) -> None:
         fh.write(json.dumps(record, ensure_ascii=False) + "\n")
 
 
+def _llm_audit(workdir: Path, record: dict) -> None:
+    """llm 接缝审计(P5 终清扫):同 _state_audit 形状,落 llm 台账。
+
+    接缝异常先记 SEAM_ERROR 再照常跑下一轮(语义与修前 pass 一致,
+    只补审计痕,不改控制流)。
+    """
+    path = workdir / "epochs" / "llm_injections.jsonl"
+    with path.open("a", encoding="utf-8") as fh:
+        fh.write(json.dumps(record, ensure_ascii=False) + "\n")
+
+
 def _state_boundary(workdir: Path, epoch: int, injected: int) -> dict:
     """P3-T4:轮间状态摘要(演进级)——进 epoch 记录的 rec["state"]。
 
@@ -284,8 +295,9 @@ def run_epochs(target: str, ir: str, workdir: Path, seconds_per_epoch: float,
                     ir, workdir, corpus_dir, target,
                     stall_tracker=stall_tracker, epoch_num=epoch,
                     prev_blocks=prev_blocks, prev_edges=prev_edges)
-            except Exception:              # noqa: BLE001
-                pass                       # 注入失败 → 照常跑下一轮
+            except Exception as exc:       # noqa: BLE001
+                _llm_audit(workdir, {"epoch": epoch, "event": "SEAM_ERROR",
+                                     "error": str(exc)})  # 失败留审计痕,照常跑
         if policy == "state" and epoch > 1:
             try:
                 n_inj = _inject_state_seeds_between_epochs(

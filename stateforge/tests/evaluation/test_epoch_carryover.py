@@ -242,3 +242,31 @@ class TestStallDetectionWiring:
         assert all(h["stalled"] == 0 and h["injecting"] == 0 for h in hist)
         assert calls == []                          # 判停未触发 → 不调 LLM
         assert not (wd / "epochs" / "llm_injections.jsonl").exists()
+
+    def test_seam_error_writes_audit_line_and_run_continues(
+            self, ir_path, tmp_path, monkeypatch):
+        """P5 终清扫:llm 接缝异常 → epochs/llm_injections.jsonl 记
+        SEAM_ERROR 审计行(epoch/event/error),run 照常跑完(语义与修前
+        静默 pass 一致,只补审计痕;镜像 state 接缝的 SEAM_ERROR 形状)。"""
+        from stateforge.evaluation.experiment import epoch as epoch_mod
+
+        monkeypatch.setattr(epoch_mod, "_run_driver",
+                            self._fake_driver_factory({1: 1}, ("f0", "f1")))
+
+        def boom(*a, **kw):
+            raise RuntimeError("llm seam exploded")
+
+        monkeypatch.setattr(epoch_mod, "_inject_llm_between_epochs", boom)
+        wd = tmp_path / "wd_seam_err"
+        res = epoch_mod.run_epochs(str(wd / "tgt.py"), str(ir_path), wd,
+                                   seconds_per_epoch=0.05, epochs=2, seed=7,
+                                   group="DSE", mode="frontier",
+                                   use_feedback=True, policy="llm")
+        assert len(res["epoch_records"]) == 2       # run continues
+        recs = [json.loads(x) for x in
+                (wd / "epochs" / "llm_injections.jsonl")
+                .read_text(encoding="utf-8").splitlines()]
+        assert len(recs) == 1                       # 仅 epoch 2 边界一次
+        assert recs[0]["epoch"] == 2
+        assert recs[0]["event"] == "SEAM_ERROR"
+        assert "llm seam exploded" in recs[0]["error"]

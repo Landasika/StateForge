@@ -11,6 +11,7 @@ L2 runtime | L2.5 fuzzing/adapters | L3 solving | L4 evaluation, cli。
 
 import ast
 import re
+import sys
 from pathlib import Path
 
 PACKAGE_DIR = Path(__file__).resolve().parents[1]          # .../stateforge
@@ -79,21 +80,35 @@ def _imports(py_path: Path):
 
     包根形式 `from stateforge import X` 逐名解析为 `stateforge.X`,
     使其同样产生域级边(否则 _domain_of 落在包根、绕过全部规则)。
+    相对 import(level≥1,P5 终清扫闭合,修前静默跳过):按源文件的
+    包锚解析——常规模块锚 = 所在包,__init__ 锚 = 包自身;level=L 剥
+    L−1 层,`from . import X`/`from ..pkg import Y` 解析为点分模块后
+    走同一 edge 逻辑(包根形态同样逐名解析)。
     """
     tree = ast.parse(py_path.read_text(encoding="utf-8"))
+    parts = _module_of(py_path).split(".")
+    anchor = parts if py_path.name == "__init__.py" else parts[:-1]
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
             for alias in node.names:
                 if _is_internal(alias.name):
                     yield node.lineno, alias.name
-        elif isinstance(node, ast.ImportFrom) and node.level == 0:
-            if not _is_internal(node.module or ""):
+        elif isinstance(node, ast.ImportFrom):
+            if node.level:                     # 相对 import:按包锚解析
+                if node.level > len(anchor):
+                    continue                   # 解析出包根(仓库外)→ 不入边
+                base = anchor[:len(anchor) - (node.level - 1)]
+                module = ".".join(base + ([node.module] if node.module
+                                          else []))
+            else:
+                module = node.module or ""
+            if not _is_internal(module):
                 continue
-            if node.module == "stateforge":
+            if module == "stateforge":
                 for alias in node.names:
                     yield node.lineno, f"stateforge.{alias.name}"
             else:
-                yield node.lineno, node.module
+                yield node.lineno, module
 
 
 def _edges():
@@ -185,3 +200,41 @@ def test_architecture_md_exception_table_lock():
         f"  仅 md 有:{sorted(md_static - {s for s, _ in ALLOWED_EXCEPTIONS})}\n"
         f"  仅测试有:{sorted({s for s, _ in ALLOWED_EXCEPTIONS} - md_static)}"
     )
+
+
+def test_relative_import_resolution_feeds_upward_edge(tmp_path, monkeypatch):
+    """level≥1 相对 import 解析闭合(P5 终清扫,修前 _imports 静默跳过)。
+
+    合成 stateforge/fuzzing 包内 `from . import x` 与
+    `from ..evaluation import x`:前者解析为自域(fuzzing.fuzzing 语义上
+    是 fuzzing 子模块,域级自引用),后者解析为 stateforge.evaluation,
+    喂同一 edge 逻辑后按规则②判为向上边(fuzzing[2.5] → evaluation[4]);
+    扫描范围(排除 targets/fixtures/tests)当前零相对 import,故全扫描
+    守卫仍绿——本测钉的是解析器对通用形态的闭合,防该形态被重新引入时
+    绕过边界测试(targets/ 内第三方靶代码的相对 import 不在扫描范围)。
+    """
+    fuzz = tmp_path / "stateforge" / "fuzzing"
+    fuzz.mkdir(parents=True)
+    probe = fuzz / "probe.py"
+    probe.write_text("from . import helpers\n"
+                     "from ..evaluation import x\n"
+                     "from .. import cli\n", encoding="utf-8")
+    monkeypatch.setattr(sys.modules[__name__], "REPO_DIR", tmp_path)
+    monkeypatch.setattr(sys.modules[__name__], "PACKAGE_DIR",
+                        tmp_path / "stateforge")
+    edges = sorted(_imports(probe))
+    # 第 1 条 = 自域子模块(无域级边义);第 2 条 = 向上边;第 3 条 =
+    # 解析到包根 → 逐名展开(与 level==0 包根形态同一规则)
+    assert edges == [(1, "stateforge.fuzzing"),
+                     (2, "stateforge.evaluation"),
+                     (3, "stateforge.cli")]
+    # 规则②同款过滤:向上边(fuzzing[2.5] → evaluation[4])非自域、
+    # 双侧入分层、指向层更高、不在 PEER_EDGES、无例外登记 → 必判违规
+    src, target = "stateforge.fuzzing.probe", "stateforge.evaluation"
+    fdom, tdom = _domain_of(src), _domain_of(target)
+    assert tdom != fdom and {fdom, tdom} <= set(LAYERS) \
+        and LAYERS[tdom] > LAYERS[fdom] \
+        and (fdom, tdom) not in PEER_EDGES \
+        and not any(src == es and (tdom == et or target == et
+                                   or target.startswith(et + "."))
+                    for es, et in ALLOWED_EXCEPTIONS)

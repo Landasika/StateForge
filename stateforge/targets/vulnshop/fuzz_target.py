@@ -21,6 +21,7 @@ DB 每进程独立(文件名含 pid+模块名):子进程重启语义下状态不
 
 from __future__ import annotations
 
+import atexit
 import importlib.util
 import json
 import os
@@ -43,6 +44,35 @@ create_app = _APP_MOD.create_app
 
 # 每进程/每模块独立 DB(重启语义:状态不跨子进程结转)
 _DB = Path(tempfile.gettempdir()) / f"vulnshop_{os.getpid()}_{__name__}.db"
+
+# 退出清理(P5 终清扫):DB 必须活满进程生命周期(fuzz 子进程重启语义
+# 依赖它),只在进程退出时删。选型 = atexit + 注册表去重:
+# - 本进程各加载形态(`__name__` 不同 → 路径不同)逐路径注册,进程退出
+#   时统一 unlink;子进程逐 epoch 新起,各自退出即清自己的 DB;
+# - 模块重载(_load 同款 fresh-module 模式重执行本模块)不会误触发清理
+#   ——atexit 只在进程退出时到期;重载仅可能重复登记同路径,注册表
+#   (模块级 set)在单次加载内去重,跨重载的重复登记由幂等 unlink
+#   (缺失忽略)兜底,无害;
+# - kill -9 等异常终止不经过 atexit,残留 <pid> 名字含死进程 pid,不由
+#   本机制回收(诚实边界:本机制只清自己活时创建的文件)。
+_DB_CLEANUP_REGISTERED: set[str] = set()
+
+
+def _register_db_cleanup(path: Path) -> None:
+    if str(path) in _DB_CLEANUP_REGISTERED:
+        return
+    _DB_CLEANUP_REGISTERED.add(str(path))
+
+    def _cleanup() -> None:
+        try:
+            path.unlink()
+        except OSError:
+            pass                    # 已清理/未建成等 → 幂等忽略
+
+    atexit.register(_cleanup)
+
+
+_register_db_cleanup(_DB)
 _APP = create_app(db_path=str(_DB), init_db=True)
 
 _BINDINGS: dict[str, object] = {}          # ?槽 → 运行期值(extract 回填)
