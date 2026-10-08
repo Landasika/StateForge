@@ -420,12 +420,11 @@ def test_c9_recorder_jsonl_schema(tmp_path):
 
 
 def test_c10_sequence_seed_consumer_pin():
-    """C10 消费端钉扎(生产者=T3 state 注入器,待接):经驱动同款真实
+    """C10 消费端钉扎(编码/解码/分派语义):经驱动同款真实
     encode/decode/dispatch 路径 round-trip,钉 steps 形状与分派语义。
 
-    诚实标注:当前仓内尚无 C10 生产者,本测试用驱动自带的
-    encode_sequence_seed(T3 届时必须复用的同一 builder)构造样本,
-    属消费侧 pin;生产者接入后应改走 T3 真实产出路径。
+    生产者侧真 round-trip 见 test_c10_producer_artifact_round_trip
+    (inject_state_seeds 真产物,本测试保留 encode 直钉作第二例)。
     """
     from stateforge.fuzzing.entry_driver import (decode_sequence_seed,
                                                  dispatch_seed,
@@ -450,3 +449,34 @@ def test_c10_sequence_seed_consumer_pin():
     seen = []                                          # 分派语义:按序逐步执行
     dispatch_seed(lambda d: seen.append(json.loads(d)), raw)
     assert seen == steps
+
+
+def test_c10_producer_artifact_round_trip(tmp_path):
+    """C10 生产者→消费者真 round-trip(P3-T3 生产者已接,升 pin):
+    inject_state_seeds 落盘的真实语料工件经 decode_sequence_seed 解码,
+    步序列与注入器所写一致(不再以 encode_sequence_seed 自产自销冒充
+    生产者样本),并与注入器审计行(steps/goal/seed_id)互证。"""
+    from stateforge.fuzzing.entry_driver import decode_sequence_seed
+    from stateforge.solving.state_seed_injector import inject_state_seeds
+
+    targets_dir = PACKAGE_DIR / "targets" / "stateful"
+    gate = targets_dir / "t_state_gate.py"
+    corpus = tmp_path / "lf_corpus"
+    assert inject_state_seeds(build_icfg(targets_dir), gate, {}, corpus) == 1
+
+    files = sorted(p for p in corpus.iterdir() if p.is_file())
+    assert len(files) == 1                             # 单原子靶恰一种子
+    steps = decode_sequence_seed(files[0].read_bytes())
+    assert steps is not None
+    assert all(set(s) <= {"query", "form", "json", "header", "cookie"}
+               for s in steps)                         # 步=单请求 dict(冻结词汇)
+    assert [s["json"]["op"] for s in steps] == ["login", "admin_panel"]
+    assert steps[0]["json"]["role"] == "admin"         # 前缀步自带置位值
+
+    audit = json.loads(                                # 注入器审计行互证
+        (corpus.parent / "epochs" / "state_injections.jsonl")
+        .read_text(encoding="utf-8").splitlines()[-1])
+    assert audit["status"] == "INJECTED"
+    assert audit["goal"] == "Session.role=admin"
+    assert audit["steps"] == [s["json"]["op"] for s in steps]
+    assert audit["seed_id"] == files[0].name

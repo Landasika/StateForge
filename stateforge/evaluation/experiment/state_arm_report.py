@@ -31,7 +31,10 @@ group_summary.json` + `epochs/` 产物),输出紧凑对比:既有 blocks/edges
 
 另附 D 臂覆盖代理对照(D_coverage_proxy:同机制、仅末轮覆盖、无账本)
 ——D 无状态注入,但会话态跨执行进程内持久(P3-T2 钉扎),单请求偶发
-跨输入接力也可能摸到深块;报告如实呈现,E 的账本口径与之并读。
+跨输入接力也可能摸到深块;报告如实呈现,E 的账本口径与之并读。聚合
+口径与 E 一致:多 run 判达原子取**并集**计数(per_run 保留逐 run 计数;
+计数一律由并集 id 派生,count == len(ids),不用 max——与并集 id 不同源
+的计数在 run 间覆盖不同时会自相矛盾)。
 
 用法:
     python -m stateforge.evaluation.experiment.state_arm_report <run_dir>
@@ -211,25 +214,32 @@ def _mean_blocks(vals: list) -> float | None:
 
 
 def _merge_state(e_runs: list[dict]) -> dict:
-    """逐 run 状态三指标 → 汇总(原子/迁移并集,深状态块取逐 run 最大)。"""
+    """逐 run 状态三指标 → 汇总(原子/迁移/深状态块均取逐 run 并集)。
+
+    计数与 id 同源派生:atoms_reached = len(原子并集)、
+    transitions_observed = len(三元组并集)、deep_state_blocks =
+    len(deep_block_ids 并集)——深块计数不用逐 run max(与并集 id
+    不同源,run 间覆盖不同时 count != len(ids);D-对照聚合同口径)。
+    """
     merged = dict(_EMPTY_STATE)
     if not e_runs:
         return merged
     atoms: set[str] = set()
     triples: set[tuple] = set()
+    deep_ids: set[str] = set()
+    deep_funcs: set[str] = set()
     for r in e_runs:
         atoms |= set(r["atoms"])
         triples |= {tuple(t) for t in r["transitions"]}
-        merged["deep_state_blocks"] = max(merged["deep_state_blocks"],
-                                          r["deep_state_blocks"])
-        merged["deep_block_ids"] = sorted(set(merged["deep_block_ids"])
-                                          | set(r["deep_block_ids"]))
-        merged["deep_functions"] = sorted(set(merged["deep_functions"])
-                                          | set(r["deep_functions"]))
+        deep_ids |= set(r["deep_block_ids"])
+        deep_funcs |= set(r["deep_functions"])
     merged["atoms_reached"] = len(atoms)
     merged["atoms"] = sorted(atoms)
     merged["transitions"] = [list(t) for t in sorted(triples)]
     merged["transitions_observed"] = len(triples)
+    merged["deep_state_blocks"] = len(deep_ids)
+    merged["deep_block_ids"] = sorted(deep_ids)
+    merged["deep_functions"] = sorted(deep_funcs)
     return merged
 
 
@@ -292,18 +302,22 @@ def build_report(run_dir: str | Path, target: str | None = None,
                 tpath = str(hits[0]) if hits else None
         if tpath and ir_obj is not None:
             e_runs = []
-            d_proxies: dict[str, int] = {}
+            d_states: dict[str, dict] = {}
             for rd in runs:
                 e_runs.append({"run": rd.name,
                                **state_metrics(ir_obj, tpath, rd / "E")})
-                d_proxies[rd.name] = state_metrics(
-                    ir_obj, tpath, rd / "D", ledger=False)["atoms_reached"]
+                d_states[rd.name] = state_metrics(
+                    ir_obj, tpath, rd / "D", ledger=False)
+            d_atoms: set[str] = set()          # 逐 run 判达原子并集(D 对照聚合与 E 同口径)
+            for d in d_states.values():
+                d_atoms |= set(d["atoms"])
             entry["state"] = {
-                "E": _merge_state(e_runs),      # 汇总:原子/迁移并集,深块取最大
+                "E": _merge_state(e_runs),      # 汇总:原子/迁移/深块并集,count==len(ids)
                 "E_runs": e_runs,               # 逐 run 明细
                 "D_coverage_proxy": {
-                    "atoms_reached": max(d_proxies.values(), default=0),
-                    "per_run": d_proxies,
+                    "atoms_reached": len(d_atoms),
+                    "per_run": {k: v["atoms_reached"]
+                                for k, v in d_states.items()},
                 },
             }
         report["targets"][name] = entry

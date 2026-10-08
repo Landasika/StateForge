@@ -51,7 +51,7 @@
 | L2.5 | `stateforge/adapters/` | 目标适配层:TargetAdapter 协议 + 通用 Web/Flask/可调用/vulnshop 适配器 |
 | L3 | `stateforge/solving/` | 求解域:Guard 恢复→操作数→距离→溯源→约束→变异提示→停滞触发→LLM 种子注入 |
 | L4 | `stateforge/evaluation/` | 评测域:SF-Micro 真值基准、BranchSolve 报告、Benchmark 基线、实验与可视化子包 |
-| L4 | `stateforge/cli.py` | 命令行入口:analyze / feedback / experiment / viz |
+| L4 | `stateforge/cli.py` | 命令行入口:analyze / feedback / experiment / viz / state |
 
 **域外(不入分层):** `stateforge/config.py` 是配置叶(importer 为 `solving/llm/real_provider.py` 与 `solving/llm/provider.py`);`stateforge/targets/`(靶场)与 `stateforge/fixtures/`(真值数据)是数据域,不是可依赖层;`stateforge/tests/` 可任意引用,均不在边界扫描范围。
 

@@ -220,7 +220,7 @@ stateforge/
 
 **v0.3-architecture 验收**:./ci.sh 全链绿(fresh clone 285 passed, 2 skipped, 26 deselected;micro_benchmark 静态 21/21 + 动态 5/5 全 1.00);开发树 286 passed / 1 skipped / 26 deselected;新增测试 31 项(边界 4+协议 17+config 10);零既有测试断言改动、零算法改动
 
-**v0.4-stateful-core 验收**:./ci.sh 全链绿(fresh clone 349 passed, 2 skipped, 26 deselected;micro 静态 21/21+动态 5/5);开发树 350 passed/1 skipped/26 deselected;五臂 spot:E−D=+16/+19 块,状态原子 E 4/4 vs D 0/4(同机制),A–D 同种子逐位一致;口径注:非 session 靶(microplus)E 落后 D,状态主张限定 stateful 靶族;t_state_shop 零注入=M1 session 词汇边界(5A DB 域守卫不可见)
+**v0.4-stateful-core 验收**:./ci.sh 全链绿(fresh clone 349 passed, 2 skipped, 26 deselected;micro 静态 21/21+动态 5/5);开发树 350 passed/1 skipped/26 deselected;五臂 spot(口径:2 runs × 3 epochs × 5s 小样本):E−D=+16/+19 块,状态原子判达 E 4/4 run vs D 0/4 run(同机制),B–D 块/边同种子逐数一致;A 吞吐差 ≤7.7%(短预算噪声带);口径注:非 session 靶(microplus)E 落后 D,状态主张限定 stateful 靶族;t_state_shop 零注入=M1 session 词汇边界(5A DB 域守卫不可见)。臂 E 现仅经 `four_arm --suite stateful` 提供;campaign 战役组套(`runner.GROUPS`)未含 state 臂(P4 范围)
 
 **已知义务:** 语义标注缓存(`stateforge/solving/llm/cache/*.json`)键于 PROMPT_VERSION 与夹具内容——二者变更后需重跑生成器并提交新缓存,否则 fresh clone 回归"全 irrelevant"。缓存仅按显式路径提交(`git add stateforge/solving/llm/cache/<hash>.json`),勿在该目录使用 `git add -A`。
 

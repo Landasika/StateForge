@@ -315,6 +315,29 @@ class TestStateArmReport:
         m = sar.state_metrics(str(ir_path), str(GATE), rd)
         assert m["atoms_reached"] == 0 and m["deep_state_blocks"] == 0
 
+    def test_merge_state_multirun_count_matches_ids(self):
+        """终审前向修(I4):多 run 汇总计数由同一并集派生 —— count == len(ids)。
+
+        两 run 深块集不相交(2+1):旧 max 聚合给 deep_state_blocks=2,
+        与自身并集 deep_block_ids(len=3)自相矛盾;修后计数=3,原子/
+        迁移并集口径不变。"""
+        from stateforge.evaluation.experiment import state_arm_report as sar
+
+        runs = [{"run": "run0", "atoms": ["A"],
+                 "transitions": [["x", "A", "set"]],
+                 "deep_state_blocks": 2, "deep_block_ids": ["b1", "b2"],
+                 "deep_functions": ["f1"]},
+                {"run": "run1", "atoms": ["B"],
+                 "transitions": [["y", "B", "eq"]],
+                 "deep_state_blocks": 1, "deep_block_ids": ["b3"],
+                 "deep_functions": ["f2"]}]
+        m = sar._merge_state(runs)
+        assert m["atoms_reached"] == len(m["atoms"]) == 2
+        assert m["transitions_observed"] == len(m["transitions"]) == 2
+        assert m["deep_state_blocks"] == len(m["deep_block_ids"]) == 3
+        assert m["deep_block_ids"] == ["b1", "b2", "b3"]
+        assert m["deep_functions"] == ["f1", "f2"]
+
 
 # ------------------------------------- E2E:小预算五臂(t_state_chain,真实)
 

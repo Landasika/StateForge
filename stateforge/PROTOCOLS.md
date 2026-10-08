@@ -280,10 +280,16 @@ ChampionRecord 四键:`input_id` `distance` `epoch` `frontier_version`(`frontier
 
 P3-T4 演进(可选键,缺省不出现——上面键集与 pin 不变):`tick` 增可选
 `state_atoms_reached`/`state_injections` 参数(state 臂轮间接缝的状态
-记账:覆盖代理判达原子数 / 序列种子注入数)。二者非逐执行量、演进级:
-传入即粘滞(`recorder.py:54-58`),此后 snapshots 行与 `summary()` 持续
-携带同名键;调用方为 `epoch.py` state 分支的轮间边界(epoch 记录
-`rec["state"]`、group_summary `state_atoms_reached`/`state_injections_total`)。
+记账:覆盖代理判达原子数 / 序列种子注入数),为进程内随采样记录预留。
+二者非逐执行量、演进级:传入即粘滞(`recorder.py:54-58`),此后
+snapshots 行与 `summary()` 持续携带同名键。注意(P3 终审口径修正):
+`tick` 当前没有任何调用方传入状态参数——实际调用方只有
+`fuzzing/candidates.py:55`、`fuzzing/frontier_collector.py:61`、
+`fuzzing/entry_driver.py:121`,均不传;P3 的生效状态指标不走本键,而由
+`evaluation/experiment/epoch.py` 的轮间边界路径承载:`_state_boundary`
+读 `epochs/state_ledger.json` + `epochs/state_injections.jsonl` →
+epoch 记录 `rec["state"]` → group_summary.json 的
+`state_atoms_reached`/`state_atoms`/`state_injections_total`。
 
 ```jsonl
 {"group": "x", "epoch": 0, "t": 2.01, "executions": 120, "blocks": 3, "edges": 4, "exec_seconds": 1.98, "feedback_seconds": 0.4}
@@ -301,7 +307,7 @@ P3-T4 演进(可选键,缺省不出现——上面键集与 pin 不变):`tick` �
 | 生产者 | `solving/state_seed_injector.py::inject_state_seeds`(P3-T3 已接):M1/M2 状态分析 + op 分派归属 → 合成 SSTG(`analysis/builder.build_sstg`,builder 零改动)→ `plan_backward(reach_state)` → `BindingContext.render_step` → 单请求 dict 序列;轮间接缝 `epoch.py::_inject_state_seeds_between_epochs`(policy="state",R2 触发:未达深状态原子 且 上轮无新状态节点)。落盘复用 `encode_sequence_seed`(`fuzzing/entry_driver.py`,与消费端同一 builder),经 CorpusManager spool(`state_spool`)+ 直写 corpus;审计 `epochs/state_injections.jsonl` |
 | 消费者 | `fuzzing/entry_driver.decode_sequence_seed` + `dispatch_seed`(libFuzzer handler 入口,三模式一致:`entry_driver.py` dispatch);`targets/stateful/t_state_*.py` 靶本体(整体 steps 重放语义,与驱动逐步分派等价) |
 | 格式 | JSON 单行(`json.dumps({"steps": […]}, ensure_ascii=False, sort_keys=True)`);作为一条 libFuzzer 输入整体变异 |
-| 执行面 | `test_protocols.py::test_c10_sequence_seed_consumer_pin`、`tests/fuzzing/test_sequence_seeds.py` |
+| 执行面 | `test_protocols.py::test_c10_sequence_seed_consumer_pin`、`test_protocols.py::test_c10_producer_artifact_round_trip`、`tests/fuzzing/test_sequence_seeds.py` |
 
 键集:
 
@@ -316,7 +322,7 @@ P3-T4 演进(可选键,缺省不出现——上面键集与 pin 不变):`tick` �
 
 **演进语义与分派纪律(R1 冻结裁决):**
 
-- 分派只看 `"steps"` 键存在且值为 list:是→按序逐步执行,每步经 `json.dumps` 走与单请求**同一** `target(data)` 执行面;否→**原字节透传**,legacy 单请求路径行为逐字节不变(四臂非回归门)。
+- 分派只看 `"steps"` 键存在且值为 list:是→按序逐步执行,每步经 `json.dumps` 走与单请求**同一** `target(data)` 执行面;否→**原字节透传**,legacy 单请求路径行为逐字节不变(四臂非回归门)。已知碰撞方向:legacy 单请求 JSON 若顶层恰含 `"steps": list` 会被误判为序列种子走逐步重放(判型只看顶层键);当前靶族与生产者均不产出该形状(单请求契约键集为 query/form/json/header/cookie)。
 - 会话连续性 = 进程内持久:adapter 持有的 app/test_client、靶模块级会话态跨步存活;Atheris 仍是唯一执行引擎,整条序列是一次输入,序列变异即状态空间探索(涌现)。
 - 跨输入策略:无逐输入重置——状态在 libFuzzer 输入间延续(进程内);需干净态的实验以 target 的 reset_state() 显式重置(见各靶 docstring)。
 - 覆盖口径 = 序列全程并集:所有步在同一 handler 调用、同一 TraceSession 请求窗口内执行,coverage 计数自然累加(R3)。
