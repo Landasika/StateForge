@@ -38,4 +38,4 @@ fuzz = [
 include = ["stateforge*"]
 
 [tool.setuptools.package-data]
-stateforge = ["fixtures/**/*", "py.typed"]
+stateforge = ["fixtures/**/*", "py.typed", "llm/cache/*.json"]

@@ -33,6 +33,13 @@ __pycache__/
 stateforge/**/cache/
 stateforge/**/llm/cache/
 
+# 例外:P0 冻结——vulnshop 语义标注缓存随仓分发。
+# analyzer 语义通道"缓存优先,无缓存+无 key → 全 irrelevant";缓存缺位时
+# fresh-clone 会丢 Session.authed_as 等标注 → 10 用例失败。缓存内容为
+# LLM 标注 JSON(label/relate,无机密),sha256 键,同码同夹具必命中。
+!stateforge/llm/cache/
+!stateforge/llm/cache/*.json
+
 # 文档 / 笔记 / 论文(非代码)
 notes/
 papers/
