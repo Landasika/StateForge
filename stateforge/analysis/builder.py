@@ -7,6 +7,11 @@
   requires  action→state(多条 = AND;precondition 归一:guard-return 的 != 也映射为 ==)
   produces  action→state{op, key}(effect)
   invariant 同 var 状态原子间(legal true/false;来自 guard→effect 配对)
+
+op=ne 契约:仅 guard-return 语境(`if x != V: return/raise/abort`)的 ne 才
+允许在此反转为 x==V——产出端 patterns.R3 已按该语境门控,非 guard-return 的
+ne 不产 precondition(≠ 不可用 eq 形原子表达);手工构造 AppModel 的生产者
+同守此约。
 """
 
 from __future__ import annotations

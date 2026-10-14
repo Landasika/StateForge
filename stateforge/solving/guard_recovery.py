@@ -21,7 +21,9 @@ def _function_map(ir: ProgramIR) -> dict[str, ast.FunctionDef]:
     for path in sorted(root.rglob("*.py")):
         try:
             tree = ast.parse(path.read_text(encoding="utf-8"))
-        except (OSError, SyntaxError):
+        except (OSError, SyntaxError, UnicodeDecodeError):
+            # UnicodeDecodeError(ValueError 族,非 SyntaxError):真实文件树
+            # 可能含非 UTF-8 源(latin-1 等),漏接会炸穿整条求解链。
             continue
         rel = str(path.relative_to(root))
         # icfg 模块名 = 相对路径去后缀;块 file 为绝对路径,键用 rel 前缀匹配
@@ -41,7 +43,7 @@ class _TestIndex:
         for path in sorted(root.rglob("*.py")):
             try:
                 tree = ast.parse(path.read_text(encoding="utf-8"))
-            except (OSError, SyntaxError):
+            except (OSError, SyntaxError, UnicodeDecodeError):
                 continue
             for node in ast.walk(tree):
                 if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):

@@ -10,10 +10,14 @@ import ast
 import hashlib
 import re
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from stateforge.state.model import (
     StateDomain, StateFactCandidate, StateOperation, Relevance,
     PredicateOp, StructuredPredicate)
+
+if TYPE_CHECKING:  # 仅类型;运行时鸭子式取 ir.blocks,避免硬依赖
+    from stateforge.core.ir import ProgramIR
 
 # ── Canonical object_ref ──
 
@@ -401,11 +405,50 @@ def _is_in_guard(fn_node: ast.FunctionDef, lineno: int) -> bool:
     return False
 
 
+# ── CFG 基本块绑定(诊断 3)──
+
+class _BlockIndex:
+    """ProgramIR 基本块行索引:(file, lineno) → block_id。
+
+    定向状态构造需要"写入发生在哪个基本块"作为中间目标(fuzz 写入块 =
+    构造状态)。匹配规则:同文件 + 行落在 [start_line, end_line];多命中
+    取最窄块(嵌套/顺序块重叠时选精确锚);路径形态不一致时按文件名
+    兜底。ir 缺省时 lookup 恒 None(行为与未绑定版一致)。
+    """
+
+    def __init__(self, ir: "ProgramIR") -> None:
+        self._by_file: dict[str, list[tuple[int, int, str]]] = {}
+        for b in getattr(ir, "blocks", {}).values():
+            self._by_file.setdefault(b.file, []).append(
+                (b.start_line, b.end_line, b.id))
+
+    def lookup(self, filename: str, lineno: int) -> str | None:
+        spans = self._by_file.get(filename)
+        if spans is None:  # 绝对/相对路径形态不一致 → 文件名兜底
+            base = filename.replace("\\", "/").rsplit("/", 1)[-1]
+            for f, sp in self._by_file.items():
+                if f.replace("\\", "/").rsplit("/", 1)[-1] == base:
+                    spans = sp
+                    break
+        if not spans:
+            return None
+        hits = [(s, e, i) for s, e, i in spans if s <= lineno <= e]
+        if not hits:
+            return None
+        return min(hits, key=lambda t: t[1] - t[0])[2]
+
+
 # ── 主入口 ──
 
-def extract_state_facts(source_dir: str | Path) -> list[StateFactCandidate]:
-    """从目录提取全部 StateFact(SESSION + DATABASE + FILE)。"""
+def extract_state_facts(source_dir: str | Path,
+                        ir: "ProgramIR | None" = None) -> list[StateFactCandidate]:
+    """从目录提取全部 StateFact(SESSION + DATABASE + FILE)。
+
+    ir 给定时(诊断 3),每条事实经行号锚到 ICFG 基本块(block_id);
+    前提:ir 与 source_dir 同源(同一目标树的 build_icfg 产物)。
+    """
     source_dir = Path(source_dir)
+    block_index = _BlockIndex(ir) if ir is not None else None
     all_facts = []
     for py in sorted(source_dir.rglob("*.py")):
         if "__pycache__" in str(py) or py.name.startswith("."):
@@ -413,7 +456,7 @@ def extract_state_facts(source_dir: str | Path) -> list[StateFactCandidate]:
         try:
             tree = ast.parse(py.read_text(encoding="utf-8"),
                               filename=str(py))
-        except (OSError, SyntaxError):
+        except (OSError, SyntaxError, UnicodeDecodeError):
             continue
         for fn in ast.walk(tree):
             if not isinstance(fn, (ast.FunctionDef, ast.AsyncFunctionDef)):
@@ -425,10 +468,12 @@ def extract_state_facts(source_dir: str | Path) -> list[StateFactCandidate]:
             facts.extend(_extract_file(fn, str(py), in_guard))
 
             # 重新判定控制相关性:在 if 条件中使用的操作 → CONTROL
+            # (诊断 3:同时锚 block_id——写入块 = 定向状态构造的中间目标)
             import dataclasses
             for fact in facts:
+                updates: dict = {}
                 if fact.lineno and _is_in_guard(fn, fact.lineno):
-                    updates = {"relevance": Relevance.CONTROL}
+                    updates["relevance"] = Relevance.CONTROL
                     if fact.structured_predicate is None:
                         # 在守卫中 → 补谓词
                         if fact.domain == StateDomain.SESSION:
@@ -443,9 +488,12 @@ def extract_state_facts(source_dir: str | Path) -> list[StateFactCandidate]:
                             updates["structured_predicate"] = (
                                 StructuredPredicate(
                                     PredicateOp.EXISTS, fact.object_ref))
-                    all_facts.append(dataclasses.replace(fact, **updates))
-                else:
-                    all_facts.append(fact)
+                if block_index is not None and fact.lineno:
+                    bid = block_index.lookup(fact.source_file, fact.lineno)
+                    if bid is not None:
+                        updates["block_id"] = bid
+                all_facts.append(
+                    dataclasses.replace(fact, **updates) if updates else fact)
 
     # 去重(同 ID)
     seen = {}

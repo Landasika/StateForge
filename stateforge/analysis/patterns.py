@@ -50,6 +50,33 @@ def _subscript_parts(node) -> tuple[str, str] | None:
     return None
 
 
+def _is_guard_return_body(body: list[ast.stmt]) -> bool:
+    """if 体首句为 return/raise/abort() 即早退守卫。"""
+    if not body:
+        return False
+    first = body[0]
+    if isinstance(first, (ast.Return, ast.Raise)):
+        return True
+    return (isinstance(first, ast.Expr) and isinstance(first.value, ast.Call)
+            and isinstance(first.value.func, ast.Name)
+            and first.value.func.id == "abort")
+
+
+def _guard_return_test_ids(func: ast.AST) -> frozenset[int]:
+    """guard-return 惯用法识别:`if <test>:` 体首句为 return/raise/abort()。
+
+    该语境下函数持续执行的条件是 test 的**否定**,`!= V` 反转成 `== V`
+    仅在此成立。非 guard-return 位置的 ne 分支体语义是"≠ V",状态原子
+    词汇(eq 形字符串)不可表达——R3 对其只记 candidate、不产 precondition,
+    防 SSTG 错误归一(诊断 2:builder._pre_atom 对所有 ne 无条件反转)。
+    """
+    ids: set[int] = set()
+    for node in ast.walk(func):
+        if isinstance(node, ast.If) and _is_guard_return_body(node.body):
+            ids.update(id(n) for n in ast.walk(node.test))
+    return frozenset(ids)
+
+
 _SINGULAR = {"orders": "Order", "coupons": "Coupon", "users": "User", "books": "Book"}
 
 
@@ -200,7 +227,8 @@ class EndpointExtractor(ast.NodeVisitor):
     def _extract_endpoint_into(
         self, func: ast.FunctionDef, route: str, methods: list[HttpMethod], ep: Endpoint
     ) -> _EpEnv:
-        env = _EpEnv(self.file, ep, self.candidates, self.config_flags)
+        env = _EpEnv(self.file, ep, self.candidates, self.config_flags,
+                     _guard_return_test_ids(func))
         for stmt in ast.walk(func):
             env.visit_node(stmt)
         # 端点内事实去重(vuln/fixed 双分支常产生同形 Effect/Precondition)
@@ -214,8 +242,10 @@ class EndpointExtractor(ast.NodeVisitor):
 class _EpEnv:
     """单端点内的事实收集器。"""
 
-    def __init__(self, file, ep: Endpoint, candidates: list[StateCandidate], flags: dict):
+    def __init__(self, file, ep: Endpoint, candidates: list[StateCandidate], flags: dict,
+                 guard_return_ids: frozenset[int] = frozenset()):
         self.file, self.ep, self.cands, self.flags = file, ep, candidates, flags
+        self.guard_ids = guard_return_ids
         self.json_bodies: set[str] = set()  # request.get_json() 赋值的变量名
         self._cand_ops: dict[str, set] = defaultdict(set)
         self._cand_evidence: dict[str, list] = defaultdict(list)
@@ -288,10 +318,14 @@ class _EpEnv:
             var = _normalize_var(row, attr)
             op = {ast.Eq: "eq", ast.NotEq: "ne", ast.In: "in"}.get(type(comp.ops[0]))
             if op:
-                self.ep.preconditions.append(Precondition(
-                    var=var, op=op, value=litv, file=self.file,
-                    line=getattr(comp, "lineno", 0),
-                ))
+                # ne 仅 guard-return 语境可反转 ==(builder 惯用法契约);
+                # 非 guard-return 的 ne 语义是 ≠,原子词汇不可表达 → 只记
+                # candidate 给标注层,不产 precondition(防 SSTG 错误归一)。
+                if op != "ne" or id(comp) in self.guard_ids:
+                    self.ep.preconditions.append(Precondition(
+                        var=var, op=op, value=litv, file=self.file,
+                        line=getattr(comp, "lineno", 0),
+                    ))
                 self._cand(var, "compare", f'{var} {op} "{litv}"', "condition")
         # ownership 比对:row["user_id"] vs user["id"]
         a, b = _subscript_parts(left), _subscript_parts(right)
