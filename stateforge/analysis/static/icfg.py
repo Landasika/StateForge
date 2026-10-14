@@ -9,7 +9,8 @@ from pathlib import Path
 from stateforge.core.ir import ProgramIR, FlowEdge, BasicBlock
 from stateforge.analysis.static.cfg import build_function_cfg
 
-_SKIP = {"tests", "__pycache__", "migrations", "node_modules", ".git", "golden"}
+_SKIP = {"tests", "__pycache__", "migrations", "node_modules", ".git", "golden",
+         ".venv", "venv", ".tox", ".eggs", "site-packages"}
 
 _OWNED_STOP = (ast.FunctionDef, ast.AsyncFunctionDef, ast.Lambda, ast.ClassDef)
 

@@ -15,7 +15,8 @@ from stateforge.analysis.patterns import EndpointExtractor, _path_params
 from stateforge.core.model import AppModel, Endpoint
 
 _SKIP_DIRS = {"__pycache__", "migrations", "docs", "dockerized_labs", "chatbot",
-              "node_modules", ".git", "tests"}
+              "node_modules", ".git", "tests", ".venv", "venv", ".tox", ".eggs",
+              "site-packages"}
 
 
 def _literal(node) -> str | None:

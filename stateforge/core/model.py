@@ -14,7 +14,8 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
-HttpMethod = Literal["GET", "POST", "PUT", "DELETE", "PATCH"]
+# HEAD/OPTIONS:moin 等真实靶路由表含 HEAD(接入门实测),词表扩充
+HttpMethod = Literal["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"]
 
 # 六类安全标签 + irrelevant(SF1 六类漏洞锚定表)
 StateLabel = Literal[

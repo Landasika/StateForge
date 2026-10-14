@@ -8,7 +8,8 @@ from pathlib import Path
 from stateforge.analysis.patterns import EndpointExtractor
 from stateforge.core.model import AppModel
 
-_SKIP_DIRS = {"tests", "__pycache__", "golden", "probes", "database"}
+_SKIP_DIRS = {"tests", "__pycache__", "golden", "probes", "database",
+               ".venv", "venv", ".tox", ".eggs", "site-packages"}
 _SKIP_FILES = {"adapter.py", "__init__.py", "app_anota.py"}  # app_anota = 注解工件,非分析对象
 
 

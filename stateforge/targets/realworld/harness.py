@@ -68,6 +68,7 @@ ROUTES = [
     ("PUT", "/api/user"),
     ("POST", "/api/users"),
     ("POST", "/api/users/login"),
+    ("GET", "/api/articles?tag=t&limit=5&offset=0"),   # 查询变体(门1 20 路由口径)
 ]
 _METHODS = ("GET", "POST", "PUT", "DELETE")
 
