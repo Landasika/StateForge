@@ -69,6 +69,36 @@ class StateFactIndex:
                 "line": fact.lineno,
             })
 
+    def writers_of(self, object_ref: str) -> list[dict]:
+        """读点 → 可能影响它的写点(Phase 1 统一索引查询 API)。
+
+        蕴含规则(行写覆盖字段):`db.orders.owner` 的读受 `db.orders.*`
+        整行写影响;同表任意粒度互不影响字段级精确性以外的判断。
+        事务点(db.session.commit/flush)不按 object_ref 匹配,不在此列。
+        返回去重后的 [{object_ref, op, function, file, line, value}]。
+        """
+        out: dict[tuple, dict] = {}
+        parent = (object_ref.rsplit(".", 1)[0]
+                  if object_ref.count(".") >= 2 else None)
+        for ref, obj in self.objects.items():
+            if ref == "db.session":
+                continue
+            if ref not in ((object_ref, parent)
+                           if parent else (object_ref,)):
+                continue
+            for kind, entries in (("WRITE", obj.writes),
+                                  ("DELETE", obj.deletes)):
+                for entry in entries:
+                    key = (entry["file"], entry["line"], ref, kind)
+                    out[key] = {
+                        "object_ref": ref, "op": kind,
+                        "function": entry["function"],
+                        "file": entry["file"], "line": entry["line"],
+                        "value": entry.get("value"),
+                    }
+        return [out[k] for k in sorted(out,
+                                       key=lambda k: (k[0], k[1]))]
+
     def get_usage_profile(self, object_ref: str) -> str | None:
         """人读使用档案(给 HVG 用)。"""
         obj = self.objects.get(object_ref)

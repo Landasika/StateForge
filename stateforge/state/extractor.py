@@ -438,6 +438,188 @@ class _BlockIndex:
         return min(hits, key=lambda t: t[1] - t[0])[2]
 
 
+# ── 容器 dict 库提取(Phase 1 统一状态读写索引)──
+#
+# 词汇:`_DB["table"][key] = row` 写 / `_DB["table"][key]`·`.get(key)` 读 /
+# `key in _DB["table"]` / `len(_DB["table"])` / `del _DB["table"][key]`;
+# 行变量别名(`order = _DB["orders"].get(oid)`)传播后,`order["field"]`
+# 读映射为 `db.<table>.<field>`,`order is None` 映射为存在性读。
+# object_ref 命名:`db.<table>`(行级)/ `db.<table>.<field>`(字段级)。
+
+_DICT_STORE_NAMES = {"_DB", "DB", "_db", "database"}
+_ORM_TXN_METHODS = {
+    "commit": StateOperation.WRITE,
+    "flush": StateOperation.WRITE,
+    "rollback": StateOperation.DELETE,
+}
+
+
+def _is_store_name(name: str) -> bool:
+    return name in _DICT_STORE_NAMES
+
+
+def _store_table(node) -> str | None:
+    """`_DB["table"]` → "table"(库容器上的常量表下标)。"""
+    if (isinstance(node, ast.Subscript)
+            and isinstance(node.value, ast.Name)
+            and _is_store_name(node.value.id)
+            and isinstance(node.slice, ast.Constant)):
+        return str(node.slice.value)
+    return None
+
+
+def _row_expr_table(node) -> str | None:
+    """行取值表达式 → 表名:`_DB[t][k]`、`_DB[t].get(k)`(含三元包裹形)。"""
+    if isinstance(node, ast.IfExp):               # `... .get(k) if cond else None`
+        return _row_expr_table(node.body) or _row_expr_table(node.orelse)
+    if (isinstance(node, ast.Subscript) and node.ctx.__class__ is ast.Load
+            and _store_table(node.value) is not None):
+        return _store_table(node.value)
+    if (isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
+            and node.func.attr == "get"
+            and _store_table(node.func.value) is not None):
+        return _store_table(node.func.value)
+    return None
+
+
+def _row_alias_map(fn_node: ast.AST) -> dict[str, str]:
+    """行变量别名:`order = _DB["orders"].get(oid)` → {"order": "orders"}。"""
+    alias: dict[str, str] = {}
+    for node in ast.walk(fn_node):
+        if (isinstance(node, ast.Assign) and len(node.targets) == 1
+                and isinstance(node.targets[0], ast.Name)):
+            table = _row_expr_table(node.value)
+            if table is not None:
+                alias[node.targets[0].id] = table
+    return alias
+
+
+def _mk_db_fact(ref: str, op: StateOperation, node, fn, filename,
+                predicate: StructuredPredicate | None = None,
+                written_value=None) -> StateFactCandidate:
+    return StateFactCandidate(
+        candidate_id=make_id("DATABASE", ref, op.value, filename, node.lineno),
+        domain=StateDomain.DATABASE, object_ref=ref, operation=op,
+        source_file=filename, function_name=fn.name,
+        lineno=node.lineno, block_id=None,
+        predicate=ast.unparse(node)[:80],
+        structured_predicate=predicate,
+        written_value=written_value,
+        relevance=Relevance.NON_CONTROL,
+        evidence=(f"{filename}:{node.lineno} dict-store {op.value}",),
+    )
+
+
+def _extract_dict_store(fn_node, filename, in_guard) -> list[StateFactCandidate]:
+    facts: list[StateFactCandidate] = []
+    alias = _row_alias_map(fn_node)
+    assign_targets: set[tuple[str, int]] = set()      # 排除赋值目标读
+    for node in ast.walk(fn_node):
+        if isinstance(node, ast.Assign):
+            for t in node.targets:
+                for sub in ast.walk(t):
+                    if isinstance(sub, ast.Subscript) and hasattr(sub, "lineno"):
+                        assign_targets.add((sub.__class__.__name__
+                                            + str(_store_table(sub) or ""),
+                                            sub.lineno))
+
+        # 写:_DB["table"][key] = row(目标为二层下标)
+        if isinstance(node, ast.Assign):
+            for t in node.targets:
+                table = _store_table(t.value) if isinstance(t, ast.Subscript) else None
+                if table is not None:
+                    facts.append(_mk_db_fact(
+                        f"db.{table}", StateOperation.WRITE,
+                        node, fn_node, filename,
+                        written_value=_extract_const(node.value)
+                        if isinstance(node.value, (ast.Constant,)) else None))
+
+        # 读(载入语境):_DB["table"][key] 直取
+        if (isinstance(node, ast.Subscript) and node.ctx.__class__ is ast.Load
+                and (t := _store_table(node.value)) is not None
+                and (node.__class__.__name__ + str(t), node.lineno)
+                not in assign_targets):
+            facts.append(_mk_db_fact(f"db.{t}", StateOperation.READ,
+                                     node, fn_node, filename))
+
+        # 读:_DB["table"].get(key) / len(_DB["table"])
+        if isinstance(node, ast.Call):
+            if (isinstance(node.func, ast.Attribute)
+                    and node.func.attr == "get"
+                    and (t := _store_table(node.func.value)) is not None):
+                facts.append(_mk_db_fact(f"db.{t}", StateOperation.READ,
+                                         node, fn_node, filename))
+            elif (isinstance(node.func, ast.Name) and node.func.id == "len"
+                    and node.args and (t := _store_table(node.args[0])) is not None):
+                facts.append(_mk_db_fact(f"db.{t}", StateOperation.READ,
+                                         node, fn_node, filename))
+
+        # 读:key in _DB["table"](成员检查)
+        if (isinstance(node, ast.Compare)
+                and any(isinstance(op, ast.In) for op in node.ops)):
+            for side in (node.left, *node.comparators):
+                if (t := _store_table(side)) is not None:
+                    facts.append(_mk_db_fact(
+                        f"db.{t}", StateOperation.READ, node, fn_node,
+                        filename,
+                        predicate=StructuredPredicate(PredicateOp.EXISTS,
+                                                      f"db.{t}")))
+
+        # 删:del _DB["table"][key]
+        if isinstance(node, ast.Delete):
+            for t_target in node.targets:
+                if (isinstance(t_target, ast.Subscript)
+                        and (t := _store_table(t_target.value)) is not None):
+                    facts.append(_mk_db_fact(f"db.{t}", StateOperation.DELETE,
+                                             node, fn_node, filename))
+
+        # ORM 事务点:db.session.commit/flush/rollback
+        if (isinstance(node, ast.Call)
+                and isinstance(node.func, ast.Attribute)
+                and node.func.attr in _ORM_TXN_METHODS):
+            facts.append(_mk_db_fact(
+                f"db.session.{node.func.attr}",
+                _ORM_TXN_METHODS[node.func.attr], node, fn_node, filename))
+
+    # 行变量字段读 + 存在性(None 比较)+ 比较谓词(EQ/NE/IN)
+    _cmp_op_map = {"Eq": PredicateOp.EQ, "NotEq": PredicateOp.NE,
+                   "In": PredicateOp.IN, "NotIn": PredicateOp.NOT_IN}
+    compare_of: dict[int, tuple[PredicateOp, object]] = {}
+    for node in ast.walk(fn_node):
+        if (isinstance(node, ast.Compare) and len(node.ops) == 1
+                and type(node.ops[0]).__name__ in _cmp_op_map):
+            for i, side in enumerate((node.left, *node.comparators)):
+                other = node.comparators[0] if i == 0 else node.left
+                if isinstance(side, ast.Subscript):
+                    compare_of[id(side)] = (
+                        _cmp_op_map[type(node.ops[0]).__name__],
+                        _extract_const(other))
+    for node in ast.walk(fn_node):
+        if (isinstance(node, ast.Subscript) and node.ctx.__class__ is ast.Load
+                and isinstance(node.value, ast.Name)
+                and node.value.id in alias
+                and isinstance(node.slice, ast.Constant)):
+            var, field = node.value.id, str(node.slice.value)
+            pred = None
+            if id(node) in compare_of:
+                op, val = compare_of[id(node)]
+                pred = StructuredPredicate(op, f"db.{alias[var]}.{field}", val)
+            facts.append(_mk_db_fact(
+                f"db.{alias[var]}.{field}", StateOperation.READ,
+                node, fn_node, filename, predicate=pred))
+        if (isinstance(node, ast.Compare)
+                and isinstance(node.left, ast.Name)
+                and node.left.id in alias
+                and any(isinstance(c, ast.Constant) and c.value is None
+                        for c in node.comparators)):
+            facts.append(_mk_db_fact(
+                f"db.{alias[node.left.id]}", StateOperation.READ,
+                node, fn_node, filename,
+                predicate=StructuredPredicate(PredicateOp.EXISTS,
+                                              f"db.{alias[node.left.id]}")))
+    return facts
+
+
 # ── 主入口 ──
 
 def extract_state_facts(source_dir: str | Path,
@@ -466,6 +648,7 @@ def extract_state_facts(source_dir: str | Path,
             facts.extend(_extract_session(fn, str(py), in_guard))
             facts.extend(_extract_db(fn, str(py), in_guard))
             facts.extend(_extract_file(fn, str(py), in_guard))
+            facts.extend(_extract_dict_store(fn, str(py), in_guard))
 
             # 重新判定控制相关性:在 if 条件中使用的操作 → CONTROL
             # (诊断 3:同时锚 block_id——写入块 = 定向状态构造的中间目标)
