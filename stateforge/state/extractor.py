@@ -620,6 +620,70 @@ def _extract_dict_store(fn_node, filename, in_guard) -> list[StateFactCandidate]
     return facts
 
 
+# ── Session 两步守卫(Phase 5/6:M1 惯用法)──
+#
+# `x = session.get("k")` 换行后 `if x == "admin"` / `if x:` ——读点不在
+# 守卫 test 行内,_is_in_guard 判 NON_CONTROL。别名传播把比较谓词归回
+# session.k 并标 CONTROL(与 dict-store 行变量别名同族的结构规则)。
+
+def _session_alias_predicates(fn_node, filename) -> list[StateFactCandidate]:
+    alias: dict[str, str] = {}                  # x → session.<key>
+    for node in ast.walk(fn_node):
+        if (isinstance(node, ast.Assign) and len(node.targets) == 1
+                and isinstance(node.targets[0], ast.Name)
+                and isinstance(node.value, ast.Call)
+                and isinstance(node.value.func, ast.Attribute)
+                and node.value.func.attr == "get"
+                and isinstance(node.value.func.value, ast.Name)
+                and node.value.func.value.id == "session"
+                and node.value.args
+                and isinstance(node.value.args[0], ast.Constant)):
+            alias[node.targets[0].id] = canon_session(
+                str(node.value.args[0].value))
+    if not alias:
+        return []
+    facts: list[StateFactCandidate] = []
+    for node in ast.walk(fn_node):
+        if not hasattr(node, "lineno"):
+            continue
+        if isinstance(node, ast.Compare) and isinstance(node.left, ast.Name) \
+                and node.left.id in alias and len(node.ops) == 1:
+            opv = {ast.Eq: PredicateOp.EQ, ast.NotEq: PredicateOp.NE,
+                   ast.In: PredicateOp.IN}.get(type(node.ops[0]))
+            val = _extract_const(node.comparators[0]) if node.comparators else None
+            if opv and isinstance(val, str):
+                ref = alias[node.left.id]
+                facts.append(StateFactCandidate(
+                    candidate_id=make_id("SESSION", ref, "READ",
+                                         filename, node.lineno),
+                    domain=StateDomain.SESSION, object_ref=ref,
+                    operation=StateOperation.READ,
+                    source_file=filename, function_name=fn_node.name,
+                    lineno=node.lineno, block_id=None,
+                    predicate=ast.unparse(node)[:80],
+                    structured_predicate=StructuredPredicate(opv, ref, val),
+                    written_value=None, relevance=Relevance.CONTROL,
+                    evidence=(f"{filename}:{node.lineno} alias-guard",),
+                ))
+        if isinstance(node, ast.If) and isinstance(node.test, ast.Name) \
+                and node.test.id in alias:
+            ref = alias[node.test.id]
+            facts.append(StateFactCandidate(
+                candidate_id=make_id("SESSION", ref, "READ",
+                                     filename, node.lineno),
+                domain=StateDomain.SESSION, object_ref=ref,
+                operation=StateOperation.READ,
+                source_file=filename, function_name=fn_node.name,
+                lineno=node.lineno, block_id=None,
+                predicate=ast.unparse(node)[:80],
+                structured_predicate=StructuredPredicate(
+                    PredicateOp.EXISTS, ref),
+                written_value=None, relevance=Relevance.CONTROL,
+                evidence=(f"{filename}:{node.lineno} alias-truthy",),
+            ))
+    return facts
+
+
 # ── 主入口 ──
 
 def extract_state_facts(source_dir: str | Path,
@@ -649,6 +713,7 @@ def extract_state_facts(source_dir: str | Path,
             facts.extend(_extract_db(fn, str(py), in_guard))
             facts.extend(_extract_file(fn, str(py), in_guard))
             facts.extend(_extract_dict_store(fn, str(py), in_guard))
+            facts.extend(_session_alias_predicates(fn, str(py)))
 
             # 重新判定控制相关性:在 if 条件中使用的操作 → CONTROL
             # (诊断 3:同时锚 block_id——写入块 = 定向状态构造的中间目标)

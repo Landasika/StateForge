@@ -280,11 +280,22 @@ def plan_for_block(ir, facts: list[StateFactCandidate],
             f"final-action: {final_arm}(目标块所在臂,消费状态命中深块)")
 
     # 参数绑定:{"op": 臂名} ∪ arm_params(AST 结构提取,零预设名)
+    # 谓词驱动取值:臂写 session.<k> 且参数名==k 且目标约束含
+    # EQ <k>=常量 → 参数填该常量(值来自谓词,非预设词表)
+    eq_values = {p.subject: p.value for p in goal.constraints
+                 if p.operator.value == "EQ" and isinstance(p.value, str)}
+    eff_vars_by_route = {ep.route: {e.var for e in ep.effects}
+                         for ep in model.endpoints}
     for step in segment.steps:
         arm_name = step.action.removeprefix("POST op=")
         s, e = next(((s0, e0) for n, s0, e0 in arms if n == arm_name),
                     (0, 0))
-        step.json = {"op": arm_name, **arm_params(goal.file, s, e)}
+        params = arm_params(goal.file, s, e)
+        for var in eff_vars_by_route.get(f"op={arm_name}", ()):
+            key = var.split(".", 1)[1] if "." in var else var
+            if key in params and var in eq_values:
+                params[key] = eq_values[var]
+        step.json = {"op": arm_name, **params}
     return goal, segment
 
 
