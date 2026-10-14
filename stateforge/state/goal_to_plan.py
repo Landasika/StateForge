@@ -31,6 +31,88 @@ from stateforge.state.planning.backward import plan_backward
 from stateforge.state.planning.goals import GoalSpec
 
 
+def _fn_ast(source_file: str):
+    try:
+        return ast.parse(Path(source_file).read_text(encoding="utf-8"))
+    except (OSError, SyntaxError, UnicodeDecodeError):
+        return None
+
+
+def _body_vars(tree) -> set[str]:
+    """请求体变量发现:`<v> = <x>.get("json", <x>)` 惯用法 → {v}。
+
+    零预设名:变量名与键名都来自源码结构,不认任何具体字段。
+    """
+    out: set[str] = set()
+    for node in ast.walk(tree):
+        if (isinstance(node, ast.Assign) and len(node.targets) == 1
+                and isinstance(node.targets[0], ast.Name)
+                and isinstance(node.value, ast.Call)
+                and isinstance(node.value.func, ast.Attribute)
+                and node.value.func.attr == "get"
+                and node.value.args
+                and isinstance(node.value.args[0], ast.Constant)
+                and node.value.args[0].value == "json"):
+            out.add(node.targets[0].id)
+    return out
+
+
+def arm_params(source_file: str, arm_start: int, arm_end: int) -> dict[str, str]:
+    """臂内请求参数提取(AST 结构匹配):body 链上的 `.get("常量")` /
+    `body["常量"]` → {参数名: 中性值}。
+
+    值为谓词驱动:字符串参数统一非空(臂内 truthy/isinstance 守卫的
+    结构性安全默认);参数名完全来自源码常量,零预设词表。
+    """
+    tree = _fn_ast(source_file)
+    if tree is None:
+        return {}
+    bvars = _body_vars(tree)
+    # 可选覆盖参数:`body.get(k) or <fallback>`(Or 链)——中性值会抢占
+    # fallback 到会话/已有状态的路径,结构规则 = 不填(让 fallback 生效)
+    or_param_keys: set[str] = set()
+    for node in ast.walk(tree):
+        if not (hasattr(node, "lineno")
+                and arm_start <= node.lineno <= arm_end
+                and isinstance(node, ast.BoolOp)
+                and isinstance(node.op, ast.Or)):
+            continue
+        for side in node.values:
+            if (isinstance(side, ast.Call)
+                    and isinstance(side.func, ast.Attribute)
+                    and side.func.attr == "get"
+                    and isinstance(side.func.value, ast.Name)
+                    and side.func.value.id in bvars
+                    and side.args
+                    and isinstance(side.args[0], ast.Constant)):
+                or_param_keys.add(side.args[0].value)
+    params: dict[str, str] = {}
+    for node in ast.walk(tree):
+        if not hasattr(node, "lineno"):
+            continue                           # Module 等无行号节点
+        if not (arm_start <= node.lineno <= arm_end):
+            continue
+        # <bodyvar>.get("k", ...) 调用形
+        if (isinstance(node, ast.Call)
+                and isinstance(node.func, ast.Attribute)
+                and node.func.attr == "get"
+                and isinstance(node.func.value, ast.Name)
+                and node.func.value.id in bvars
+                and node.args and isinstance(node.args[0], ast.Constant)
+                and isinstance(node.args[0].value, str)):
+            if node.args[0].value not in or_param_keys:
+                params[node.args[0].value] = "v"
+        # <bodyvar>["k"] 下标形
+        if (isinstance(node, ast.Subscript)
+                and isinstance(node.value, ast.Name)
+                and node.value.id in bvars
+                and isinstance(node.slice, ast.Constant)
+                and isinstance(node.slice.value, str)):
+            if node.slice.value not in or_param_keys:
+                params[node.slice.value] = "v"
+    return params
+
+
 def dispatch_arms(source_file: str) -> list[tuple[str, int, int]]:
     """`elif op == "name":` 分派臂 → [(name, start, end)]。
 
@@ -196,6 +278,13 @@ def plan_for_block(ir, facts: list[StateFactCandidate],
         segment.steps.append(PlanStep(action=f"POST op={final_arm}"))
         segment.notes.append(
             f"final-action: {final_arm}(目标块所在臂,消费状态命中深块)")
+
+    # 参数绑定:{"op": 臂名} ∪ arm_params(AST 结构提取,零预设名)
+    for step in segment.steps:
+        arm_name = step.action.removeprefix("POST op=")
+        s, e = next(((s0, e0) for n, s0, e0 in arms if n == arm_name),
+                    (0, 0))
+        step.json = {"op": arm_name, **arm_params(goal.file, s, e)}
     return goal, segment
 
 
