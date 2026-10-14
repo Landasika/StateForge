@@ -49,6 +49,23 @@
 否则 op 间/请求间状态泄漏使"单请求"退化为事实多步,深块被
 扫描误吞、随机臂虚高(实测踩坑记录)。
 
+## 追加:否定谓词支持(双演员门关闭)
+
+- **方向感知推导**:necessary_guard_edges 返回 (分支块, 必要边方向);
+  目标经守卫 **false 边**到达时其 EQ/IN 谓词反转(NE/NOT_IN)。
+  extractor 字段比较的值侧补符号引用(`other=session.get("k")` →
+  value="session.k")——NE 约束可行动。
+  实测对照:91-92(privileged)→ EQ owner=session.uid;
+  94-95(越权)→ **NE owner≠session.uid**。
+- **身份刷新步**(goal_to_plan 链后处理):NE(field≠session.k) →
+  终结动作前插入 k 生产者刷新步,喂参数经 AST 数据流发现
+  (`session["uid"]=x; x=body.get(p)` → p)并取 distinct 值:
+  register(v)→create_order(owner=v)→**register(v2)**→ship →
+  owner≠uid → 越权分支判达(块覆盖 + 双 register_ok 留痕)。
+- eval 更新:shop goal 臂 3/3(cost 9),三靶合计 **5/5 全判达**;
+  "双演员门"诚实缺口关闭(单会话内换身份即可构造,无需双演员基建;
+  真双并发会话留真实应用执行面)。
+
 ## 复现
 
 ```bash

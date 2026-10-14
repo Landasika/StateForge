@@ -510,6 +510,18 @@ def _mk_db_fact(ref: str, op: StateOperation, node, fn, filename,
     )
 
 
+def _session_ref_or_const(node):
+    """比较另一侧:`session.get("k")` → 符号引用 "session.k";
+    常量 → 常量;否则 None。符号引用供 NE 约束的链后处理消费。"""
+    if (isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
+            and node.func.attr == "get"
+            and isinstance(node.func.value, ast.Name)
+            and node.func.value.id == "session"
+            and node.args and isinstance(node.args[0], ast.Constant)):
+        return canon_session(str(node.args[0].value))
+    return _extract_const(node)
+
+
 def _extract_dict_store(fn_node, filename, in_guard) -> list[StateFactCandidate]:
     facts: list[StateFactCandidate] = []
     alias = _row_alias_map(fn_node)
@@ -593,7 +605,7 @@ def _extract_dict_store(fn_node, filename, in_guard) -> list[StateFactCandidate]
                 if isinstance(side, ast.Subscript):
                     compare_of[id(side)] = (
                         _cmp_op_map[type(node.ops[0]).__name__],
-                        _extract_const(other))
+                        _session_ref_or_const(other))
     for node in ast.walk(fn_node):
         if (isinstance(node, ast.Subscript) and node.ctx.__class__ is ast.Load
                 and isinstance(node.value, ast.Name)

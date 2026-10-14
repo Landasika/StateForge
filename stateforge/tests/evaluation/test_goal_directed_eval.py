@@ -84,5 +84,7 @@ def test_run_eval_writes_report(tmp_path, ir_facts):
     md = (out / "report.md").read_text(encoding="utf-8")
     assert "goal_directed" in md and "seq_random" in md
     assert len(payload["reports"]) == 3
-    # shop 的否定分支缺口被如实注记
-    assert "双演员门" in md
+    # goal 臂全判达(否定谓词支持后 shop 3/3,合计 5/5)
+    for r in payload["reports"]:
+        goal_arm = next(a for a in r["arms"] if a["arm"] == "goal_directed")
+        assert len(goal_arm["reached"]) == len(r["targets"])

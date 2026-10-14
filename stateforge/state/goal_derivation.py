@@ -85,13 +85,18 @@ def _entry_of(ir: ProgramIR, block_ids: set[str]) -> str | None:
     return min(entries, key=lambda b: ir.blocks[b].start_line)
 
 
-def necessary_guards(ir: ProgramIR, target_block: str) -> list[str]:
-    """支配目标块的分支块:删其任一出边后入口不可达目标。"""
+def necessary_guard_edges(ir: ProgramIR,
+                          target_block: str) -> list[tuple[str, str]]:
+    """支配目标块的 (分支块, 必要边方向)——方向感知版。
+
+    false 边 = 目标在守卫的否定侧(如越权分支 owner≠uid),
+    是谓词反转(EQ→NE)的依据。
+    """
     fblocks = _function_blocks(ir, target_block)
     entry = _entry_of(ir, fblocks)
     if entry is None or entry == target_block:
         return []
-    guards: list[str] = []
+    out: list[tuple[str, str]] = []
     branch_blocks = [b for b in fblocks
                      if any(e.src == b and e.kind in ("true", "false")
                             for e in ir.edges)]
@@ -101,10 +106,15 @@ def necessary_guards(ir: ProgramIR, target_block: str) -> list[str]:
                 continue
             if not _reachable(entry, target_block, fblocks, ir,
                               skip_edge=(e.src, e.dst)):
-                if b not in guards:
-                    guards.append(b)
+                if (b, e.kind) not in out:
+                    out.append((b, e.kind))
                 break
-    return sorted(guards, key=lambda g: ir.blocks[g].start_line)
+    return sorted(out, key=lambda t: ir.blocks[t[0]].start_line)
+
+
+def necessary_guards(ir: ProgramIR, target_block: str) -> list[str]:
+    """支配目标块的分支块:删其任一出边后入口不可达目标。"""
+    return [b for b, _kind in necessary_guard_edges(ir, target_block)]
 
 
 def _same_file(a: str, b: str) -> bool:
@@ -127,23 +137,36 @@ def _facts_in_block(facts: list[StateFactCandidate], file: str,
 
 def derive_state_goal(ir: ProgramIR, facts: list[StateFactCandidate],
                       target_block: str) -> StateGoal | None:
-    """目标块 → StateGoal(必要守卫上的 CONTROL 状态读点谓词集)。"""
+    """目标块 → StateGoal(必要守卫上的 CONTROL 状态读点谓词集)。
+
+    方向感知(否定谓词):目标经守卫 **false 边**到达时,该守卫的
+    EQ/IN 谓词反转(NE/NOT_IN)——越权分支(owner≠uid)的约束来源。
+    EXISTS 不反转(None-检查/真值的语义已内含方向,边界见文档)。
+    """
     blk = ir.blocks.get(target_block)
     if blk is None:
         return None
-    guards = necessary_guards(ir, target_block)
-    constraints: list[StructuredPredicate] = []
+    from stateforge.state.model import PredicateOp, StructuredPredicate
+
+    _invert = {"EQ": PredicateOp.NE, "IN": PredicateOp.NOT_IN}
+    guards = necessary_guard_edges(ir, target_block)
+    constraints: list = []
     evidence: list[str] = []
-    for g in guards:
+    for g, edge_kind in guards:
         gblk = ir.blocks[g]
         for f in _facts_in_block(facts, gblk.file,
                                  gblk.start_line, gblk.end_line):
-            if f.structured_predicate in constraints:
+            pred = f.structured_predicate
+            if edge_kind == "false" and pred.operator.value in _invert:
+                pred = StructuredPredicate(
+                    _invert[pred.operator.value], pred.subject, pred.value)
+            if pred in constraints:
                 continue                      # 同谓词去重(EXISTS 双源)
-            constraints.append(f.structured_predicate)
+            constraints.append(pred)
             evidence.append(
                 f"{f.source_file}:{f.lineno} {f.object_ref}"
-                f" {f.structured_predicate.operator.value}")
+                f" {pred.operator.value}"
+                f"{'' if edge_kind == 'true' else '(false 边反转)'}")
     # 目标块自身的 CONTROL 读点(块内守卫)也入约束
     for f in _facts_in_block(facts, blk.file, blk.start_line, blk.end_line):
         if f.structured_predicate in constraints:
@@ -157,6 +180,6 @@ def derive_state_goal(ir: ProgramIR, facts: list[StateFactCandidate],
         function=blk.function,
         file=blk.file,
         constraints=tuple(constraints),
-        guard_blocks=tuple(guards),
+        guard_blocks=tuple(b for b, _kind in guards),
         evidence=tuple(evidence),
     )

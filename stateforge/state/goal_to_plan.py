@@ -236,6 +236,88 @@ def synthesize_appmodel(ir, facts: list[StateFactCandidate],
                     endpoints=list(eps.values()))
 
 
+def _param_feeding_var(source_file: str, arms, arm_name: str,
+                       var: str) -> str | None:
+    """喂参数发现:`session["k"] = x` 且 `x = body.get(p)` → p。
+
+    纯 AST 数据流(名字零预设);找不到返回 None(刷新步用中性值)。
+    """
+    key = var.split(".", 1)[1] if "." in var else var
+    tree = _fn_ast(source_file)
+    if tree is None:
+        return None
+    s, e = next(((s0, e0) for n, s0, e0 in arms if n == arm_name), (0, 0))
+    bvars = _body_vars(tree)
+    param_of: dict[str, str] = {}
+    for node in ast.walk(tree):
+        if not (hasattr(node, "lineno") and s <= node.lineno <= e):
+            continue
+        if (isinstance(node, ast.Assign) and len(node.targets) == 1
+                and isinstance(node.targets[0], ast.Name)):
+            tgt, val = node.targets[0].id, node.value
+            if (isinstance(val, ast.Call)
+                    and isinstance(val.func, ast.Attribute)
+                    and val.func.attr == "get"
+                    and isinstance(val.func.value, ast.Name)
+                    and val.func.value.id in bvars
+                    and val.args and isinstance(val.args[0], ast.Constant)):
+                param_of[tgt] = str(val.args[0].value)
+        # session["k"] = x
+        if (isinstance(node, ast.Assign)
+                and isinstance(node.targets[0], ast.Subscript)
+                and isinstance(node.targets[0].value, ast.Name)
+                and node.targets[0].value.id == "session"
+                and isinstance(node.targets[0].slice, ast.Constant)
+                and str(node.targets[0].slice.value) == key
+                and isinstance(node.value, ast.Name)
+                and node.value.id in param_of):
+            return param_of[node.value.id]
+    return None
+
+
+def _insert_identity_refresh(goal, model, segment, arms,
+                             source_file: str) -> None:
+    """NE <field>≠session.k → 终结动作前插入 k 生产者刷新步。
+
+    语义:NE 左侧字段在链中早步写入,要求消费时 session.k 已换新值
+    → 在 final action 前重跑 k 的生产者,喂参数取 distinct 值。
+    (t_state_shop:register(v)→create_order→register(v2)→ship → 越权分支)
+    """
+    ne = [p for p in goal.constraints
+          if p.operator.value == "NE" and isinstance(p.value, str)
+          and p.value.startswith("session.")]
+    if not ne:
+        return
+    var = ne[0].value
+    producer = next((ep for ep in model.endpoints
+                     if any(eff.var == var for eff in ep.effects)), None)
+    if producer is None:
+        return
+    arm_name = producer.route.removeprefix("op=")
+    s, e = next(((s0, e0) for n, s0, e0 in arms if n == arm_name), (0, 0))
+    from stateforge.core.model import PlanStep
+
+    refresh = PlanStep(
+        action=f"POST op={arm_name}",
+        json={"op": arm_name, **arm_params(source_file, s, e)})
+    feed = _param_feeding_var(source_file, arms, arm_name, var)
+    if feed:
+        used = {st.json.get(feed) for st in segment.steps}
+        fresh = "v2" if "v2" not in used else "v3"
+        refresh.json[feed] = fresh
+        # 生产 var 的既有步保持原值(时序:先旧值建状态,刷新步换新值)
+    # 插在最后一个非生产者步(终结动作)之前
+    insert_at = len(segment.steps) - 1
+    for i in range(len(segment.steps) - 1, -1, -1):
+        if segment.steps[i].action != f"POST op={arm_name}":
+            insert_at = i
+            break
+    segment.steps.insert(insert_at, refresh)
+    segment.notes.append(
+        f"identity-refresh: {arm_name}({var} 换新值,NE 约束"
+        f" {ne[0].subject}≠{var} 的时序构造)")
+
+
 def _goal_atom(goal: StateGoal) -> str:
     """目标原子:约束中 db.* 的比较谓词优先(最深层状态),否则 truthy。"""
     for p in goal.constraints:
@@ -296,6 +378,9 @@ def plan_for_block(ir, facts: list[StateFactCandidate],
             if key in params and var in eq_values:
                 params[key] = eq_values[var]
         step.json = {"op": arm_name, **params}
+
+    # 否定谓词后处理:NE(field≠session.k)→ 终结动作前插 k 生产者刷新步
+    _insert_identity_refresh(goal, model, segment, arms, goal.file)
     return goal, segment
 
 
