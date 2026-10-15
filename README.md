@@ -96,6 +96,12 @@ LLM 语义求解(Phase 4.2)经 4 个环境变量配置;`stateforge/config.py` �
 | `STATEFORGE_LLM_MODEL` | `glm-4-flash` | 模型名 |
 | `STATEFORGE_LLM_TIMEOUT` | `30` | 请求超时(秒;按 int 收敛,小数字符串报错) |
 
+**Anthropic 代理形态**(2026-10-15 实测,glm-5.3-flash):设
+`ANTHROPIC_AUTH_TOKEN` + `ANTHROPIC_BASE_URL`(Bearer 代理)即可,
+`SF_LLM_MODEL` 指定模型;自签证书代理加 `SF_LLM_SSL_VERIFY=false`。
+与 OpenAI 兼容形态二选一,Provider 自动识别(优先级见
+`solving/llm/provider.py` 模块头)。
+
 日志:库侧诊断走 `logging` 输出到 stderr(`stateforge.core.log` 统一入口 `get_logger`;默认 INFO,静默直到 CLI 调 `setup_logging`)。`python -m stateforge.cli -v/--verbose` 开 DEBUG;CLI 用户面向输出(命令结果/表格)仍走 stdout print,两者不混流。
 
 ---
@@ -109,7 +115,38 @@ LLM 语义求解(Phase 4.2)经 4 个环境变量配置;`stateforge/config.py` �
 | **Phase 3** | 前沿定向反馈（距离+组合+预算） | ✅ 冻结（停止规则成立） | `phase3-structural-freeze` |
 | **Phase 4.1** | 确定性分支求解 | ✅ 冻结（22/22 用例 100%） | |
 | **Phase 4.2** | LLM 语义求解器 + 种子注入 | ✅ 完成 | `phase4.2-llm-loop-complete` |
-| **Phase 4.3** | 状态可行性（多步序列） | ⬜ 未开始 | |
+| **Phase 4.3** | 状态可行性（多步序列） | ✅ 完成（v0.4 起 E 臂;2026-10-14/15 目标块直导最小闭环,见下） | |
+
+### 目标定向构造(goal)最小闭环(2026-10-14/15,未冻结)
+
+P4.3 的延伸:从"未覆盖目标块"全自动构造状态。交付链(文档
+docs/phase1-mvp.md … docs/real-app-first-blood.md):
+
+1. **统一状态读写索引**:容器 dict 库词汇(`_DB[t][k]`/行变量别名/
+   ORM 事务点)+ 读点→写点查询(`writers_of`);t_state_shop 四个
+   历史盲区(5A 不可见)全入索引;
+2. **目标块→约束(goal_derivation)**:必要分支边(支配近似,带
+   true/false 方向;false 边 EQ→NE 反转)→ CONTROL 读点谓词集;
+   ship_privileged → [EXISTS orders, EXISTS uid, EQ owner=uid];
+   越权分支 → NE owner≠uid;
+3. **自动链(goal_to_plan)**:op 分派臂发现 + 事实合成 AppModel +
+   plan_backward + 谓词驱动参数(零预设名;可选覆盖参数不填)+
+   身份刷新步(NE 约束 → distinct 值生产者重放);
+4. **执行验证(plan_executor)**:C10 单步执行 + TraceSession 写块
+   覆盖判据 + 整链重规划;t_state_shop/chain/gate 全判达;
+5. **检查点(goal_checkpoint)**:判达链存档(未判达不存)→ C10 种子
+   注入语料(goal_spool 惯例)→ 复用重放零推导再判达;
+6. **三臂评测(goal_directed_eval)**:goal 5/5(cost 2-4 请求)vs
+   随机单发 0/5 vs 随机序列 2/5(cost 高一个量级);冷启动 reset
+   语义是关键方法论(状态泄漏会使对照失效);
+7. **真实应用端到端(goal_app_bridge + http_plan_executor)**:
+   linkding(生产级 Django)归属深块自动判达——两段式(静态在主
+   环境/执行在应用 venv),Django 框架补全(@login_required→需
+   auth,内置 LoginView→产 auth)与 LLM relate 互补;
+8. **F 臂(goal_seed_injector)**:目标块直导注入器进 four_arm/
+   campaign(契约同 E 臂注入器);spot E vs F:chain +3(F 更稳),
+   gate 持平。20 真实应用靶标(apps20)接入:docs/targets-real-apps.md
+   (gates 结果表 results/targets20/gates.md,不入库)。
 
 ---
 
@@ -144,14 +181,14 @@ stateforge/
 |----|---------|
 | `stateforge/core/` | 数据契约:ProgramIR(结构 IR)+ AppModel(语义 IR)+ JSON 序列化 |
 | `stateforge/analysis/` | 静态分析域:单函数 CFG 与全程序 ICFG(`analysis/static/`)、语义分析入口与模式匹配(`analyzer.py`/`patterns.py`/`selector.py`)、SSTG 图构建导出(`builder.py`/`export.py`)、XFG 执行流图(`cfg.py`) |
-| `stateforge/runtime/` | 运行时域:`sys.settrace` 逐请求轨迹采集(`tracer.py`)、轨迹→ICFG 精确映射(`mapper.py`)、覆盖度量(`coverage.py`)、轨迹 I/O(`io.py`)、回放(`replay.py`/`snapshot_replay.py`)、快照子包(`runtime/snapshot/`) |
+| `stateforge/runtime/` | 运行时域:`sys.settrace` 逐请求轨迹采集(`tracer.py`)、轨迹→ICFG 精确映射(`mapper.py`)、覆盖度量(`coverage.py`)、轨迹 I/O(`io.py`)、回放(`replay.py`/`snapshot_replay.py`)、快照子包(`runtime/snapshot/`)、计划执行器(`plan_executor.py` 微靶 C10+写块判据 / `http_plan_executor.py` 真实应用 HTTP+块级判达,两段式) |
 | `stateforge/fuzzing/` | Fuzzing 集成域:Atheris 子进程入口(`entry_driver.py`)、选择性字节码插桩、语料管理/候选/前沿采集、约束变异器;含结构反馈子包 `fuzzing/feedback/`(P2 结构新颖度 + P3 前沿定向距离/组合/预算) |
-| `stateforge/solving/` | 求解域(P4 分支可行性):Guard 恢复→操作数观测→门内距离→输入溯源→约束求解→变异提示→停滞触发→LLM 种子注入;含 LLM 基础设施子包 `solving/llm/`(双协议 Provider/语义提升/缓存) |
-| `stateforge/state/` | 状态域:状态提取与语义模型、会话访问/状态溯源、标注子包 `state/annotation/`、规划子包 `state/planning/`(原 planner/) |
-| `stateforge/adapters/` | 目标适配层:TargetAdapter 协议 + 通用 Web/Flask/可调用/vulnshop 适配器(bytes → 目标可执行) |
-| `stateforge/evaluation/` | 评测域:SF-Micro 真值基准、BranchSolve 报告、OWASP Benchmark 基线、多臂实验子包 `evaluation/experiment/`、可视化子包 `evaluation/viz/` |
+| `stateforge/solving/` | 求解域(P4 分支可行性):Guard 恢复→操作数观测→门内距离→输入溯源→约束求解→变异提示→停滞触发→LLM 种子注入;含 LLM 基础设施子包 `solving/llm/`(双协议 Provider/语义提升/缓存);goal 侧:`goal_checkpoint.py`(判达链检查点/C10 种子注入/复用重放)、`goal_seed_injector.py`(F 臂注入器,契约同 state_seed_injector) |
+| `stateforge/state/` | 状态域:状态提取与语义模型(`extractor.py`:Session/ORM/容器 dict 库/两步守卫别名)、会话访问/状态溯源、标注子包 `state/annotation/`、规划子包 `state/planning/`(原 planner/;`backward.py` 择优生产者+`compat.py` 应用兼容层);goal 侧:`goal_derivation.py`(必要分支边+方向感知约束)、`goal_to_plan.py`(op 臂→合成 AppModel→链→谓词参数)、`goal_app_bridge.py`(真实应用:Django 框架补全+AppModel 目标映射) |
+| `stateforge/adapters/` | 目标适配层:TargetAdapter 协议 + 通用 Web/Flask/可调用/vulnshop 适配器(bytes → 目标可执行)+ `wsgi.py`(任意 WSGI callable→GenericWebAdapter,werkzeug 直驱) |
+| `stateforge/evaluation/` | 评测域:SF-Micro 真值基准、BranchSolve 报告、OWASP Benchmark 基线、多臂实验子包 `evaluation/experiment/`(four_arm 含 F 臂;campaign GROUPS 含 F)、goal 三臂对照(`goal_directed_eval.py`)、可视化子包 `evaluation/viz/` |
 | `stateforge/cli.py` | 命令行入口:analyze / feedback / experiment / viz / state |
-| `stateforge/targets/` | 测试靶场:vulnshop / vampi / dsvw / pygoat / realworld / microplus(原位不动) |
+| `stateforge/targets/` | 测试靶场:vulnshop / vampi / dsvw / pygoat / realworld / microplus + **apps20/**(20 真实应用靶标:harness+fuzz_target+NOTES 四件套,口径见 docs/targets-real-apps.md) |
 | `stateforge/fixtures/` | 真值基准数据:micro / bs_micro / ls_micro / llm_loop / sf_branch_micro / buy_app(原位不动) |
 | `stateforge/tests/` | 测试套件(全量绿,计数见冻结版本节;子目录名沿用旧模块名为历史组织,import 已全部指向新路径) |
 
@@ -202,6 +239,16 @@ stateforge/
 | A(裸跑) | 33,562 exec/s |
 | B/C/D | 95/657 块 (14.5%) |
 
+### 目标定向构造(goal,2026-10-14/15,spot 口径)
+
+| 实验 | 结果 |
+|------|------|
+| 三臂对照(stateful 三靶,60 请求预算) | goal **5/5 判达**(cost 2-4/目标)vs 随机单发 0/5 vs 随机序列 2/5(cost 12-27) |
+| E vs F spot(2 runs×3 epochs×5s) | chain:E=36(一 run 33)/F=**39(两 run 全 39)**;gate 持平 39 |
+| 真实应用端到端 | linkding(生产级 Django)归属深块自动判达(登录 302→edit 200,目标块覆盖);LLM relate 交叉验证一致 |
+| 真 LLM 标注(glm-5.3-flash,Anthropic 代理) | healthchecks:103 端点需 auth+5 产 auth(全对);linkding 9 需+0 产(内置 LoginView 不可见→框架补全互补);缓存 4 文件入库 |
+| D 臂 LLM 注入现状 | stateful 套件无 `.llm.py` 适配(硬检查静默跳过)——真 LLM 的 D 臂从未运行,待补适配(microplus 现存 2 个为 mock) |
+
 ---
 
 ## 冻结版本
@@ -230,6 +277,15 @@ stateforge/
 **v0.5-evaluation 验收**:10-run 配对战役(3×10s/seed0=7):E−D1 块增益 t_state_chain +20.2、t_state_gate +22.0、vulnshop +99.9(median 98,10/0/0 全胜,AUC +0.0967);消融:规划器贡献 E−E-rand +2.4/+5.5/+65.6(真实应用上最大),R2 触发代价 |E−E-always| ≤1.1(≈零);vulnshop E 状态原子 union=4(注:该原子口径为 campaign 侧 AppModel 分派;消融侧三指标仅微靶路径可测,vulnshop 为未测)。**口径注(v0.5 起)**:B/C/D1/D2R/D2P 轮间语料结转自 v0.5 恢复(a0cc5bf..v0.4 期间失效),该窗口内上述臂的战役数字与 v0.5 及更早阶段不可直接比较;E 同窗口亦自 epoch 2 空 corp_in 起跑(结转门当时同样未覆盖 policy=state),该效应对 E 方向保守(缺结转只会低估 E 的覆盖);Phase-3 表中 D 族数字早于 a0cc5bf,口径一致可比;战役/消融数据在 results/experiment/p4_formal/(不入库),表值=p4_analysis 输出抄录
 
 **v1.0-release 验收**:./ci.sh 全链绿(fresh clone 440 passed / 2 skipped / 26 deselected;micro 全 1.00:静态 21/21 + 动态 5/5);开发树 441 passed / 1 skipped / 26 deselected;论文两版注入数字源=p4_report(114 数字 token 双版程序化同步;本机无 LaTeX 工具链,两版未编译——见文件头注);已知留档不修项 10 条见 docs/known-debt.md(主要为观感/文档级);**披露:papers/draft/{main,main-zh}.tex 经 git add -f 入库(原在 .gitignore),如需移出 git rm --cached 后自行保管**
+
+**goal 期验收(2026-10-14/15,未打 tag)**:开发树 **496 passed / 1 skipped /
+26 deselected**(v1.0 的 441 → +55:顾问诊断修复 9 + goal 全链 46);
+顾问 5 诊断修复(b543713);20 真实应用靶标 apps20 四件套(0c4dc1a,
+FlaskBB 出局→MoinMoin 顶替);goal 最小闭环 8 件(65cb186…a48b649,
+docs/phase1-mvp.md … docs/real-app-first-blood.md);F 臂(ca4b6ad);
+真 LLM 缓存 4 文件入库(e844b5d,README 已知义务照办);核心契约词表
+扩充 2 处(HttpMethod +HEAD/OPTIONS、AppModel.framework +synthetic,
+协议测试零回归)。
 
 **已知义务:** 语义标注缓存(`stateforge/solving/llm/cache/*.json`)键于 PROMPT_VERSION 与夹具内容——二者变更后需重跑生成器并提交新缓存,否则 fresh clone 回归"全 irrelevant"。缓存仅按显式路径提交(`git add stateforge/solving/llm/cache/<hash>.json`),勿在该目录使用 `git add -A`。
 
