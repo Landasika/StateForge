@@ -55,11 +55,11 @@ class TestRunnerEWiring:
         return runner, calls
 
     def test_groups_contains_e_last(self, wired):
-        """GROUPS 以 E 收尾(D1/D2R/D2P 之后,与 run_experiment 派生序一致)。"""
+        """GROUPS 以 F 收尾(E 后接 F,与 run_experiment 派生序一致)。"""
         runner, _ = wired
-        assert runner.GROUPS[-1] == "E"
+        assert runner.GROUPS[-1] == "F"
         assert runner.GROUPS == ("A_native", "A_measure", "B", "C",
-                                 "D1", "D2R", "D2P", "E")
+                                 "D1", "D2R", "D2P", "E", "F")
 
     def test_e_group_config_mirrors_four_arm(self, wired, tmp_path):
         """E = frontier + feedback + policy=state(与 D1 同预算同 seed 同 t0),
@@ -86,7 +86,7 @@ class TestRunnerEWiring:
 
 class TestCampaignEAggregation:
     DEPTH = {"A_native": 10, "A_measure": 20, "B": 30, "C": 40,
-             "D1": 50, "D2R": 60, "D2P": 70, "E": 65}
+             "D1": 50, "D2R": 60, "D2P": 70, "E": 65, "F": 65}
 
     @pytest.fixture()
     def summary(self, monkeypatch, tmp_path, ir_path):
@@ -125,7 +125,7 @@ class TestCampaignEAggregation:
         非 state 臂(D1)不含状态键。"""
         agg = summary["aggregate"]
         assert set(agg) == {"A_native", "A_measure", "B", "C",
-                            "D1", "D2R", "D2P", "E"}
+                            "D1", "D2R", "D2P", "E", "F"}
         assert agg["E"]["final_blocks"]["mean"] == 65
         assert agg["E"]["state_injections_total"] == {
             "mean": 2, "median": 2, "stdev": 0.0, "n": 2,

@@ -55,6 +55,13 @@ def run_target(target_py: str, ir_path: str, name: str, out: Path,
                         "E", mode="frontier", use_feedback=True,
                         policy="state")
 
+        # F:E 同管线换 goal 目标块直导注入器(同引擎同预算同种子,
+        # 只换间隙注入器的目标来源——M1 状态原子 vs 未覆盖深块直导)
+        from stateforge.solving.goal_seed_injector import inject_goal_seeds
+        f = run_epochs(target_py, ir_path, rd / "F", seconds, epochs, seed,
+                       "F", mode="frontier", use_feedback=True,
+                       policy="state", state_injector=inject_goal_seeds)
+
         results.append({
             "seed": seed,
             "A_tput": round(a["total_executions"] /
@@ -63,12 +70,13 @@ def run_target(target_py: str, ir_path: str, name: str, out: Path,
             "C_blocks": c["final_blocks"], "C_edges": c["final_edges"],
             "D_blocks": d["final_blocks"], "D_edges": d["final_edges"],
             "E_blocks": e["final_blocks"], "E_edges": e["final_edges"],
+            "F_blocks": f["final_blocks"], "F_edges": f["final_edges"],
         })
 
     s = {"target": name, "runs": runs,
          "total_time": epochs * seconds,
          "per_run": [{k: v for k, v in r.items()} for r in results]}
-    for arm in ("B", "C", "D", "E"):
+    for arm in ("B", "C", "D", "E", "F"):
         vals = [r[f"{arm}_blocks"] for r in results]
         s[f"{arm}_mean"] = round(statistics.mean(vals), 1)
         s[f"{arm}_stdev"] = round(statistics.stdev(vals), 2) \
@@ -79,6 +87,8 @@ def run_target(target_py: str, ir_path: str, name: str, out: Path,
         [r["D_blocks"] - r["B_blocks"] for r in results]), 1)
     s["E_minus_D"] = round(statistics.mean(
         [r["E_blocks"] - r["D_blocks"] for r in results]), 1)
+    s["F_minus_E"] = round(statistics.mean(
+        [r["F_blocks"] - r["E_blocks"] for r in results]), 1)
     return s
 
 
@@ -129,8 +139,10 @@ def main() -> int:
                         args.runs, args.epochs, int(args.seconds))
         all_s[name] = s
         print(f"  → {name}: B={s['B_mean']} C={s['C_mean']} "
-              f"D={s['D_mean']} E={s['E_mean']} (D-C={s['D_minus_C']:+.1f} "
-              f"D-B={s['D_minus_B']:+.1f} E-D={s['E_minus_D']:+.1f})",
+              f"D={s['D_mean']} E={s['E_mean']} F={s['F_mean']} "
+              f"(D-C={s['D_minus_C']:+.1f} "
+              f"D-B={s['D_minus_B']:+.1f} E-D={s['E_minus_D']:+.1f} "
+              f"F-E={s['F_minus_E']:+.1f})",
               flush=True)
 
     (out / "all_summaries.json").write_text(

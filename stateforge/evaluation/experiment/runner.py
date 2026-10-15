@@ -18,7 +18,7 @@ from pathlib import Path
 
 from stateforge.evaluation.experiment.epoch import run_epochs
 
-GROUPS = ("A_native", "A_measure", "B", "C", "D1", "D2R", "D2P", "E")
+GROUPS = ("A_native", "A_measure", "B", "C", "D1", "D2R", "D2P", "E", "F")
 
 
 def run_experiment(target: str, ir: str, out: Path, epochs: int,
@@ -80,6 +80,13 @@ def run_experiment(target: str, ir: str, out: Path, epochs: int,
         report["groups"]["E"] = run_epochs(
             target, ir, out / "E", seconds_per_epoch, epochs, seed, "E",
             mode="frontier", use_feedback=True, t0=t0, policy="state")
+    # F:E 同管线换 goal 目标块直导注入器(four_arm 对照的 campaign 注册)
+    if "F" in groups:
+        from stateforge.solving.goal_seed_injector import inject_goal_seeds
+        report["groups"]["F"] = run_epochs(
+            target, ir, out / "F", seconds_per_epoch, epochs, seed, "F",
+            mode="frontier", use_feedback=True, t0=t0, policy="state",
+            state_injector=inject_goal_seeds)
     (out / "experiment.json").write_text(
         json.dumps(report, indent=1, ensure_ascii=False), encoding="utf-8")
     return report

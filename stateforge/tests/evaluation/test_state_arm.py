@@ -60,7 +60,7 @@ class TestFiveArmWiring:
                           "seconds": seconds, "epochs": epochs,
                           "seed": seed, "policy": kwargs.get("policy",
                                                              "reinjection")})
-            depth = {"A": 1, "B": 2, "C": 3, "D": 4, "E": 6}[group]
+            depth = {"A": 1, "B": 2, "C": 3, "D": 4, "E": 6, "F": 6}[group]
             return {"total_executions": 1000, "wall_span": 2.0,
                     "final_blocks": 10 * depth, "final_edges": 5 * depth}
 
@@ -68,11 +68,11 @@ class TestFiveArmWiring:
         return four_arm, calls
 
     def test_five_arms_in_order(self, wired, tmp_path):
-        """runs=1 一次跑出 A/B/C/D/E 五臂,顺序与配置与旧四臂同型。"""
+        """runs=1 一次跑出 A/B/C/D/E/F 六臂,顺序与配置与旧五臂同型。"""
         four_arm, calls = wired
         s = four_arm.run_target("t.py", "ir.json", "T", tmp_path, runs=1,
                                 epochs=2, seconds=1)
-        assert [c["group"] for c in calls] == ["A", "B", "C", "D", "E"]
+        assert [c["group"] for c in calls] == ["A", "B", "C", "D", "E", "F"]
         by = {c["group"]: c for c in calls}
         # A:连续裸跑(总预算,单 epoch,off,无反馈,默认 policy)
         assert by["A"]["seconds"] == 2 and by["A"]["epochs"] == 1
@@ -92,24 +92,27 @@ class TestFiveArmWiring:
             assert by[g]["seconds"] == 1 and by[g]["epochs"] == 2
 
     def test_metrics_row_has_all_five_arms(self, wired, tmp_path):
-        """每 run 行 = 旧四臂键(原样)+ E_blocks/E_edges。"""
+        """每 run 行 = 旧四臂键(原样)+ E/F 两臂键。"""
         four_arm, _ = wired
         s = four_arm.run_target("t.py", "ir.json", "T", tmp_path, runs=1,
                                 epochs=2, seconds=1)
         row = s["per_run"][0]
-        assert list(row.keys()) == LEGACY_ROW_KEYS + ["E_blocks", "E_edges"]
-        assert row["E_blocks"] == 60 and row["E_edges"] == 30
+        assert list(row.keys()) == LEGACY_ROW_KEYS + [
+            "E_blocks", "E_edges", "F_blocks", "F_edges"]
+        assert row["E_blocks"] == 60 and row["F_blocks"] == 60
 
     def test_summary_e_minus_d_and_legacy_intact(self, wired, tmp_path):
-        """汇总 = 旧键原样 + E_mean/E_stdev/E_minus_D;E-D 为配对块差均值。"""
+        """汇总 = 旧键原样 + E/F 均值与配对差;E-D 语义不变。"""
         four_arm, _ = wired
         s = four_arm.run_target("t.py", "ir.json", "T", tmp_path, runs=2,
                                 epochs=2, seconds=1)
         assert LEGACY_SUMMARY_KEYS <= set(s.keys())
-        assert set(s.keys()) == LEGACY_SUMMARY_KEYS | {"E_mean", "E_stdev",
-                                                       "E_minus_D"}
-        assert s["E_mean"] == 60.0
+        assert set(s.keys()) == LEGACY_SUMMARY_KEYS | {
+            "E_mean", "E_stdev", "E_minus_D",
+            "F_mean", "F_stdev", "F_minus_E"}
+        assert s["E_mean"] == 60.0 and s["F_mean"] == 60.0
         assert s["E_minus_D"] == 20.0          # 60-40 配对差
+        assert s["F_minus_E"] == 0.0           # mock 同深 → 0
         assert s["D_minus_C"] == 10.0 and s["D_minus_B"] == 20.0  # 旧语义不变
 
 
