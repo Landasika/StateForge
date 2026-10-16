@@ -129,6 +129,17 @@ def _inject_llm_between_epochs(ir, workdir: Path, corpus_dir: Path,
     return records
 
 
+def _verified_state_atoms(state: dict) -> set[str]:
+    """P0-B:global_state 的 state_evidence.verified_atoms(运行时验证键)。
+
+    仅 ``--observe-state`` 驱动才有该块;缺失 → 空集 = **未观测**(显式
+    退化到代理模式,不冒充"观测为零")。与覆盖代理
+    (reached_state_atoms)分记,互不换算。
+    """
+    ev = state.get("state_evidence") or {}
+    return set(ev.get("verified_atoms", []))
+
+
 def _inject_state_seeds_between_epochs(ir, workdir: Path, corpus_dir: Path,
                                         target: str,
                                         epoch_num: int = 0,
@@ -144,6 +155,12 @@ def _inject_state_seeds_between_epochs(ir, workdir: Path, corpus_dir: Path,
     状态节点记账 = 覆盖代理(守卫真分支块已覆盖 ⇒ 原子判达):
     entry_driver 不产会话观测,补观测即膨胀驱动(裁决禁止);机制与
     诚实边界见 solving/state_seed_injector.py 模块 docstring §3。
+
+    阶段 1(P0-B)注记:驱动侧 ``--observe-state`` 时 global_state 另带
+    ``state_evidence.verified_atoms``(运行时验证键);台账自本轮起分记
+    ``proxy_reached_atoms``(本代理口径,R2 触发仍用它,行为不变)与
+    ``verified_reached_atoms``(运行时证据)——旧键 ``atoms`` 保留 =
+    代理口径,旧读者不变。
 
     P4-T4 消融接缝(可选参,缺省 = E 基线行为逐字节不变):
       trigger="always" —— E-always 臂:旁路 R2-(b)(有进展也注入),
@@ -165,6 +182,7 @@ def _inject_state_seeds_between_epochs(ir, workdir: Path, corpus_dir: Path,
     state = _json.loads(state_path.read_text(encoding="utf-8"))
     ir_obj = ProgramIR.from_json(ir)
 
+    verified = _verified_state_atoms(state)      # P0-B:运行时验证键(可空)
     ledger_path = workdir / "epochs" / "state_ledger.json"
     prior: set = set()
     if ledger_path.exists():
@@ -172,7 +190,9 @@ def _inject_state_seeds_between_epochs(ir, workdir: Path, corpus_dir: Path,
             ledger_path.read_text(encoding="utf-8")).get("atoms", []))
     now = reached_state_atoms(ir_obj, Path(target), state)
     ledger_path.write_text(
-        _json.dumps({"epoch": epoch_num, "atoms": sorted(now)}),
+        _json.dumps({"epoch": epoch_num, "atoms": sorted(now),
+                     "proxy_reached_atoms": sorted(now),
+                     "verified_reached_atoms": sorted(verified)}),
         encoding="utf-8")
 
     new_atoms = sorted(now - prior)
@@ -217,12 +237,18 @@ def _state_boundary(workdir: Path, epoch: int, injected: int) -> dict:
     数据源 = state 分支刚落盘的产物,不重算:state_ledger.json 的 atoms
     即本边界覆盖代理判达的原子数;state_injections.jsonl 末行为本边界的
     SKIP_R2_PROGRESS 记账时带 new_atoms。
+    阶段 1(P0-B):另带 proxy/verified 双口径计数(verified 缺键 = 未
+    观测,保持 None——不与 0 混淆)。
     """
     out: dict = {"epoch": epoch, "atoms_reached": None, "injected": injected}
     ledger = workdir / "epochs" / "state_ledger.json"
     if ledger.exists():
-        out["atoms_reached"] = len(json.loads(
-            ledger.read_text(encoding="utf-8")).get("atoms", []))
+        data = json.loads(ledger.read_text(encoding="utf-8"))
+        out["atoms_reached"] = len(data.get("atoms", []))
+        if "proxy_reached_atoms" in data:
+            out["proxy_atoms_reached"] = len(data["proxy_reached_atoms"])
+        if "verified_reached_atoms" in data:
+            out["verified_atoms_reached"] = len(data["verified_reached_atoms"])
     audit = workdir / "epochs" / "state_injections.jsonl"
     if audit.exists():
         lines = audit.read_text(encoding="utf-8").splitlines()
@@ -249,6 +275,21 @@ def _final_state_atoms(ir, target: str, workdir: Path) -> set | None:
         return reached_state_atoms(
             ProgramIR.from_json(ir), Path(target),
             json.loads(state_path.read_text(encoding="utf-8")))
+    except Exception:                          # noqa: BLE001
+        return None
+
+
+def _final_verified_state_atoms(workdir: Path) -> set | None:
+    """P0-B:末轮运行时验证状态键(--observe-state 时才有;缺块 = None
+    表示**未观测**,与空集"观测为零"显式区分)。"""
+    state_path = workdir / "epochs" / "global_state.json"
+    if not state_path.exists():
+        return None
+    try:
+        state = json.loads(state_path.read_text(encoding="utf-8"))
+        if "state_evidence" not in state:
+            return None
+        return _verified_state_atoms(state)
     except Exception:                          # noqa: BLE001
         return None
 
@@ -394,6 +435,10 @@ def run_epochs(target: str, ir: str, workdir: Path, seconds_per_epoch: float,
         if final is not None:
             result["state_atoms_reached"] = len(final)
             result["state_atoms"] = sorted(final)
+        final_verified = _final_verified_state_atoms(workdir)   # P0-B
+        if final_verified is not None:
+            result["state_atoms_verified"] = len(final_verified)
+            result["state_atoms_verified_list"] = sorted(final_verified)
     (workdir / "group_summary.json").write_text(
         json.dumps(result, indent=1, ensure_ascii=False), encoding="utf-8")
     return result

@@ -220,6 +220,70 @@ class TestEpochStateBoundary:
         assert res["state_injections_total"] == 0
 
 
+# --------------------------------- P0-B:proxy/verified 双口径台账(阶段 1)
+
+
+class TestEpochDualEvidenceLedger:
+    def test_ledger_records_proxy_and_verified_separately(self, ir_path,
+                                                          tmp_path):
+        """台账三键:atoms(旧键=代理)/ proxy_reached_atoms /
+        verified_reached_atoms;boundary 与末轮汇总各口径独立可查;
+        global_state 无 state_evidence 块 = 未观测(None),不冒充空集。"""
+        from stateforge.evaluation.experiment.epoch import (
+            _final_verified_state_atoms,
+            _inject_state_seeds_between_epochs,
+            _state_boundary,
+        )
+        from stateforge.solving.state_seed_injector import synthesize_micro_model
+
+        ir = build_icfg(STATEFUL_DIR)
+        guard_lines: set = set()
+        for g in synthesize_micro_model(GATE).guards:
+            guard_lines |= set(g.body_lines)
+        covered = [bid for bid, b in ir.blocks.items()
+                   if b.file.endswith("t_state_gate.py")]
+        wd = tmp_path / "wd"
+        (wd / "epochs").mkdir(parents=True)
+        (wd / "epochs" / "global_state.json").write_text(json.dumps({
+            "covered_blocks": covered, "covered_edges": [],
+            "state_evidence": {
+                "evidence_version": 1, "observer": "stub",
+                "verified_atoms": ["User.exists{alice@user}"],
+                "verified": [], "proxy_atoms": []}}), encoding="utf-8")
+
+        _inject_state_seeds_between_epochs(str(ir_path), wd, wd / "corp",
+                                           str(GATE), epoch_num=2)
+        ledger = json.loads((wd / "epochs" / "state_ledger.json")
+                            .read_text(encoding="utf-8"))
+        assert ledger["atoms"] == ["Session.role=admin"]      # 旧键 = 代理
+        assert ledger["proxy_reached_atoms"] == ["Session.role=admin"]
+        assert ledger["verified_reached_atoms"] == ["User.exists{alice@user}"]
+
+        boundary = _state_boundary(wd, 2, 0)
+        assert boundary["atoms_reached"] == 1                 # 旧字段原样
+        assert boundary["proxy_atoms_reached"] == 1
+        assert boundary["verified_atoms_reached"] == 1
+
+        assert _final_verified_state_atoms(wd) == {"User.exists{alice@user}"}
+        (wd / "epochs" / "global_state.json").write_text(     # 无块 = 未观测
+            json.dumps({"covered_blocks": covered}), encoding="utf-8")
+        assert _final_verified_state_atoms(wd) is None
+
+    def test_run_epochs_without_evidence_has_no_verified_fields(self, ir_path,
+                                                                tmp_path):
+        """非回归门:无 --observe-state 的 run 不产 verified 字段
+        (未观测 ≠ 观测为零),旧键 state_atoms* 原样。"""
+        from stateforge.evaluation.experiment.epoch import run_epochs
+
+        wd = tmp_path / "wd_nv"
+        res = run_epochs(str(GATE), str(ir_path), wd, seconds_per_epoch=2.0,
+                         epochs=2, seed=7, group="V", mode="feedback",
+                         use_feedback=True, policy="state")
+        assert "state_atoms_verified" not in res
+        assert "state_atoms_verified_list" not in res
+        assert res["state_atoms"] == ["Session.role=admin"]
+
+
 # --------------------------------------------- state_arm_report(合成目录)
 
 

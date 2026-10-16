@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 from dataclasses import asdict, dataclass
 import json
 import os
@@ -90,6 +91,23 @@ class TraceSession:
                 return False
 
         return _Request()
+
+    @contextlib.contextmanager
+    def untraced(self):
+        """P0-B:执行面挂起——窗口外的帧不入 events。
+
+        语义澄清(阶段 1 审计确认):``request()`` 只切换事件**归属**
+        (request_id),不停止收集——settrace 在整个 session 存续期生效,
+        窗口外(如观测器/基线还原)在 root 内执行的帧照样进 events、
+        照样被 map_trace 计入覆盖。观测/还原属于反馈机制自身,不是被测
+        执行,必须经本上下文显式挂起,防"反馈膨胀覆盖"。
+        """
+        prev = sys.gettrace()
+        sys.settrace(None)
+        try:
+            yield
+        finally:
+            sys.settrace(prev)
 
     def to_dict(self) -> list[dict[str, Any]]:
         return [asdict(e) for e in self.events]

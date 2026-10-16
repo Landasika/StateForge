@@ -22,6 +22,13 @@ class L2Sqlite:
     def _tpl(self, name: str) -> Path:
         return self.root / name / "db.tpl"
 
+    def template_exists(self, name: str = "root") -> bool:
+        """P0-A:模板在场判定。restore() 对缺失模板静默返回(纯内存目标
+        语义,监督进程合法路径);执行隔离生命周期(SnapshotLifecycle)
+        基线丢失 = 隔离失效,必须显式 fail-closed——经此公共面收口,
+        不让"看起来还原了"的假隔离通过。"""
+        return self._tpl(name).exists()
+
     def snapshot_template(self, name: str = "root") -> Path:
         """冻结时:copy(live → tpl/<ckpt>/db.tpl)。"""
         dst = self._tpl(name)

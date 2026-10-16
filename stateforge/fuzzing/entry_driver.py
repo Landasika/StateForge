@@ -92,12 +92,42 @@ def main() -> int:
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--epoch", type=int, default=0)
     parser.add_argument("--group", default="x")
+    parser.add_argument("--lifecycle", choices=["noop", "reset", "snapshot"],
+                        default="noop",
+                        help="P0-A 输入级状态隔离(noop=旧行为:输入间状态延续)")
+    parser.add_argument("--observe-state", action="store_true",
+                        help="P0-B 运行时状态观测(state_evidence 落 global_state)")
     args = parser.parse_args()
 
     Path(args.corpus_dir).mkdir(parents=True, exist_ok=True)
     target = _load_target(args.target)
     import sys as _sys
     _target_module = _sys.modules["sf_target"]
+
+    # P0-A/P0-B:执行上下文(生命周期 + 观测器)。默认全关 = 行为与旧版
+    # 逐字节一致(NoopLifecycle + 无观测);显式开启才引入隔离/证据,
+    # 旧实验臂不受影响。约定缺失(reset/snapshot 无钩子)在首个输入前
+    # 即刻失败——配置错误不允许静默退化成 noop。
+    from stateforge.runtime.execution_context import (
+        ExecutionContext,
+        LifecycleError,
+        audit_lifecycle_failure,
+        lifecycle_from_module,
+        observer_from_module,
+    )
+    execution = None
+    state_ledger = None
+    if args.lifecycle != "noop" or args.observe_state:
+        from stateforge.state.runtime_observer import StateEvidenceLedger
+        lifecycle = lifecycle_from_module(_target_module, args.lifecycle)
+        observer = (observer_from_module(_target_module)
+                    if args.observe_state else None)
+        execution = ExecutionContext(lifecycle, observer)
+        if args.observe_state:
+            # 无观测器 → 显式退化标记(observer=""),epoch 侧凭
+            # verified_atoms 为空可辨"未观测",不与"观测为零"混淆
+            state_ledger = StateEvidenceLedger(
+                observer_name=getattr(observer, "name", ""))
 
     def dispatch(data: bytes) -> None:
         # C10 分派：序列种子按序多步执行；其余输入原字节透传给 target
@@ -115,7 +145,21 @@ def main() -> int:
         def handler(data: bytes) -> None:
             t0 = time.monotonic()
             try:
-                dispatch(data)
+                if execution is not None:          # P0-A:off 模式同样走生命周期
+                    execution.begin_run()
+                    try:
+                        dispatch(data)
+                    except Exception:              # noqa: BLE001
+                        pass
+                    execution.finish_run(data)
+                else:
+                    dispatch(data)
+            except LifecycleError as exc:          # fail-closed:审计后跳过
+                audit_lifecycle_failure(args.out_dir, {
+                    "group": args.group, "epoch": args.epoch, "mode": "off",
+                    "lifecycle": execution.lifecycle.name
+                    if execution is not None else "noop",
+                    "error": str(exc)})
             except Exception:                # noqa: BLE001
                 pass
             recorder.tick(time.monotonic() - t0, 0.0, 0, 0, False, None, 0)
@@ -142,6 +186,8 @@ def main() -> int:
                     "blocks": sorted(feedback.global_blocks),
                     "edges": [list(e) for e in sorted(feedback.global_edges)],
                 }
+            if state_ledger is not None:                # P0-B:仅 --observe-state
+                payload["state_evidence"] = state_ledger.to_payload()
             state_path.write_text(_json.dumps(payload), encoding="utf-8")
 
         recorder = ExperimentRecorder(args.out_dir, args.group, args.epoch,
@@ -154,12 +200,16 @@ def main() -> int:
                 feedback.update_global_coverage(
                     set(prior.get("blocks", [])),
                     {tuple(e) for e in prior.get("edges", [])})
+            if state_ledger is not None:                # P0-B:证据跨 epoch 结转
+                state_ledger.load_payload(prior.get("state_evidence", {}))
         if args.mode == "frontier":
             from stateforge.fuzzing.frontier_collector import FrontierCollector
             corpus = CorpusManager(Path(args.out_dir) / "spool")
             collector = FrontierCollector(ir, session, feedback, corpus,
                                           recorder, args.epoch,
-                                          on_save=_dump_state)
+                                          on_save=_dump_state,
+                                          execution=execution,
+                                          state_ledger=state_ledger)
 
             def handler(data: bytes) -> None:
                 collector.handle(dispatch, data)
@@ -168,7 +218,9 @@ def main() -> int:
                       if args.mode == "feedback" else None)
             collector = CandidateCollector(ir, session, feedback, corpus,
                                            recorder, args.epoch,
-                                           on_save=_dump_state)
+                                           on_save=_dump_state,
+                                           execution=execution,
+                                           state_ledger=state_ledger)
 
             def handler(data: bytes) -> None:
                 collector.handle(dispatch, data)

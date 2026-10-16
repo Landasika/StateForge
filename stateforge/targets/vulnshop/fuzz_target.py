@@ -26,9 +26,12 @@ import importlib.util
 import json
 import os
 import re
+import shutil
 import sys
 import tempfile
 from pathlib import Path
+
+from stateforge.runtime.snapshot.l2_sqlite import L2Sqlite
 
 _HERE = Path(__file__).resolve().parent
 
@@ -99,6 +102,8 @@ def _register_db_cleanup(path: Path) -> None:
             path.unlink()
         except OSError:
             pass                    # 已清理/未建成等 → 幂等忽略
+        shutil.rmtree(path.parent / f"sf_baseline_{path.name}",
+                      ignore_errors=True)   # P0-A 基线模板目录同清理
 
     atexit.register(_cleanup)
 
@@ -106,13 +111,49 @@ def _register_db_cleanup(path: Path) -> None:
 _register_db_cleanup(_DB)
 _APP = create_app(db_path=str(_DB), init_db=True)
 
+# P0-A 修复(阶段 1):DB 基线模板 = init 后干净态(2 张种子优惠券、
+# 零用户零订单)。reset_state()/SnapshotLifecycle 经 L2Sqlite 位级拷贝
+# 还原(ADR-0004;-journal/-wal/-shm 一并清理)。模板根独立于
+# runtime/snapshot 监督进程的 tpl/,互不干扰。
+_L2 = L2Sqlite(_DB, tpl_root=_DB.parent / f"sf_baseline_{_DB.name}")
+_L2.snapshot_template("baseline")
+
 _BINDINGS: dict[str, object] = {}          # ?槽 → 运行期值(extract 回填)
 _SLOT = re.compile(r"\?([A-Za-z_][A-Za-z0-9_]*)")
 
 
-def reset_state() -> None:
-    """清运行期绑定(测试先验态隔离;DB 不重置——那是靶场状态本身)。"""
+def reset_bindings() -> None:
+    """内存态恢复钩子:只清符号绑定(文件态由 L2 模板负责)。"""
     _BINDINGS.clear()
+
+
+def reset_state() -> None:
+    """完整先验态隔离(阶段 1 P0 修复):清符号绑定 **并** 还原 DB 基线。
+
+    旧版只清 _BINDINGS、DB 跨调用延续("那是靶场状态本身")——审计 P0
+    裁定该语义与既有约定(plan_executor/goal_directed_eval 的每计划冷
+    启动、三微靶 reset_state 的清会话/库/命中)不一致,且导致计划间/
+    会话间 DB 泄漏(如上轮注册的用户名使本轮 409)。基线丢失 = 隔离
+    失效 → 显式 RuntimeError(不静默跑在污染态上)。
+    """
+    reset_bindings()
+    if not _L2.template_exists("baseline"):
+        raise RuntimeError(
+            f"vulnshop DB 基线模板丢失: {_L2.root}/baseline/db.tpl")
+    _L2.restore("baseline")
+
+
+# ---- P0-A/P0-B 靶侧声明面(execution_context.lifecycle_from_module 约定):
+# SF_STATE_FILES:文件态基线声明(snapshot 生命周期捕获/还原的文件集);
+# SF_MEMORY_RESET:内存态恢复钩子(→ establish 时刻的绑定空表);
+# sf_state_observer():运行时观测器工厂(无则驱动显式退化到代理模式)。
+SF_STATE_FILES = [str(_DB)]
+SF_MEMORY_RESET = reset_bindings
+
+
+def sf_state_observer():
+    from stateforge.targets.vulnshop.state_evidence import VulnshopStateObserver
+    return VulnshopStateObserver(_DB)
 
 
 def _sub(value: str) -> str:

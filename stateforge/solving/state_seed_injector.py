@@ -48,6 +48,11 @@
    worker/会话一个 recorder,T1 评审契约);R2 的"上轮是否有新状态
    节点"由 epoch 侧 `state_ledger.json` 差分判定(本模块提供
    `reached_state_atoms`)。
+   阶段 1(P0-B)后:驱动可经 `--observe-state` 产
+   `global_state.state_evidence.verified_atoms`(运行时验证键,
+   runtime/execution_context + state/runtime_observer 契约),epoch
+   台账分记 proxy/verified 两口径——但 goal 派生与 R2 触发**仍用本
+   代理口径**,行为不变;两口径的对齐留给阶段 2 统一调度器。
 
 4. 落盘与 llm 注入同款:CorpusManager spool(`<workdir>/state_spool`)+
    直接写 `corpus_dir/<cid>`(内容哈希去重);审计 JSONL 追加到
