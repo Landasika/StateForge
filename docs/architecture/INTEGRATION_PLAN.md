@@ -7,12 +7,28 @@
 
 ## 1. Phase 1 任务（T1–T7，修订版）
 
-> **执行批次（评审裁定，v1.1 追加；v1.1b 调整）**：Phase 1 分三批编码，每批验收后再进下一批——
-> **第一批 = T1 + T2**（WAL 快照一致性 + StateObservation v2 结构化列**及 vulnshop 观测器补 `Order.user_id` 字段**：风险最大的底层修改先行隔离）；
-> **第二批 = T3 + T4 + T5a/T5b，前置门槛 M0**（证据等级 + UNKNOWN/MISSING 语义 + 映射适配器/关系提取）；
-> **第三批 = T6 + T7**（协议兼容 + 观测开销审计）。
-> **M0 spike（v1.1b 新增，第二批开工条件）**：vulnshop `ship_order()` 关系提取端到端最小验证（契约 §6.6/例 11 蓝本）——不碰 20 个真实应用，只证明"无手写归属规则"的关系能力，详见 §1-M0。
+> **执行批次（v1.1c / PR-00 裁决,消除 v1.1b 的循环依赖)**:
+> v1.1b 曾把"完整 M0"既设为第二批(T5b)开工前提、又依赖 T5b 产出——循环。
+> 现拆 M0 为三段并重排依赖(详见 §1-M0 拆分与 §8 依赖图):
+> **M0-A 静态关系提取**(已具备原型,25 专项测试) → **PR-01 CFG 正确性**(已完成) →
+> **PR-02 可靠输入级快照(=T1) → PR-03 结构化事实+联合求值(=T2/T3/T4 核心) →
+> PR-04 M0-B 已知链逐请求联合验证 → PR-05 M0-C 自动规划+冷启动重放 →
+> PR-06 失败约束/去重/修复 → PR-07 fuzz 接入与无 LLM 消融**;
+> T5a(映射适配器)/T5b(关系提取原型)不重做;T6/T7 并入 PR-07 前置。
 > 顺序即依赖序。每项含改动点、验证命令、对应契约条款。与 v0 的差异以〔修订〕标注。
+
+### M0 拆分与目标钉死（PR-00 裁决）
+
+- **M0-A 静态关系提取**：`derive_relational_goal` 原型 + 25 项专项测试（`test_relational*.py`）——已完成，产物样例 `artifacts/m0/relational_goal.json`。
+- **M0-B 已知请求链联合验证**：五步已知链（register→login→create→pay→ship）逐步 before/after 观测 + 单点联合验证 + Trace 独立确认 UPDATE 块——**不要求自动规划**；依赖 PR-02 + PR-03。
+- **M0-C 自动规划与独立重放**：完整关系合取进规划器、冷启动自动到达、资源 ID 经 extract 重建的独立重放——依赖 M0-B 通过。
+- **目标钉死**：GUARDS=1；目标基本块 = `app.py` `ship_order` 内 `UPDATE orders SET status='SHIPPED'`；块 ID 由 `build_icfg` 生成（`app.py::ship_order::275-275::block::1`，行号随靶版本漂移——测试一律按 statements 含 `UPDATE orders SET status='SHIPPED'` 且 `in_file="app.py"` 定位，断言行号锚点同步维护）。
+- **契约未冻结问题登记（各自归属 PR，冻结前不得写死语义）**：
+  1. 显式 JoinConstraint 与独立合取（跨族不相关目标）最终词表 → PR-03；
+  2. UNPROBED 的分类策略（何时升级 NOT_OBSERVABLE/永不永久化）→ PR-03；
+  3. 历史 witness：`GoalAchievementWitness`（单观测点完整 TRUE 的记账）结构 → PR-03 实现、PR-07 指标消费；
+  4. StaticGoalCoverage 分母冻结规则（PARTIAL/不可观测排除口径）→ PR-07 冻结；
+  5. fork-COW 引擎路径的 WAL 恢复语义（与输入级 SnapshotLifecycle 分开论证）→ PR-02。
 
 ### T1. SQLite/WAL 快照一致性（R7 重设计）
 
@@ -84,9 +100,9 @@ def snapshot_template(self, name="root") -> Path:
   4. **`resolve`/`evaluate`**：单点快照 + 绑定求值 → TRUE/FALSE/UNKNOWN（契约 §6.6.4；evaluate_goal 原子列表泛化为 RelPredicate）。
 - 测试：`tests/state/test_mapping.py`（vulnshop 黄金快照/`*` 消歧/两维九格/UNMAPPABLE 保真）+ 新 `tests/state/test_relational.py`（提取反转/provenance/resolve-evaluate 全分支，例 11 数据）。
 
-### M0. ship_order 关系提取端到端 spike（v1.1b 新增；第二批开工条件）
+### M0. ship_order 关系提取端到端 spike（v1.1b;v1.1c 拆分,见 §1 批次说明）
 
-**验收蓝本 = 契约例 11**。不碰 20 个真实应用，只在 vulnshop `guards=True` 路径，证明"无手写归属规则"的关系能力：
+**M0-A（静态提取,项 1–3）已由关口 A 实现**（见下方实施记录）；项 4–7 属 **M0-B/M0-C**（PR-04/PR-05）。验收蓝本 = 契约例 11,不碰 20 个真实应用：
 
 1. 从源码自动识别 `EQ(Field(?order,"user_id"), Field(?user,"id"))` 与 `EQ(Field(?order,"status"), Const("PAID"))`；
 2. 追踪 `?order`/`?user` 数据来源（route 参数→查询函数→行实体；token→认证主体）；
@@ -101,9 +117,17 @@ def snapshot_template(self, name="root") -> Path:
 
 #### 实施记录（2026-10-18，关口 A 阶段 1+2 已实现）
 
-- 已交付：`state/relational.py`（IR+结构求值器）、`state/provenance.py`（变量来源索引）、`extractor.py` 关系段（`parse_term`/`extract_guard_terms`）、`goal_derivation.py`（`StateGoal` 扩展字段 + `derive_relational_goal` 词法早退分析）、测试 `tests/state/test_relational.py` + `test_relational_extraction.py`（25 项：vulnshop 四条件/路径条件/来源链/反向分支/序列化/改名实体泛化/wrapper 条件化/不可解析/boolop 不猜）。全量 566 passed（基线 541+25），零回归。
-- **方向分析裁决**：`derive_relational_goal` 用**词法早退惯用法**（guard-if 全路径终止判定 + wrapper 条件化），不复用 `necessary_guard_edges`。
-- **缺陷发现（未修，挂账）**：`necessary_guard_edges`/`_reachable` 在**含调用函数**上静默退化——callsite→returnsite 的连接是过程间边，被 `_function_blocks` 过滤后函数子图在每个调用点断裂（实测 vulnshop `ship_order`：entry 对 UPDATE 目标不可达 → 任一边移除都"不可达" → 全部分支误报必要且方向恒 true）。旧测试因夹具无调用未暴露。`derive_state_goal` 在此类函数上的产出同样受影响（当前消费面为微靶无调用路径，无活跃回归）。拟议修复：`_reachable` 邻接构建时对同函数内 callsite 补隐式 callsite→returnsite 边；属 T 线正确性工作，须配黄金文件快照评审后单独提交。
+- 已交付：`state/relational.py`（IR+结构求值器）、`state/provenance.py`（变量来源索引）、`extractor.py` 关系段（`parse_term`/`extract_guard_terms`）、`goal_derivation.py`（`StateGoal` 扩展字段 + `derive_relational_goal` 词法早退分析）、测试 `tests/state/test_relational.py` + `test_relational_extraction.py`（25 项：vulnshop 四条件/路径条件/来源链/反向分支/序列化/改名实体泛化/wrapper 条件化/不可解析/boolop 不猜）。全量 566 passed（基线 541+25），零回归。样例产物 `artifacts/m0/relational_goal.json`。
+- **方向分析裁决**：`derive_relational_goal` 用**词法早退惯用法**（guard-if 全路径终止判定 + wrapper 条件化）。
+- **缺陷发现（→ 已由 PR-01 修复,见下）**：`necessary_guard_edges`/`_reachable` 在**含调用函数**上静默退化——callsite→returnsite 的连接是过程间边，被 `_function_blocks` 过滤后函数子图在每个调用点断裂。
+
+#### 实施记录（2026-10-19，PR-01 CFG 正确性已修复）
+
+- **修复** = `_intra_adjacency` 函数内投影 CFG（`goal_derivation.py`）：为可正常返回的调用点补隐式 `callsite→returnsite` 边（builder `icfg.py:131-136` 同行同序配对，按 ID 变换定位）；被调者 AST 全路径 raise（`_all_paths_raise`）→ 不连（不可返回边界）；fall-off-end 函数隐式返回 None → 连接保留；外部调用不产 callsite 块、天然无此问题。`necessary_guard_edges` 增诚实门：基础投影图上目标不可达 → 返回空，不再把全部分支误报必要。
+- **修复后实证（vulnshop ship_order UPDATE 目标）**：必要守卫 = 恰 `{(L265 err, false), (L268 order-is-None, false)}`（修复前 5 个全误报且方向恒 true）；owner/status（L271/273）正确地**不在**无条件支配集——其 guards=1 条件性由关系层（`path_conditions`）承担，两层互补经 `guard_analysis_diagnostic` 可审计。
+- `derive_state_goal`（旧入口）对无调用夹具行为不变（投影只加边不删边）；`derive_relational_goal` 词法路径未动。
+- 测试：新增 `tests/state/test_goal_derivation_calls.py`（8 项：vulnshop 修复验证/投影可达性/两分析一致性诊断/正常返回/never-return 不可达/fall-off-end/外部调用回归/双调用点）；`test_goal_derivation.py` 6 项、关系专项 18 项不回归。
+- **残余开放项**：异常传播边（try/except）不在投影内（ICFG 本身无异常边，超出 PR-01 范围）；被调者 may-return 过近似 = 多连边方向（只可能漏报必要、不误报必要），收紧需调用图不动点精化，挂 PR-03 评估。
 
 ### T6. 持久化版本化（契约 §2.3，延续 v0）
 
@@ -125,7 +149,7 @@ def snapshot_template(self, name="root") -> Path:
 6. 旧实验模式回归：`tests/evaluation/` + `test_default_execution_keeps_legacy_handle_behavior`；
 7. **新增（R5 立法）**：任何新增指标代码不得出现"实例计数 / 静态目标数"形态——以例 7 反例测试钉死（Phase 2 指标落地时执行，Phase 1 先在契约测试中固化公式断言的纯函数形态）；
 8. **新增（评审轮）**：UNVERIFIABLE ≠ 规划失败——`classify_achievement` 推导表钉死（例 10 场景：NOT_OBSERVABLE 目标 + proxy 证据 → PROXY_PROGRESS；无 proxy → UNVERIFIABLE；二者均不进失败统计）；BindingEnv 接口含显式 `JoinConstraint`（例 9 场景：缺 join 时跨族拼接不得判 ACHIEVED——接口存在性与缺省规则可覆盖性测试）。
-9. **新增（v1.1b）**：**M0 spike 通过是第二批的开工条件**——例 11 七项要求全部满足（自动提取两关系/provenance/合取目标/真实执行绑定/单点快照联合验证/错误拼接正确否定/覆盖独立确认）；且提取产物无任何手写 vulnshop 归属规则（评审"不靠预先写好的业务规则演示成功"的硬约束）。
+9. **新增（v1.1b;v1.1c 改口径）**：M0 拆分后——**M0-A（项 1–3）已过**（关口 A，25 专项测试）；**M0-B（项 4–7 的观测/联判/覆盖确认）在 PR-04 验收**（依赖 PR-02+PR-03）；**M0-C（自动规划/冷启动重放）在 PR-05 验收**。提取产物无任何手写 vulnshop 归属规则的硬约束对三者全程适用。
 
 ---
 
@@ -309,6 +333,35 @@ def evaluate(relgoal: list[RelPredicate], snapshot: dict,
 ---
 
 ## 6. 风险与下一阶段依赖（延续 v0 + 修订）
+
+### 6a. 实施依赖图（v1.1c / PR-00,无循环;对应评审 PR 拆分）
+
+```text
+M0-A 关系提取原型(已完成,关口 A 25 测试)
+   │
+   ▼
+PR-00 依赖拆分/契约登记(本文档,已完成) ── PR-01 CFG 正确性(已完成,8 测试)
+   │                                        │
+   └───────────────┬────────────────────────┘
+                   ▼
+        PR-02 可靠输入级快照(=T1:backup API/WAL/边界)
+                   ▼
+        PR-03 结构化事实+联合求值(=T2/T3/T4 核心;
+              StateObservation v2/evaluate_goal/witness;
+              T5a 映射适配器并入或紧随)
+                   ▼
+        PR-04 M0-B 已知链逐请求联合验证(五步链,不自动规划)
+                   ▼
+        PR-05 M0-C 自动规划+冷启动重放(完整关系合取进规划器)
+                   ▼
+        PR-06 失败约束/计划去重/自动修复
+                   ▼
+        PR-07 fuzz 接入+协议+无 LLM 消融(A/B/C/D 臂;T6/T7 并入)
+```
+
+顺序原则（评审§8）：先证明已知链验证正确（M0-B），再证明能自动找到链（M0-C），最后证明提升 fuzzing 效果（PR-07）。
+
+### 6b. 原风险表（延续）
 
 v0 表延续，修订两点：
 - 逐请求观测开销：T7 细分计时先行，Phase 2 开关 + 仅序列种子逐步观测的策略不变；

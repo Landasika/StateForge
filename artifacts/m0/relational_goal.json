@@ -1,0 +1,147 @@
+{
+ "meta": {
+  "generated_by": "PR-00/PR-01 (M0-A sample)",
+  "target": "ship_order UPDATE block",
+  "guards": 1,
+  "diagnostic": {
+   "target_block": "app.py::ship_order::275-275::block::1",
+   "dominator_guards": [
+    {
+     "line": 265,
+     "edge": "false"
+    },
+    {
+     "line": 268,
+     "edge": "false"
+    }
+   ],
+   "relational_relation_lines": [
+    268,
+    271,
+    273
+   ],
+   "notes": [
+    "line 265: dominator-necessary but only a path condition in relational (non-entity guard)",
+    "line 271: relational relation NOT unconditional-dominator (conditional under path conditions — expected for wrapped guards)",
+    "line 273: relational relation NOT unconditional-dominator (conditional under path conditions — expected for wrapped guards)"
+   ]
+  }
+ },
+ "goal": {
+  "target_block": "app.py::ship_order::275-275::block::1",
+  "function": "ship_order",
+  "file": "/home/landasika/icassp/stateforge/targets/vulnshop/app.py",
+  "constraints": [],
+  "guard_blocks": [],
+  "evidence": [
+   "/home/landasika/icassp/stateforge/targets/vulnshop/app.py:268 EXISTS(?order)@app.py:268(false 边反转)",
+   "/home/landasika/icassp/stateforge/targets/vulnshop/app.py:271 EQ(?order.user_id, ?user.id)@app.py:271(false 边反转)",
+   "/home/landasika/icassp/stateforge/targets/vulnshop/app.py:273 EQ(?order.status, 'PAID')@app.py:273(false 边反转)"
+  ],
+  "relations": [
+   {
+    "op": "EXISTS",
+    "left": {
+     "var": "?order",
+     "name": "",
+     "source_file": "/home/landasika/icassp/stateforge/targets/vulnshop/app.py",
+     "source_line": 268
+    },
+    "right": null,
+    "origin_op": "Is",
+    "source_file": "/home/landasika/icassp/stateforge/targets/vulnshop/app.py",
+    "source_line": 268,
+    "via_edge": "false",
+    "note": ""
+   },
+   {
+    "op": "EQ",
+    "left": {
+     "var": "?order",
+     "name": "user_id",
+     "source_file": "/home/landasika/icassp/stateforge/targets/vulnshop/app.py",
+     "source_line": 271
+    },
+    "right": {
+     "var": "?user",
+     "name": "id",
+     "source_file": "/home/landasika/icassp/stateforge/targets/vulnshop/app.py",
+     "source_line": 271
+    },
+    "origin_op": "NotEq",
+    "source_file": "/home/landasika/icassp/stateforge/targets/vulnshop/app.py",
+    "source_line": 271,
+    "via_edge": "false",
+    "note": ""
+   },
+   {
+    "op": "EQ",
+    "left": {
+     "var": "?order",
+     "name": "status",
+     "source_file": "/home/landasika/icassp/stateforge/targets/vulnshop/app.py",
+     "source_line": 273
+    },
+    "right": {
+     "value": "PAID"
+    },
+    "origin_op": "NotEq",
+    "source_file": "/home/landasika/icassp/stateforge/targets/vulnshop/app.py",
+    "source_line": 273,
+    "via_edge": "false",
+    "note": ""
+   }
+  ],
+  "entity_vars": [
+   "?order",
+   "?user"
+  ],
+  "var_provenance": [
+   {
+    "var": "?order",
+    "table": "orders",
+    "key_param": "oid",
+    "origin": [
+     "call:get_order_or_none(oid)",
+     "sql:SELECT * FROM orders WHERE id=?",
+     "key:id"
+    ],
+    "auth_subject": false,
+    "source_file": "/home/landasika/icassp/stateforge/targets/vulnshop/app.py",
+    "source_line": 267
+   },
+   {
+    "var": "?user",
+    "table": "users",
+    "key_param": "username",
+    "origin": [
+     "call:require_user()",
+     "sql:SELECT * FROM users WHERE username=?",
+     "key:username"
+    ],
+    "auth_subject": true,
+    "source_file": "/home/landasika/icassp/stateforge/targets/vulnshop/app.py",
+    "source_line": 264
+   }
+  ],
+  "path_conditions": [
+   {
+    "var": "err",
+    "requires": false,
+    "kind": "local",
+    "source_file": "/home/landasika/icassp/stateforge/targets/vulnshop/app.py",
+    "source_line": 265,
+    "note": ""
+   },
+   {
+    "var": "guards",
+    "requires": true,
+    "kind": "config",
+    "source_file": "/home/landasika/icassp/stateforge/targets/vulnshop/app.py",
+    "source_line": 270,
+    "note": ""
+   }
+  ],
+  "unresolvable": []
+ }
+}

@@ -289,3 +289,29 @@
 ## 停止声明
 
 本轮（v1.1b，评审轮二"关系语义"反馈落地）仅修订架构文档与契约设计：STATE_CONTRACT.md（§2.1 expected 泛化注记、§6.1 join 词表收窄、§6.6 关系约束目标、§12 表增行、例 11）、INTEGRATION_PLAN.md（T2 观测器字段义务、T5 拆 a/b、M0 spike 与验收门 9、签名草案 ⑤c）、本文件（事实核查三项 + D3/D4/D5）。未修改任何核心代码；A–F 实验协议与缺省行为不变。**完成即停，等待 Phase 1 编码指令（建议第一批 T1+T2 起步，M0 作第二批开工条件）。**
+
+---
+
+## PR-00/PR-01 裁决（D6，2026-10-19 实施，No-LLM 计划首轮）
+
+### D6. 函数内投影 CFG 与必要守卫诚实门
+
+**触发**：PR-01 修复上轮挂账缺陷——`necessary_guard_edges`/`_reachable` 在含调用函数上静默退化（callsite→returnsite 连接是过程间边，`_function_blocks` 过滤后函数子图在每个调用点断裂 → 目标不可达 → 任一边移除都"不可达" → 全部分支误报必要且方向恒 true）。
+
+**裁决**：
+1. `_intra_adjacency` 函数内投影：为**可正常返回**的调用点补隐式 `callsite→returnsite` 边（ID 变换定位，依据 builder 同行同序配对）；
+2. 不可返回边界：被调者 AST 全路径 raise（`_all_paths_raise`，Return 不算终止）→ 不连——不加"万能直达边"；fall-off-end 函数隐式返回 None → 连接保留；外部调用不产 callsite 块，天然无此问题；
+3. 诚实门：基础投影图上目标不可达 → `necessary_guard_edges` 返回空（不把全部分支误报必要）；
+4. 两层互补语义固化：支配分析 = 无条件必要（函数级）；关系分析（词法）= 可条件化必要（wrapper 路径条件）——`guard_analysis_diagnostic` 输出不一致诊断，不裁决谁对。
+
+| 备选 | 取舍 |
+|---|---|
+| A. 过程间全展开可达性（进被调者体内分析） | 语义最精但把被调者内分支引入支配计算，复杂度与现有微靶消费面不匹配；且 ICFG 的 call/return 边本就为跨函数遍历设计，函数级消费需投影是分层选择 |
+| **B. 函数内投影 + AST never-return 精化（选）** | 修断裂、保留"不可返回"边界、零 ICFG 建图改动；may-return 过近似方向 = 只可能漏报必要（少约束），不误报（多假约束）——对目标推导是保守方向 |
+| C. 只加诚实门不补边 | 退化为"含调用函数一律空结果"，derive_state_goal 在此类函数上失去全部产出 |
+
+**兼容性影响**：无调用夹具图不变（投影只加边）；vulnshop 上 derive_state_goal 对 UPDATE 目标本就产空约束（守卫行无 extractor 事实），修复前后输出一致；新测试 8 项 + 回归三件套全绿。
+
+### D7.（PR-00）M0 拆分与循环依赖消除
+
+v1.1b 的"完整 M0 是第二批开工前提,而 M0 又含依赖 T5b 的执行/验证项"循环 → 拆 M0-A（静态提取,已完成）/M0-B（已知链验证,PR-04）/M0-C（自动规划,PR-05）;T 线任务映射 PR-02..07;契约未冻结问题五项登记（join 词表/UNPROBED/witness/分母冻结/fork-COW 语义）各自归属 PR,冻结前不写死语义。目标钉死:GUARDS=1、`app.py` ship_order 的 UPDATE 块、测试按 statements+in_file 定位（行号锚点随版本漂移由测试同步维护）。
