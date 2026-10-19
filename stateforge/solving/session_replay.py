@@ -151,7 +151,7 @@ def checkpoint_from_guided_result(result, source_file: str,
     """Only a VERIFIED guided result may become a checkpoint."""
     if not getattr(result, "checkpoint_eligible", False):
         return None
-    if not result.session_witness or not result.session_witness.get("values"):
+    if not result.session_witness or "values" not in result.session_witness:
         return None
     steps = [dict(s) for s in result.steps]
     if not steps:
@@ -182,6 +182,10 @@ def _view_from_probe(probe) -> SessionSnapshotView:
     raw = probe()
     if isinstance(raw, SessionSnapshotView):
         return raw
+    if isinstance(raw, dict):
+        return SessionSnapshotView(SESSION_STATUS_DECODED, dict(raw),
+                                   client_id="client-0",
+                                   observation_point="after_prefix")
     return snapshot_view(raw, client_id="client-0",
                          observation_point="after_prefix")
 
