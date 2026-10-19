@@ -1,0 +1,102 @@
+{
+ "goal_id": "app.py::ship_order::275-275::block::1",
+ "steps": [
+  {
+   "method": "POST",
+   "path": "/auth/register",
+   "json": {
+    "username": "sf_u_artifact",
+    "password": "sf_pw_artifact"
+   }
+  },
+  {
+   "method": "POST",
+   "path": "/auth/login",
+   "json": {
+    "username": "sf_u_artifact",
+    "password": "sf_pw_artifact"
+   },
+   "extract": {
+    "token": "?token"
+   }
+  },
+  {
+   "method": "POST",
+   "path": "/orders",
+   "json": {
+    "items": [
+     {
+      "sku": "book",
+      "price": 100,
+      "qty": 1
+     }
+    ],
+    "coupon_code": "SAVE10"
+   },
+   "header": {
+    "Authorization": "Bearer ?token"
+   },
+   "extract": {
+    "id": "?oid"
+   }
+  },
+  {
+   "method": "POST",
+   "path": "/orders/?oid/pay",
+   "json": {
+    "amount": "100"
+   },
+   "header": {
+    "Authorization": "Bearer ?token"
+   }
+  },
+  {
+   "method": "POST",
+   "path": "/orders/?oid/ship",
+   "header": {
+    "Authorization": "Bearer ?token"
+   }
+  }
+ ],
+ "obligations": [
+  {
+   "slot": "?token",
+   "producers": [
+    "POST /auth/login"
+   ],
+   "consumers": [
+    "POST /orders",
+    "POST /orders/?oid/pay",
+    "POST /orders/?oid/ship"
+   ],
+   "note": "认证主体单一性:create/pay/ship 共用同一 token(身份切换=义务破坏,验证期裁决)"
+  },
+  {
+   "slot": "?oid",
+   "producers": [
+    "POST /orders"
+   ],
+   "consumers": [
+    "POST /orders/?oid/pay",
+    "POST /orders/?oid/ship"
+   ],
+   "note": "资源同一性:?oid 由 create 的 extract 重建,不写死 ID"
+  },
+  {
+   "slot": "relation",
+   "producers": [],
+   "consumers": [],
+   "note": "EQ(?order.user_id, ?user.id)@app.py:271:?order ≡ ?user 的同一性经绑定义务保证(?token 单一主体),运行时探测+联合验证裁决"
+  }
+ ],
+ "conditional_on": [
+  "guards"
+ ],
+ "dropped_relations": [],
+ "uncovered_relations": [],
+ "binding_conflicts": [],
+ "notes": [
+  "final-action: POST /orders/<int:oid>/ship"
+ ],
+ "signature": "4fa5a0856dee"
+}

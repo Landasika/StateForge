@@ -396,3 +396,10 @@ v0 表延续，修订两点：
 - **测试 `test_relational_goal_runtime.py` 9 项**(任务书矩阵全覆盖):happy(入口 PAID+归属联判 TRUE/ship 后 SHIPPED/Trace 命中 UPDATE/四分量 VERIFIED_ACHIEVED/逐步状态 CREATED→PAID→SHIPPED);未登录 401→auth UNKNOWN 无 witness;错误身份 403→探测 alice≠bob→auth FALSE→VERIFIED_NOT_ACHIEVED;错误 oid 404→EXISTS 反证;未支付/支付不足 409→status 反证;观测器异常→UNKNOWN 不 crash(枚举完整性不谎报);输入隔离+冷启动重放×2(基线还原、extract 重建绑定);序列内共享(中途不 restore)。
 - 样例产物 `artifacts/m0/step_observations.jsonl`(5 步×before/after 全量)+ `goal_evaluation.json`(入口/终态/四分量:VERIFIED_ACHIEVED)。回归:vulnshop 17 passed(1 skip 既有)、plan_executor+runtime+fuzzing 68 passed。
 - **残余开放项**:观测器逐表连接的多表"同一只读事务快照"仍为逐表近似(单线程受控靶无并发窗口;通用并发场景待守卫检查点插桩);auth probe 的用户在场校验读 users 全表(小靶可接受,大表需参数化查询);错误链的 failed_constraint 已结构化,PR-06 再入调度记忆。
+
+#### 实施记录（2026-10-19，PR-05 / M0-C 已实现）
+
+- **关系规划器** `solving/relational_planner.py`(L3,复用不重写):消费 `derive_relational_goal` **完整关系合取**——常量关系经 SSTG requires 原子**后缀匹配**(零实体名硬编码)→ `render_seed` 反向链;跨实体归属关系 → 绑定义务(?user ≡ ?token 主体,运行时裁决);基础链 = 终结动作(目标块端点)经 `ensure_auth`+`resource_completion` 通用完备化;guards 条件化(config 行序启发,early-return 惯用法)——`runtime_path_context` 声明 False 时豁免守卫关系,**不套 guards=1 前置**。符号同一性:?token 单生产三消费、?oid 由 create extract 重建(不写死 ID);失效语义 `detect_auth_rebinding`(二次 login 标注,验证裁决);`signature` 内容哈希(PR-06 去重)。**三概念分离**:RelationalPlanCandidate(未执行)≠ VerifiedPlan(四分量后)≠ 重放检查点(复用 GoalCheckpoint,符号链=重放规则)。
+- **测试**:单元 8 项(两种 guards 模式链形/合取非单原子/槽位统一/签名确定性/候选≠verified/重绑定检测/旧入口回归)+ E2E 4 案例全过(①空基线自动链→入口联判 TRUE+Trace 命中+终态 SHIPPED→VERIFIED_ACHIEVED 且 witness 在;②注入 alice 切换→403+auth FALSE→VERIFIED_NOT_ACHIEVED 不标 verified+规划层重绑定标注;③两次冷启动重放均 VERIFIED_ACHIEVED,oid 由 extract 重建,GoalCheckpoint 序列种子与链逐字节一致;④guards=0 链无 pay,空基线 ship 直接 200 且 UPDATE 覆盖)。
+- 产物 `artifacts/m0/plan_candidate.json` + `replay_result.json`(两次冷重放 VERIFIED_ACHIEVED)。M0-C 验收门四案例全部通过。
+- **残余开放项**:guards 条件化的行序启发仅在 early-return 惯用法内成立(文档化);候选未含动作失效的自动修复(重绑定只标注不换链——PR-06 调度记忆);规划仍单实体资源(?oid 单槽,多资源目标留 Phase 3 前沿)。
