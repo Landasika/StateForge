@@ -42,7 +42,7 @@ import gc
 import json
 import sqlite3
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Callable, Iterable, Protocol, runtime_checkable
 
@@ -388,3 +388,127 @@ def audit_lifecycle_failure(out_dir: str | Path, record: dict) -> None:
                                 ensure_ascii=False) + "\n")
     except OSError:
         pass
+
+
+# ------------------------------------------------------------- PR-04 逐请求观测
+
+@dataclass(frozen=True)
+class StepRecord:
+    """M0-B 一步请求的完整记录(观测/响应/异常/耗时/绑定/轨迹窗口)。"""
+
+    index: int
+    action: str
+    status: object = None                 # HTTP 状态码(或 None=异常/无响应)
+    error: str | None = None              # 异常分类(不吞:记录后继续)
+    before: tuple = ()                    # 请求前观测(duck-typed observations)
+    after: tuple = ()                     # 请求后观测(4xx/异常同样执行)
+    duration_ms: float = 0.0
+    bindings: dict = field(default_factory=dict)   # 执行后绑定快照
+    trace_span: tuple[int, int] = (0, 0)  # session.events 窗口[start,end)
+
+
+@dataclass(frozen=True)
+class InputRecord:
+    """M0-B 一个输入(序列)的记录:生命周期每输入一次,观测每请求两次。"""
+
+    steps: tuple[StepRecord, ...] = ()
+    lifecycle_failures: int = 0
+    observer_failures: int = 0
+
+
+class RequestLevelHarness:
+    """序列输入的逐请求观测编排(M0-B;任务书 PR-04 概念 API 落地)。
+
+    纪律:
+    - ``begin_input``/``finish_input`` 各一次——生命周期(含 DB 恢复)
+      只发生在**输入边界**,序列内前序请求的状态对后续请求可见;
+    - before/after 观测经 ``trace_session.untraced()`` 窗口(提供
+      session 时)——观测帧不进覆盖计数(P0-B 纪律的 Trace 侧延伸);
+    - 4xx/5xx/异常**同样执行 after 观测**并记录 error(失败请求仍可能
+      产生副作用;异常不向调用方泄,记录后继续下一步);
+    - 观测器异常:计 observer_failures + 空观测(证据缺失≠状态污染),
+      不 crash;
+    - execute_step(step) -> status 由调用方提供(适配任意请求面);
+      步内 Trace 采集:提供 trace_session 时自动开 request 窗口并记
+      trace_span(调用方事后 map_trace 判定目标块)。
+
+    域归属:runtime(L2)——observer/bindings 全程鸭子类型,零 state 依赖。
+    """
+
+    def __init__(self, execution: "ExecutionContext",
+                 observer=None, bindings_fn=None, extra_observe=None):
+        self.execution = execution
+        self.observer = observer
+        self.bindings_fn = bindings_fn
+        self.extra_observe = extra_observe      # step → 附加观测(如认证探测)
+
+    def _observe(self, session, step=None, extra=None):
+        if self.observer is None and extra is None:
+            return ()
+        out: list = []
+        try:
+            if session is not None:
+                with session.untraced():
+                    if self.observer is not None:
+                        out.extend(self.observer.observe())
+                    if extra is not None and step is not None:
+                        out.extend(extra(step))
+            else:
+                if self.observer is not None:
+                    out.extend(self.observer.observe())
+                if extra is not None and step is not None:
+                    out.extend(extra(step))
+        except Exception:                          # noqa: BLE001
+            self._observer_failures += 1
+            return ()
+        return tuple(out)
+
+    _observer_failures = 0
+
+    def run_input(self, steps, execute_step, *,
+                  trace_session=None, action_of=None) -> InputRecord:
+        """执行一个输入:begin →(before→execute→after)×N → finish。
+
+        构造期 ``extra_observe(step)``:随步上下文的附加观测(如认证
+        探测——须以**该步请求实际携带**的凭据为准,而非全局绑定状态);
+        在 before/after 两个窗口各调用一次,与基础观测同窗口(同观测点)。
+        """
+        try:
+            self.execution.begin_run()             # 输入边界(首输入建基线)
+        except LifecycleError:
+            return InputRecord(lifecycle_failures=1)
+
+        records: list[StepRecord] = []
+        for idx, step in enumerate(steps):
+            before = self._observe(trace_session, step, self.extra_observe)
+            t0 = time.monotonic()
+            start_ev = len(trace_session.events) if trace_session else 0
+            status, error = None, None
+            try:
+                if trace_session is not None:
+                    with trace_session.request():
+                        status = execute_step(step)
+                else:
+                    status = execute_step(step)
+            except Exception as exc:               # noqa: BLE001
+                error = f"{type(exc).__name__}:{exc}"
+            end_ev = len(trace_session.events) if trace_session else 0
+            duration_ms = (time.monotonic() - t0) * 1000
+            after = self._observe(trace_session, step,
+                                  self.extra_observe)  # 4xx/异常同样观测
+            bindings = dict(self.bindings_fn()) if self.bindings_fn else {}
+            records.append(StepRecord(
+                index=idx,
+                action=action_of(idx, step) if action_of
+                else str(step.get("method", "")) + " " + str(step.get("path", step)),
+                status=status, error=error, before=before, after=after,
+                duration_ms=round(duration_ms, 3), bindings=bindings,
+                trace_span=(start_ev, end_ev)))
+
+        try:
+            self.execution.finish_run()            # 输入边界(还原)
+        except LifecycleError:
+            return InputRecord(steps=tuple(records), lifecycle_failures=1,
+                               observer_failures=self._observer_failures)
+        return InputRecord(steps=tuple(records),
+                           observer_failures=self._observer_failures)

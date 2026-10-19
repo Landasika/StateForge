@@ -1,0 +1,59 @@
+{
+ "meta": {
+  "generated_by": "PR-04 (M0-B sample)",
+  "guards": 1,
+  "target_block": "app.py::ship_order::275-275::block::1",
+  "trace_update_covered": true
+ },
+ "pre_ship_entry_evaluation": {
+  "relations_truth": "TRUE",
+  "achievement_status": "UNKNOWN",
+  "path_conditions_truth": "TRUE",
+  "auth_binding_truth": "TRUE",
+  "target_trace_covered": "UNKNOWN",
+  "satisfying": [
+   {
+    "?order": "orders:1",
+    "?user": "users:bob"
+   }
+  ],
+  "witness": null,
+  "failed_constraint": null,
+  "unknown_reasons": [
+   "attr-unprobed:Order.user_id",
+   "attr-unprobed:User.id",
+   "attr-unprobed:Order.status",
+   "trace-unchecked(目标块进入由 Trace 独立判定)"
+  ],
+  "evidence_refs": [],
+  "observation_point": "before-ship",
+  "binding_provenance": {
+   "?order": "extract:?oid",
+   "?user": "auth:token"
+  }
+ },
+ "post_ship_state_evaluation": {
+  "relations_truth": "TRUE",
+  "achievement_status": "UNKNOWN",
+  "path_conditions_truth": "TRUE",
+  "auth_binding_truth": "TRUE",
+  "target_trace_covered": "UNKNOWN",
+  "satisfying": [
+   {
+    "?order": "orders:1"
+   }
+  ],
+  "witness": null,
+  "failed_constraint": null,
+  "unknown_reasons": [
+   "attr-unprobed:Order.status",
+   "trace-unchecked(目标块进入由 Trace 独立判定)"
+  ],
+  "evidence_refs": [],
+  "observation_point": "after-ship",
+  "binding_provenance": {
+   "?order": "extract:?oid"
+  }
+ },
+ "achievement_status": "VERIFIED_ACHIEVED"
+}

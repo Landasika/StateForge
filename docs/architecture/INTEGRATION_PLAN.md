@@ -387,3 +387,12 @@ v0 表延续，修订两点：
 - **PR-03.1（联合判达可靠性热修复）**：P0-A `BindingEnv`(fixed/enumerable/hints/provenance;旧参 binding_candidates=fixed 语义,fixed 不与全集并集);P0-B 认证分量只认同观测点 `RequestAuth.subject` verified 探测事实(provenance 字符串不是身份确认),`relations_truth` 与 `achievement_status` 分离;P0-C `ObservationView.from_observations` 证据过滤(仅 RUNTIME_VERIFIED、UNKNOWN 值不入、MISSING/exists=False→confirmed_absent、冲突值/跨 observed_at 混合 → ValueError);P0-D 四分量分类器 `classify_achievement`(path_conditions/unresolvable/trace 入闸;witness 携带 path_conditions)。测试重写为 26 项(四 P0 反例 + 原八反例四分量适配 + 分类器真值表 + vulnshop 集成双态:无探测 UNKNOWN/有探测 VERIFIED_ACHIEVED)。契约术语补 §6.6.6。
 - **PR-02.1（快照防御补丁）**：SQLite 魔数头分类——live/模板"具头但不可开" → `SnapshotConsistencyError`(不静默退化普通拷贝);DELETE+EXCLUSIVE 捕获收紧为 fail-closed(提交中主文件可短暂不自洽,拷贝不能证明一致——原"拷贝即一致"测试期望按评审 PR-02.1 方向改判);`execution_context` 顶部 docstring 同步 backup 语义。新增 3 测试(损坏头/损坏模板/活跃读者可审计)。
 - 回归:state+runtime 190 passed;全量见本轮提交信息。下一里程碑 PR-04(M0-B)。
+
+#### 实施记录（2026-10-19，PR-04 / M0-B 已实现）
+
+- **逐请求观测编排**：`execution_context.RequestLevelHarness`——生命周期每输入一次(begin/finish,恢复只在输入边界,序列内状态共享)、每步 before→execute→after(4xx/异常同样观测+error 记录)、观测经 untraced 窗口不进覆盖、观测器异常计数不 crash、`extra_observe(step)` 随步附加观测(认证探测以**该步请求实际携带**的凭据为准,非全局绑定)、`trace_span` 每步轨迹窗口(map_trace 事后判定目标块)。
+- **fuzz_target**:`_dispatch_request(app,bindings,step)` 参数化(模块 target() 路径零变化)+ `make_instance(db_path,guards)` 独立实例工厂(guards 显式覆写不玩环境变量顺序、每测试独立 DB、实例级绑定表、reset fail-closed、observer/auth_probe)。
+- **认证探测(P0-B 证据面)**:`state_evidence.observe_request_auth`——token 形态→hmac 复验(app.make_token 同径)→用户在场只读直查,全过才产 `RequestAuth.subject` verified 事实;伪造签名/匿名 → None。
+- **测试 `test_relational_goal_runtime.py` 9 项**(任务书矩阵全覆盖):happy(入口 PAID+归属联判 TRUE/ship 后 SHIPPED/Trace 命中 UPDATE/四分量 VERIFIED_ACHIEVED/逐步状态 CREATED→PAID→SHIPPED);未登录 401→auth UNKNOWN 无 witness;错误身份 403→探测 alice≠bob→auth FALSE→VERIFIED_NOT_ACHIEVED;错误 oid 404→EXISTS 反证;未支付/支付不足 409→status 反证;观测器异常→UNKNOWN 不 crash(枚举完整性不谎报);输入隔离+冷启动重放×2(基线还原、extract 重建绑定);序列内共享(中途不 restore)。
+- 样例产物 `artifacts/m0/step_observations.jsonl`(5 步×before/after 全量)+ `goal_evaluation.json`(入口/终态/四分量:VERIFIED_ACHIEVED)。回归:vulnshop 17 passed(1 skip 既有)、plan_executor+runtime+fuzzing 68 passed。
+- **残余开放项**:观测器逐表连接的多表"同一只读事务快照"仍为逐表近似(单线程受控靶无并发窗口;通用并发场景待守卫检查点插桩);auth probe 的用户在场校验读 users 全表(小靶可接受,大表需参数化查询);错误链的 failed_constraint 已结构化,PR-06 再入调度记忆。

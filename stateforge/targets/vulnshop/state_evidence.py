@@ -144,3 +144,37 @@ class VulnshopStateObserver:
                                       observed_value=bool(used),
                                       value_kind=VALUE_KIND_BOOLEAN))
         return out
+
+
+# ---- PR-04(M0-B):请求身份探测(P0-B 的认证关联证据面) ---------------------
+
+def observe_request_auth(token, app_module, db_path):
+    """本次请求认证主体 → ``RequestAuth.subject`` verified 事实。
+
+    证据链(逐级校验,任一失败 → None,不产半截事实):
+    1. token 形态 ``username:sig``;
+    2. hmac 签名复验(app.make_token 同源校验——与服务器判权同径,
+       "slot 字符串本身不是身份确认"的落地);
+    3. username 在 users 表在场(DB 只读直查)。
+    observed_value = username(与 goal ?user 的绑定实例同词表)。
+    """
+    import hmac as _hmac
+
+    if not token or not isinstance(token, str):
+        return None
+    username, _, sig = token.partition(":")
+    if not username or not sig:
+        return None
+    expected = app_module.make_token(username)
+    if not _hmac.compare_digest(expected, token):
+        return None
+    probe = VulnshopStateObserver(db_path)
+    present = username in {str(r[0]) for r in probe._rows(
+        "SELECT username FROM users")}     # 只读直查在场性
+    if not present:
+        return None
+    return StateObservation(
+        key=StateKey("RequestAuth.subject", "request", SCOPE_USER),
+        value=True, evidence=Evidence.RUNTIME_VERIFIED, source="probe:auth",
+        subject="RequestAuth.subject", observed_value=username,
+        value_kind=VALUE_KIND_ENUM)

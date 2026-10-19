@@ -169,12 +169,16 @@ def _coerce(value):
     return value
 
 
-def _request(step: dict):
-    """一个请求 dict → 真实 Flask 全栈;extract 回填 _BINDINGS。"""
+def _dispatch_request(app, bindings: dict, step: dict):
+    """请求 dict → 真实 Flask 全栈(app/bindings 参数化;模块 _request 与
+    VulnshopInstance.request 共用同一执行面,行为逐字节一致)。"""
+    def sub(v: str) -> str:
+        return _SLOT.sub(
+            lambda m: str(bindings.get(m.group(1), m.group(0))), v)
     method = str(step.get("method", "GET")).upper()
-    path = _sub(str(step.get("path", "/")))
+    path = sub(str(step.get("path", "/")))
     kwargs: dict = {"method": method,
-                    "headers": {str(k): _sub(str(v))
+                    "headers": {str(k): sub(str(v))
                                 for k, v in (step.get("header") or {}).items()}}
     json_body = step.get("json")
     if isinstance(json_body, dict):
@@ -182,8 +186,8 @@ def _request(step: dict):
     query = step.get("query")
     if isinstance(query, dict):
         kwargs["query_string"] = {k: _coerce(v) for k, v in query.items()}
-    with _APP.test_request_context(path, **kwargs):
-        resp = _APP.full_dispatch_request()
+    with app.test_request_context(path, **kwargs):
+        resp = app.full_dispatch_request()
     extract = step.get("extract") or {}
     if extract and resp.status_code < 400:
         payload = resp.get_json(silent=True)
@@ -191,8 +195,13 @@ def _request(step: dict):
             for key, slot in extract.items():
                 val = payload.get(key)
                 if val is not None:
-                    _BINDINGS[str(slot).lstrip("?")] = val
+                    bindings[str(slot).lstrip("?")] = val
     return resp
+
+
+def _request(step: dict):
+    """一个请求 dict → 真实 Flask 全栈;extract 回填 _BINDINGS。"""
+    return _dispatch_request(_APP, _BINDINGS, step)
 
 
 _LEGACY = None                                # 惰性:首次盲字节才枚举路由
@@ -230,3 +239,63 @@ def target(data: bytes) -> None:
             pass
         return
     _legacy(data)
+
+
+# ---- PR-04(M0-B):可注入的独立请求面实例 ----------------------------------
+#
+# 模块级 target()/_APP 依赖 import 期 GUARDS 环境旗标与 per-pid DB——
+# 逐请求联合验证需要:① 显式 guards 覆写(不玩环境变量顺序游戏);
+# ② 每测试独立 DB(干净的"空用户/空订单"基线);③ 实例级绑定表。
+# make_instance 纯增量:模块 target() 路径零变化。
+
+class VulnshopInstance:
+    """隔离的 vulnshop 请求面实例(guards/DB/绑定表实例私有)。
+
+    - request(step):与模块 _request 同一分发函数(_dispatch_request);
+    - reset():完整先验态隔离(清绑定 + DB 回基线模板;模板丢失
+      RuntimeError fail-closed,同 reset_state 语义);
+    - observer()/auth_probe():运行时观测(P0-B 认证探测含 hmac 验证
+      + 用户在场校验——token 字符串本身不是身份确认)。
+    """
+
+    def __init__(self, db_path, guards: int):
+        from stateforge.runtime.snapshot.l2_sqlite import L2Sqlite
+        self.db_path = Path(db_path)
+        self.guards = guards
+        self.app = create_app(db_path=str(self.db_path), guards=guards,
+                              init_db=True)
+        self.bindings: dict[str, object] = {}
+        self._l2 = L2Sqlite(self.db_path,
+                            tpl_root=self.db_path.parent
+                            / f"sf_baseline_{self.db_path.name}")
+        self._l2.snapshot_template("baseline")
+
+    def request(self, step: dict):
+        return _dispatch_request(self.app, self.bindings, step)
+
+    def reset(self) -> None:
+        """先验态隔离:清符号绑定并还原 DB 基线(模板丢失=显式失败)。"""
+        self.bindings.clear()
+        if not self._l2.template_exists("baseline"):
+            raise RuntimeError(
+                f"实例 DB 基线模板丢失: {self._l2.root}/baseline/db.tpl")
+        self._l2.restore("baseline")
+
+    def observer(self):
+        from stateforge.targets.vulnshop.state_evidence import \
+            VulnshopStateObserver
+        return VulnshopStateObserver(self.db_path)
+
+    def auth_probe(self):
+        """本次请求身份探测:?token 绑定经 hmac 验证 + 用户在场 →
+        RequestAuth.subject verified 事实(无 token/无效/用户不在场 → None)。"""
+        from stateforge.targets.vulnshop.state_evidence import \
+            observe_request_auth
+        return observe_request_auth(self.bindings.get("token"),
+                                    app_module=_APP_MOD,
+                                    db_path=self.db_path)
+
+
+def make_instance(db_path, guards: int) -> VulnshopInstance:
+    """独立实例工厂(M0-B/逐请求验证/测试用)。"""
+    return VulnshopInstance(db_path=db_path, guards=guards)
