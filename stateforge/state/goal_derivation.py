@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import ast
 from dataclasses import dataclass, field
+from pathlib import Path
 
 from stateforge.core.ir import ProgramIR
 from stateforge.state.model import StateFactCandidate, StructuredPredicate
@@ -68,9 +69,77 @@ def _function_blocks(ir: ProgramIR, block_id: str) -> set[str]:
             if b.file == blk.file and b.function == blk.function}
 
 
-def _reachable(src: str, dst: str, block_ids: set[str], ir: ProgramIR,
-               skip_edge: tuple[str, str] | None = None) -> bool:
-    """函数子图内 src→dst 可达性(可删一条边)。"""
+def _all_paths_raise(stmts) -> bool:
+    """语句列表全路径终止于 raise:某语句全 raise 终止 ⇒ 其后不可达。
+
+    与 `_all_terminate` 的区别:ast.Return **不**算终止——函数返回是
+    "正常返回到调用者",只有 raise 才阻断 callsite→returnsite 连接。
+    """
+    for s in stmts:
+        if _stmt_all_paths_raise(s):
+            return True
+    return False
+
+
+def _stmt_all_paths_raise(s) -> bool:
+    if isinstance(s, ast.Raise):
+        return True
+    if isinstance(s, ast.If):
+        return (_all_paths_raise(s.body)
+                and bool(s.orelse) and _all_paths_raise(s.orelse))
+    return False
+
+
+_RAISE_CACHE: dict[tuple[str, str], bool] = {}
+
+
+def _callee_never_returns(ir: ProgramIR, callee_qname: str) -> bool:
+    """被调者是否(可证地)从不正常返回:AST 全路径 raise。
+
+    依据调用边的 callee qname → 函数入口块 → 源文件 AST。解析失败 →
+    False(may-return 过近似,隐式边保留——保守方向:多连边只可能让
+    "必要边"更难判定,不会制造虚假必要)。fall-off-the-end 函数
+    (无 return 语句)正常返回 None,不算 never-return。
+    """
+    fnir = ir.functions.get(callee_qname)
+    if fnir is None:
+        return False
+    eb = ir.blocks.get(fnir.entry)
+    if eb is None:
+        return False
+    key = (eb.file, eb.function)
+    if key not in _RAISE_CACHE:
+        _RAISE_CACHE[key] = _fn_all_paths_raise(eb.file, eb.function)
+    return _RAISE_CACHE[key]
+
+
+def _fn_all_paths_raise(source_file: str, function: str) -> bool:
+    try:
+        tree = ast.parse(Path(source_file).read_text(encoding="utf-8"))
+    except (OSError, SyntaxError, UnicodeDecodeError):
+        return False
+    fn = next((n for n in ast.walk(tree)
+               if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))
+               and n.name == function), None)
+    return fn is not None and _all_paths_raise(fn.body)
+
+
+def _intra_adjacency(ir: ProgramIR, block_ids: set[str],
+                     skip_edge: tuple[str, str] | None
+                     ) -> dict[str, list[str]]:
+    """函数内投影 CFG 邻接表(任务 PR-01)。
+
+    真实边之外,为**可正常返回**的函数内调用点补隐式
+    callsite→returnsite 连接:ICFG 把这对连接拆成过程间
+    call/return 边(callee.entry/callee.exit 都在函数块集外),
+    按函数过滤后子图在每个调用点断裂——实测 vulnshop ship_order
+    上 entry 对 UPDATE 目标不可达,`necessary_guard_edges` 退化为
+    "任一边移除都不可达 → 全部分支误报必要"。投影语义:
+    - callsite 与 returnsite 同函数同行同序(builder `icfg.py:131-136`),
+      以 `::callsite::` → `::returnsite::` 的 ID 变换定位;
+    - 被调者全路径 raise(never-return)→ 不连接(路径终止,声音上界);
+    - 外部调用不产 callsite 块(builder 只为已解析内调建链),无此问题。
+    """
     adj: dict[str, list[str]] = {}
     for e in ir.edges:
         if e.src not in block_ids or e.dst not in block_ids:
@@ -78,6 +147,22 @@ def _reachable(src: str, dst: str, block_ids: set[str], ir: ProgramIR,
         if skip_edge and (e.src, e.dst) == skip_edge:
             continue
         adj.setdefault(e.src, []).append(e.dst)
+    for e in ir.edges:
+        if e.kind != "call" or e.src not in block_ids:
+            continue
+        rs = e.src.replace("::callsite::", "::returnsite::")
+        if rs not in block_ids or rs in adj.get(e.src, ()):
+            continue
+        if e.callee and _callee_never_returns(ir, e.callee):
+            continue                      # 不可返回边界:不加"万能直达边"
+        adj.setdefault(e.src, []).append(rs)
+    return adj
+
+
+def _reachable(src: str, dst: str, block_ids: set[str], ir: ProgramIR,
+               skip_edge: tuple[str, str] | None = None) -> bool:
+    """函数内投影子图上 src→dst 可达性(可删一条真实边)。"""
+    adj = _intra_adjacency(ir, block_ids, skip_edge)
     seen = {src}
     stack = [src]
     while stack:
@@ -111,6 +196,11 @@ def necessary_guard_edges(ir: ProgramIR,
     fblocks = _function_blocks(ir, target_block)
     entry = _entry_of(ir, fblocks)
     if entry is None or entry == target_block:
+        return []
+    # PR-01 诚实门:基础投影图上目标本来就不可达(如目标位于
+    # never-return 调用之后,或函数结构异常)时,任一边移除都"不可达"
+    # ——不得据此把全部分支误报为必要;返回空(无可判定的必要守卫)。
+    if not _reachable(entry, target_block, fblocks, ir):
         return []
     out: list[tuple[str, str]] = []
     branch_blocks = [b for b in fblocks
@@ -476,3 +566,48 @@ def derive_relational_goal(ir, target_block: str) -> "StateGoal | None":
             f"{'(false 边反转)' if r.via_edge == 'false' else ''}"
             for r in relations),
     )
+
+
+def guard_analysis_diagnostic(ir, target_block: str) -> dict:
+    """PR-01 诊断:支配分析(necessary_guard_edges,函数级·无条件)与
+    关系分析(derive_relational_goal,词法·可条件化)的一致性对照。
+
+    两层语义不同:支配分析的"必要"是无条件的(全路径);关系分析可把
+    关系标注为仅在 wrapper 路径条件(如 guards=1)下必要。本诊断不裁决
+    谁对——只把不一致暴露为可审计记录(任务 PR-01:"记录两种分析结果
+    不一致时的诊断"),供上层(规划/前沿)与测试消费。
+    """
+    goal = derive_relational_goal(ir, target_block)
+    dominators = necessary_guard_edges(ir, target_block)
+    dom_lines = {ir.blocks[b].start_line: kind for b, kind in dominators}
+
+    rel_lines = {r.source_line for r in (goal.relations if goal else ())}
+    pc_lines = {p.source_line for p in (goal.path_conditions if goal else ())}
+    notes: list[str] = []
+    if goal is None:
+        notes.append("relational: no goal derived (fn/file unparsable)")
+    if not dom_lines and goal is not None:
+        notes.append("dominator: no unconditional necessary guards; "
+                     "relational relations are all conditional or absent")
+    for line in sorted(dom_lines):
+        if line in rel_lines:
+            continue                     # 支配必要 ↔ 无条件关系:一致
+        if line in pc_lines:
+            notes.append(f"line {line}: dominator-necessary but only a "
+                         f"path condition in relational (non-entity guard)")
+            continue
+        notes.append(f"line {line}: dominator-necessary with no relational "
+                     f"term — check extractor coverage for this guard")
+    for line in sorted(rel_lines):
+        if line not in dom_lines:
+            notes.append(f"line {line}: relational relation NOT "
+                         f"unconditional-dominator (conditional under "
+                         f"path conditions — expected for wrapped guards)")
+    return {
+        "target_block": target_block,
+        "dominator_guards": [{"line": ln, "edge": kind}
+                             for ln, kind in sorted(dom_lines.items())],
+        # 全部关系行;各行条件化与否见 notes 与 goal.path_conditions
+        "relational_relation_lines": sorted(rel_lines),
+        "notes": notes,
+    }
