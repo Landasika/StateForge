@@ -142,3 +142,38 @@ def test_proxy_atoms_do_not_falsify_verified_vocab():
     assert payload["verified_atoms"] == ["Session.role=admin{root@user}"]
     assert payload["proxy_atoms"] == ["Session.role=admin{*@unknown}"]
     assert not (set(payload["verified_atoms"]) & set(payload["proxy_atoms"]))
+
+
+# --------------------------------------------------- PR-03:v2 可选列
+
+def test_observation_v2_optional_columns_roundtrip():
+    """v2 列(subject/observed_value/value_kind/observed_at)序列化往返;
+    旧四字段构造/渲染不变。"""
+    key = StateKey("Order.user_id=7", "3", SCOPE_RESOURCE)
+    obs = StateObservation(key=key, value=True,
+                           evidence=Evidence.RUNTIME_VERIFIED,
+                           source="db:orders", subject="Order.user_id",
+                           observed_value=7, value_kind="NUMBER",
+                           observed_at=3)
+    d = obs.to_dict()
+    assert d["subject"] == "Order.user_id"
+    assert d["observed_value"] == 7 and d["value_kind"] == "NUMBER"
+    assert d["observed_at"] == 3
+    again = StateObservation.from_dict(d)
+    assert again == obs and again.render() == obs.render()
+    # 旧形态(无 v2 列):to_dict 不携带新键,from_dict 缺省读
+    old = StateObservation(key=StateKey("Coupon.used", "C"),
+                           value=False,
+                           evidence=Evidence.RUNTIME_VERIFIED)
+    d2 = old.to_dict()
+    assert set(d2) == {"key", "value", "evidence", "source"}
+    assert StateObservation.from_dict(d2) == old
+
+
+def test_value_kind_vocabulary_and_observability_words():
+    from stateforge.state.runtime_observer import (
+        NOT_OBSERVABLE, OBSERVABLE, OBSERVABILITY_STATUSES, UNPROBED,
+        VALUE_KINDS)
+    assert {"ENUM", "BOOLEAN", "NUMBER", "STRING",
+            "NULL", "MISSING", "UNKNOWN"} <= VALUE_KINDS
+    assert OBSERVABILITY_STATUSES == {OBSERVABLE, NOT_OBSERVABLE, UNPROBED}

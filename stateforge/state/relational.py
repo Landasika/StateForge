@@ -280,19 +280,32 @@ def resolve(term: "Field | Const", snapshot: Mapping[str, Mapping],
 
 
 def evaluate_relation(pred: RelPredicate, snapshot: Mapping[str, Mapping],
-                      bindings: Mapping[str, str]) -> str:
-    """单条关系 → "TRUE" | "FALSE" | "UNKNOWN"。"""
+                      bindings: Mapping[str, str],
+                      enumeration_complete: Mapping[str, bool] | None = None
+                      ) -> str:
+    """单条关系 → "TRUE" | "FALSE" | "UNKNOWN"。
+
+    PR-03 MISSING 语义(契约 §2.1/§2.2):实体键约定 ``"<家族>:<实例>"``;
+    实体不在快照**且**该家族枚举完整(``enumeration_complete[家族]`` 为
+    True)→ 确认缺失:EXISTS 判 FALSE(NOT_EXISTS 判 TRUE)——唯一
+    MISSING→FALSE 通道;无枚举完整性信息(None/False)→ UNKNOWN
+    (未观测 ≠ 不存在,绝不猜测)。其余语义与阶段 1 相同。
+    """
     op = pred.op
     if op in (RelOp.EXISTS, RelOp.NOT_EXISTS):
         entity = bindings.get(pred.left.var)
         if entity is None:
             return "UNKNOWN"
         present = entity in snapshot
-        if op is RelOp.EXISTS:
-            return "TRUE" if present else "UNKNOWN"
-        # NOT_EXISTS:快照无枚举完整性信息,证伪不了"不存在"→ 结构求值
-        # 只能给 FALSE(在场)或 UNKNOWN;诚实边界,不猜。
-        return "FALSE" if present else "UNKNOWN"
+        if present:
+            return "TRUE" if op is RelOp.EXISTS else "FALSE"
+        # 不在场:枚举完整 → 确认缺失(可判定);否则 UNKNOWN(不猜)
+        family = str(entity).split(":", 1)[0]
+        complete = bool(enumeration_complete.get(family)) \
+            if enumeration_complete else False
+        if complete:
+            return "FALSE" if op is RelOp.EXISTS else "TRUE"
+        return "UNKNOWN"
 
     left = resolve(pred.left, snapshot, bindings)
     if op in (RelOp.TRUTHY, RelOp.FALSY):
@@ -320,7 +333,9 @@ def evaluate_relation(pred: RelPredicate, snapshot: Mapping[str, Mapping],
 
 
 def evaluate_relations(relations, snapshot: Mapping[str, Mapping],
-                       bindings: Mapping[str, str]) -> str:
+                       bindings: Mapping[str, str],
+                       enumeration_complete: Mapping[str, bool] | None = None
+                       ) -> str:
     """关系合取(阶段 1):任一 FALSE → FALSE;全 TRUE → TRUE;否则 UNKNOWN。
 
     同一绑定赋值贯穿全部关系(?order/?user 不许各自挑最有利实例);
@@ -328,7 +343,8 @@ def evaluate_relations(relations, snapshot: Mapping[str, Mapping],
     """
     result = "TRUE"
     for pred in relations:
-        v = evaluate_relation(pred, snapshot, bindings)
+        v = evaluate_relation(pred, snapshot, bindings,
+                              enumeration_complete)
         if v == "FALSE":
             return "FALSE"
         if v == "UNKNOWN":

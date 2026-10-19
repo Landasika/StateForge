@@ -374,3 +374,10 @@ v0 表延续，修订两点：
 - 已交付：`STATE_CONTRACT.md` v1.1（R1–R7 契约修订 + 八类正反例）、`INTEGRATION_PLAN.md` v1.1（本文件：T1 重设计、T1–T7 同步、验收门、Phase 1 精确修改清单）、`CONTRACT_DECISIONS.md`（R1–R7 决策记录 + 文档 diff 摘要 + 正反例对照表）。
 - 未修改任何代码、Collector、epoch、规划器、快照运行代码；A–F 实验协议不变。
 - **按停止条件，本轮到此停止，等待人工验收。不得自行进入 Phase 1 编码。**
+
+#### 实施记录（2026-10-19，PR-02 + PR-03 已实现）
+
+- **PR-02（SQLite 基线与快照边界）**：`l2_sqlite.py` 双捕获模式——`backup`（缺省，输入级 SnapshotLifecycle：`Connection.backup()` 页级快照，WAL 已提交未 checkpoint 帧自动入模板；捕获**不删** live sidecar；恢复 = `BEGIN IMMEDIATE`(timeout=0) 持锁探针→fail-closed→backup(tpl→live)，不主动 unlink sidecar——WAL 连接在场时删除即破坏（实测 disk I/O error），垃圾 sidecar 由 SQLite 干净关闭自清理（已实证））与 `copy`（fork-COW 位级冻结语义保留；遇 WAL 显式 `SnapshotConsistencyError` fail-closed，supervisor 已切 `capture="copy"`）。`execution_context` 将 `sqlite3.Error/SnapshotConsistencyError` 纳入 fail-closed 包装。测试 `test_l2_wal.py` 10 项（任务书必测八项全覆盖 + sidecar 不删 + DELETE+EXCLUSIVE 捕获一致性）。
+- **PR-03（结构化事实与联合求值）**：`StateObservation` v2 四可选列（subject/observed_value/value_kind/observed_at，旧构造与 ledger 去重零变化；C8 行级演进键已同步 PROTOCOLS.md）；vulnshop 观测器补 `User.id`/`Order.user_id` + 属性级 `subject_families` 声明（`Session.*`=NOT_OBSERVABLE，未声明属性=UNPROBED 不外推）；`relational.evaluate_relation` 增枚举完整性参数（MISSING→仅 EXISTS 判 FALSE）；新 `state/goal_evaluation.py`——`ObservationView`（单观测点视图，跨点拼接结构性排除）+ `evaluate_goal`（候选有限枚举合取、同一赋值贯穿、上限外不判 FALSE、witness 只来自单点完整 TRUE、认证主体关联显式化）+ `GoalAchievementWitness`。测试：`test_goal_evaluation.py` 13 项（任务书八反例 + witness 序列化 + 候选上限 + 认证关联 + vulnshop 观测器集成）+ observer/relational 增项 4 项。样例产物 `artifacts/m0/goal_evaluation_sample.json`（TRUE + auth_verified）。
+- 全量 601 passed（574+27），零回归；A–F 默认行为不变（观测器新列仅 `--observe-state` 消费，驱动默认无观测）。
+- **残余开放项**：观测点内"同一只读事务快照"（多表一致读取）在 vulnshop 逐表连接下为近似——PR-04 引入请求级观测时评估单事务化；候选枚举确定性排序按键字符串（实例数大时上限语义保守）；`families_complete/failed` 声明目前由调用方传入，观测器协议层声明随 PR-04 固化。

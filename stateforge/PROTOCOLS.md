@@ -263,6 +263,8 @@ ChampionRecord 四键:`input_id` `distance` `epoch` `frontier_version`(`frontier
 
 **演进键 `state_evidence`(阶段 1 P0-B,仅 `--observe-state` 时写入):** 顶层可选键,生产者 = `entry_driver._dump_state`(经 `StateEvidenceLedger.to_payload`,`state/runtime_observer.py`),跨 epoch 结转经 `load_payload`。键集冻结于 v1:`evidence_version`(=1)、`observer`(观测器名;`""` = 靶无观测器,显式退化到代理模式)、`verified_atoms`(`StateKey.render` 串,词形 `Predicate{Entity@Scope}`)、`verified`(全量观测记录,行四键 `key/value/evidence/source`)、`proxy_atoms`(覆盖代理口径,scope=`unknown`,与 verified 分桶不互撞)。消费端 `epoch._verified_state_atoms` 只读 `verified_atoms`;**缺整块 = 未观测**,与空集"观测为零"显式区分。执行面:`tests/state/test_runtime_observer.py`、`tests/runtime/test_execution_context.py`、`tests/fuzzing/test_lifecycle_wiring.py`。
 
+**C8 行级演进键(PR-03,2026-10-19):** `verified` 行可含可选键 `subject`("Order.user_id",分解列)、`observed_value`(裸观测值)、`value_kind`(ENUM/BOOLEAN/NUMBER/STRING/NULL/MISSING/UNKNOWN;NULL=字段为空是已观测,MISSING=实体不存在,UNKNOWN=未观测——三值互斥)、`observed_at`(输入内请求序号,-1=输入级观测)。仅 v2 观测器携带;旧读者按缺键忽略,旧行(四键)照读。vulnshop 观测器另声明属性级可观测性 `subject_families`(内存协议属性,不入 payload)。执行面:`tests/state/test_runtime_observer.py::test_observation_v2_optional_columns_roundtrip`。
+
 ---
 
 ## C9 实验记录 JSONL(snapshots/candidates)—— 演进

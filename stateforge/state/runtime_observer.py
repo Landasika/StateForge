@@ -86,26 +86,65 @@ class StateObservation:
     verified-FALSE 是"确认不成立"(DB 直读可给双极);CONTROL_FLOW_PROXY
     只有"走过真分支"的控制流证据。UNKNOWN 观测只允许出现在枚举式
     producer(如阶段 2 调度器对谓词全集打标)里,台账不累积。
+
+    PR-03 v2 可选列(全部缺省 None/-1,旧构造/旧语义零变化;契约 §2.3):
+    - ``subject``:分解列("Order.user_id";None=沿用 key.predicate 旧形态);
+    - ``observed_value``:裸观测值("PAID"/7/True/None);
+    - ``value_kind``:ValueKind 词表(ENUM/BOOLEAN/NUMBER/STRING/NULL/
+      MISSING/UNKNOWN);NULL=字段值为空(**已观测**),MISSING=实体不存在,
+      UNKNOWN=未观测——三值互斥(契约 §2.2);
+    - ``observed_at``:观测点序号(输入内请求号;-1=输入级观测,现状)。
     """
 
     key: StateKey
     value: bool
     evidence: Evidence
     source: str = ""
+    # ---- v2 可选列(PR-03) ----
+    subject: str | None = None
+    observed_value: object = None
+    value_kind: str | None = None
+    observed_at: int = -1
 
     def render(self) -> str:
         """``Key=Value``(证据在台账侧按等级分桶,不入渲染键)。"""
         return f"{self.key.render()}={self.value}"
 
     def to_dict(self) -> dict:
-        return {"key": self.key.render(), "value": self.value,
-                "evidence": self.evidence.value, "source": self.source}
+        d = {"key": self.key.render(), "value": self.value,
+             "evidence": self.evidence.value, "source": self.source}
+        if self.subject is not None:
+            d["subject"] = self.subject
+        if self.value_kind is not None:
+            d["observed_value"] = self.observed_value
+            d["value_kind"] = self.value_kind
+        if self.observed_at != -1:
+            d["observed_at"] = self.observed_at
+        return d
 
     @classmethod
     def from_dict(cls, d: dict) -> "StateObservation":
         pred, entity, scope = _parse_rendered(d["key"])
         return cls(key=StateKey(pred, entity, scope), value=bool(d["value"]),
-                   evidence=Evidence(d["evidence"]), source=d.get("source", ""))
+                   evidence=Evidence(d["evidence"]), source=d.get("source", ""),
+                   subject=d.get("subject"),
+                   observed_value=d.get("observed_value"),
+                   value_kind=d.get("value_kind"),
+                   observed_at=int(d.get("observed_at", -1)))
+
+
+# 观测值类型词表(契约 §2.2;三值 MISSING/NULL/UNKNOWN 互斥,禁止串用)
+VALUE_KIND_ENUM = "ENUM"
+VALUE_KIND_BOOLEAN = "BOOLEAN"
+VALUE_KIND_NUMBER = "NUMBER"
+VALUE_KIND_STRING = "STRING"
+VALUE_KIND_NULL = "NULL"          # 字段值为空——是观测结果
+VALUE_KIND_MISSING = "MISSING"    # 实体不存在(仅 EXISTS 可判 FALSE)
+VALUE_KIND_UNKNOWN = "UNKNOWN"    # 未观测/观测失败/不可比
+VALUE_KINDS = frozenset({VALUE_KIND_ENUM, VALUE_KIND_BOOLEAN,
+                         VALUE_KIND_NUMBER, VALUE_KIND_STRING,
+                         VALUE_KIND_NULL, VALUE_KIND_MISSING,
+                         VALUE_KIND_UNKNOWN})
 
 
 def _parse_rendered(rendered: str) -> tuple[str, str, str]:
@@ -132,17 +171,47 @@ class RuntimeObserver(Protocol):
     约定:在 ExecutionContext.finish_run 内、状态还原**之前**调用,
     故 observe() 读到的是该输入执行结束时的真实终态;观测器自身的
     异常不 poison 执行(证据缺失 ≠ 状态污染),由上下文计数审计。
+
+    PR-03 可观测性声明(契约 §5/R6 两维,属性级):
+    ``subject_families: dict[str, str]`` —— 键 = 主体属性("Order.user_id")
+    或家族通配("Order.*"/"Session.*"),值 = OBSERVABLE / NOT_OBSERVABLE /
+    UNPROBED 三词。缺省(无属性或空 dict)= 全体 UNPROBED(未探测,非
+    "不可观测"——二者在指标与判定中分别处理,契约 §6.5)。属性级声明
+    的边界:Order.status 已声明不代表 Order.owner 自动可观测(精确键优先,
+    无家族回填)。
     """
 
     name: str
+    subject_families: dict[str, str]
 
     def observe(self) -> list[StateObservation]: ...
+
+
+OBSERVABLE = "observable"
+NOT_OBSERVABLE = "not_observable"
+UNPROBED = "unprobed"
+OBSERVABILITY_STATUSES = frozenset({OBSERVABLE, NOT_OBSERVABLE, UNPROBED})
+
+
+def observability_of(declared: dict[str, str], subject: str) -> str:
+    """属性级可观测性查询:精确键优先;无家族通配回填(未声明=UNPROBED)。
+
+    "Order.status 已声明 ⇒ Order.owner 可观测"是被显式排除的推断——
+    家族通配必须由观测器显式给出("Order.*"),不从已有兄弟属性外推。
+    """
+    if not declared:
+        return UNPROBED
+    if subject in declared:
+        return declared[subject]
+    root = subject.split(".", 1)[0]
+    return declared.get(f"{root}.*", UNPROBED)
 
 
 class NullObserver:
     """无观测:显式"零事实"(不是零状态)——防代理推断冒充运行时证据。"""
 
     name = "null"
+    subject_families: dict[str, str] = {}
 
     def observe(self) -> list[StateObservation]:
         return []

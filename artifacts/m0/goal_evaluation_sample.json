@@ -1,0 +1,34 @@
+{
+ "status": "TRUE",
+ "satisfying": [
+  {
+   "?order": "orders:12",
+   "?user": "users:bob"
+  }
+ ],
+ "witness": {
+  "goal_id": "app.py::ship_order::275-275::block::1",
+  "observation_point": "sample:after-pay",
+  "binding": {
+   "?order": "orders:12",
+   "?user": "users:bob"
+  },
+  "relations": [
+   "EXISTS(?order)@app.py:268",
+   "EQ(?order.user_id, ?user.id)@app.py:271",
+   "EQ(?order.status, 'PAID')@app.py:273"
+  ]
+ },
+ "failed_constraint": null,
+ "unknown_reasons": [],
+ "evidence_refs": [
+  "?order=orders:12@sample:after-pay",
+  "?user=users:bob@sample:after-pay"
+ ],
+ "observation_point": "sample:after-pay",
+ "binding_provenance": {
+  "?order": "symbol-slot:?oid",
+  "?user": "symbol-slot:?token"
+ },
+ "auth_subject_verified": true
+}

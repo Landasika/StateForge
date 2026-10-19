@@ -194,3 +194,35 @@ def test_state_goal_carries_relational_fields():
     assert RelPredicate.from_dict(d["relations"][0]) == _owner_rel()
     # 旧字段语义不变:constraints 恒在
     assert d["constraints"] == []
+
+
+# ------------------------------------------- PR-03:MISSING 语义(枚举完整)
+
+def test_exists_false_only_with_complete_enumeration():
+    """实体缺席 + 枚举完整 → EXISTS=FALSE;无枚举信息 → UNKNOWN。"""
+    ex = RelPredicate(op=RelOp.EXISTS, left=Field("?order", ""))
+    snap = {"orders:3": {"id": 3}}
+    b = {"?order": "orders:99"}
+    assert evaluate_relation(ex, snap, b,
+                             {"orders": True}) == "FALSE"
+    assert evaluate_relation(ex, snap, b, None) == "UNKNOWN"
+    assert evaluate_relation(ex, snap, b, {"orders": False}) == "UNKNOWN"
+    # NOT_EXISTS 对偶:完整枚举下缺席 → TRUE
+    ne = RelPredicate(op=RelOp.NOT_EXISTS, left=Field("?order", ""))
+    assert evaluate_relation(ne, snap, b, {"orders": True}) == "TRUE"
+    assert evaluate_relation(ne, snap, {"?order": "orders:3"},
+                             {"orders": True}) == "FALSE"
+
+
+def test_null_is_observed_not_missing():
+    """NULL 是已观测值:TRUTHY→FALSE,EQ(None) 可判;≠ UNKNOWN/缺席。"""
+    snap = {"orders:5": {"note": None}}
+    b = {"?order": "orders:5"}
+    truthy = RelPredicate(op=RelOp.TRUTHY, left=Field("?order", "note"))
+    assert evaluate_relation(truthy, snap, b) == "FALSE"
+    eq_none = RelPredicate(op=RelOp.EQ, left=Field("?order", "note"),
+                           right=Const(None))
+    assert evaluate_relation(eq_none, snap, b) == "TRUE"
+    gone = RelPredicate(op=RelOp.EQ, left=Field("?order", "gone"),
+                        right=Const("x"))
+    assert evaluate_relation(gone, snap, b) == "UNKNOWN"  # 字段缺=未观测
