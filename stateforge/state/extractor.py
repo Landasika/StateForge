@@ -9,6 +9,7 @@ from __future__ import annotations
 import ast
 import hashlib
 import re
+from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -760,3 +761,101 @@ def extract_state_facts(source_dir: str | Path,
     for f in all_facts:
         seen[f.candidate_id] = f
     return sorted(seen.values(), key=lambda f: f.candidate_id)
+
+
+# ── 关系提取(评审轮二/契约 §6.6.2;验收关口 A)──
+#
+# 从守卫 test 解析 Term 结构(undirected——方向反转归 goal_derivation 的
+# 词法早退分析,不在本层做)。可解析形态:
+#   Subscript(Name, Const str) → Field("?"+name, str)   例 order["user_id"]
+#   Attribute(Name, attr)      → Field("?"+name, attr)   例 order.user_id
+#   Name                       → Field("?"+name, "")     实体级(truthy/存在性)
+#   Constant                   → Const(value)
+# 其余(链式属性/下标非常量/调用/表达式)→ None:调用方记 UnresolvableItem,
+# 不猜(诚实边界:第一版只支持可靠形态,见任务阶段 2 §2.3)。
+
+@dataclass(frozen=True)
+class GuardTerm:
+    """一个守卫 test 的解析结果(无方向)。"""
+
+    lineno: int
+    raw: str                      # ast.unparse(test)——审计原文
+    kind: str                     # compare | truthy | boolop | call
+    op: str | None                # 源码算子名(Eq/NotEq/Is/IsNot/In/NotIn)
+    left: object | None           # Field | Const | None
+    right: object | None          # Field | Const | None(compare 用)
+
+
+def parse_term(node: ast.AST, filename: str,
+               line: int) -> "Field | Const | None":
+    """AST 表达式 → Term;不可解析 → None(不猜)。"""
+    from stateforge.state.relational import Const, Field
+
+    if isinstance(node, ast.Constant):
+        return Const(value=node.value)
+    if isinstance(node, ast.Subscript):
+        if (isinstance(node.value, ast.Name)
+                and isinstance(node.slice, ast.Constant)
+                and isinstance(node.slice.value, str)):
+            return Field(var=f"?{node.value.id}", name=node.slice.value,
+                         source_file=filename, source_line=line)
+        return None
+    if isinstance(node, ast.Attribute):
+        if isinstance(node.value, ast.Name):
+            return Field(var=f"?{node.value.id}", name=node.attr,
+                         source_file=filename, source_line=line)
+        return None                                # 链式属性(order.a.b)
+    if isinstance(node, ast.Name):
+        return Field(var=f"?{node.id}", name="",
+                     source_file=filename, source_line=line)
+    return None                                    # 调用/表达式/切片…
+
+
+_CMP_TERM_OPS = {"Eq": "Eq", "NotEq": "NotEq", "In": "In",
+                 "NotIn": "NotIn", "Is": "Is", "IsNot": "IsNot"}
+
+
+def _unparse_safe(node: ast.AST) -> str:
+    try:
+        return ast.unparse(node)
+    except Exception:                              # noqa: BLE001
+        return "<unparse-failed>"
+
+
+def extract_guard_terms(fn_node: ast.AST,
+                        filename: str) -> list[GuardTerm]:
+    """函数内全部 If/While 守卫 → GuardTerm 列表(按行号升序)。
+
+    BoolOp(and/or)/调用形态守卫:kind 记录 + left=None——调用方按
+    UnresolvableItem 保真,不参与关系构造。
+    """
+    from stateforge.state.relational import Const
+
+    out: list[GuardTerm] = []
+    for node in ast.walk(fn_node):
+        if not isinstance(node, (ast.If, ast.While)):
+            continue
+        test = node.test
+        line = node.lineno
+        raw = _unparse_safe(test)
+        if isinstance(test, ast.Compare) and len(test.ops) == 1:
+            opname = type(test.ops[0]).__name__
+            if opname in _CMP_TERM_OPS:
+                left = parse_term(test.left, filename, line)
+                right = parse_term(test.comparators[0], filename, line)
+                out.append(GuardTerm(lineno=line, raw=raw, kind="compare",
+                                     op=opname, left=left, right=right))
+                continue
+        if isinstance(test, ast.BoolOp):
+            out.append(GuardTerm(lineno=line, raw=raw, kind="boolop",
+                                 op=None, left=None, right=None))
+            continue
+        # truthy 形态:Name / Subscript / Attribute(其余调用等 → call)
+        left = parse_term(test, filename, line)
+        if left is None or isinstance(left, Const):
+            out.append(GuardTerm(lineno=line, raw=raw, kind="call",
+                                 op=None, left=None, right=None))
+            continue
+        out.append(GuardTerm(lineno=line, raw=raw, kind="truthy",
+                             op=None, left=left, right=None))
+    return sorted(out, key=lambda t: t.lineno)
