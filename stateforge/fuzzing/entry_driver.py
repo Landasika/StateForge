@@ -97,9 +97,23 @@ def main() -> int:
                         help="P0-A 输入级状态隔离(noop=旧行为:输入间状态延续)")
     parser.add_argument("--observe-state", action="store_true",
                         help="P0-B 运行时状态观测(state_evidence 落 global_state)")
+    parser.add_argument("--session-guided", action="store_true",
+                        help="SS-03: 启动前用静态 Session 候选写入块做定向种子搜索(默认关)")
+    parser.add_argument("--session-target-block", default=None,
+                        help="SS-03: 目标基本块 BlockID(启用 --session-guided 时必填)")
+    parser.add_argument("--session-request-pool", default=None,
+                        help="SS-03: 独立单请求 JSON list[dict] 文件")
+    parser.add_argument("--session-max-steps", type=int, default=3,
+                        help="SS-03: 搜索序列最大请求步数(默认 3)")
+    parser.add_argument("--session-max-execs", type=int, default=200,
+                        help="SS-03: 定向搜索执行预算(默认 200)")
+    parser.add_argument("--session-seed", type=int, default=None,
+                        help="SS-03: 定向搜索随机种子(默认取 --seed)")
     args = parser.parse_args()
 
     Path(args.corpus_dir).mkdir(parents=True, exist_ok=True)
+    if args.session_guided and args.mode == "off":
+        parser.error("--session-guided 仅支持 --mode feedback/frontier")
     target = _load_target(args.target)
     import sys as _sys
     _target_module = _sys.modules["sf_target"]
@@ -167,6 +181,22 @@ def main() -> int:
         import json as _json
         ir = ProgramIR.from_json(args.ir)
         root = ir.metadata.get("root") or str(Path(args.target).parent)
+        if args.session_guided:
+            if not args.session_target_block or not args.session_request_pool:
+                parser.error("--session-guided 需要 --session-target-block "
+                             "与 --session-request-pool")
+            from stateforge.fuzzing.session_guided import (
+                bootstrap_session_guided, load_request_pool)
+            pool = load_request_pool(args.session_request_pool)
+            bootstrap_session_guided(
+                _target_module, target, ir,
+                source_dir=Path(args.target).resolve().parent,
+                target_block=args.session_target_block,
+                request_pool=pool, corpus_dir=args.corpus_dir,
+                out_dir=args.out_dir, max_steps=args.session_max_steps,
+                max_execs=args.session_max_execs,
+                seed=(args.session_seed if args.session_seed is not None
+                      else args.seed))
         session = TraceSession(root=root)
         session.__enter__()
         # 反馈对象按模式先建(frontier 需要 load_state 恢复前沿/冠军)
