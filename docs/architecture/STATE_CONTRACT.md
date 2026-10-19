@@ -614,3 +614,23 @@ facts:  (Order.owner, order:7, "bob")  (User.username, user:bob)  (User.role, us
 | §9 指标四分离 | ❌ 未实现 | PR-07 范围（`proxy_derived_transitions` 更名也未做） |
 | R7 SQLite/WAL 快照 | ✅ PR-02 | `l2_sqlite.py` backup/copy 双模式（`test_l2_wal.py` 10 项） |
 | §4 R4-a/b 代理独立性 | 🟡 部分 | 证据分桶现状保持（ledger 只收 verified）；迁移失败不降级的场景测试待 PR-04 |
+
+### §6.6.6 witness 与请求绑定术语(PR-03.1 裁决,2026-10-19)
+
+评审 P0-A/B/D 三漏洞的契约级修复措辞:
+
+- **绑定分类**:`BindingEnv(fixed / enumerable / hints / provenance)`——
+  `fixed` = 本次请求确定绑定(路径参数/响应提取/认证上下文),只评估
+  所列实例,**不与观测全集并集**;"指定 ?order=12 不得由 order:13 顶替
+  出 witness"。`hints` 不参与判定;`provenance` 仅审计展示。
+- **认证关联的唯一证据**:同观测点的 verified 探测事实
+  `RequestAuth.subject`(observed_value=认证主体实例 id)——
+  provenance 字符串("symbol-slot:?token")不构成服务器身份确认。
+- **完整判达 = 四分量分类**:`classify_achievement(relations_truth,
+  path_conditions_truth, auth_binding_truth, target_trace_covered,
+  goal_complete)` → VERIFIED_ACHIEVED / VERIFIED_NOT_ACHIEVED /
+  UNKNOWN;witness 只在 VERIFIED_ACHIEVED 产生,携带 path_conditions。
+  guards=False 的执行对 guards=True 守卫链目标 → UNKNOWN(不证明也
+  不反证);状态 TRUE 而 Trace 未命中 → UNKNOWN(矛盾交审计)。
+- 实现面:`state/goal_evaluation.py`(PR-03.1);测试:
+  `test_goal_evaluation.py::test_p0a_* / test_p0b_* / test_p0d_*`。

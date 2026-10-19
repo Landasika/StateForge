@@ -187,6 +187,7 @@ class RuntimeObserver(Protocol):
     def observe(self) -> list[StateObservation]: ...
 
 
+RUNTIME_VERIFIED = "runtime_verified"   # Evidence.RUNTIME_VERIFIED.value
 OBSERVABLE = "observable"
 NOT_OBSERVABLE = "not_observable"
 UNPROBED = "unprobed"

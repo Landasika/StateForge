@@ -1,97 +1,170 @@
-"""goal_evaluation.py —— PR-03:完整关系目标的联合求值(单一判定入口)。
+"""goal_evaluation.py —— 联合求值与完整判达分类(PR-03 + PR-03.1 热修复)。
 
-设计(任务书 PR-03 / 契约 §2.2/§6.3/§6.6.4):
-- ``ObservationView``:单一一致观测点的实体快照(经 StateObservation v2
-  构建);**一个视图 = 一个观测点**,结构上排除 t1/t2 历史拼接。
-- ``evaluate_goal``:候选绑定**有限枚举**合取求值——同一赋值贯穿全部
-  关系(?order/?user 不许各自挑最有利实例);跨族实体独立(不隐式
-  join);FALSE 需全候选穷尽且各有反证;UNKNOWN 保守传播。
-- ``GoalAchievementWitness``:成功记账=某观测点完整目标 TRUE 的见证
-  (绑定+关系+观测点),**不**从 StateEvidenceLedger 历史原子拼合
-  (PR-03 硬规则;ledger 职责不变)。
-- 可观测性:属性级声明(UNPROBED ≠ NOT_OBSERVABLE;未探测 → UNKNOWN,
-  **不永久 UNVERIFIABLE**);认证主体关联显式化(DB 存在 user 行 ≠
-  当前请求认证为它——``auth_subject_verified`` 只有绑定来源含认证
-  证据时才 True)。
+PR-03.1 修复的四个判定漏洞(评审 2026-10-19,P0-A/B/C/D):
+- **A 绑定污染**:显式请求绑定(fixed:路径参数/响应提取/认证上下文)
+  不得与视图全集并集——指定 ?order=12 时不得让 order:13 顶替出
+  witness。BindingEnv 显式区分 fixed / enumerable / hints。
+- **B 认证未证实即 witness**:完整判达 = 分类器四分量
+  (relations/path/auth/trace),DB 关系 TRUE ≠ 目标达成;请求身份
+  关联只认**同观测点的 verified 认证探测事实**(RequestAuth.subject),
+  不认 provenance 字符串("symbol-slot:?token" 本身不是服务器确认)。
+- **C 证据过滤**:视图只收同观测点、RUNTIME_VERIFIED、值有效
+  (UNKNOWN 不入、MISSING→确认缺席、exists=False→确认缺席)的事实;
+  同点同字段冲突值、跨观测点混合 → 显式拒绝,不静默覆盖。
+- **D 路径条件/未解析项入闸**:goal.path_conditions 与 unresolvable
+  参与完整判达;guards=False 的执行不能证明 guards=True 守卫链;
+  Trace 命中是完整 witness 的必要分量(状态判达与覆盖分别输出)。
 
-复用:relational 的 IR 与 evaluate_relation(含 PR-03 MISSING 语义),
-不复制事实台账/求值器。
+结果结构(评审要求的四分量拆分):
+``relations_truth``(仅关系)/ ``path_conditions_truth`` /
+``auth_binding_truth`` / ``target_trace_covered`` →
+``classify_achievement`` → ``achievement_status``
+(VERIFIED_ACHIEVED / VERIFIED_NOT_ACHIEVED / UNKNOWN);
+witness 只在 VERIFIED_ACHIEVED 产生,且只来自单一观测点完整成立。
 """
 
 from __future__ import annotations
 
 import itertools
 from dataclasses import dataclass, field
-from typing import Iterable, Mapping, Sequence
+from typing import Mapping, Sequence
 
 from stateforge.state.relational import (
     Field,
-    RelPredicate,
+    RelOp,
     evaluate_relation,
 )
 from stateforge.state.runtime_observer import (
     NOT_OBSERVABLE,
+    RUNTIME_VERIFIED,
     UNPROBED,
     observability_of,
 )
 
 TRUE, FALSE, UNKNOWN = "TRUE", "FALSE", "UNKNOWN"
+VERIFIED_ACHIEVED = "VERIFIED_ACHIEVED"
+VERIFIED_NOT_ACHIEVED = "VERIFIED_NOT_ACHIEVED"
 DEFAULT_MAX_CANDIDATES = 64
+AUTH_SUBJECT = "RequestAuth.subject"     # 认证探测事实的 subject 约定
+
+
+# ------------------------------------------------------------- 绑定环境
+
+@dataclass(frozen=True)
+class BindingEnv:
+    """PR-03.1(P0-A):绑定候选的显式分类。
+
+    - ``fixed``:本次请求**确定**绑定(路径参数/响应提取/认证上下文
+      产出的实例)。只评估所列实例,**绝不与视图全集并集**——
+      "request /orders/12/ship" 的 ?order=12 不得被 order:13 顶替。
+    - ``enumerable``:显式受限的可搜索候选(存在量词语义);缺省
+      (未列)→ 视图全族枚举。
+    - ``hints``:提示,不参与判定,不暗中升级为 fixed。
+    - ``provenance``:绑定来源,仅审计展示(**不是**认证证据,
+      P0-B:服务器身份确认只认 RequestAuth.subject 探测事实)。
+    值均为原始实例 id("12"/"bob"),家族前缀由变量 provenance 补。
+    """
+
+    fixed: Mapping[str, Sequence[str]] = field(default_factory=dict)
+    enumerable: Mapping[str, Sequence[str]] = field(default_factory=dict)
+    hints: Mapping[str, str] = field(default_factory=dict)
+    provenance: Mapping[str, str] = field(default_factory=dict)
 
 
 # ------------------------------------------------------------- 观测视图
 
 @dataclass(frozen=True)
 class ObservationView:
-    """单一一致观测点的实体快照。
+    """单一一致观测点的 verified 实体快照(PR-03.1 P0-C 证据过滤)。
 
-    - ``entities``:``{"orders": {"3": {"user_id": 7, "status": "PAID"}}}``
-      —— 家族键 = 观测 source 的表名(``db:<table>``);行字段 = subject
-      后缀("user_id";"exists" 存在性不入行,实体在场即存在)。
-    - ``table_roots``:表名 → 主体根("orders"→"Order"),取自观测
-      subject 前缀,供属性级可观测性查询拼 ``<Root>.<attr>``。
-    - ``enumeration_complete``:家族全表读成功(枚举完整 → 缺席可判
-      MISSING);``failed_families``:读失败(**不是**完整枚举)。
-    - ``observability``:观测器的 subject_families 声明(原样携带)。
-    - 一个视图只对应一个 ``observation_point``;跨点拼接被结构性排除。
+    - 只收 ``RUNTIME_VERIFIED`` 事实;``value_kind=UNKNOWN`` 不入;
+      ``MISSING``/``exists=False`` → ``confirmed_absent``(确认缺席,
+      EXISTS 可判 FALSE),不创建在场实体。
+    - 同点同字段冲突值 / observed_at 混点 → ``ValueError``(拒绝
+      构建,不静默 last-wins)。
+    - ``request_auth_subject``:同点 verified 认证探测
+      (``RequestAuth.subject``,observed_value=认证主体实例 id)——
+      P0-B 的唯一请求身份关联来源。
     """
 
     entities: dict[str, dict[str, dict]] = field(default_factory=dict)
     table_roots: dict[str, str] = field(default_factory=dict)
+    confirmed_absent: frozenset = frozenset()
+    request_auth_subject: str | None = None
     enumeration_complete: dict[str, bool] = field(default_factory=dict)
     failed_families: frozenset = frozenset()
     observability: dict[str, str] = field(default_factory=dict)
     observation_point: str = ""
 
     @classmethod
-    def from_observations(cls, observations: Iterable,
+    def from_observations(cls, observations: Iterable_observations,
                           *,
                           observation_point: str = "",
                           families_complete: Sequence[str] = (),
                           families_failed: Sequence[str] = (),
                           observability: Mapping[str, str] | None = None,
                           ) -> "ObservationView":
-        """StateObservation 批次(同一观测点)→ 视图。
-
-        ``families_complete/failed`` 由调用方(观测器协议层)声明;
-        缺省两者皆空 = 枚举完整性未知(缺席一律 UNKNOWN,保守)。
-        """
         entities: dict[str, dict[str, dict]] = {}
         roots: dict[str, str] = {}
+        absent: set[str] = set()
+        seen: dict[tuple, object] = {}
+        auth_subject: str | None = None
+        points: set[int] = set()
+
         for obs in observations:
+            # P0-C:证据过滤——仅 RUNTIME_VERIFIED 入视图
+            ev = getattr(obs, "evidence", None)
+            ev_val = getattr(ev, "value", ev)
+            if ev_val is not None and ev_val != RUNTIME_VERIFIED:
+                continue
+            points.add(int(getattr(obs, "observed_at", -1)))
+
             subject = getattr(obs, "subject", None)
-            source = getattr(obs, "source", "")
             if not subject or "." not in subject:
-                continue                    # v1 形态/无 subject:视图不收
-            root, attr = subject.split(".", 1)
+                continue                      # v1 形态/无 subject:视图不收
+            source = getattr(obs, "source", "")
             table = source.split(":", 1)[1] if source.startswith("db:") \
-                else source or root.lower()
+                else source or subject.split(".", 1)[0].lower()
+
+            if subject == AUTH_SUBJECT:       # P0-B:认证探测事实
+                if obs.value is True \
+                        and getattr(obs, "value_kind", None) not in \
+                        (None, "UNKNOWN"):
+                    auth_subject = str(getattr(obs, "observed_value", None))
+                continue
+
+            root, attr = subject.split(".", 1)
             roots.setdefault(table, root)
-            row = entities.setdefault(table, {}).setdefault(
-                str(obs.key.entity), {})
-            if attr != "exists":            # 存在性由实体在场承载
-                row[attr] = getattr(obs, "observed_value", None)
+            eid = str(obs.key.entity)
+            kind = getattr(obs, "value_kind", None)
+
+            if attr == "exists":
+                if obs.value is False:
+                    absent.add(f"{table}:{eid}")   # 确认缺席,不建在场实体
+                elif obs.value is True:
+                    entities.setdefault(table, {}).setdefault(eid, {})
+                continue
+            if kind == "UNKNOWN":             # 未观测值不得伪装成确定状态
+                continue
+            if kind == "MISSING":
+                absent.add(f"{table}:{eid}")
+                continue
+            fkey = (table, eid, attr)
+            val = getattr(obs, "observed_value", None)
+            if fkey in seen and seen[fkey] != val:
+                raise ValueError(
+                    f"同观测点冲突值: {root}.{attr} of {table}:{eid} "
+                    f"= {seen[fkey]!r} vs {val!r}(拒绝静默覆盖)")
+            seen[fkey] = val
+            entities.setdefault(table, {}).setdefault(eid, {})[attr] = val
+
+        if len(points) > 1:
+            raise ValueError(
+                f"跨观测点混合(observed_at={sorted(points)}):"
+                f"拒绝构建单一视图——调用方必须逐点拆分(P0-C)")
         return cls(entities=entities, table_roots=roots,
+                   confirmed_absent=frozenset(absent),
+                   request_auth_subject=auth_subject,
                    enumeration_complete={f: True for f in families_complete},
                    failed_families=frozenset(families_failed),
                    observability=dict(observability or {}),
@@ -100,8 +173,6 @@ class ObservationView:
     # ---- 求值面 ----
 
     def flat_snapshot(self) -> dict[str, dict]:
-        """``{"orders:3": {...}}`` 扁平快照(relational.evaluate_relation
-        的 snapshot 约定:实体键 = "<家族>:<实例>")。"""
         return {f"{fam}:{eid}": row
                 for fam, members in self.entities.items()
                 for eid, row in members.items()}
@@ -118,91 +189,148 @@ class ObservationView:
                                 f"{self.root_of(family)}.{attr}")
 
 
+
 # ------------------------------------------------------------- 结果 IR
 
 @dataclass(frozen=True)
 class GoalAchievementWitness:
-    """一次目标达成的历史见证:单一观测点上完整目标 TRUE。
+    """完整判达见证:单一观测点上四分量全 TRUE。
 
-    成功记账只来自本结构(evaluate_goal 产生),**禁止**从
-    StateEvidenceLedger 分别查历史原子再求合取(PR-03 硬规则)。
+    只在 ``achievement_status == VERIFIED_ACHIEVED`` 时产生;不从
+    StateEvidenceLedger 历史原子拼合(P0-C/契约 witness 规则)。
     """
 
-    goal_id: str                       # StateGoal.target_block
+    goal_id: str
     observation_point: str
-    binding: tuple[tuple[str, str], ...]      # (("?", "orders:3"), ...) 排序
-    relations: tuple[str, ...]                # 渲染(审计可读)
+    binding: tuple[tuple[str, str], ...]
+    relations: tuple[str, ...]
+    path_conditions: tuple[str, ...] = ()
 
     def to_dict(self) -> dict:
         return {"goal_id": self.goal_id,
                 "observation_point": self.observation_point,
                 "binding": dict(self.binding),
-                "relations": list(self.relations)}
+                "relations": list(self.relations),
+                "path_conditions": [pc.render() if hasattr(pc, "render")
+                                    else str(pc)
+                                    for pc in self.path_conditions]}
 
 
 @dataclass(frozen=True)
 class GoalEvaluation:
-    """evaluate_goal 的完整结果(三值 + 证据 + 原因)。"""
+    """evaluate_goal 完整结果:四分量 + 分类(P0-D 拆分)。"""
 
-    status: str                                   # TRUE / FALSE / UNKNOWN
-    satisfying: tuple[dict, ...] = ()             # 满足赋值(可多个)
+    relations_truth: str                        # 仅关系合取(TRUE/FALSE/UNKNOWN)
+    achievement_status: str                     # VERIFIED_ACHIEVED/…
+    path_conditions_truth: str = UNKNOWN
+    auth_binding_truth: str = UNKNOWN
+    target_trace_covered: str = UNKNOWN         # TRUE/FALSE/UNKNOWN(未查)
+    satisfying: tuple[dict, ...] = ()
     witness: GoalAchievementWitness | None = None
-    failed_constraint: str | None = None          # 首个反证(带绑定上下文)
+    failed_constraint: str | None = None
     unknown_reasons: tuple[str, ...] = ()
-    evidence_refs: tuple[str, ...] = ()           # 消费实体的观测来源
+    evidence_refs: tuple[str, ...] = ()
     observation_point: str = ""
-    binding_provenance: tuple[tuple[str, str], ...] = ()  # 首个满足赋值
-    auth_subject_verified: bool = False
+    binding_provenance: tuple[tuple[str, str], ...] = ()
+
+    @property
+    def status(self) -> str:
+        """兼容别名 = relations_truth(仅关系,非完整判达——P0-B 命名
+        显式化:完整判达看 achievement_status)。"""
+        return self.relations_truth
 
     def to_dict(self) -> dict:
-        return {"status": self.status,
+        return {"relations_truth": self.relations_truth,
+                "achievement_status": self.achievement_status,
+                "path_conditions_truth": self.path_conditions_truth,
+                "auth_binding_truth": self.auth_binding_truth,
+                "target_trace_covered": self.target_trace_covered,
                 "satisfying": [dict(b) for b in self.satisfying],
                 "witness": self.witness.to_dict() if self.witness else None,
                 "failed_constraint": self.failed_constraint,
                 "unknown_reasons": list(self.unknown_reasons),
                 "evidence_refs": list(self.evidence_refs),
                 "observation_point": self.observation_point,
-                "binding_provenance": dict(self.binding_provenance),
-                "auth_subject_verified": self.auth_subject_verified}
+                "binding_provenance": dict(self.binding_provenance)}
+
+
+# ------------------------------------------------------------- 分类器
+
+def classify_achievement(*, relations_truth: str,
+                         path_conditions_truth: str,
+                         auth_binding_truth: str,
+                         target_trace_covered: str,
+                         goal_complete: bool) -> str:
+    """四分量 → achievement_status(契约 §6.5 的判定核心子集)。
+
+    - goal 不完整(unresolvable 非空)→ UNKNOWN(goal-incomplete):
+      关系可以 TRUE,但完整判达不得宣告。
+    - 任一分量 UNKNOWN → UNKNOWN(该分量记入 reasons)。
+    - relations FALSE(可靠反证)→ VERIFIED_NOT_ACHIEVED。
+    - auth FALSE(探测显示身份不符)→ VERIFIED_NOT_ACHIEVED。
+    - path FALSE(如 guards=False)→ UNKNOWN(path-condition-mismatch:
+      该执行未经目标所适用的守卫链,**不能**反证目标,也不能证明)。
+    - trace FALSE(状态 TRUE 但代码未进入)→ UNKNOWN
+      (trace-contradicts-state:观测不一致,交上层审计)。
+    - 四分量 TRUE → VERIFIED_ACHIEVED。
+    """
+    if not goal_complete:
+        return UNKNOWN
+    if relations_truth == FALSE or auth_binding_truth == FALSE:
+        return VERIFIED_NOT_ACHIEVED
+    if path_conditions_truth == FALSE or target_trace_covered == FALSE:
+        return UNKNOWN
+    if UNKNOWN in (relations_truth, path_conditions_truth,
+                   auth_binding_truth, target_trace_covered):
+        return UNKNOWN
+    return VERIFIED_ACHIEVED
 
 
 # ------------------------------------------------------------- 主入口
 
 def _var_families(goal) -> dict[str, str]:
-    """实体变量 → 家族(=provenance 表名)。无 provenance 的变量不映射。"""
     return {p.var: p.table for p in getattr(goal, "var_provenance", ())
             if getattr(p, "table", None)}
 
 
-def evaluate_goal(goal, view: ObservationView,
-                  binding_candidates: Mapping[str, Sequence[str]] | None = None,
-                  *,
-                  max_candidates: int = DEFAULT_MAX_CANDIDATES,
-                  binding_provenance: Mapping[str, str] | None = None,
-                  ) -> GoalEvaluation:
-    """关系目标 × 单点视图 × 候选绑定 → 三值判定(唯一联合判定入口)。
+def _prefixed(fam: str, raw_ids: Sequence[str]) -> list[str]:
+    out = []
+    for r in raw_ids:
+        out.append(r if str(r).startswith(f"{fam}:") else f"{fam}:{r}")
+    return out
 
-    语义(PR-03/契约 §6.3):
-    - 候选来源:显式 ``binding_candidates``(原始实例 id,如 "12")∪
-      视图家族枚举;按变量族前缀展开为 "<家族>:<实例>" 键。
-    - 有限枚举:赋值空间超 ``max_candidates`` → 只确定性枚举前 N 个,
-      找到满足即 TRUE,否则 **UNKNOWN**(不得轻易确定 FALSE)。
-    - FALSE 门槛:空间完整穷尽 且 每个赋值都有关系判 FALSE(有反证);
-      任一赋值被 UNKNOWN 阻断 → 整体 UNKNOWN。
-    - 可观测性:关系字段族未声明(NOT_OBSERVABLE/UNPROBED)→ 该关系
-      UNKNOWN + 原因标注(UNPROBED 不永久 UNVERIFIABLE,契约 §6.5)。
-    - 独立合取:跨族实体彼此独立;本函数**不合成**目标未声明的关联
-      (Order.user_id==User.id 必须显式出现在 goal.relations)。
+
+def evaluate_goal(goal, view: ObservationView,
+                  env: BindingEnv | None = None,
+                  *,
+                  binding_candidates: Mapping[str, Sequence[str]] | None = None,
+                  path_context: Mapping[str, bool] | None = None,
+                  trace_covered: bool | None = None,
+                  max_candidates: int = DEFAULT_MAX_CANDIDATES,
+                  ) -> GoalEvaluation:
+    """关系目标 × 单点 verified 视图 × 绑定环境 → 四分量 + 完整判达。
+
+    P0-A:``binding_candidates``(旧参)与 ``env.fixed`` 语义一致
+    (确定绑定,不与全集并集);``env.enumerable`` 才是可搜索候选。
+    P0-B:认证分量只认 ``view.request_auth_subject``(同点探测事实)。
+    P0-D:``path_context`` 提供 guards/err 等运行时取值;
+    ``trace_covered`` 由调用方 Trace 判定后传入(None=未查)。
     """
     relations: tuple = getattr(goal, "relations", ())
     goal_id = getattr(goal, "target_block", "")
     reasons: list[str] = []
     point = view.observation_point
-
     fam_of = _var_families(goal)
+    # 环境归一:位置传旧式 dict(=fixed 语义)或 keyword binding_candidates
+    if isinstance(env, Mapping):
+        merged = {**dict(env), **dict(binding_candidates or {})}
+        env = BindingEnv(fixed=merged)
+    elif env is None:
+        env = BindingEnv(fixed=dict(binding_candidates or {}))
 
-    # 1) 候选绑定构造
+    # 1) 候选构造(P0-A:fixed 优先且不并集;enumerable 受限或缺省全族)
     cand_map: dict[str, list[str]] = {}
+    fixed_vars: dict[str, list[str]] = {}
     for var in sorted({f.var for r in relations
                        for f in (r.left, r.right)
                        if isinstance(f, Field)}):
@@ -214,12 +342,18 @@ def evaluate_goal(goal, view: ObservationView,
             continue
         if fam in view.failed_families:
             reasons.append(f"family-observation-failed:{fam}")
-        raw = set(binding_candidates.get(var, ()) 
-                  if binding_candidates else set())
-        raw |= set(view.entities.get(fam, {}))
-        cand_map[var] = [f"{fam}:{r}" for r in sorted(raw, key=str)]
+        fixed_raw = list(env.fixed.get(var, ()))
+        if fixed_raw:
+            fixed_vars[var] = _prefixed(fam, fixed_raw)
+            cand_map[var] = fixed_vars[var]
+            continue                       # P0-A:确定绑定,不并全集
+        enum_raw = list(env.enumerable.get(var, ()))
+        if enum_raw:
+            cand_map[var] = _prefixed(fam, enum_raw)
+        else:
+            cand_map[var] = view.candidates(fam)
 
-    # 2) 属性级可观测性预检(不可观测字段 → 关系直接 UNKNOWN)
+    # 2) 属性级可观测性预检(不可观测/未探测 → 关系 UNKNOWN + 原因)
     for rel in relations:
         for side in (rel.left, rel.right):
             if not (isinstance(side, Field) and side.name):
@@ -227,36 +361,44 @@ def evaluate_goal(goal, view: ObservationView,
             fam = fam_of.get(side.var)
             if fam is None:
                 continue
-            obs_status = view.attr_observability(fam, side.name)
-            if obs_status == NOT_OBSERVABLE:
+            st = view.attr_observability(fam, side.name)
+            if st == NOT_OBSERVABLE:
                 reasons.append(
                     f"attr-not-observable:{view.root_of(fam)}.{side.name}")
-            elif obs_status == UNPROBED:
+            elif st == UNPROBED:
                 reasons.append(
                     f"attr-unprobed:{view.root_of(fam)}.{side.name}")
 
-    # 3) 有限枚举
-    spaces = [cand_map.get(v, []) or [None]
-              for v in sorted(cand_map)]
+    # 3) 有限枚举(P0-A:同一赋值贯穿;上限外不判 FALSE)
+    spaces = [cand_map.get(v, []) or [None] for v in sorted(cand_map)]
     total = 1
     for s in spaces:
         total *= len(s)
     capped = total > max_candidates
-
     flat = view.flat_snapshot()
+    absent = view.confirmed_absent
+
     satisfying: list[dict] = []
     first_false: str | None = None
     unknown_blocked = False
-
-    enumerators = [itertools.islice(itertools.product(*spaces),
-                                    max_candidates)]
-    for combo in enumerators[0]:
+    for combo in itertools.islice(itertools.product(*spaces),
+                                  max_candidates):
         binding = {v: e for v, e in zip(sorted(cand_map), combo)
                    if e is not None}
         verdict = "TRUE"
         for rel in relations:
-            v = evaluate_relation(rel, flat, binding,
-                                  view.enumeration_complete)
+            if rel.op in (RelOp.EXISTS, RelOp.NOT_EXISTS):
+                ent = binding.get(rel.left.var)
+                if ent is not None and ent in absent:
+                    # 确认缺席(verified exists=False / MISSING):
+                    # EXISTS 反证、NOT_EXISTS 成立——无需枚举完整性
+                    v = "FALSE" if rel.op is RelOp.EXISTS else "TRUE"
+                else:
+                    v = evaluate_relation(rel, flat, binding,
+                                          view.enumeration_complete)
+            else:
+                v = evaluate_relation(rel, flat, binding,
+                                      view.enumeration_complete)
             if v == FALSE:
                 if first_false is None:
                     first_false = (f"{rel.render()} @ "
@@ -270,65 +412,103 @@ def evaluate_goal(goal, view: ObservationView,
         elif verdict == UNKNOWN:
             unknown_blocked = True
 
-    # 4) 汇总
     if satisfying:
-        best = satisfying[0]
-        prov = tuple((v, (binding_provenance or {}).get(v, ""))
-                     for v in sorted(best))
-        auth_vars = [p.var for p in getattr(goal, "var_provenance", ())
-                     if getattr(p, "auth_subject", False)]
-        auth_ok = bool(auth_vars) and all(
-            str((binding_provenance or {}).get(v, "")).startswith(
-                ("auth", "symbol-slot"))
-            for v in auth_vars if v in best)
-        witness = GoalAchievementWitness(
-            goal_id=goal_id, observation_point=point,
-            binding=tuple(sorted(best.items())),
-            relations=tuple(r.render() for r in relations))
-        refs = _evidence_refs(view, best)
-        if auth_vars and not auth_ok:
-            reasons.append("auth-association-unverified"
-                           "(DB 存在 user 行 ≠ 请求认证为它;需绑定来源"
-                           "含认证证据)")
-        return GoalEvaluation(
-            status=TRUE, satisfying=tuple(satisfying), witness=witness,
-            unknown_reasons=tuple(reasons), evidence_refs=refs,
-            observation_point=point, binding_provenance=prov,
-            auth_subject_verified=auth_ok)
-
-    if capped:
-        reasons.append(f"candidate-cap:{total}>{max_candidates}"
-                       "(空间未穷尽,不判 FALSE)")
-        status = UNKNOWN
-    elif unknown_blocked or any(v == [] and relations_needs_var(
-            relations, v) for v in cand_map):
-        status = UNKNOWN
+        relations_truth = TRUE
+    elif first_false and not capped and not unknown_blocked:
+        relations_truth = FALSE
+    elif not relations:
+        relations_truth = TRUE
+    else:
+        relations_truth = UNKNOWN
         for v, cands in cand_map.items():
             if not cands:
                 reasons.append(f"no-candidates:{v}")
-    else:
-        status = FALSE if first_false else (UNKNOWN if relations else TRUE)
-    if status == FALSE and first_false:
+        if capped:
+            reasons.append(f"candidate-cap:{total}>{max_candidates}"
+                           "(空间未穷尽,不判 FALSE)")
+    if relations_truth == FALSE and first_false:
         reasons.insert(0, f"failed:{first_false}")
+
+    # 4) 分量:path_conditions(P0-D)
+    path_truth = TRUE
+    for pc in getattr(goal, "path_conditions", ()):
+        cur = (path_context or {}).get(pc.var)
+        if cur is None:
+            path_truth = UNKNOWN
+            reasons.append(f"path-condition-unchecked:{pc.var}"
+                           f"(requires={pc.requires})")
+        elif bool(cur) != pc.requires:
+            path_truth = FALSE
+            reasons.append(f"path-condition-mismatch:{pc.var}"
+                           f"(requires={pc.requires},got={cur})")
+
+    # 5) 分量:认证绑定(P0-B:只认同点探测事实)
+    auth_vars = [p.var for p in getattr(goal, "var_provenance", ())
+                 if getattr(p, "auth_subject", False)]
+    auth_truth = TRUE
+    auth_matched_binding: dict | None = None
+    if auth_vars:
+        if view.request_auth_subject is None:
+            auth_truth = UNKNOWN
+            reasons.append("auth-association-unverified"
+                           "(无同观测点 RequestAuth.subject 探测事实;"
+                           "DB 存在 user 行 ≠ 请求认证为它)")
+        else:
+            for sat in satisfying:
+                if all(str(sat.get(v, "")).split(":", 1)[-1]
+                       == view.request_auth_subject for v in auth_vars
+                       if v in sat):
+                    auth_matched_binding = sat
+                    break
+            if auth_matched_binding is None:
+                auth_truth = FALSE if relations_truth == TRUE else UNKNOWN
+                reasons.append(
+                    f"auth-subject-mismatch:探测主体="
+                    f"{view.request_auth_subject!r} 与满足绑定不符")
+
+    # 6) 分量:Trace(调用方独立判定后传入;None=未查)
+    trace_truth = UNKNOWN if trace_covered is None else \
+        (TRUE if trace_covered else FALSE)
+    if trace_covered is None:
+        reasons.append("trace-unchecked(目标块进入由 Trace 独立判定)")
+
+    goal_complete = not getattr(goal, "unresolvable", ())
+    if not goal_complete:
+        reasons.append("goal-incomplete(unresolvable 非空;"
+                       "关系可 TRUE,完整判达不得宣告)")
+
+    achievement = classify_achievement(
+        relations_truth=relations_truth,
+        path_conditions_truth=path_truth,
+        auth_binding_truth=auth_truth,
+        target_trace_covered=trace_truth,
+        goal_complete=goal_complete)
+
+    witness = None
+    best = auth_matched_binding or (satisfying[0] if satisfying else None)
+    refs: tuple = ()
+    prov: tuple = tuple((v, env.provenance.get(v, ""))
+                        for v in sorted(best)) if best is not None else ()
+    if achievement == VERIFIED_ACHIEVED and best is not None:
+        witness = GoalAchievementWitness(
+            goal_id=goal_id, observation_point=point,
+            binding=tuple(sorted(best.items())),
+            relations=tuple(r.render() for r in relations),
+            path_conditions=tuple(
+                pc.render() for pc in getattr(goal, "path_conditions", ())))
+        refs = tuple(f"{v}={e}@{point or 'view'}"
+                     for v, e in sorted(best.items()))
+
     return GoalEvaluation(
-        status=status, satisfying=(), witness=None,
-        failed_constraint=first_false if status == FALSE else None,
-        unknown_reasons=tuple(reasons), observation_point=point)
-
-
-def relations_needs_var(relations, var: str) -> bool:
-    return any(f.var == var for r in relations
-               for f in (r.left, r.right) if isinstance(f, Field))
-
-
-def _evidence_refs(view: ObservationView, binding: dict) -> tuple:
-    """满足赋值消费的实体 → 观测来源引用(审计链)。"""
-    refs = []
-    for var, entity in sorted(binding.items()):
-        fam = str(entity).split(":", 1)[0]
-        refs.append(f"{var}={entity}@{point_ref(view, fam)}")
-    return tuple(refs)
-
-
-def point_ref(view: ObservationView, family: str) -> str:
-    return view.observation_point or f"family:{family}"
+        relations_truth=relations_truth,
+        achievement_status=achievement,
+        path_conditions_truth=path_truth,
+        auth_binding_truth=auth_truth,
+        target_trace_covered=trace_truth,
+        satisfying=tuple(satisfying),
+        witness=witness,
+        failed_constraint=first_false if relations_truth == FALSE else None,
+        unknown_reasons=tuple(reasons),
+        evidence_refs=refs,
+        observation_point=point,
+        binding_provenance=prov)
