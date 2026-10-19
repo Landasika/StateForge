@@ -65,8 +65,8 @@
 
 ## 回归与基准
 
-- 全量回归：`730 passed, 1 skipped, 26 deselected, 1 warning in 646.75s`
-  （2026-10-20，`python -m pytest -q`；相对基线 656 增加 74 个测试）。
+- 全量回归：`731 passed, 1 skipped, 26 deselected, 1 warning in 660.46s`
+  （2026-10-20，`python -m pytest -q`；相对基线 656 增加 75 个测试）。
 - 架构边界：`python -m pytest stateforge/tests/test_architecture_boundaries.py -q`
   → `5 passed`。
 - 微型结构基准：`python -m stateforge.evaluation.micro_benchmark --out /tmp/sf_micro_metrics.json`

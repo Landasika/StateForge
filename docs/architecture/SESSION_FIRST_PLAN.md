@@ -236,7 +236,7 @@ python -m pytest stateforge/tests/targets/session_gate/ -q
 - `query_session_frontier` 复用 `goal_derivation` 的函数内投影，逐路径
   保留条件组；歧义别名降级 `KEY_UNKNOWN`；非 Session 守卫 unresolved；
   `clear()` 为 ANY；不同常量 key 为 DISJOINT；同客户端约束始终携带。
-- 测试：`13 passed`（索引 10 + goal-query 契约 3）。
+- 测试：`14 passed`（索引 11 + goal-query 契约 3）。
 
 ### 7.4 SS-03 实际落地
 
@@ -276,8 +276,8 @@ python -m pytest stateforge/tests/targets/session_gate/ -q
 
 ### 7.7 最终回归
 
-- 全量：`730 passed, 1 skipped, 26 deselected, 1 warning in 646.75s`
-  （相对基线 656 增加 74 个测试；SS-00 14 + SS-01 12 + SS-02 13 +
+- 全量：`731 passed, 1 skipped, 26 deselected, 1 warning in 660.46s`
+  （相对基线 656 增加 75 个测试；SS-00 14 + SS-01 12 + SS-02 14 +
   SS-03 9 + SS-04 26）。
 - 架构边界：`5 passed`（`session_replay` 放在 solving 层，避免
   state → runtime/fuzzing 向上引用）。
