@@ -30,6 +30,16 @@ import sqlite3
 from pathlib import Path
 
 _SIDECAR_SUFFIXES = ("-journal", "-wal", "-shm")
+_SQLITE_MAGIC = b"SQLite format 3\x00"
+
+
+def _has_sqlite_header(path: Path) -> bool:
+    """文件头 16 字节 = SQLite 魔数(PR-02.1:区分"损坏 DB"与"非 DB 文件")。"""
+    try:
+        with open(path, "rb") as fh:
+            return fh.read(16) == _SQLITE_MAGIC
+    except OSError:
+        return False
 
 
 class SnapshotConsistencyError(RuntimeError):
@@ -105,8 +115,14 @@ class L2Sqlite:
             return dst
 
         src = self._probe_conn()
-        if src is None:                      # 非 SQLite 文件:普通拷贝
-            shutil.copyfile(self.live, dst)
+        if src is None:
+            if _has_sqlite_header(self.live):
+                # PR-02.1:SQLite 魔数在场但不可打开 → 损坏/锁死数据库,
+                # 不得静默退化成普通文件拷贝(会把损坏态当基线)
+                raise SnapshotConsistencyError(
+                    f"live 具 SQLite 头但不可只读打开(损坏或锁死): "
+                    f"{self.live}——fail-closed,不回退普通拷贝")
+            shutil.copyfile(self.live, dst)  # 非 SQLite 文件:普通拷贝
             return dst
         try:
             dst_conn = sqlite3.connect(dst, timeout=0)
@@ -140,8 +156,12 @@ class L2Sqlite:
             return
 
         tpl_probe = self._probe_template_conn(src_path)
-        if tpl_probe is None:                # 非 SQLite 模板:普通拷贝路径
-            self._unlink_sidecars()
+        if tpl_probe is None:
+            if _has_sqlite_header(src_path):
+                raise SnapshotConsistencyError(
+                    f"模板具 SQLite 头但不可读(损坏): {src_path}"
+                    "——fail-closed,不回退普通拷贝")
+            self._unlink_sidecars()          # 非 SQLite 模板:普通拷贝路径
             self.live.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(src_path, self.live)
             return

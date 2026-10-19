@@ -381,3 +381,9 @@ v0 表延续，修订两点：
 - **PR-03（结构化事实与联合求值）**：`StateObservation` v2 四可选列（subject/observed_value/value_kind/observed_at，旧构造与 ledger 去重零变化；C8 行级演进键已同步 PROTOCOLS.md）；vulnshop 观测器补 `User.id`/`Order.user_id` + 属性级 `subject_families` 声明（`Session.*`=NOT_OBSERVABLE，未声明属性=UNPROBED 不外推）；`relational.evaluate_relation` 增枚举完整性参数（MISSING→仅 EXISTS 判 FALSE）；新 `state/goal_evaluation.py`——`ObservationView`（单观测点视图，跨点拼接结构性排除）+ `evaluate_goal`（候选有限枚举合取、同一赋值贯穿、上限外不判 FALSE、witness 只来自单点完整 TRUE、认证主体关联显式化）+ `GoalAchievementWitness`。测试：`test_goal_evaluation.py` 13 项（任务书八反例 + witness 序列化 + 候选上限 + 认证关联 + vulnshop 观测器集成）+ observer/relational 增项 4 项。样例产物 `artifacts/m0/goal_evaluation_sample.json`（TRUE + auth_verified）。
 - 全量 601 passed（574+27），零回归；A–F 默认行为不变（观测器新列仅 `--observe-state` 消费，驱动默认无观测）。
 - **残余开放项**：观测点内"同一只读事务快照"（多表一致读取）在 vulnshop 逐表连接下为近似——PR-04 引入请求级观测时评估单事务化；候选枚举确定性排序按键字符串（实例数大时上限语义保守）；`families_complete/failed` 声明目前由调用方传入，观测器协议层声明随 PR-04 固化。
+
+#### 实施记录（2026-10-19，PR-03.1 + PR-02.1 已实现）
+
+- **PR-03.1（联合判达可靠性热修复）**：P0-A `BindingEnv`(fixed/enumerable/hints/provenance;旧参 binding_candidates=fixed 语义,fixed 不与全集并集);P0-B 认证分量只认同观测点 `RequestAuth.subject` verified 探测事实(provenance 字符串不是身份确认),`relations_truth` 与 `achievement_status` 分离;P0-C `ObservationView.from_observations` 证据过滤(仅 RUNTIME_VERIFIED、UNKNOWN 值不入、MISSING/exists=False→confirmed_absent、冲突值/跨 observed_at 混合 → ValueError);P0-D 四分量分类器 `classify_achievement`(path_conditions/unresolvable/trace 入闸;witness 携带 path_conditions)。测试重写为 26 项(四 P0 反例 + 原八反例四分量适配 + 分类器真值表 + vulnshop 集成双态:无探测 UNKNOWN/有探测 VERIFIED_ACHIEVED)。契约术语补 §6.6.6。
+- **PR-02.1（快照防御补丁）**：SQLite 魔数头分类——live/模板"具头但不可开" → `SnapshotConsistencyError`(不静默退化普通拷贝);DELETE+EXCLUSIVE 捕获收紧为 fail-closed(提交中主文件可短暂不自洽,拷贝不能证明一致——原"拷贝即一致"测试期望按评审 PR-02.1 方向改判);`execution_context` 顶部 docstring 同步 backup 语义。新增 3 测试(损坏头/损坏模板/活跃读者可审计)。
+- 回归:state+runtime 190 passed;全量见本轮提交信息。下一里程碑 PR-04(M0-B)。

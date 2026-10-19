@@ -44,6 +44,11 @@ def _make_wal_db(path: Path, rows: list[int]) -> sqlite3.Connection:
     return conn                                    # keeper:勿关,直到测试结束
 
 
+def _make_wal_db_rows(path: Path) -> sqlite3.Connection:
+    keeper = _make_wal_db(path, [1, 2])
+    return keeper
+
+
 def _rows(path: Path) -> list[int]:
     conn = sqlite3.connect(f"file:{path}?mode=ro", uri=True)
     out = [r[0] for r in conn.execute("SELECT x FROM t ORDER BY x")]
@@ -101,9 +106,13 @@ def test_capture_with_active_connection_consistent_or_fail(tmp_path):
 
 
 def test_capture_with_exclusive_lock_delete_mode(tmp_path):
-    """必测 2b:DELETE 模式 + EXCLUSIVE 持锁者 → 捕获经拷贝路径仍一致
-    (实测:probe 被锁拒 → 非 DB 回退分支;DELETE 模式主文件即已提交
-    态,拷贝=一致快照。恢复期持锁的 fail-closed 由必测 6 覆盖)。"""
+    """必测 2b(PR-02.1 收紧):DELETE+EXCLUSIVE 持锁者捕获 → **可审计
+    fail-closed**。PR-02 版曾按"主文件=已提交态"接受拷贝回退;但提交中
+    瞬间主文件可短暂不自洽(EXCLUSIVE 持有期),拷贝不能证明一致——
+    probe 无法区分"锁死"与"损坏",一律 fail-closed(评审 PR-02.1:
+    按 SQLite 头/错误分类收口,不静默退化普通拷贝)。空闲连接的
+    一致快照路径由必测 2(WAL)覆盖。"""
+    from stateforge.runtime.snapshot.l2_sqlite import SnapshotConsistencyError
     db = tmp_path / "app.db"
     conn = sqlite3.connect(db)
     conn.executescript("CREATE TABLE t(x INTEGER); INSERT INTO t VALUES(1)")
@@ -113,8 +122,8 @@ def test_capture_with_exclusive_lock_delete_mode(tmp_path):
     blocker.execute("BEGIN EXCLUSIVE")
     try:
         l2 = L2Sqlite(db, tpl_root=tmp_path / "tpl")
-        l2.snapshot_template("baseline")
-        assert _rows(l2._tpl("baseline")) == [1]  # 一致(已提交态)
+        with pytest.raises(SnapshotConsistencyError, match="锁死"):
+            l2.snapshot_template("baseline")
     finally:
         blocker.rollback()
         blocker.close()
@@ -265,3 +274,59 @@ def test_input_isolation_and_intra_input_sharing_wal(tmp_path):
     # 输入后:回基线(0 行)——A 的写不影响 B
     assert app._count() == 0
     keeper.close()
+
+
+# --------------------------------------------------- PR-02.1:防御补丁
+
+def test_corrupt_sqlite_header_fails_closed_not_plain_copy(tmp_path):
+    """SQLite 魔数 + 损坏内容 → fail-closed;不静默退化成普通拷贝。"""
+    from stateforge.runtime.snapshot.l2_sqlite import SnapshotConsistencyError
+    db = tmp_path / "corrupt.db"
+    db.write_bytes(b"SQLite format 3\x00" + b"\x00garbage" * 64)
+    l2 = L2Sqlite(db, tpl_root=tmp_path / "tpl")
+    with pytest.raises(SnapshotConsistencyError, match="损坏"):
+        l2.snapshot_template("baseline")
+    # 非 SQLite 垃圾(无魔数)仍走普通拷贝(既有语义)
+    plain = tmp_path / "plain.bin"
+    plain.write_bytes(b"\x00garbage" * 64)
+    l2p = L2Sqlite(plain, tpl_root=tmp_path / "tplp")
+    tpl = l2p.snapshot_template("baseline")
+    assert tpl.read_bytes() == plain.read_bytes()
+
+
+def test_corrupt_template_fails_closed_on_restore(tmp_path):
+    from stateforge.runtime.snapshot.l2_sqlite import SnapshotConsistencyError
+    db = tmp_path / "ok.db"
+    conn = sqlite3.connect(db)
+    conn.executescript("CREATE TABLE t(x INTEGER)")
+    conn.commit()
+    conn.close()
+    l2 = L2Sqlite(db, tpl_root=tmp_path / "tpl")
+    l2.snapshot_template("baseline")
+    l2._tpl("baseline").write_bytes(          # 模板被外部破坏成"魔数+垃圾"
+        b"SQLite format 3\x00" + b"\x00bad" * 32)
+    with pytest.raises(SnapshotConsistencyError, match="模板"):
+        l2.restore("baseline")
+
+
+def test_active_reader_during_restore_is_audited(tmp_path):
+    """活跃**读者**(WAL 打开读事务):IMMEDIATE 探针下恢复仍可进行
+    (WAL 读者不阻塞写者预约);垃圾/持锁写者路径已由必测 6 覆盖——
+    本例固化读者边界可审计(不 crash、结果正确)。"""
+    db = tmp_path / "r.db"
+    _make_wal_db_rows(db)
+    l2 = L2Sqlite(db, tpl_root=tmp_path / "tpl")
+    l2.snapshot_template("baseline")
+    conn = sqlite3.connect(db)                # 读者:开一个读事务
+    conn.execute("BEGIN")
+    conn.execute("SELECT COUNT(*) FROM t").fetchone()
+    try:
+        conn2 = sqlite3.connect(db)           # 基线后的破坏写
+        conn2.execute("INSERT INTO t(x) VALUES(999)")
+        conn2.commit()
+        conn2.close()
+        l2.restore("baseline")                # 读者在场:WAL 下预约可获取
+        assert _rows(db) == [1, 2]
+    finally:
+        conn.rollback()
+        conn.close()
