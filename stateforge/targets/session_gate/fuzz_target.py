@@ -104,6 +104,18 @@ def target_hits() -> list[dict]:
 def observe_session(client=None) -> "SessionSnapshot":
     return _APP_MOD.observe_session(client or _CLIENT, _APP)
 
+def session_view(client=None):
+    """SS-04: read-only observation point view for the runtime observer."""
+    from stateforge.state.session_observation import snapshot_view
+    return snapshot_view(observe_session(client), client_id="client-0",
+                         observation_point="after_response")
+
+
+def sf_state_observer():
+    """P0-B/SS-04 observer factory discovered by observer_from_module."""
+    from stateforge.state.session_observation import SessionRuntimeObserver
+    return SessionRuntimeObserver(session_view)
+
 
 # --------------------------------------------------------- request execution
 
