@@ -68,7 +68,10 @@ def main() -> None:
 
     l2 = None
     if db_path:
-        l2 = L2Handle(L2Sqlite(db_path), "root")
+        # PR-02:fork-COW 引擎路径保持位级冻结语义(capture="copy");
+        # WAL 目标在该模式下 fail-closed(l2_sqlite SnapshotConsistencyError
+        # 于首模板建立时显式报错)——引擎路径暂不支持 WAL,不静默降级。
+        l2 = L2Handle(L2Sqlite(db_path, capture=L2Sqlite.CAPTURE_COPY), "root")
         l2.restore()                       # depth-0:先按模板还原(幂等),再冻结首模板
         l2.snapshot_template("root")       # init 后的干净态
 

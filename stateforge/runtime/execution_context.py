@@ -40,12 +40,14 @@ from __future__ import annotations
 
 import gc
 import json
+import sqlite3
 import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Callable, Iterable, Protocol, runtime_checkable
 
-from stateforge.runtime.snapshot.l2_sqlite import L2Sqlite
+from stateforge.runtime.snapshot.l2_sqlite import (L2Sqlite,
+                                                 SnapshotConsistencyError)
 
 if TYPE_CHECKING:                                    # 仅类型标注(L1.5 不上引)
     from stateforge.state.runtime_observer import RuntimeObserver, StateObservation
@@ -169,11 +171,17 @@ class SnapshotLifecycle:
         self._established = False
 
     def establish_baseline(self) -> None:
-        """捕获当前文件态为基线(在首个输入前、应用干净时调用)。"""
+        """捕获当前文件态为基线(在首个输入前、应用干净时调用)。
+
+        PR-02:capture=backup(缺省)经 SQLite backup API——WAL 已提交
+        未 checkpoint 帧自动入模板;sqlite3.Error(锁冲突/非 DB 损坏)
+        与 OSError 同样 fail-closed 包装为 LifecycleError。
+        """
         for l2, path in zip(self._l2, self.files):
             try:
-                l2.snapshot_template(self.BASELINE)   # live→tpl 位拷贝 + sidecar 清理
-            except OSError as exc:
+                l2.snapshot_template(self.BASELINE)   # live→tpl(bbackup 页级/或拷贝)
+            except (OSError, sqlite3.Error,
+                    SnapshotConsistencyError) as exc:
                 raise LifecycleError(
                     f"基线捕获失败({path}): {exc}") from exc
             if not l2.template_exists(self.BASELINE):
@@ -196,7 +204,8 @@ class SnapshotLifecycle:
                     f"基线模板丢失({path})——隔离失效,fail-closed")
             try:
                 l2.restore(self.BASELINE)
-            except OSError as exc:
+            except (OSError, sqlite3.Error,
+                    SnapshotConsistencyError) as exc:
                 raise LifecycleError(f"基线还原失败({path}): {exc}") from exc
         for hook in self.memory_hooks:                # 4. 内存态恢复
             _fail(hook, "memory-reset 钩子")
