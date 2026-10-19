@@ -133,7 +133,7 @@ python -m pytest stateforge/tests/targets/session_gate/ -q
 
 ---
 
-## 4. 后续批次要点（本轮不实现）
+## 4. 后续批次要点（已由 §7 实施，保留原始验收口径）
 
 ### SS-01 Session AST 读写提取
 
@@ -201,3 +201,83 @@ python -m pytest stateforge/tests/targets/session_gate/ -q
 出现跨客户端假成功、错误重放成功、覆盖冒充 verified、C10 语义破坏、
 旧测试回归，或环境缺失导致关键验收未执行时，停止下一批并报告，不继续
 堆代码。
+
+
+---
+
+## 7. SS-01–SS-04 实施记录（2026-10-19）
+
+### 7.1 提交链
+
+| 批次 | 提交 | 内容 |
+|---|---|---|
+| SS-00 | `af3c50a` | Flask Cookie-Session 靶、C10/单请求适配、输入级隔离、14 测试 |
+| SS-01 | `a183251` | `SessionAccess` 访问事件、BlockID/源码锚点、别名/动态 key、12 测试 |
+| SS-02 | `4b776ed` | `SessionAccessIndex`、`query_session_frontier`、路径约束分组、13 测试 |
+| SS-03 | `0752a3c` | 有界定向多请求种子搜索、独立 `--session-guided`、C10 注入、9 测试 |
+| SS-04 | `1d4a00f` | 运行时 verified Session 观测、条件判定、solving 层检查点/冷启动重放/隔离、26 测试 |
+
+### 7.2 SS-01 实际落地
+
+- 新入口 `state/session_access.py::extract_session_accesses` 与
+  `extract_session_facts`；旧 `analyze_session_access` 兼容保留，M1 旧测试
+  无回归。
+- 支持 SET/READ/EXISTS/GET/POP/DELETE/CLEAR/RMW/UPDATE/SETDEFAULT、
+  常量/SYMBOLIC/ANY/UNKNOWN key、`from flask import session as sess`、
+  `import flask`/别名、局部遮蔽、嵌套函数不双计。
+- `site_id` 稳定唯一；有 IR 时绑定真实 `BlockID`；所有静态事件
+  `STATIC_MAY`。
+- 测试：新增 12；与旧 M1/提取合计 `37 passed`。
+
+### 7.3 SS-02 实际落地
+
+- `state/session_index.py`：按 key 桶的 index、逐 reader 的
+  `writers_of`、`SessionDependency`、`SessionFrontier`。
+- `query_session_frontier` 复用 `goal_derivation` 的函数内投影，逐路径
+  保留条件组；歧义别名降级 `KEY_UNKNOWN`；非 Session 守卫 unresolved；
+  `clear()` 为 ANY；不同常量 key 为 DISJOINT；同客户端约束始终携带。
+- 测试：`13 passed`（索引 10 + goal-query 契约 3）。
+
+### 7.4 SS-03 实际落地
+
+- `fuzzing/session_guided.py`：有界结构搜索（append/replace/delete/
+  parameter mutation）、规范化哈希去重、固定 seed/预算、每次候选 reset。
+- `entry_driver.py` 新增 `--session-guided` 等独立开关，默认关闭；
+  启动前把有效 C10 序列写入语料，Atheris 仍是唯一变异/执行引擎。
+- 无 probe 只报 `PROXY_PROGRESS`；有 probe 且条件组满足才 `VERIFIED`。
+- 测试：`9 passed`；端到端冒烟发现 `POST /authenticate(valid)` →
+  `GET /protected`，搜索 15 次执行。
+
+### 7.5 SS-04 实际落地
+
+- `state/session_observation.py`：只读 Cookie Jar 观测、三值判定
+  （VERIFIED_TRUE/VERIFIED_FALSE/UNKNOWN）、`StateObservation` 绑定
+  client/observation point、NULL/MISSING/UNKNOWN 分离。
+- `solving/session_replay.py`：`SessionReplayCheckpoint` 仅由
+  `VERIFIED` 结果创建；冷启动前缀重放、重新判定条件、后缀独立执行、
+  后缀单独执行隔离对照、C10 种子注入去重。
+- `fuzz_target.py` 暴露 `session_view()` / `sf_state_observer()`，接入
+  既有 `RuntimeObserver` 与 `StateEvidenceLedger`。
+- 测试：新增 26；与 SS-00 靶合计 `40 passed`。
+
+### 7.6 实验结论（详见 `docs/reports/SESSION_FIRST_EXPERIMENT.md`）
+
+- 同一请求池/预算/隔离，3 seeds：
+  - BASE：目标 0/3，writer 3/3，verified Session 3/3（单请求登录写状态，
+    但没有组合出受保护请求）；
+  - SESSION-GUIDED：目标 3/3，检查点 `sc-49405742647b`；
+  - SESSION-REUSE：目标 3/3。
+- 检查点冷启动 replay：`REPLAY_VERIFIED`，`uid=7`；后缀无前缀隔离
+  对照通过。
+- 静态查询：9 个访问全 `STATIC_MAY`，0 UNKNOWN；候选写块
+  `authenticate`/`logout`/`clear`。
+- 这是 3 seeds、2 秒、单微型靶的功能性证据，不宣称统计显著或通用
+  性能优势。
+
+### 7.7 已知边界
+
+- 仅 Flask 默认签名 Cookie Session；其他 Session 后端需新 observer。
+- `absent` 只在该 client/observation point 内权威；不跨 client 合并。
+- 静态查询可 `partial`；不把未证明的路径/客户端约束升级为事实。
+- `SessionReplayCheckpoint` 是 Session 域包装，复用 C10、
+  `StateEvidenceLedger`、reset lifecycle，不复制 ledger。
