@@ -216,20 +216,26 @@ class SessionAccessIndex:
             self.add(access)
 
     @staticmethod
-    def bucket(key_kind: str, key_expr: str | None) -> str:
+    def bucket(key_kind: str, key_expr: str | None,
+               backend: str = BACKEND_FLASK_SESSION) -> str:
+        # Backend is part of the bucket: a Flask cookie session and another
+        # session backend must not be collapsed into one key.
         if key_kind == KEY_CONST:
-            return f"CONST:{key_expr}"
-        if key_kind == KEY_ANY:
-            return "ANY"
-        if key_kind == KEY_SYMBOLIC:
-            return f"SYMBOLIC:{key_expr or '?'}"
-        return "UNKNOWN"
+            tail = f"CONST:{key_expr}"
+        elif key_kind == KEY_ANY:
+            tail = "ANY"
+        elif key_kind == KEY_SYMBOLIC:
+            tail = f"SYMBOLIC:{key_expr or '?'}"
+        else:
+            tail = "UNKNOWN"
+        return f"{backend}:{tail}"
 
     def add(self, access: SessionAccess) -> None:
         self.accesses.append(access)
         self.by_site[access.site_id] = access
         self.by_key.setdefault(
-            self.bucket(access.key_kind, access.key_expr), []).append(access)
+            self.bucket(access.key_kind, access.key_expr, access.backend),
+            []).append(access)
         if access.block_id:
             self.by_block.setdefault(access.block_id, []).append(access)
 
@@ -240,10 +246,13 @@ class SessionAccessIndex:
                 and (key is None or a.key_expr == key
                      or a.key_kind in (KEY_ANY, KEY_SYMBOLIC, KEY_UNKNOWN))]
 
-    def writers_for_key(self, key_kind: str, key_expr: str | None) -> list[SessionAccess]:
+    def writers_for_key(self, key_kind: str, key_expr: str | None,
+                        backend: str | None = None) -> list[SessionAccess]:
         """Writers/deleters that may affect this key (clear included)."""
         out: list[SessionAccess] = []
         for a in self.accesses:
+            if backend is not None and a.backend != backend:
+                continue
             if a.operation not in (OP_SET, OP_DELETE, OP_CLEAR,
                                    OP_READ_MODIFY_WRITE):
                 continue
@@ -268,7 +277,8 @@ class SessionAccessIndex:
         if key_expr is None:
             key_expr = access.key_expr
         out: list[SessionDependency] = []
-        for writer in self.writers_for_key(key_kind, key_expr):
+        for writer in self.writers_for_key(key_kind, key_expr,
+                                           backend=access.backend):
             overlap = _overlap((key_kind, key_expr),
                                (writer.key_kind, writer.key_expr))
             if overlap == DISJOINT:
@@ -709,7 +719,8 @@ def query_session_frontier(ir: ProgramIR, session_index: SessionAccessIndex,
                                 f"condition:{cond.source_file}:{cond.source_line}"]
             for reader_site in reader_sites:
                 for writer in session_index.writers_for_key(
-                        cond.key_kind, cond.key_expr):
+                        cond.key_kind, cond.key_expr,
+                        backend=BACKEND_FLASK_SESSION):
                     overlap = _overlap((cond.key_kind, cond.key_expr),
                                        (writer.key_kind, writer.key_expr))
                     if overlap == DISJOINT:

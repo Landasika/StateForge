@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
+import dataclasses
 from pathlib import Path
 
 import pytest
 
 from stateforge.analysis.static.icfg import build_icfg
-from stateforge.state.session_access import (KEY_ANY, OP_CLEAR, OP_DELETE,
+from stateforge.state.session_access import (BACKEND_FLASK_SESSION, KEY_ANY,
+                                             KEY_CONST, OP_CLEAR, OP_DELETE,
                                              OP_READ, OP_SET,
                                              extract_session_accesses)
 from stateforge.state.session_index import (COND_EXISTS, COND_NOT_EXISTS,
@@ -265,3 +267,19 @@ def test_missing_target_is_partial_not_exception():
     frontier = query_session_frontier(ir, index, "missing::block::1")
     assert frontier.partial is True
     assert frontier.unresolved[0].cause == "target-block-not-found"
+
+
+def test_backend_is_part_of_the_index_bucket():
+    _ir, accesses, _index, _frontier = _gate_frontier()
+    writer = next(a for a in accesses
+                  if a.operation == OP_SET and a.key_expr == "uid")
+    other = dataclasses.replace(writer, backend="other.session",
+                                site_id=writer.site_id + "-other")
+    index = SessionAccessIndex([writer, other])
+    assert len(index.by_key) == 2
+    flask = index.writers_for_key(KEY_CONST, "uid",
+                                  backend=BACKEND_FLASK_SESSION)
+    other_only = index.writers_for_key(KEY_CONST, "uid",
+                                       backend="other.session")
+    assert writer in flask and other not in flask
+    assert other in other_only and writer not in other_only
