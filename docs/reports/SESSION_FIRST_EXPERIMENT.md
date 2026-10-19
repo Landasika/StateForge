@@ -19,23 +19,23 @@
 
 | arm | target reached | writer covered | verified session | proxy-only | mean total exec | mean Atheris exec |
 |---|---:|---:|---:|---:|---:|---:|
-| BASE | 0/3 | 3/3 | 3/3 | 0/3 | 476.3 | 476.3 |
-| SESSION-GUIDED | 3/3 | 3/3 | 3/3 | 0/3 | 487.7 | 472.7 |
-| SESSION-REUSE | 3/3 | 3/3 | 3/3 | 0/3 | 459.3 | 459.3 |
+| BASE | 0/3 | 3/3 | 3/3 | 0/3 | 469.7 | 469.7 |
+| SESSION-GUIDED | 3/3 | 3/3 | 3/3 | 0/3 | 486.3 | 471.3 |
+| SESSION-REUSE | 3/3 | 3/3 | 3/3 | 0/3 | 459.7 | 459.7 |
 
 逐 seed：
 
 | arm | seed | target | verified atoms | total exec | guided status |
 |---|---:|---:|---|---:|---|
-| BASE | 1 | False | `Session.other`, `Session.uid` | 463 | — |
-| SESSION-GUIDED | 1 | True | `Session.other`, `Session.uid` | 477 | VERIFIED |
-| SESSION-REUSE | 1 | True | `Session.other`, `Session.uid` | 442 | — |
-| BASE | 2 | False | `Session.other`, `Session.uid` | 449 | — |
-| SESSION-GUIDED | 2 | True | `Session.other`, `Session.uid` | 516 | VERIFIED |
-| SESSION-REUSE | 2 | True | `Session.other`, `Session.uid` | 481 | — |
-| BASE | 3 | False | `Session.other`, `Session.uid` | 517 | — |
-| SESSION-GUIDED | 3 | True | `Session.other`, `Session.uid` | 470 | VERIFIED |
-| SESSION-REUSE | 3 | True | `Session.other`, `Session.uid` | 455 | — |
+| BASE | 1 | False | `Session.other`, `Session.uid` | 434 | — |
+| SESSION-GUIDED | 1 | True | `Session.other`, `Session.uid` | 487 | VERIFIED |
+| SESSION-REUSE | 1 | True | `Session.other`, `Session.uid` | 447 | — |
+| BASE | 2 | False | `Session.other`, `Session.uid` | 466 | — |
+| SESSION-GUIDED | 2 | True | `Session.other`, `Session.uid` | 478 | VERIFIED |
+| SESSION-REUSE | 2 | True | `Session.other`, `Session.uid` | 448 | — |
+| BASE | 3 | False | `Session.other`, `Session.uid` | 509 | — |
+| SESSION-GUIDED | 3 | True | `Session.other`, `Session.uid` | 494 | VERIFIED |
+| SESSION-REUSE | 3 | True | `Session.other`, `Session.uid` | 484 | — |
 
 ## 解释
 
@@ -58,7 +58,7 @@
 - 3 个 seed、2 秒、单一微型靶，不构成统计显著性结论。
 - 本实验不证明 GUIDED 比强 baseline 更快；BASE 是“只有独立单请求种子”
   的默认行为，未加入人工组合 seed。
-- `mean sequence length 1.12` 是语料中 9 个单步 + 1 个两步的平均，不是
+- `mean sequence length 1.14` 是语料中 9 个单步 + 1 个两步的平均，不是
   发现序列长度；发现序列固定为 2 步。
 - 性能/泛化结论需要更大请求池、更多 target 和更长预算；本轮只报告
   功能性证据与负结果边界。
