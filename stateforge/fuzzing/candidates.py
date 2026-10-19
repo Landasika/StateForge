@@ -38,7 +38,8 @@ class CandidateCollector:
                  recorder: ExperimentRecorder, epoch: int,
                  on_save=None,                      # P0-7:保存时持久化全局覆盖
                  execution: ExecutionContext | None = None,   # P0-A 生命周期
-                 state_ledger=None):                # P0-B 证据台账
+                 state_ledger=None,                # P0-B 证据台账
+                 state_novelty: bool = False):    # PR-07 状态新颖度保留(默认关)
         self.ir = ir
         self.session = session
         self.feedback = feedback
@@ -48,6 +49,7 @@ class CandidateCollector:
         self.on_save = on_save
         self.execution = execution if execution is not None else ExecutionContext()
         self.state_ledger = state_ledger
+        self.state_novelty = state_novelty          # 默认关:A–F 不变
         self.lifecycle_failures = 0         # 隔离失败次数(审计之外的记忆)
 
     def _lifecycle_failed(self, exc: LifecycleError):
@@ -83,16 +85,21 @@ class CandidateCollector:
         except LifecycleError as exc:
             self._lifecycle_failed(exc)
             return None
+        state_novel = ()
         if self.state_ledger is not None:
-            self.state_ledger.record(result.observations)
+            state_novel = self.state_ledger.record(result.observations)
         t1 = time.monotonic()
         mapped = map_trace(self.session.events[start:], self.ir)
         obs = self.feedback.observe(mapped)         # 对执行前快照评分
         cid = None
-        if self.corpus is not None and obs.interesting:
-            cid = self.corpus.save(data, self.epoch, len(obs.new_blocks),
-                                   len(obs.new_edges), len(obs.blocks),
-                                   len(obs.edges))
+        keep_for_state = self.state_novelty and bool(state_novel)
+        if self.corpus is not None and (obs.interesting or keep_for_state):
+            cid = self.corpus.save(
+                data, self.epoch, len(obs.new_blocks),
+                len(obs.new_edges), len(obs.blocks), len(obs.edges),
+                interesting_reason=("state_novel" if keep_for_state
+                                    and not obs.interesting
+                                    else "new_structure"))
             if cid and self.on_save:
                 self.on_save()                       # 立刻落盘,抗 _Exit 尾丢
         self.feedback.update_global_coverage(obs.blocks, obs.edges)

@@ -29,12 +29,14 @@ class FrontierCollector:
                  feedback: FrontierDirectedFeedback, corpus: CorpusManager,
                  recorder: ExperimentRecorder, epoch: int, on_save=None,
                  execution: ExecutionContext | None = None,   # P0-A 生命周期
-                 state_ledger=None):                          # P0-B 证据台账
+                 state_ledger=None,                # P0-B 证据台账
+                 state_novelty: bool = False):    # PR-07 状态新颖度保留(默认关)
         self.ir, self.session, self.feedback = ir, session, feedback
         self.corpus, self.recorder, self.epoch = corpus, recorder, epoch
         self.on_save = on_save
         self.execution = execution if execution is not None else ExecutionContext()
         self.state_ledger = state_ledger
+        self.state_novelty = state_novelty          # 默认关:A–F 不变
         self.frontier_saves = 0          # reason=frontier_proximity 的保留数
         self.lifecycle_failures = 0      # 隔离失败次数(审计之外的记忆)
         self._events_path = corpus.spool / "frontier_events.jsonl"
@@ -70,20 +72,25 @@ class FrontierCollector:
         except LifecycleError as exc:
             self._lifecycle_failed(exc)
             return None
+        state_novel = ()
         if self.state_ledger is not None:
-            self.state_ledger.record(result.observations)
+            state_novel = self.state_ledger.record(result.observations)
         t1 = time.monotonic()
         mapped = map_trace(self.session.events[start:], self.ir)
         cid_pre = CorpusManager.content_id(data)
         obs = self.feedback.observe(mapped, cid_pre)   # 旧前沿上评分+组合挑战
         cid = None
-        if obs.interesting:
-            cid = self.corpus.save(data, self.epoch, obs.new_blocks,
-                                   obs.new_edges, len(mapped.block_hits),
-                                   len(mapped.edge_kinds),
-                                   distance=obs.distance,
-                                   nearest_frontier=obs.nearest_frontier,
-                                   interesting_reason=obs.reason)
+        keep_for_state = self.state_novelty and bool(state_novel)
+        if obs.interesting or keep_for_state:
+            cid = self.corpus.save(
+                data, self.epoch, obs.new_blocks,
+                obs.new_edges, len(mapped.block_hits),
+                len(mapped.edge_kinds),
+                distance=obs.distance,
+                nearest_frontier=obs.nearest_frontier,
+                interesting_reason=("state_novel" if keep_for_state
+                                    and not obs.interesting
+                                    else obs.reason))
             if cid and obs.reason in ("frontier_champion", "frontier_progress"):
                 self.frontier_saves += 1
             if cid and self.on_save:

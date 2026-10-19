@@ -480,3 +480,27 @@ def test_c10_producer_artifact_round_trip(tmp_path):
     assert audit["goal"] == "Session.role=admin"
     assert audit["steps"] == [s["json"]["op"] for s in steps]
     assert audit["seed_id"] == files[0].name
+
+
+def test_c11_relational_arm_record_schema(tmp_path):
+    """C11:消融行键集与四桶分离纪律(演进;缺键读者按 .get 兼容)。"""
+    from stateforge.evaluation.experiment.relational_arm import run_ablation
+    out = tmp_path / "c11"
+    run_ablation(Path(__file__).parents[1] / "targets" / "vulnshop", out,
+                 budget_requests=20, seed=5, arms=("A", "D"))
+    lines = [json.loads(x) for x in
+             (out / "relational_arm.jsonl").read_text(encoding="utf-8")
+             .splitlines() if x.strip()]
+    assert {r["arm"] for r in lines} == {"A", "D"}
+    for r in lines:
+        for key in ("arm", "requests_executed", "inputs", "wall_seconds",
+                    "target_block_covered", "goal_coverage",
+                    "instance_state_novelty",
+                    "verified_transition_novelty", "proxy_progress",
+                    "notes"):
+            assert key in r
+        assert set(r["goal_coverage"]) >= {"achieved", "total", "note"}
+        assert "atoms" in r["proxy_progress"]      # 代理独立分桶
+    summary = json.loads((out / "relational_arm_summary.json")
+                         .read_text(encoding="utf-8"))
+    assert summary["seed"] == 5 and summary["goal_denominator"]

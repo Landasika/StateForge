@@ -163,3 +163,46 @@ def test_frontier_collector_same_wiring(tmp_path):
     assert collector.handle(_target_ok, b"\x05") is None
     assert recorder.executions == 0
     assert (tmp_path / "out2" / "lifecycle_failures.jsonl").exists()
+
+
+# --------------------------------------------------- PR-07:状态新颖度保留开关
+
+def test_state_novelty_flag_controls_retention(tmp_path):
+    """开关开:无新覆盖但有新 verified 事实 → 保留(reason=state_novel);
+    开关关:同输入不保留(A–F 缺省行为不变)。"""
+    from stateforge.fuzzing.candidates import CandidateCollector
+    from stateforge.fuzzing.corpus_manager import CorpusManager
+    from stateforge.fuzzing.feedback.structural import StructuralFeedback
+    from stateforge.fuzzing.recorder import ExperimentRecorder
+    from stateforge.runtime.tracer import TraceSession
+    from stateforge.state.runtime_observer import (
+        Evidence, SCOPE_RESOURCE, StateEvidenceLedger, StateKey,
+        StateObservation)
+    from types import SimpleNamespace
+
+    def _collector(flag, n):
+        obs = [StateObservation(
+            key=StateKey(f"Order.status=V{n}", str(n), SCOPE_RESOURCE),
+            value=True, evidence=Evidence.RUNTIME_VERIFIED,
+            source="db:orders", subject="Order.status",
+            observed_value=f"V{n}", value_kind="ENUM")]
+        holder = SimpleNamespace(observe=lambda _o=None: obs)
+        execution = ExecutionContext(observer=holder)
+        ledger = StateEvidenceLedger(observer_name="t")
+        corpus = CorpusManager(tmp_path / f"spool{flag}{n}")
+        recorder = ExperimentRecorder(tmp_path, "x", n)
+        return CandidateCollector(
+            SimpleNamespace(blocks={}, functions={}, edges=[]),
+            TraceSession(),
+            StructuralFeedback(),
+            corpus, recorder, n, execution=execution,
+            state_ledger=ledger, state_novelty=flag), corpus
+
+    on, corpus_on = _collector(True, 1)
+    on.handle(lambda d: None, b'{"json": {"op": "x"}}')
+    meta_on = corpus_on.entries()
+    assert len(meta_on) == 1 and meta_on[0].interesting_reason == "state_novel"
+
+    off, corpus_off = _collector(False, 2)
+    off.handle(lambda d: None, b'{"json": {"op": "y"}}')
+    assert corpus_off.entries() == []          # 关:无覆盖即不保留(旧行为)

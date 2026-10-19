@@ -1,0 +1,157 @@
+{
+ "seed": 7,
+ "budget_requests": 90,
+ "guards": 1,
+ "goal_denominator": [
+  "app.py::cancel_order::289-289::block::1",
+  "app.py::set_role::315-315::block::1",
+  "app.py::ship_order::275-275::block::1",
+  "app_anota.py::cancel_order::212-212::block::1",
+  "app_anota.py::set_role::235-235::block::1",
+  "app_anota.py::ship_order::200-201::block::1"
+ ],
+ "arms": [
+  {
+   "arm": "A",
+   "requests_executed": 90,
+   "inputs": 90,
+   "wall_seconds": 8.241,
+   "target_block_covered": {},
+   "goal_witnesses": [],
+   "goal_coverage": {
+    "achieved": null,
+    "total": 6,
+    "note": "无观测面(仅 D 配置):不伪造覆盖"
+   },
+   "instance_state_novelty": null,
+   "verified_transition_novelty": null,
+   "proxy_progress": {
+    "atoms": []
+   },
+   "notes": [
+    "no-observation-arm"
+   ]
+  },
+  {
+   "arm": "B",
+   "requests_executed": 90,
+   "inputs": 36,
+   "wall_seconds": 8.525,
+   "target_block_covered": {
+    "app.py::cancel_order::289-289::block::1": 35
+   },
+   "goal_witnesses": [],
+   "goal_coverage": {
+    "achieved": null,
+    "total": 6,
+    "note": "无观测面(仅 D 配置):不伪造覆盖"
+   },
+   "instance_state_novelty": null,
+   "verified_transition_novelty": null,
+   "proxy_progress": {
+    "atoms": [
+     "Coupon.used=True",
+     "Session.authed_as=<authed>"
+    ]
+   },
+   "notes": [
+    "no-observation-arm"
+   ]
+  },
+  {
+   "arm": "C",
+   "requests_executed": 90,
+   "inputs": 33,
+   "wall_seconds": 7.918,
+   "target_block_covered": {
+    "app.py::cancel_order::289-289::block::1": 13,
+    "app.py::ship_order::275-275::block::1": 25
+   },
+   "goal_witnesses": [],
+   "goal_coverage": {
+    "achieved": null,
+    "total": 6,
+    "note": "无观测面(仅 D 配置):不伪造覆盖"
+   },
+   "instance_state_novelty": null,
+   "verified_transition_novelty": null,
+   "proxy_progress": {
+    "atoms": [
+     "Coupon.used=True",
+     "Session.authed_as=<authed>"
+    ]
+   },
+   "notes": [
+    "no-observation-arm"
+   ]
+  },
+  {
+   "arm": "D",
+   "requests_executed": 90,
+   "inputs": 33,
+   "wall_seconds": 8.582,
+   "target_block_covered": {
+    "app.py::cancel_order::289-289::block::1": 13,
+    "app.py::ship_order::275-275::block::1": 25
+   },
+   "goal_witnesses": [
+    {
+     "goal_id": "app.py::cancel_order::289-289::block::1",
+     "witness": {
+      "goal_id": "app.py::cancel_order::289-289::block::1",
+      "observation_point": "armD-5",
+      "binding": {
+       "?order": "orders:1",
+       "?user": "users:u1"
+      },
+      "relations": [
+       "EXISTS(?order)@app.py:284",
+       "EQ(?order.user_id, ?user.id)@app.py:287"
+      ],
+      "path_conditions": [
+       "path:local:err=false",
+       "path:config:guards=true"
+      ]
+     }
+    },
+    {
+     "goal_id": "app.py::ship_order::275-275::block::1",
+     "witness": {
+      "goal_id": "app.py::ship_order::275-275::block::1",
+      "observation_point": "armD-9",
+      "binding": {
+       "?order": "orders:1",
+       "?user": "users:u1"
+      },
+      "relations": [
+       "EXISTS(?order)@app.py:268",
+       "EQ(?order.user_id, ?user.id)@app.py:271",
+       "EQ(?order.status, 'PAID')@app.py:273"
+      ],
+      "path_conditions": [
+       "path:local:err=false",
+       "path:config:guards=true"
+      ]
+     }
+    }
+   ],
+   "goal_coverage": {
+    "achieved": [
+     "app.py::cancel_order::289-289::block::1",
+     "app.py::ship_order::275-275::block::1"
+    ],
+    "total": 6,
+    "note": "witness-only:仅统计一致观测点完整 GoalWitness"
+   },
+   "instance_state_novelty": 91,
+   "verified_transition_novelty": 4,
+   "proxy_progress": {
+    "atoms": [
+     "Coupon.used=True",
+     "Session.authed_as=<authed>"
+    ]
+   },
+   "notes": []
+  }
+ ]
+}

@@ -411,3 +411,10 @@ v0 表延续，修订两点：
 - **升级纪律**:`checkpoint_from_verified` 仅 VERIFIED_ACHIEVED 可建重放检查点(候选/失败链 ValueError,不自动升级)。
 - **测试 10 项**(单元:归因忽略状态码/按反证谓词分类/修复建议/去重四规则/未知不循环但新证据放行/achieved 闭环/JSONL 往返/检查点升级拒绝与接受;E2E 闭环:错误用户→403→观测归因→同键去重→修复建议→换 alice 绑定重试→VERIFIED_ACHIEVED→检查点)。
 - **未做(留 PR-07/Phase 3)**:账本未接入 epoch/fuzz 调度循环(本轮为离线库+E2E 验证);修复建议是词表非自动改链(Phase 3 前沿对象消费)。
+
+#### 实施记录（2026-10-19，PR-07 已实现）
+
+- **`evaluation/experiment/relational_arm.py`**:无 LLM 四臂消融(A 覆盖引导随机请求+结构保留 / B 动作模板序列(截断随机化,无关系推导) / C 停滞→关系目标→relational_planner 注入(目标轮换游标) / D +逐请求观测+四分量 witness+账本)。CLI 可跑(`python -m ...relational_arm`),90 请求 spot 实测分化:A 0 目标/B cancel/C+ship/D ship+cancel 且 **goal_coverage=[ship,cancel]/3(set_role 需 admin 诚实未达,<100%)**、novelty=91、transitions=4、A–C 覆盖 None+note 不伪造。
+- **指标四桶分离**(C11 演进协议+test_protocols 断言):witness-only 覆盖/实例新颖度(无静态分母)/verified 迁移首见/proxy 独立分桶;公平字段 seed/budget/requests/wall 每行必带;同种子确定性测试。
+- **Collector 可选状态新颖度保留**:`state_novelty: bool = False`(两 Collector;默认关=A–F 逐字节不变;开=无新覆盖但有新 verified 事实 → 保留 reason=state_novel)。开关单测双向(开保留/关不保留)。
+- 产物 `artifacts/m0/relational_arm.{jsonl,_summary.json}`(spot 口径,非冻结)。**未做**:atheris 子进程线接(entry_driver/epoch 的关系臂接线——当前消融为进程内 oracle 循环,文档化差异;PR-06 账本已具备接入面);结构感知变异的"稳定前缀+尾变异"以注入链形式体现(前缀=规划链稳定,变异=B/C 随机序列),细粒度参数变异留 Phase 2。

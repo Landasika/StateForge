@@ -344,3 +344,16 @@ python -m pytest stateforge/tests/test_protocols.py -v
 ```
 
 `test_protocols.py` 对 C1/C2/C7(冻结)断言 round-trip 字节稳定;对 C5/C6/C8/C9/C10(演进)断言键集与缺省兼容;对 C3/C4(内部)断言 dataclass 形状;另以 `test_c0_protocols_md_sections_pinned` 锁定本文 C1–C10 小节存在性——文档删节而测试不删即红,两向同步。
+
+---
+
+## C11 relational_arm 消融记录 —— 演进
+
+| | |
+|---|---|
+| 生产者 | `evaluation.experiment.relational_arm.run_ablation`(PR-07)→ `relational_arm.jsonl`(每臂一行)+ `relational_arm_summary.json` |
+| 消费者 | 离线复核/论文口径(无 LLM 消融 A/B/C/D) |
+| 格式 | JSONL;行键 `arm / requests_executed / inputs / wall_seconds / target_block_covered / goal_coverage{achieved,total,note} / instance_state_novelty / verified_transition_novelty / proxy_progress{atoms} / notes` |
+| 执行面 | `tests/evaluation/test_relational_arm.py` |
+
+**演进语义与纪律**：指标四桶分键、永不混计——`goal_coverage.achieved` 仅统计一致观测点完整 witness（无观测臂为 `null`+note，不伪造 0）；`instance_state_novelty`/`verified_transition_novelty` 为首见计数（无静态分母）；`proxy_progress` 独立分桶。公平字段（seed/budget/requests_executed/wall）每行必带。同种子确定性由 `random.Random(seed)` 保证。
