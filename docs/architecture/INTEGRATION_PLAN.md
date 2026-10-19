@@ -403,3 +403,11 @@ v0 表延续，修订两点：
 - **测试**:单元 8 项(两种 guards 模式链形/合取非单原子/槽位统一/签名确定性/候选≠verified/重绑定检测/旧入口回归)+ E2E 4 案例全过(①空基线自动链→入口联判 TRUE+Trace 命中+终态 SHIPPED→VERIFIED_ACHIEVED 且 witness 在;②注入 alice 切换→403+auth FALSE→VERIFIED_NOT_ACHIEVED 不标 verified+规划层重绑定标注;③两次冷启动重放均 VERIFIED_ACHIEVED,oid 由 extract 重建,GoalCheckpoint 序列种子与链逐字节一致;④guards=0 链无 pay,空基线 ship 直接 200 且 UPDATE 覆盖)。
 - 产物 `artifacts/m0/plan_candidate.json` + `replay_result.json`(两次冷重放 VERIFIED_ACHIEVED)。M0-C 验收门四案例全部通过。
 - **残余开放项**:guards 条件化的行序启发仅在 early-return 惯用法内成立(文档化);候选未含动作失效的自动修复(重绑定只标注不换链——PR-06 调度记忆);规划仍单实体资源(?oid 单槽,多资源目标留 Phase 3 前沿)。
+
+#### 实施记录（2026-10-19，PR-06 已实现）
+
+- **`solving/plan_ledger.py`**:`PlanAttempt`(任务书字段全量:goal/baseline/signature/binding/failed_predicate/evidence_refs/observation_point/http_status/exception/reached_blocks/trace_target_covered/failure_reason/binding_conflicts)+ `PlanLedger`(JSONL 持久化+同键查询+`should_retry` 去重裁决:achieved 关闭/failed-dedup 拒盲重试/unknown-pending 待新证据;新证据或换绑定/基线放行)。
+- **归因纪律**:`attribute_failure` 只由 evaluation 分量决定(auth FALSE→auth-subject-mismatch;关系反证按谓词分 ownership/state/resource/relation)——**HTTP 状态码仅上下文,403≠归属错误**;`suggest_repair` 确定性词表(未知→空,保持待观察)。
+- **升级纪律**:`checkpoint_from_verified` 仅 VERIFIED_ACHIEVED 可建重放检查点(候选/失败链 ValueError,不自动升级)。
+- **测试 10 项**(单元:归因忽略状态码/按反证谓词分类/修复建议/去重四规则/未知不循环但新证据放行/achieved 闭环/JSONL 往返/检查点升级拒绝与接受;E2E 闭环:错误用户→403→观测归因→同键去重→修复建议→换 alice 绑定重试→VERIFIED_ACHIEVED→检查点)。
+- **未做(留 PR-07/Phase 3)**:账本未接入 epoch/fuzz 调度循环(本轮为离线库+E2E 验证);修复建议是词表非自动改链(Phase 3 前沿对象消费)。
