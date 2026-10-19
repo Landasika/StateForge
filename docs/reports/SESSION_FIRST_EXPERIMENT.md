@@ -62,3 +62,13 @@
   发现序列长度；发现序列固定为 2 步。
 - 性能/泛化结论需要更大请求池、更多 target 和更长预算；本轮只报告
   功能性证据与负结果边界。
+
+## 回归与基准
+
+- 全量回归：`730 passed, 1 skipped, 26 deselected, 1 warning in 646.75s`
+  （2026-10-20，`python -m pytest -q`；相对基线 656 增加 74 个测试）。
+- 架构边界：`python -m pytest stateforge/tests/test_architecture_boundaries.py -q`
+  → `5 passed`。
+- 微型结构基准：`python -m stateforge.evaluation.micro_benchmark --out /tmp/sf_micro_metrics.json`
+  → `exit=0`，21 个静态用例 CFG/CALL/RETURN precision/recall 全 1.00，
+  5 个动态 trace 用例 accuracy 1.00。

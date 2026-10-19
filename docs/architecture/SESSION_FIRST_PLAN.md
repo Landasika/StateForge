@@ -274,7 +274,16 @@ python -m pytest stateforge/tests/targets/session_gate/ -q
 - 这是 3 seeds、2 秒、单微型靶的功能性证据，不宣称统计显著或通用
   性能优势。
 
-### 7.7 已知边界
+### 7.7 最终回归
+
+- 全量：`730 passed, 1 skipped, 26 deselected, 1 warning in 646.75s`
+  （相对基线 656 增加 74 个测试；SS-00 14 + SS-01 12 + SS-02 13 +
+  SS-03 9 + SS-04 26）。
+- 架构边界：`5 passed`（`session_replay` 放在 solving 层，避免
+  state → runtime/fuzzing 向上引用）。
+- micro_benchmark：`exit=0`，静态 21 用例与动态 5 用例全 1.00。
+
+### 7.8 已知边界
 
 - 仅 Flask 默认签名 Cookie Session；其他 Session 后端需新 observer。
 - `absent` 只在该 client/observation point 内权威；不跨 client 合并。
