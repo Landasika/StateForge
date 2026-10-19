@@ -282,3 +282,23 @@ if self.corpus is not None and obs.interesting:      # interesting = N_B+N_E > 0
 ---
 
 *本文为 Phase 0 交付物之一；配套契约草案见 `STATE_CONTRACT.md`，整合方案见 `INTEGRATION_PLAN.md`。Phase 0 不修改任何核心算法。*
+
+---
+
+## 审计后记：断点状态（2026-10-19，随 PR-00~03 更新）
+
+> 审计基线 `63f8a23` 不变；本节追踪 G1–G10 的后续处置。
+
+| 断点 | 状态 | 处置 |
+|---|---|---|
+| G1 状态新颖度不进种子保留 | 未变 | PR-07 范围 |
+| G2 无逐请求迁移记录 | 未变 | PR-04（M0-B）范围；PR-03 的 `observed_at` 列已为其预留 |
+| G3 verified↔proxy 词表无映射 | 部分 | `goal_evaluation` 已做 verified 侧联合判定；SSTG 原子→关系谓词的适配器（T5a）未实现 |
+| G4 无状态前沿对象 | 未变 | PR-05/06 范围 |
+| G5 规划失败无记忆 | 未变 | PR-06 范围 |
+| G6 成功链不回注 fuzz 语料 | 未变 | PR-05/07 范围（离线 checkpoint 路径已有） |
+| G7 实验协议不启用 P0-A/P0-B | 未变 | PR-07 新臂显式开启 |
+| G8 双状态观测体系并存 | 部分 | 契约已裁决分工（§1：W2 收窄为迁移发现内部表示）；TransitionRecorder 接线仍待 PR-04 |
+| G9 三套词汇实体/作用域缺失 | 部分 | W3 已扩（v2 列+实体键约定）；W1 映射未做（T5a） |
+| G10 观测/生命周期失败 epoch 级不汇总 | 部分 | 失败审计 JSONL 已有（PR-02 强化 fail-closed）；group_summary 汇总键未做（原 T7） |
+| （审计后发现）`necessary_guard_edges` 含调用函数退化 | ✅ 已修 | PR-01 函数内投影 CFG；本审计 §9 未列此缺陷——它是实施关口 A 时发现的更深问题，记录于 CONTRACT_DECISIONS D6 |

@@ -1,5 +1,12 @@
 # StateForge
 
+> **Maintained docs**: the authoritative, up-to-date project documentation is
+> the repository-root [README.md](../README.md) (stages, modules, frozen
+> results) and [docs/architecture/](../docs/architecture/) (audit, state
+> contract v1.1b, integration plan, decision log). This file keeps the
+> original English overview of the static-structural core; see "Status" below
+> for what has landed since.
+
 StateForge is a static-dynamic structural feedback layer for Atheris. Atheris
 owns input mutation, execution, and the native fuzzing loop. StateForge builds
 the program structure and reports where each input lands in that structure.
@@ -71,8 +78,23 @@ result.save_trace("trace.json")
 
 Use `stateforge.fuzzing.feedback.corpus.evaluate_seed` to attach a structural score to
 each executed seed and `stateforge.fuzzing.atheris_runner.rank_corpus` to produce
-deterministic corpus ordering metadata. No mutation or replacement fuzz loop is
-implemented in StateForge.
+deterministic corpus ordering metadata. Beyond this thin boundary, the fuzzing
+loop extensions (epoch campaigns, frontier-directed feedback, sequence seeds,
+state/goal seed injection) live in `stateforge/fuzzing/` and
+`stateforge/evaluation/experiment/` — see the root README stage table.
+
+## Status (2026-10-19)
+
+The static-structural pipeline above is the frozen Phase 1–3 core. Since
+then, all gated behind explicit flags (default experiment behavior
+unchanged): input-level state isolation and runtime state evidence
+(P0-A/P0-B), and the **No-LLM relational goal line** — relational constraint
+IR (`state/relational.py`), entity provenance tracking
+(`state/provenance.py`), joint goal evaluation with single-point observation
+views and achievement witnesses (`state/goal_evaluation.py`), fixed
+intra-function CFG reachability in `state/goal_derivation.py`, and WAL-safe
+SQLite baselines (`runtime/snapshot/l2_sqlite.py`, backup/copy capture
+modes). Contract and plan: `docs/architecture/`. Full suite: 601 passed.
 
 ## Layout
 
@@ -81,11 +103,15 @@ core/           ProgramIR and artifact serialization
 analysis/       static structure analysis: CFG/ICFG (analysis/static/),
                 semantic analyzer, SSTG graph builder/export
 runtime/        ordered trace collection, mapping, coverage, replay,
-                snapshot subpackage (runtime/snapshot/)
+                input-level execution context (lifecycle + observers),
+                snapshot subpackage (runtime/snapshot/, backup/copy modes)
 fuzzing/        thin Atheris boundary and harness
 fuzzing/feedback/  overlay, frontier, distance, scoring, corpus metadata
 solving/        branch-feasibility solving; LLM subpackage (solving/llm/)
-state/          state extraction, annotation, planning (state/planning/)
+state/          state extraction, annotation, planning (state/planning/);
+                relational goal line: relational.py (IR + evaluator),
+                provenance.py (entity origins), goal_evaluation.py
+                (joint evaluation + witnesses)
 adapters/       target adapters (former fuzz/adapters/)
 evaluation/     benchmarks, experiment subpackage, viz subpackage
 ```

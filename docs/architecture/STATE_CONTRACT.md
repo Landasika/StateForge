@@ -590,3 +590,27 @@ facts:  (Order.owner, order:7, "bob")  (User.username, user:bob)  (User.role, us
 | §10 时点 | 输入级一次 | 逐请求成对 + 错误路径 | 中:Phase 2 主工作 |
 
 *本契约为设计文档;实现以 Phase 1–3 任务推进,冲突处以本文 + CONTRACT_DECISIONS.md 为准,不得反向把实现缺陷写回契约。*
+
+---
+
+## 附录：实现状态对照（2026-10-19，随 PR-00~03 更新）
+
+> 契约条款 → 已实现/未实现。已实现 ≠ 全量语义：范围以对应 PR 测试为准。
+
+| 契约条款 | 状态 | 实现面（测试） |
+|---|---|---|
+| §2.3 StateObservation v2 四可选列 | ✅ PR-03 | `runtime_observer.py`（`test_observation_v2_optional_columns_roundtrip`） |
+| §2.2 ValueKind 七值（NULL/MISSING/UNKNOWN 互斥） | ✅ PR-03 | 同上 + `test_value_kind_vocabulary_and_observability_words` |
+| §2.1 判定规则（MISSING→仅 EXISTS FALSE） | ✅ PR-03 | `relational.evaluate_relation` 枚举完整性参数（`test_exists_false_only_with_complete_enumeration`） |
+| §6.6.1 关系 IR（Field/Const/RelPredicate） | ✅ 关口 A | `relational.py`（`test_relational.py` 14 项） |
+| §6.6.2 provenance（跨函数 SQL/认证/路由/dict-store） | ✅ 关口 A | `provenance.py`（`test_relational_extraction.py`） |
+| §6.6.2 词法早退方向 + wrapper 条件化 | ✅ 关口 A | `derive_relational_goal`（同上；guards=1 路径条件） |
+| §6.6.4 单点快照联合验证 | ✅ PR-03（子集） | `goal_evaluation.ObservationView/evaluate_goal`（单视图结构约束） |
+| §6.3 候选有限枚举 + 同一赋值贯穿 | ✅ PR-03 | `evaluate_goal`（`test_candidate_cap_yields_unknown_not_false`、反例 6） |
+| §6.5 AchievementStatus 五值记账 | ❌ 未实现 | `classify_achievement` 仅有签名草案（PR-05 前沿消费时落地） |
+| §5 可观测性两维（属性级声明） | ✅ PR-03（子集） | `subject_families`/`observability_of`（精确键无家族回填）；映射适配器 `adapt_atom`（MAPPED/PARTIAL/UNMAPPABLE）未实现（原 T5a） |
+| §3 `*` 五义有类型解析 | ❌ 未实现 | SSTG 兼容输入消歧属适配器（T5a）范围 |
+| §8 verified 迁移契约（双端成对） | ❌ 未实现 | PR-04（逐请求观测）范围 |
+| §9 指标四分离 | ❌ 未实现 | PR-07 范围（`proxy_derived_transitions` 更名也未做） |
+| R7 SQLite/WAL 快照 | ✅ PR-02 | `l2_sqlite.py` backup/copy 双模式（`test_l2_wal.py` 10 项） |
+| §4 R4-a/b 代理独立性 | 🟡 部分 | 证据分桶现状保持（ledger 只收 verified）；迁移失败不降级的场景测试待 PR-04 |

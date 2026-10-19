@@ -116,6 +116,9 @@ LLM 语义求解(Phase 4.2)经 4 个环境变量配置;`stateforge/config.py` �
 | **Phase 4.1** | 确定性分支求解 | ✅ 冻结（22/22 用例 100%） | |
 | **Phase 4.2** | LLM 语义求解器 + 种子注入 | ✅ 完成 | `phase4.2-llm-loop-complete` |
 | **Phase 4.3** | 状态可行性（多步序列） | ✅ 完成（v0.4 起 E 臂;2026-10-14/15 目标块直导最小闭环,见下） | |
+| **阶段1 P0-A/P0-B** | 输入级状态隔离(ExecutionContext/生命周期后端)+ 运行时状态观测(三值证据:verified/proxy/unknown 分桶) | ✅ 完成(协议默认 noop/无观测,`--lifecycle/--observe-state` 显式开启;A–F 行为不变) | |
+| **Phase 0(新计划)** | 架构审计与统一状态契约:`docs/architecture/` 四件套(审计报告/状态契约/整合计划/决策记录) | ✅ 契约 v1.1b 定稿(关系约束 §6.6、证据/可观测性两维、指标四分离) | |
+| **关系语义工作线(No-LLM)** | 关系约束 IR+静态提取+联合求值+WAL 安全快照;PR-00~03/M0 见下节 | 🔄 进行中:关口 A(M0-A)、PR-00/01/02/03 完成;M0-B(逐请求联合验证)/M0-C(自动规划)/PR-04~07 待做 | |
 
 ### 目标定向构造(goal)最小闭环(2026-10-14/15,未冻结)
 
@@ -148,6 +151,44 @@ docs/phase1-mvp.md … docs/real-app-first-blood.md):
    gate 持平。20 真实应用靶标(apps20)接入:docs/targets-real-apps.md
    (gates 结果表 results/targets20/gates.md,不入库)。
 
+### 关系语义工作线(No-LLM,2026-10-18/19,进行中)
+
+上一节的 goal 闭环依赖"目标块→单主体谓词"推导;本工作线解决其
+最深缺口——**状态间语义关系**(如 `order["user_id"] != user["id"]`
+的归属约束)的自动发现与联合验证,不写业务规则、不用 LLM。契约与
+计划见 `docs/architecture/`(STATE_CONTRACT v1.1b / INTEGRATION_PLAN,
+实施依赖图 PR-00→…→PR-07,M0 拆 A/B/C):
+
+1. **关口 A / M0-A(关系 IR+静态提取)**:`state/relational.py`
+   (Field/Const/RelPredicate + 路径条件 + 来源链 + 单点结构求值)、
+   `state/provenance.py`(跨函数 SELECT 表绑定/认证主体/路由参数/
+   dict-store 别名)、`derive_relational_goal`(词法早退方向分析 +
+   wrapper 条件化)——vulnshop `ship_order` 的四条件(EXISTS/归属
+   EQ/状态 EQ/认证)零手写规则自动提取,改名实体(ticket/acct)
+   同机制泛化;25 项专项测试;
+2. **PR-01(CFG 正确性)**:修复 `necessary_guard_edges` 在含调用
+   函数上的静默退化(函数内投影 CFG:可正常返回调用点补隐式
+   callsite→returnsite 边、全路径 raise 不连、目标不可达诚实返回空)
+   ——ship_order 必要守卫从"5 个全误报"收敛为 2 个真支配边;
+   `guard_analysis_diagnostic` 提供支配/关系两层一致性诊断;
+3. **PR-02(WAL 安全快照)**:`runtime/snapshot/l2_sqlite.py` 双捕获
+   模式——backup(输入级生命周期:SQLite backup API 页级快照,WAL
+   已提交未 checkpoint 帧自动入模板,不删活跃 sidecar,恢复前
+   BEGIN IMMEDIATE 持锁探针 fail-closed)/copy(fork-COW 位级冻结
+   语义,遇 WAL 显式拒绝);10 项 WAL 测试;
+4. **PR-03(结构化事实+联合求值)**:`StateObservation` v2 四可选列
+   (subject/observed_value/value_kind/observed_at;NULL/MISSING/UNKNOWN
+   三值互斥)、vulnshop 观测器补 `User.id`/`Order.user_id`+属性级
+   可观测性声明、`state/goal_evaluation.py`(ObservationView 单点
+   视图 + evaluate_goal 候选有限枚举合取 + GoalAchievementWitness
+   ——成功记账只来自单点完整 TRUE,不从历史原子拼合;认证主体关联
+   显式化:DB 有 user 行 ≠ 请求已认证);13 项联合求值测试(任务书
+   八反例全覆盖);
+5. **当前状态**:全量测试 601 passed(基线随阶段增长,冻结口径见
+   「冻结版本」节;关系线未冻结);样例产物 `artifacts/m0/`
+   (relational_goal.json / goal_evaluation_sample.json);下一步
+   M0-B(PR-04:五步已知链逐请求联合验证)。
+
 ---
 
 ## 模块详解
@@ -160,13 +201,16 @@ stateforge/
 ├── analysis/       静态分析域(原 analyzer/ + static/ + graph/ 合并)
 │   └── static/     CFG/ICFG 子包(cfg.py 名冲突按规则 8 以子包消解)
 ├── runtime/        运行时域(原 dynamic/ + executor/ + snapshot/ 合并)
-│   └── snapshot/   ANOTA 快照子包
+│   └── snapshot/   ANOTA 快照子包(l2_sqlite 双捕获模式:backup/copy)
 ├── fuzzing/        Fuzzing 集成域(原 fuzz/,adapters/ 提取后)
 │   └── feedback/   结构反馈子包(原 feedback/)
 ├── solving/        求解域(原 feasibility/)
 │   └── llm/        LLM 基础设施子包(原 llm/)
 ├── state/          状态域(原位,吸收 planner/ → state/planning/)
-│   └── annotation/ 语义标注子包
+│   ├── annotation/ 语义标注子包
+│   ├── relational.py    关系约束 IR+结构求值(关系语义工作线)
+│   ├── provenance.py    实体变量来源索引(跨函数 SQL/认证/路由)
+│   └── goal_evaluation.py  单点观测视图+联合求值+witness
 ├── adapters/       目标适配层(原 fuzz/adapters/)
 ├── evaluation/     评测域(原 eval/ + experiment/ + viz/ 合并)
 │   ├── experiment/ 实验基础设施子包
@@ -181,10 +225,10 @@ stateforge/
 |----|---------|
 | `stateforge/core/` | 数据契约:ProgramIR(结构 IR)+ AppModel(语义 IR)+ JSON 序列化 |
 | `stateforge/analysis/` | 静态分析域:单函数 CFG 与全程序 ICFG(`analysis/static/`)、语义分析入口与模式匹配(`analyzer.py`/`patterns.py`/`selector.py`)、SSTG 图构建导出(`builder.py`/`export.py`)、XFG 执行流图(`cfg.py`) |
-| `stateforge/runtime/` | 运行时域:`sys.settrace` 逐请求轨迹采集(`tracer.py`)、轨迹→ICFG 精确映射(`mapper.py`)、覆盖度量(`coverage.py`)、轨迹 I/O(`io.py`)、回放(`replay.py`/`snapshot_replay.py`)、快照子包(`runtime/snapshot/`)、计划执行器(`plan_executor.py` 微靶 C10+写块判据 / `http_plan_executor.py` 真实应用 HTTP+块级判达,两段式) |
+| `stateforge/runtime/` | 运行时域:`sys.settrace` 逐请求轨迹采集(`tracer.py`,untraced 观测窗口)、轨迹→ICFG 精确映射(`mapper.py`)、覆盖度量(`coverage.py`)、轨迹 I/O(`io.py`)、回放(`replay.py`/`snapshot_replay.py`)、快照子包(`runtime/snapshot/`:`l2_sqlite.py` backup/copy 双捕获——输入级 WAL 安全快照 / fork-COW 位级冻结,engine+supervisor 跨进程 fork-COW)、输入级执行上下文(`execution_context.py`:生命周期后端+观测编排+fail-closed 审计)、计划执行器(`plan_executor.py` 微靶 C10+写块判据 / `http_plan_executor.py` 真实应用 HTTP+块级判达,两段式) |
 | `stateforge/fuzzing/` | Fuzzing 集成域:Atheris 子进程入口(`entry_driver.py`)、选择性字节码插桩、语料管理/候选/前沿采集、约束变异器;含结构反馈子包 `fuzzing/feedback/`(P2 结构新颖度 + P3 前沿定向距离/组合/预算) |
 | `stateforge/solving/` | 求解域(P4 分支可行性):Guard 恢复→操作数观测→门内距离→输入溯源→约束求解→变异提示→停滞触发→LLM 种子注入;含 LLM 基础设施子包 `solving/llm/`(双协议 Provider/语义提升/缓存);goal 侧:`goal_checkpoint.py`(判达链检查点/C10 种子注入/复用重放)、`goal_seed_injector.py`(F 臂注入器,契约同 state_seed_injector) |
-| `stateforge/state/` | 状态域:状态提取与语义模型(`extractor.py`:Session/ORM/容器 dict 库/两步守卫别名)、会话访问/状态溯源、标注子包 `state/annotation/`、规划子包 `state/planning/`(原 planner/;`backward.py` 择优生产者+`compat.py` 应用兼容层);goal 侧:`goal_derivation.py`(必要分支边+方向感知约束)、`goal_to_plan.py`(op 臂→合成 AppModel→链→谓词参数)、`goal_app_bridge.py`(真实应用:Django 框架补全+AppModel 目标映射) |
+| `stateforge/state/` | 状态域:状态提取与语义模型(`extractor.py`:Session/ORM/容器 dict 库/两步守卫别名+关系 term 解析)、会话访问/状态溯源、运行时观测契约(`runtime_observer.py`:StateObservation v2 结构化列+属性级可观测性声明)、标注子包 `state/annotation/`、规划子包 `state/planning/`(原 planner/;`backward.py` 择优生产者+`compat.py` 应用兼容层);goal 侧:`goal_derivation.py`(必要分支边+方向感知约束+函数内投影 CFG 可达性+`derive_relational_goal` 关系目标)、`goal_to_plan.py`(op 臂→合成 AppModel→链→谓词参数)、`goal_app_bridge.py`(真实应用:Django 框架补全+AppModel 目标映射);关系语义工作线:`relational.py`(Field/Const/RelPredicate IR+单点求值+MISSING 语义)、`provenance.py`(变量来源索引)、`goal_evaluation.py`(ObservationView+evaluate_goal 联合求数+witness) |
 | `stateforge/adapters/` | 目标适配层:TargetAdapter 协议 + 通用 Web/Flask/可调用/vulnshop 适配器(bytes → 目标可执行)+ `wsgi.py`(任意 WSGI callable→GenericWebAdapter,werkzeug 直驱) |
 | `stateforge/evaluation/` | 评测域:SF-Micro 真值基准、BranchSolve 报告、OWASP Benchmark 基线、多臂实验子包 `evaluation/experiment/`(four_arm 含 F 臂;campaign GROUPS 含 F)、goal 三臂对照(`goal_directed_eval.py`)、可视化子包 `evaluation/viz/` |
 | `stateforge/cli.py` | 命令行入口:analyze / feedback / experiment / viz / state |
@@ -286,6 +330,20 @@ docs/phase1-mvp.md … docs/real-app-first-blood.md);F 臂(ca4b6ad);
 真 LLM 缓存 4 文件入库(e844b5d,README 已知义务照办);核心契约词表
 扩充 2 处(HttpMethod +HEAD/OPTIONS、AppModel.framework +synthetic,
 协议测试零回归)。
+
+**阶段1 P0-A/P0-B(63f8a23,未打 tag)**:输入级状态隔离
+(ExecutionContext + Noop/Reset/Snapshot 生命周期,fail-closed 审计)+
+运行时状态观测契约(StateEvidenceLedger 三值证据,C8 `state_evidence`
+演进键);A–F 默认行为逐字节不变(开关 `--lifecycle/--observe-state`)。
+
+**关系语义工作线(2026-10-18/19,进行中,未冻结)**:开发树 **601 passed /
+1 skipped / 26 deselected**(goal 期 496 → 阶段1 +45 → 关系线 +60:
+关口 A 25 + PR-01 8 + PR-02 10 + PR-03 17)。交付:契约四件套
+(docs/architecture/,v1.1b)、关系 IR+提取(关口 A)、函数内投影 CFG
+修复(PR-01)、L2 backup/copy 双模式(PR-02)、StateObservation v2+
+goal_evaluation 联合求值(PR-03);样例产物 artifacts/m0/。下一里程碑
+M0-B(PR-04:五步已知链逐请求联合验证)——进度与依赖图以
+docs/architecture/INTEGRATION_PLAN.md 为准。
 
 **已知义务:** 语义标注缓存(`stateforge/solving/llm/cache/*.json`)键于 PROMPT_VERSION 与夹具内容——二者变更后需重跑生成器并提交新缓存,否则 fresh clone 回归"全 irrelevant"。缓存仅按显式路径提交(`git add stateforge/solving/llm/cache/<hash>.json`),勿在该目录使用 `git add -A`。
 

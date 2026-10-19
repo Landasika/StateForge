@@ -45,8 +45,8 @@
 |----|----|---------|
 | L0 | `stateforge/core/` | 数据契约:ProgramIR(结构 IR)+ AppModel(语义 IR)+ JSON 序列化,不引用任何内部域 |
 | L1 | `stateforge/analysis/` | 静态分析域:单函数 CFG 与全程序 ICFG、语义分析入口与模式匹配、SSTG 图构建导出 |
-| L1.5 | `stateforge/state/` | 状态域:状态提取与语义模型、会话访问/状态溯源、标注子包、规划子包 |
-| L2 | `stateforge/runtime/` | 运行时域:sys.settrace 轨迹采集、轨迹→ICFG 映射、覆盖度量、回放与快照子包 |
+| L1.5 | `stateforge/state/` | 状态域:状态提取与语义模型、会话访问/状态溯源、运行时观测契约(v2 结构化列+属性级可观测性)、标注子包、规划子包;关系语义工作线(relational.py 关系 IR/provenance.py 变量来源/goal_evaluation.py 联合求值) |
+| L2 | `stateforge/runtime/` | 运行时域:sys.settrace 轨迹采集、轨迹→ICFG 映射、覆盖度量、输入级执行上下文(生命周期+观测编排)、回放与快照子包(l2_sqlite backup/copy 双捕获) |
 | L2.5 | `stateforge/fuzzing/` | Fuzzing 集成域:Atheris 子进程入口、选择性插桩、语料/候选/前沿、结构反馈子包 |
 | L2.5 | `stateforge/adapters/` | 目标适配层:TargetAdapter 协议 + 通用 Web/Flask/可调用/vulnshop 适配器 |
 | L3 | `stateforge/solving/` | 求解域:Guard 恢复→操作数→距离→溯源→约束→变异提示→停滞触发→种子注入(状态序列种子双路径:微靶 M1/M2 合成 / AppModel 真路径 `vulnshop_state_bridge`,P4-T3;LLM 种子注入) |
