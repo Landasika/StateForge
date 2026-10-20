@@ -1,0 +1,9 @@
+{
+ "run_id": "linkding-2-seq",
+ "arm": "SEQUENCE",
+ "seed": 2,
+ "target_block": "views/bookmarks.py::index::43-43::entry::1",
+ "app": "external/linkding/bookmarks",
+ "request_limit": 80,
+ "boundary": "target-callable-invocation"
+}

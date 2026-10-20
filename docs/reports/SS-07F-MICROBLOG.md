@@ -355,3 +355,25 @@ C/D 15/15
 
 其中 seed 2/3 的 Spirit 是 D-only 新进程；同进程失败仍保留在历史记录里。
 这不是完整四臂多 seed，`frozen=false` 不变。
+
+## SEQUENCE 多 seed
+
+新增 `stateforge/evaluation/real_app_sequence.py`，并按 seed 2/3 跑五应用：
+
+```text
+app           seed1  seed2  seed3
+microblog     true   true   true
+CTFd          false  false  false
+healthchecks  false  true   false
+linkding      true   true   true
+Spirit        false  false  false
+```
+
+SEQUENCE 是 40 次结构搜索，不是 Atheris 输入预算。汇总：
+
+```text
+artifacts/session_ss07f/MATRIX_ARMS_SEEDS.json
+```
+
+结果说明 CTFd/Spirit 在这个请求池上结构搜索找不到登录序列，但
+STATE_GUIDED 可以；这正是 Session 引导的差异，不能把 SEQUENCE 失败抹掉。

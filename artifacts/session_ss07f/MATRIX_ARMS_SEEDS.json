@@ -1,0 +1,36 @@
+{
+ "protocol": "ss07f-arms-seeds1-3",
+ "seeds": [
+  1,
+  2,
+  3
+ ],
+ "SEQUENCE": {
+  "microblog": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "ctfd": {
+   "1": false,
+   "2": false,
+   "3": false
+  },
+  "healthchecks": {
+   "1": false,
+   "2": true,
+   "3": false
+  },
+  "linkding": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "spirit": {
+   "1": false,
+   "2": false,
+   "3": false
+  }
+ },
+ "note": "SEQUENCE is 40 structural search executions; SINGLE seed1 only (10-input smoke)"
+}

@@ -1,0 +1,37 @@
+{
+ "app": "healthchecks",
+ "seed": 2,
+ "arm": "SEQUENCE",
+ "found": true,
+ "status": "VERIFIED",
+ "executions": 29,
+ "steps": [
+  {
+   "method": "POST",
+   "path": "/accounts/login/",
+   "form": {
+    "action": "login",
+    "email": "hc@example.com",
+    "password": "hcpass"
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/accounts/profile/"
+  }
+ ],
+ "costs": {
+  "target_http_requests": 39,
+  "sequence_attempts": 1,
+  "atheris_inputs": 0,
+  "bootstrap_http_requests": 39,
+  "checkpoint_validation_http_requests": 0,
+  "prefix_replay_http_requests": 0,
+  "suffix_http_requests": 0,
+  "observer_calls": 0,
+  "reset_calls": 0,
+  "scheduler_decisions": 0,
+  "elapsed_wall_seconds": 5.121733,
+  "analysis_wall_seconds": 0.0
+ }
+}

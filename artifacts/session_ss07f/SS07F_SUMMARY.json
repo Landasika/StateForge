@@ -28,7 +28,7 @@
  "arms_required": 20,
  "blind_fuzzing_claimed": false,
  "frozen": false,
- "reason": "C/D 15/15; independent replay 5/5; full four-arm multi-seed and frozen blind protocol still absent",
+ "reason": "C/D 15/15; independent replay 5/5; SEQUENCE seeds 1-3 partial; SINGLE seed1 smoke only; no frozen four-arm multi-seed protocol",
  "ctfd": {
   "adapter": "stateforge/targets/real_apps/ctfd/inproc_target.py",
   "contract": "artifacts/session_ss07f/ctfd/contract.json",
@@ -134,5 +134,32 @@
   "d_after_fresh_d_only_pass": 10,
   "note": "Spirit same-process D hit login rate limit; D-only fresh process passes seed2/3"
  },
- "d_points": "15/15 (seed1 in-process; seed2/3 four in-process plus Spirit D-only fresh)"
+ "d_points": "15/15 (seed1 in-process; seed2/3 four in-process plus Spirit D-only fresh)",
+ "sequence_seeds": {
+  "microblog": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "ctfd": {
+   "1": false,
+   "2": false,
+   "3": false
+  },
+  "healthchecks": {
+   "1": false,
+   "2": true,
+   "3": false
+  },
+  "linkding": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "spirit": {
+   "1": false,
+   "2": false,
+   "3": false
+  }
+ }
 }

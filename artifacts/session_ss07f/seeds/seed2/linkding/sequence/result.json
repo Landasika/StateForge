@@ -1,0 +1,36 @@
+{
+ "app": "linkding",
+ "seed": 2,
+ "arm": "SEQUENCE",
+ "found": true,
+ "status": "VERIFIED",
+ "executions": 21,
+ "steps": [
+  {
+   "method": "POST",
+   "path": "/login/",
+   "form": {
+    "username": "lduser",
+    "password": "ldpass"
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/bookmarks"
+  }
+ ],
+ "costs": {
+  "target_http_requests": 29,
+  "sequence_attempts": 1,
+  "atheris_inputs": 0,
+  "bootstrap_http_requests": 29,
+  "checkpoint_validation_http_requests": 0,
+  "prefix_replay_http_requests": 0,
+  "suffix_http_requests": 0,
+  "observer_calls": 0,
+  "reset_calls": 0,
+  "scheduler_decisions": 0,
+  "elapsed_wall_seconds": 9.668185,
+  "analysis_wall_seconds": 0.0
+ }
+}
