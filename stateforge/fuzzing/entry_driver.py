@@ -109,6 +109,8 @@ def main() -> int:
                         help="SS-03: 定向搜索执行预算(默认 200)")
     parser.add_argument("--session-seed", type=int, default=None,
                         help="SS-03: 定向搜索随机种子(默认取 --seed)")
+    parser.add_argument("--max-runs", type=int, default=None,
+                        help="SS-06: 可选的最大 Atheris 输入次数;默认不限制")
     args = parser.parse_args()
 
     Path(args.corpus_dir).mkdir(parents=True, exist_ok=True)
@@ -266,6 +268,10 @@ def main() -> int:
     argv = [sys.argv[0], args.corpus_dir,
             f"-max_total_time={int(args.seconds)}", f"-seed={args.seed}",
             "-print_final_stats=1"]
+    if args.max_runs is not None:
+        if args.max_runs <= 0:
+            parser.error("--max-runs 必须 > 0")
+        argv.append(f"-runs={args.max_runs}")
     atheris.Setup(argv, handler)
     atheris.Fuzz()                            # _Exit 结束,产物靠逐行 flush 存活
     return 0

@@ -55,10 +55,7 @@ def _load_target(name="sg_exp"):
 
 def _probe(mod):
     def probe():
-        snap = mod.observe_session()
-        if snap.status == "decoded" and snap.values is not None:
-            return dict(snap.values)
-        return {}
+        return mod.session_view()
     return probe
 
 
@@ -89,13 +86,16 @@ def _make_checkpoint(out_dir: Path):
 
 
 def _run_driver(arm: str, seed: int, corpus: Path, out: Path,
-                seconds: float, pool_path: Path, guided: bool) -> dict:
+                seconds: float, pool_path: Path, guided: bool,
+                max_runs: int | None = None) -> dict:
     cmd = [sys.executable, "-m", "stateforge.fuzzing.entry_driver",
            str(GATE / "fuzz_target.py"), str(out / "ir.json"),
            str(corpus), str(out),
            "--seconds", str(seconds), "--mode", "feedback",
            "--seed", str(seed), "--lifecycle", "reset",
            "--observe-state"]
+    if max_runs is not None:
+        cmd += ["--max-runs", str(max_runs)]
     if guided:
         cmd += ["--session-guided", "--session-target-block", TARGET_BLOCK,
                 "--session-request-pool", str(pool_path),
@@ -310,8 +310,23 @@ def main() -> int:
     parser.add_argument("--seeds", default="1,2,3")
     parser.add_argument("--seconds", type=float, default=2.0)
     parser.add_argument("--out", default=None)
+    parser.add_argument("--protocol", default=None,
+                        help="SS-06: 可选 ss06-v1 四臂公平消融协议")
+    parser.add_argument("--arms", default="SINGLE,SEQUENCE,STATE_GUIDED,STATE_REUSE")
+    parser.add_argument("--total-target-exec-budget", type=int, default=120)
+    parser.add_argument("--max-steps", type=int, default=3)
     args = parser.parse_args()
     seeds = tuple(int(x) for x in args.seeds.split(",") if x.strip())
+    if args.protocol:
+        if args.protocol != "ss06-v1":
+            parser.error("仅支持 --protocol ss06-v1")
+        from stateforge.evaluation.session_ss06 import run_protocol
+        arms = tuple(x.strip() for x in args.arms.split(",") if x.strip())
+        run_protocol(seeds=seeds, seconds=args.seconds,
+                     total_target_exec_budget=args.total_target_exec_budget,
+                     max_steps=args.max_steps, arms=arms,
+                     out_root=Path(args.out) if args.out else None)
+        return 0
     run(seeds=seeds, seconds=args.seconds,
         out_root=Path(args.out) if args.out else None)
     return 0
