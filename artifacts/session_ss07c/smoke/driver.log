@@ -1,0 +1,19 @@
+INFO: Using built-in libfuzzer
+WARNING: Failed to find function "__sanitizer_acquire_crash_state".
+WARNING: Failed to find function "__sanitizer_print_stack_trace".
+WARNING: Failed to find function "__sanitizer_set_death_callback".
+INFO: found LLVMFuzzerCustomMutator (0x7221fd7b3840). Disabling -len_control by default.
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 1
+INFO:        1 files found in /tmp/online_driver/corpus
+INFO: -max_len is not provided; libFuzzer will not generate inputs larger than 4096 bytes
+INFO: seed corpus: files: 1 min: 118b max: 118b total: 118b rss: 62Mb
+#2	INITED cov: 28 ft: 28 corp: 1/118b exec/s: 0 rss: 62Mb
+#3	NEW    cov: 28 ft: 52 corp: 2/322b lim: 4096 exec/s: 0 rss: 62Mb L: 204/204 MS: 1 Custom-
+#10	DONE   cov: 28 ft: 52 corp: 2/322b lim: 4096 exec/s: 0 rss: 63Mb
+Done 10 runs in 0 second(s)
+stat::number_of_executed_units: 10
+stat::average_exec_per_sec:     0
+stat::new_units_added:          1
+stat::slowest_unit_time_sec:    0
+stat::peak_rss_mb:              63

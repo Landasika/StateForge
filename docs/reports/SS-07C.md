@@ -57,7 +57,10 @@ python -m stateforge.fuzzing.entry_driver \
   --max-target-http-requests 40 --run-id online-smoke3
 ```
 
-原始日志摘要：
+原始日志：`artifacts/session_ss07c/smoke/scheduler_online.jsonl`、
+`artifacts/session_ss07c/smoke/online_summary.json`。
+
+摘要：
 
 ```text
 decisions:           10

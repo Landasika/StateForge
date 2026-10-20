@@ -1,0 +1,107 @@
+{
+ "target_block": "app.py::protected::173-173::block::1",
+ "function": "protected",
+ "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+ "path_constraint_groups": [
+  [
+   {
+    "key_kind": "CONST",
+    "key_expr": "uid",
+    "op": "EXISTS",
+    "value": null,
+    "value_kind": "NONE",
+    "direction": "false",
+    "guard_block": "app.py::protected::171-171::branch::1",
+    "source_file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+    "source_line": 171,
+    "source_col": 11,
+    "reader_site_id": null,
+    "resolvable": true,
+    "note": "uid is None"
+   }
+  ]
+ ],
+ "relevant_reads": [
+  {
+   "site_id": "app.py:170:14:get:1",
+   "block_id": "app.py::protected::170-170::block::1",
+   "source_file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+   "source_line": 170,
+   "source_col": 14,
+   "operation": "READ",
+   "backend": "flask.session",
+   "key_kind": "CONST",
+   "key_expr": "uid",
+   "value_expr": null,
+   "effect_status": "STATIC_MAY",
+   "provenance": [
+    "name:session"
+   ],
+   "read_kind": "GET",
+   "default_expr": null,
+   "default_present": false,
+   "reason": ""
+  }
+ ],
+ "candidate_writers": [
+  {
+   "writer_site_id": "app.py:165:8:set:1",
+   "reader_site_id": "app.py:170:14:get:1",
+   "writer_block": "app.py::authenticate::165-165::block::1",
+   "reader_block": "app.py::protected::170-170::block::1",
+   "key_overlap": "MUST_OVERLAP",
+   "client_binding": "writer.?client == reader.?client",
+   "candidate_effect": {
+    "operation": "SET",
+    "key_kind": "CONST",
+    "key_expr": "uid",
+    "value": 7
+   },
+   "evidence": "STATIC_MAY",
+   "priority": 0
+  },
+  {
+   "writer_site_id": "app.py:209:8:clear:1",
+   "reader_site_id": "app.py:170:14:get:1",
+   "writer_block": "app.py::clear::209-209::block::1",
+   "reader_block": "app.py::protected::170-170::block::1",
+   "key_overlap": "MAY_OVERLAP",
+   "client_binding": "writer.?client == reader.?client",
+   "candidate_effect": {
+    "operation": "CLEAR",
+    "key_kind": "ANY",
+    "key_expr": null,
+    "value": null
+   },
+   "evidence": "STATIC_MAY",
+   "priority": 3
+  },
+  {
+   "writer_site_id": "app.py:204:8:pop-delete:1",
+   "reader_site_id": "app.py:170:14:get:1",
+   "writer_block": "app.py::logout::204-204::block::1",
+   "reader_block": "app.py::protected::170-170::block::1",
+   "key_overlap": "MUST_OVERLAP",
+   "client_binding": "writer.?client == reader.?client",
+   "candidate_effect": {
+    "operation": "DELETE",
+    "key_kind": "CONST",
+    "key_expr": "uid",
+    "value": null
+   },
+   "evidence": "STATIC_MAY",
+   "priority": 3
+  }
+ ],
+ "candidate_blocks": [
+  "app.py::authenticate::165-165::block::1",
+  "app.py::clear::209-209::block::1",
+  "app.py::logout::204-204::block::1"
+ ],
+ "unresolved": [],
+ "guard_blocks": [
+  "app.py::protected::171-171::branch::1"
+ ],
+ "partial": false,
+ "evidence": "STATIC_MAY"
+}

@@ -1,0 +1,41 @@
+{
+ "run_id": "online-smoke3",
+ "target_block": "app.py::protected::173-173::block::1",
+ "candidates": [
+  {
+   "target_block": "app.py::protected::173-173::block::1",
+   "writer_block": "app.py::authenticate::165-165::block::1",
+   "session_key_or_pattern": "uid",
+   "source": "STATIC_MAY",
+   "group_id": "grp-8e04649e66e2",
+   "attempts": 2,
+   "verified_progress": 3,
+   "last_failure": null
+  },
+  {
+   "target_block": "app.py::protected::173-173::block::1",
+   "writer_block": "app.py::clear::209-209::block::1",
+   "session_key_or_pattern": "uid",
+   "source": "STATIC_MAY",
+   "group_id": "grp-8e04649e66e2",
+   "attempts": 1,
+   "verified_progress": 1,
+   "last_failure": null
+  },
+  {
+   "target_block": "app.py::protected::173-173::block::1",
+   "writer_block": "app.py::logout::204-204::block::1",
+   "session_key_or_pattern": "uid",
+   "source": "STATIC_MAY",
+   "group_id": "grp-8e04649e66e2",
+   "attempts": 7,
+   "verified_progress": 2,
+   "last_failure": null
+  }
+ ],
+ "decisions": 10,
+ "switches": 2,
+ "mutations": 8,
+ "consumed_mutations": 8,
+ "current_writer": "app.py::logout::204-204::block::1"
+}

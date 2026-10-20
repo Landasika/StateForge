@@ -1,0 +1,89 @@
+{
+ "protocol": "ss06-v1",
+ "command": [
+  "/home/landasika/icassp/stateforge/evaluation/session_experiment.py",
+  "--protocol",
+  "ss06-v1",
+  "--seeds",
+  "1",
+  "--seconds",
+  "2",
+  "--total-target-exec-budget",
+  "40",
+  "--out",
+  "artifacts/session_ss07c",
+  "--session-online",
+  "--session-online-exploration",
+  "0"
+ ],
+ "source_revision": "9058bb0a29d39a6d4871bb5c9b7ecf2321c05325",
+ "versions": {
+  "python": "3.13.5",
+  "flask": "3.1.0",
+  "werkzeug": "3.1.3",
+  "pytest": "8.3.4",
+  "atheris": "3.1.0"
+ },
+ "target_block": "app.py::protected::173-173::block::1",
+ "writer_block": "app.py::authenticate::165-165::block::1",
+ "seeds": [
+  1
+ ],
+ "seconds": 2.0,
+ "total_target_exec_budget": 40,
+ "bootstrap_budget": 20,
+ "max_steps": 3,
+ "arms": [
+  "SINGLE",
+  "SEQUENCE",
+  "STATE_GUIDED",
+  "STATE_REUSE"
+ ],
+ "request_pool": [
+  {
+   "method": "POST",
+   "path": "/authenticate",
+   "form": {
+    "passcode": "wrong"
+   }
+  },
+  {
+   "method": "POST",
+   "path": "/authenticate",
+   "form": {
+    "passcode": "valid"
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/protected"
+  },
+  {
+   "method": "GET",
+   "path": "/protected_truthy"
+  },
+  {
+   "method": "GET",
+   "path": "/protected_membership"
+  },
+  {
+   "method": "GET",
+   "path": "/protected_subscript"
+  },
+  {
+   "method": "POST",
+   "path": "/noise"
+  },
+  {
+   "method": "POST",
+   "path": "/logout"
+  },
+  {
+   "method": "POST",
+   "path": "/clear"
+  }
+ ],
+ "budget_boundary": "target-callable-invocation (one HTTP request)",
+ "analysis_wall_seconds": 0.02706,
+ "notes": "target_http_requests is the hard work budget and is recomputed from per_request.jsonl. Atheris input count is reported separately. Bootstrap, checkpoint validation, prefix replays and isolation controls all pass through the same ledger. STATE_REUSE does not call bootstrap; it uses the frozen C preparation checkpoint and reports inherited C cost separately from its own replay cost."
+}

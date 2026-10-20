@@ -1,0 +1,98 @@
+{
+ "protocol": "ss06-v1",
+ "source_revision": "9058bb0a29d39a6d4871bb5c9b7ecf2321c05325",
+ "seeds": [
+  1
+ ],
+ "total_target_exec_budget": 40,
+ "analysis_wall_seconds": 0.02706,
+ "arms": {
+  "SINGLE": {
+   "runs": 1,
+   "target_reached": 0,
+   "session_condition_verified": 1,
+   "mean_target_http_requests": 40.0,
+   "mean_atheris_inputs": 40.0,
+   "mean_sequence_attempts": 40.0,
+   "mean_bootstrap_http_requests": 0.0,
+   "mean_checkpoint_validation_http_requests": 0.0,
+   "mean_prefix_replay_http_requests": 0.0,
+   "mean_suffix_http_requests": 0.0,
+   "mean_observer_calls": 0.0,
+   "mean_reset_calls": 0.0,
+   "mean_elapsed_wall_seconds": 0.583,
+   "mean_end_to_end_target_http_requests": 0.0,
+   "mean_end_to_end_wall_seconds": 0.0,
+   "failures": []
+  },
+  "SEQUENCE": {
+   "runs": 1,
+   "target_reached": 0,
+   "session_condition_verified": 1,
+   "mean_target_http_requests": 40.0,
+   "mean_atheris_inputs": 11.0,
+   "mean_sequence_attempts": 11.0,
+   "mean_bootstrap_http_requests": 29.0,
+   "mean_checkpoint_validation_http_requests": 0.0,
+   "mean_prefix_replay_http_requests": 0.0,
+   "mean_suffix_http_requests": 0.0,
+   "mean_observer_calls": 20.0,
+   "mean_reset_calls": 40.0,
+   "mean_elapsed_wall_seconds": 0.558,
+   "mean_end_to_end_target_http_requests": 0.0,
+   "mean_end_to_end_wall_seconds": 0.0,
+   "failures": []
+  },
+  "STATE_GUIDED": {
+   "runs": 1,
+   "target_reached": 0,
+   "session_condition_verified": 1,
+   "mean_target_http_requests": 40.0,
+   "mean_atheris_inputs": 17.0,
+   "mean_sequence_attempts": 18.0,
+   "mean_bootstrap_http_requests": 21.0,
+   "mean_checkpoint_validation_http_requests": 2.0,
+   "mean_prefix_replay_http_requests": 0.0,
+   "mean_suffix_http_requests": 0.0,
+   "mean_observer_calls": 17.0,
+   "mean_reset_calls": 34.0,
+   "mean_elapsed_wall_seconds": 0.785,
+   "mean_end_to_end_target_http_requests": 0.0,
+   "mean_end_to_end_wall_seconds": 0.0,
+   "failures": []
+  },
+  "STATE_REUSE": {
+   "runs": 1,
+   "target_reached": 1,
+   "session_condition_verified": 1,
+   "mean_target_http_requests": 7.0,
+   "mean_atheris_inputs": 0.0,
+   "mean_sequence_attempts": 5.0,
+   "mean_bootstrap_http_requests": 0.0,
+   "mean_checkpoint_validation_http_requests": 2.0,
+   "mean_prefix_replay_http_requests": 2.0,
+   "mean_suffix_http_requests": 3.0,
+   "mean_observer_calls": 4.0,
+   "mean_reset_calls": 10.0,
+   "mean_elapsed_wall_seconds": 0.032,
+   "mean_end_to_end_target_http_requests": 47.0,
+   "mean_end_to_end_wall_seconds": 0.817,
+   "failures": []
+  }
+ },
+ "paired_C_minus_B": [
+  {
+   "seed": 1,
+   "C_minus_B_target_http_requests": 0,
+   "C_target_http_requests": 40,
+   "B_target_http_requests": 40,
+   "B_target": false,
+   "C_target": false,
+   "B_verified": true,
+   "C_verified": true,
+   "D_actual_target_http_requests": 7,
+   "D_end_to_end_target_http_requests": 47,
+   "D_target": true
+  }
+ ]
+}
