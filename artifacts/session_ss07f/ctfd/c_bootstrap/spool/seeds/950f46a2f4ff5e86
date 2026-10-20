@@ -1,0 +1,1 @@
+{"steps": [{"form": {"name": "admin", "password": "adminpass"}, "method": "POST", "path": "/login"}, {"method": "GET", "path": "/challenges"}]}

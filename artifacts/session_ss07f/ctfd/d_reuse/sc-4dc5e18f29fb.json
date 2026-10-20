@@ -1,0 +1,136 @@
+{
+ "checkpoint_id": "sc-4dc5e18f29fb",
+ "protocol_version": "session-checkpoint-v2",
+ "created_from": "session-guided",
+ "checkpoint_kind": "state_preparation",
+ "target_block": "challenges.py::listing::24-24::entry::1",
+ "source_file": "/home/landasika/icassp/external/CTFd/CTFd/challenges.py",
+ "steps": [
+  {
+   "method": "POST",
+   "path": "/login",
+   "form": {
+    "name": "admin",
+    "password": "adminpass"
+   }
+  }
+ ],
+ "prefix_len": 1,
+ "condition_groups": [
+  [
+   {
+    "key_kind": "CONST",
+    "key_expr": "id",
+    "op": "EXISTS",
+    "value": null,
+    "value_kind": "NONE",
+    "direction": "true",
+    "guard_block": "challenges.py::listing::24-24::entry::1",
+    "source_file": "challenges.py",
+    "source_line": 24,
+    "source_col": 0,
+    "reader_site_id": "ctfd-challenges",
+    "resolvable": true,
+    "note": ""
+   }
+  ]
+ ],
+ "session_values": {
+  "_permanent": true,
+  "hash": "25f42c397781c3134c276de9552d1aa8df319423",
+  "id": 1,
+  "nonce": "6764a86ff55d46a956005b59e09c0cffffa97fc1e303a6515503075146a46a03"
+ },
+ "writer_blocks": [
+  "auth.py::login::483-488::block::1"
+ ],
+ "evidence": [
+  {
+   "key": "Session._permanent{ctfd-client@session}",
+   "value": true,
+   "evidence": "runtime_verified",
+   "source": "session_cookie:ctfd-client:after_response",
+   "observed_value": true,
+   "value_kind": "BOOLEAN"
+  },
+  {
+   "key": "Session.hash{ctfd-client@session}",
+   "value": true,
+   "evidence": "runtime_verified",
+   "source": "session_cookie:ctfd-client:after_response",
+   "observed_value": "25f42c397781c3134c276de9552d1aa8df319423",
+   "value_kind": "STRING"
+  },
+  {
+   "key": "Session.id{ctfd-client@session}",
+   "value": true,
+   "evidence": "runtime_verified",
+   "source": "session_cookie:ctfd-client:after_response",
+   "observed_value": 1,
+   "value_kind": "NUMBER"
+  },
+  {
+   "key": "Session.nonce{ctfd-client@session}",
+   "value": true,
+   "evidence": "runtime_verified",
+   "source": "session_cookie:ctfd-client:after_response",
+   "observed_value": "6764a86ff55d46a956005b59e09c0cffffa97fc1e303a6515503075146a46a03",
+   "value_kind": "STRING"
+  }
+ ],
+ "baseline_id": "baseline-db12cb23ac1c",
+ "baseline_fingerprint": "baseline-86583311af710b8272e1",
+ "app_source_hash": "adc07053f4e8031e58d34eafcfa11e1a385a4f536292e9f94463c0dc35e521bd",
+ "session_backend": "flask-cookie",
+ "fixture_id": "session-gate",
+ "initialization_seed": "",
+ "client_scope": "ctfd-client",
+ "condition_group_id": "cond-90998f7cf92a",
+ "source_sequence_hash": "770df82f17bcb2e7",
+ "validation_observation_point": "after_response",
+ "verified_condition_witness": {
+  "verdict": "VERIFIED_TRUE",
+  "evidence": "runtime_verified",
+  "reason": "all-true",
+  "conditions": [
+   {
+    "condition": {
+     "key_kind": "CONST",
+     "key_expr": "id",
+     "op": "EXISTS",
+     "value": null,
+     "value_kind": "NONE",
+     "direction": "true",
+     "guard_block": "challenges.py::listing::24-24::entry::1",
+     "source_file": "challenges.py",
+     "source_line": 24,
+     "source_col": 0,
+     "reader_site_id": "ctfd-challenges",
+     "resolvable": true,
+     "note": ""
+    },
+    "verdict": "VERIFIED_TRUE",
+    "evidence": "runtime_verified",
+    "reason": "observed",
+    "observation": {
+     "key": "Session.id.exists{ctfd-client@session}",
+     "value": true,
+     "evidence": "runtime_verified",
+     "source": "session_cookie:ctfd-client:after_response:guard=challenges.py::listing::24-24::entry::1:line=24",
+     "observed_value": 1,
+     "value_kind": "NUMBER"
+    }
+   }
+  ],
+  "observations": [
+   {
+    "key": "Session.id.exists{ctfd-client@session}",
+    "value": true,
+    "evidence": "runtime_verified",
+    "source": "session_cookie:ctfd-client:after_response:guard=challenges.py::listing::24-24::entry::1:line=24",
+    "observed_value": 1,
+    "value_kind": "NUMBER"
+   }
+  ]
+ }
+}

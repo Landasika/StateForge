@@ -117,3 +117,27 @@ artifacts/session_ss07ef/SS07EF_SUMMARY.json
 ```text
 artifacts/session_ss07f/SS07F_SUMMARY.json
 ```
+
+## CTFd（追加）
+
+CTFd 也接入了同样的进程内真实 Flask test client：
+
+```text
+adapter: stateforge/targets/real_apps/ctfd/inproc_target.py
+contract: artifacts/session_ss07f/ctfd/contract.json
+target: challenges.py::listing::24-24::entry::1
+condition: Session.id EXISTS
+writer: auth.py::login::483-488::block::1
+```
+
+结果：
+
+```text
+C bootstrap  found=true, VERIFIED, 2 steps, 6 executions
+D reuse      prefix_len=1, PREPARATION_VERIFIED,
+             primary_suffix_target=true, isolation=true,
+             target_http_requests=6, bootstrap_http_requests=0
+```
+
+CTFd 的 Session 是服务端存储，所以观察器不假装解码 cookie，而是在
+`test_request_context` 中通过应用自身 Session 接口读取 `id`。

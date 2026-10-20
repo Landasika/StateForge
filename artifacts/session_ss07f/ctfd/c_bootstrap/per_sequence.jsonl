@@ -1,0 +1,4 @@
+{"event": "sequence_start", "sequence_id": "ctfd-c:seq:1", "run_id": "ctfd-c", "arm": "", "seed": 1, "kind": "atheris-input"}
+{"event": "sequence_end", "sequence_id": "ctfd-c:seq:1", "run_id": "ctfd-c", "arm": "", "seed": 1, "status": "ok", "steps": 1}
+{"event": "sequence_start", "sequence_id": "ctfd-c:seq:2", "run_id": "ctfd-c", "arm": "", "seed": 1, "kind": "atheris-input"}
+{"event": "sequence_end", "sequence_id": "ctfd-c:seq:2", "run_id": "ctfd-c", "arm": "", "seed": 1, "status": "ok", "steps": 2}

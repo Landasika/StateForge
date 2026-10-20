@@ -1,0 +1,6 @@
+[
+ {"method": "POST", "path": "/login", "form": {"name": "admin", "password": "adminpass"}},
+ {"method": "GET", "path": "/challenges"},
+ {"method": "GET", "path": "/"},
+ {"method": "GET", "path": "/logout"}
+]
