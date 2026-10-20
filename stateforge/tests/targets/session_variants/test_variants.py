@@ -14,6 +14,8 @@ from stateforge.state.session_access import extract_session_accesses
 from stateforge.state.session_index import (build_session_index,
                                             query_session_frontier)
 from stateforge.state.session_observation import snapshot_view
+from stateforge.solving.session_replay import (PREPARATION_NONE,
+                                               find_verified_preparation_prefix)
 from stateforge.targets.session_gate.app import observe_session
 
 VARIANTS = Path(__file__).resolve().parents[3] / "targets" / "session_variants"
@@ -78,7 +80,10 @@ def test_t1_renamed_key_routes_and_functions_are_indexed_and_found():
     target = _block_at(ir, "vault", line)
     frontier = query_session_frontier(ir, index, target, accesses)
 
-    assert {a.key_expr for a in accesses if a.key_expr} == {"ticket", "noise"}
+    keys = {a.key_expr for a in accesses if a.key_expr}
+    assert "ticket" in keys and "noise" in keys
+    assert any(a.key_expr == "ticket" and a.operation == "READ"
+               for a in accesses)
     assert any("open_gate" in b for b in frontier.candidate_blocks)
     assert all(a.effect_status == "STATIC_MAY" for a in accesses)
 
@@ -119,6 +124,9 @@ def test_t2_helper_writer_two_targets_and_client_isolation():
     writer_functions = {a.block_id.split("::")[1] for a in accesses
                         if a.operation == "SET" and a.key_expr == "token"}
     assert "save_state" in writer_functions
+    assert any(a.key_kind == "SYMBOLIC"
+               and a.block_id.split("::")[1] == "save_dynamic"
+               for a in accesses)
     assert any("save_state" in b for b in frontier_a.candidate_blocks)
     assert any("save_state" in b for b in frontier_b.candidate_blocks)
 
@@ -145,3 +153,27 @@ def test_t2_helper_writer_two_targets_and_client_isolation():
     assert result.status == STATUS_VERIFIED
     assert result.steps[0]["path"] == "/login"
     assert result.steps[1]["path"] == "/a"
+
+
+def test_t1_prefix_that_already_hits_target_is_not_reusable():
+    t1 = VARIANTS / "t1"
+    appmod = _load(t1, "ss06_t1_direct")
+    ir = build_icfg(t1)
+    accesses = extract_session_accesses(t1, ir=ir)
+    index = build_session_index(accesses)
+    line = _line_of(t1 / "app.py", "target_block()")
+    # The call inside direct() also matches; use the vault line explicitly.
+    target_line = _line_of(t1 / "app.py", "target_block()")
+    target = _block_at(ir, "vault", target_line)
+    frontier = query_session_frontier(ir, index, target, accesses)
+    groups = [[c for c in g] for g in frontier.path_constraint_groups]
+
+    app = appmod.create_app(passcode="gate-t1-direct")
+    reset, call, probe, _holder = _runner(app, appmod)
+    prep = find_verified_preparation_prefix(
+        [{"method": "GET", "path": "/p8"},
+         {"method": "GET", "path": "/p2"}],
+        groups, call, ir, target, reset_hook=reset, session_probe=probe,
+        trace_root=t1)
+    assert prep.status == PREPARATION_NONE
+    assert prep.reason == "no-prefix-verifies-conditions"

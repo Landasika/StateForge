@@ -19,6 +19,10 @@ def truthy_target_block() -> None:
     current_app.config.setdefault("T1_HITS", []).append("truthy")
 
 
+def eq_target_block() -> None:
+    current_app.config.setdefault("T1_HITS", []).append("eq")
+
+
 def create_app(passcode: str = DEFAULT_PASSCODE) -> Flask:
     app = Flask(__name__)
     app.secret_key = "stateforge-t1-dev-only"
@@ -46,6 +50,19 @@ def create_app(passcode: str = DEFAULT_PASSCODE) -> Flask:
             truthy_target_block()
             return "T1_TRUTHY"
         return "deny", 401
+
+    @app.get("/p7")
+    def vault_eq():
+        ticket = session.get("ticket")
+        if ticket == 7:
+            eq_target_block()
+            return "T1_EQ"
+        return "deny", 401
+
+    @app.get("/p8")
+    def direct():
+        session["ticket"] = 7
+        return vault()
 
     @app.post("/p4")
     def close_gate():

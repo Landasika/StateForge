@@ -25,6 +25,12 @@ def save_state(value) -> None:
     session["token"] = value
 
 
+def save_dynamic(state, value) -> None:
+    # Dynamic key: the extractor must keep it SYMBOLIC rather than inventing a
+    # concrete key.  The search/index may mark related dependencies MAY/PARTIAL.
+    session[state["key"]] = value
+
+
 def create_app(passcode: str = DEFAULT_PASSCODE) -> Flask:
     app = Flask(__name__)
     app.secret_key = "stateforge-t2-dev-only"
@@ -35,6 +41,11 @@ def create_app(passcode: str = DEFAULT_PASSCODE) -> Flask:
         if request.form.get("code") != current_app.config["PASSCODE"]:
             return "deny", 403
         save_state(7)
+        return "ok"
+
+    @app.post("/dynamic")
+    def dynamic_write():
+        save_dynamic({"key": "token"}, 7)
         return "ok"
 
     @app.get("/a")
