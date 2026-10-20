@@ -1,0 +1,127 @@
+{
+ "checkpoint_id": "sc-6d5a1dbb25ba",
+ "protocol_version": "session-checkpoint-v2",
+ "created_from": "session-guided",
+ "checkpoint_kind": "state_preparation",
+ "target_block": "user/views.py::update::24-24::entry::1",
+ "source_file": "/home/landasika/icassp/external/Spirit/spirit/user/views.py",
+ "steps": [
+  {
+   "method": "POST",
+   "path": "/user/login/",
+   "form": {
+    "username": "spuser",
+    "password": "sppass"
+   }
+  }
+ ],
+ "prefix_len": 1,
+ "condition_groups": [
+  [
+   {
+    "key_kind": "CONST",
+    "key_expr": "_auth_user_id",
+    "op": "EXISTS",
+    "value": null,
+    "value_kind": "NONE",
+    "direction": "true",
+    "guard_block": "user/views.py::update::24-24::entry::1",
+    "source_file": "user/views.py",
+    "source_line": 24,
+    "source_col": 0,
+    "reader_site_id": "spirit-profile",
+    "resolvable": true,
+    "note": ""
+   }
+  ]
+ ],
+ "session_values": {
+  "_auth_user_id": "1",
+  "_auth_user_backend": "spirit.user.auth.backends.UsernameAuthBackend",
+  "_auth_user_hash": "b889f647d4e49ae06043a005c187a0172c1c05f2be0f00102524185e0d7683cd"
+ },
+ "writer_blocks": [
+  "user/auth/views.py::custom_login::70-70::terminal::1"
+ ],
+ "evidence": [
+  {
+   "key": "Session._auth_user_backend{spirit-client@session}",
+   "value": true,
+   "evidence": "runtime_verified",
+   "source": "session_cookie:spirit-client:after_response",
+   "observed_value": "spirit.user.auth.backends.UsernameAuthBackend",
+   "value_kind": "STRING"
+  },
+  {
+   "key": "Session._auth_user_hash{spirit-client@session}",
+   "value": true,
+   "evidence": "runtime_verified",
+   "source": "session_cookie:spirit-client:after_response",
+   "observed_value": "b889f647d4e49ae06043a005c187a0172c1c05f2be0f00102524185e0d7683cd",
+   "value_kind": "STRING"
+  },
+  {
+   "key": "Session._auth_user_id{spirit-client@session}",
+   "value": true,
+   "evidence": "runtime_verified",
+   "source": "session_cookie:spirit-client:after_response",
+   "observed_value": "1",
+   "value_kind": "STRING"
+  }
+ ],
+ "baseline_id": "baseline-de2ac6ddf87a",
+ "baseline_fingerprint": "baseline-3caa1539bf1c4acd936e",
+ "app_source_hash": "f6e999350ecbb9568703d4e4bffa6fb33b2bc77e0c7fdf52b6b3e243d144e84e",
+ "session_backend": "flask-cookie",
+ "fixture_id": "session-gate",
+ "initialization_seed": "5ffa8eff39ff89b3",
+ "client_scope": "spirit-client",
+ "condition_group_id": "cond-c56e9b1dd68d",
+ "source_sequence_hash": "c2bd24bdd97fa13c",
+ "validation_observation_point": "after_response",
+ "verified_condition_witness": {
+  "verdict": "VERIFIED_TRUE",
+  "evidence": "runtime_verified",
+  "reason": "all-true",
+  "conditions": [
+   {
+    "condition": {
+     "key_kind": "CONST",
+     "key_expr": "_auth_user_id",
+     "op": "EXISTS",
+     "value": null,
+     "value_kind": "NONE",
+     "direction": "true",
+     "guard_block": "user/views.py::update::24-24::entry::1",
+     "source_file": "user/views.py",
+     "source_line": 24,
+     "source_col": 0,
+     "reader_site_id": "spirit-profile",
+     "resolvable": true,
+     "note": ""
+    },
+    "verdict": "VERIFIED_TRUE",
+    "evidence": "runtime_verified",
+    "reason": "observed",
+    "observation": {
+     "key": "Session._auth_user_id.exists{spirit-client@session}",
+     "value": true,
+     "evidence": "runtime_verified",
+     "source": "session_cookie:spirit-client:after_response:guard=user/views.py::update::24-24::entry::1:line=24",
+     "observed_value": "1",
+     "value_kind": "STRING"
+    }
+   }
+  ],
+  "observations": [
+   {
+    "key": "Session._auth_user_id.exists{spirit-client@session}",
+    "value": true,
+    "evidence": "runtime_verified",
+    "source": "session_cookie:spirit-client:after_response:guard=user/views.py::update::24-24::entry::1:line=24",
+    "observed_value": "1",
+    "value_kind": "STRING"
+   }
+  ]
+ }
+}

@@ -1,0 +1,2 @@
+{"event": "sequence_start", "sequence_id": "microblog-3-c:seq:1", "run_id": "microblog-3-c", "arm": "STATE_GUIDED", "seed": 3, "kind": "bootstrap"}
+{"event": "sequence_end", "sequence_id": "microblog-3-c:seq:1", "run_id": "microblog-3-c", "arm": "STATE_GUIDED", "seed": 3, "status": "ok", "steps": 9}

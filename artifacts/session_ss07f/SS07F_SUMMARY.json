@@ -28,7 +28,7 @@
  "arms_required": 20,
  "blind_fuzzing_claimed": false,
  "frozen": false,
- "reason": "one seed x five apps x four arms recorded; no multi-seed frozen blind run; SINGLE is 10-input smoke",
+ "reason": "three seeds C pass; D same-process fails Spirit seed2/3 due login rate limit; independent replay passes; full four-arm multi-seed and freeze still absent",
  "ctfd": {
   "adapter": "stateforge/targets/real_apps/ctfd/inproc_target.py",
   "contract": "artifacts/session_ss07f/ctfd/contract.json",
@@ -122,5 +122,16 @@
   "module": "stateforge/evaluation/real_app_replay.py",
   "dir": "artifacts/session_ss07f/independent_replay",
   "note": "each app replayed from saved checkpoint in a fresh interpreter; healthchecks login token bucket was cleared before replay"
+ },
+ "seeds": [
+  1,
+  2,
+  3
+ ],
+ "seed2_3": {
+  "c_pass": 10,
+  "d_same_process_pass": 8,
+  "d_same_process_fail": "Spirit seed2/3 (login rate limit)",
+  "independent_replay_pass": 10
  }
 }

@@ -1,0 +1,176 @@
+{
+ "protocol": "ss07f-real-apps-seeds1-3",
+ "seeds": [
+  1,
+  2,
+  3
+ ],
+ "c": {
+  "ctfd": {
+   "2": {
+    "found": true,
+    "executions": 6
+   },
+   "3": {
+    "found": true,
+    "executions": 6
+   }
+  },
+  "spirit": {
+   "2": {
+    "found": true,
+    "executions": 6
+   },
+   "3": {
+    "found": true,
+    "executions": 6
+   }
+  },
+  "healthchecks": {
+   "2": {
+    "found": true,
+    "executions": 6
+   },
+   "3": {
+    "found": true,
+    "executions": 6
+   }
+  },
+  "linkding": {
+   "2": {
+    "found": true,
+    "executions": 6
+   },
+   "3": {
+    "found": true,
+    "executions": 6
+   }
+  },
+  "microblog": {
+   "2": {
+    "found": true,
+    "executions": 7
+   },
+   "3": {
+    "found": true,
+    "executions": 7
+   }
+  }
+ },
+ "d": {
+  "ctfd": {
+   "2": {
+    "target": true,
+    "status": "PREPARATION_VERIFIED",
+    "isolation": true,
+    "checkpoint": "sc-4dc5e18f29fb"
+   },
+   "3": {
+    "target": true,
+    "status": "PREPARATION_VERIFIED",
+    "isolation": true,
+    "checkpoint": "sc-4dc5e18f29fb"
+   },
+   "1": {
+    "target": true,
+    "status": "PREPARATION_VERIFIED",
+    "isolation": true
+   }
+  },
+  "spirit": {
+   "2": {
+    "target": false,
+    "status": "REPLAY_FAILED",
+    "isolation": true,
+    "checkpoint": "sc-6d5a1dbb25ba"
+   },
+   "3": {
+    "target": false,
+    "status": "REPLAY_FAILED",
+    "isolation": true,
+    "checkpoint": "sc-6d5a1dbb25ba"
+   },
+   "1": {
+    "target": true,
+    "status": "PREPARATION_VERIFIED",
+    "isolation": true
+   }
+  },
+  "healthchecks": {
+   "2": {
+    "target": true,
+    "status": "PREPARATION_VERIFIED",
+    "isolation": true,
+    "checkpoint": "sc-e0d04af9ec9a"
+   },
+   "3": {
+    "target": true,
+    "status": "PREPARATION_VERIFIED",
+    "isolation": true,
+    "checkpoint": "sc-e0d04af9ec9a"
+   },
+   "1": {
+    "target": true,
+    "status": "PREPARATION_VERIFIED",
+    "isolation": true
+   }
+  },
+  "linkding": {
+   "2": {
+    "target": true,
+    "status": "PREPARATION_VERIFIED",
+    "isolation": true,
+    "checkpoint": "sc-3749470ee787"
+   },
+   "3": {
+    "target": true,
+    "status": "PREPARATION_VERIFIED",
+    "isolation": true,
+    "checkpoint": "sc-3749470ee787"
+   },
+   "1": {
+    "target": true,
+    "status": "PREPARATION_VERIFIED",
+    "isolation": true
+   }
+  },
+  "microblog": {
+   "2": {
+    "target": true,
+    "status": "PREPARATION_VERIFIED",
+    "isolation": true,
+    "checkpoint": "sc-a4cf478e34e0"
+   },
+   "3": {
+    "target": true,
+    "status": "PREPARATION_VERIFIED",
+    "isolation": true,
+    "checkpoint": "sc-a4cf478e34e0"
+   },
+   "1": {
+    "target": true,
+    "status": "PREPARATION_VERIFIED",
+    "isolation": true
+   }
+  }
+ },
+ "independent_replay": {
+  "spirit": {
+   "2": true,
+   "3": true,
+   "1": true
+  },
+  "microblog": {
+   "1": true
+  },
+  "ctfd": {
+   "1": true
+  },
+  "healthchecks": {
+   "1": true
+  },
+  "linkding": {
+   "1": true
+  }
+ }
+}

@@ -1,0 +1,128 @@
+{
+ "checkpoint_id": "sc-e0d04af9ec9a",
+ "protocol_version": "session-checkpoint-v2",
+ "created_from": "session-guided",
+ "checkpoint_kind": "state_preparation",
+ "target_block": "accounts/views.py::profile::288-288::entry::1",
+ "source_file": "/home/landasika/icassp/external/healthchecks/hc/accounts/views.py",
+ "steps": [
+  {
+   "method": "POST",
+   "path": "/accounts/login/",
+   "form": {
+    "action": "login",
+    "email": "hc@example.com",
+    "password": "hcpass"
+   }
+  }
+ ],
+ "prefix_len": 1,
+ "condition_groups": [
+  [
+   {
+    "key_kind": "CONST",
+    "key_expr": "_auth_user_id",
+    "op": "EXISTS",
+    "value": null,
+    "value_kind": "NONE",
+    "direction": "true",
+    "guard_block": "accounts/views.py::profile::288-288::entry::1",
+    "source_file": "accounts/views.py",
+    "source_line": 288,
+    "source_col": 0,
+    "reader_site_id": "hc-profile",
+    "resolvable": true,
+    "note": ""
+   }
+  ]
+ ],
+ "session_values": {
+  "_auth_user_id": "2",
+  "_auth_user_backend": "hc.accounts.backends.EmailBackend",
+  "_auth_user_hash": "00fedf71c2ecd083598e173513f604a7cb1a826067cefbf6567fae2fd89199dc"
+ },
+ "writer_blocks": [
+  "accounts/views.py::_check_2fa::144-144::block::1"
+ ],
+ "evidence": [
+  {
+   "key": "Session._auth_user_backend{healthchecks-client@session}",
+   "value": true,
+   "evidence": "runtime_verified",
+   "source": "session_cookie:healthchecks-client:after_response",
+   "observed_value": "hc.accounts.backends.EmailBackend",
+   "value_kind": "STRING"
+  },
+  {
+   "key": "Session._auth_user_hash{healthchecks-client@session}",
+   "value": true,
+   "evidence": "runtime_verified",
+   "source": "session_cookie:healthchecks-client:after_response",
+   "observed_value": "00fedf71c2ecd083598e173513f604a7cb1a826067cefbf6567fae2fd89199dc",
+   "value_kind": "STRING"
+  },
+  {
+   "key": "Session._auth_user_id{healthchecks-client@session}",
+   "value": true,
+   "evidence": "runtime_verified",
+   "source": "session_cookie:healthchecks-client:after_response",
+   "observed_value": "2",
+   "value_kind": "STRING"
+  }
+ ],
+ "baseline_id": "baseline-2255019d76ca",
+ "baseline_fingerprint": "baseline-ba4e8720a61f5bddb1a0",
+ "app_source_hash": "cbfa66a6b687cbd0c0c2d8b084d0bc467d115022c05b5b7e04294f91c32ef01e",
+ "session_backend": "flask-cookie",
+ "fixture_id": "session-gate",
+ "initialization_seed": "0a9dc23f1cf2af57",
+ "client_scope": "healthchecks-client",
+ "condition_group_id": "cond-248021fae92e",
+ "source_sequence_hash": "157266c18eb68ab9",
+ "validation_observation_point": "after_response",
+ "verified_condition_witness": {
+  "verdict": "VERIFIED_TRUE",
+  "evidence": "runtime_verified",
+  "reason": "all-true",
+  "conditions": [
+   {
+    "condition": {
+     "key_kind": "CONST",
+     "key_expr": "_auth_user_id",
+     "op": "EXISTS",
+     "value": null,
+     "value_kind": "NONE",
+     "direction": "true",
+     "guard_block": "accounts/views.py::profile::288-288::entry::1",
+     "source_file": "accounts/views.py",
+     "source_line": 288,
+     "source_col": 0,
+     "reader_site_id": "hc-profile",
+     "resolvable": true,
+     "note": ""
+    },
+    "verdict": "VERIFIED_TRUE",
+    "evidence": "runtime_verified",
+    "reason": "observed",
+    "observation": {
+     "key": "Session._auth_user_id.exists{healthchecks-client@session}",
+     "value": true,
+     "evidence": "runtime_verified",
+     "source": "session_cookie:healthchecks-client:after_response:guard=accounts/views.py::profile::288-288::entry::1:line=288",
+     "observed_value": "2",
+     "value_kind": "STRING"
+    }
+   }
+  ],
+  "observations": [
+   {
+    "key": "Session._auth_user_id.exists{healthchecks-client@session}",
+    "value": true,
+    "evidence": "runtime_verified",
+    "source": "session_cookie:healthchecks-client:after_response:guard=accounts/views.py::profile::288-288::entry::1:line=288",
+    "observed_value": "2",
+    "value_kind": "STRING"
+   }
+  ]
+ }
+}

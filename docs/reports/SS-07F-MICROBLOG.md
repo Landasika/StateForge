@@ -316,3 +316,23 @@ Spirit seed 2 的 D 失败发生在同一进程里 C 先登录、D 再登录时�
 ```text
 artifacts/session_ss07f/MATRIX_SEED2.json
 ```
+
+## seed 3 与 1–3 汇总
+
+seed 3 的 C 五应用全部通过，D 在同进程内 4/5 通过，Spirit 再次被同进程
+登录限流挡住；随后用**新进程** replay Spirit 的 checkpoint，通过。
+
+```text
+C bootstrap:  seed 1/2/3 × 5 = 15/15
+D 同进程:     seed 1 5/5; seed 2/3 各 4/5（Spirit 失败）
+D 新进程:     Spirit seed 2/3 replay 通过
+```
+
+汇总文件：
+
+```text
+artifacts/session_ss07f/MATRIX_SEEDS_1_3.json
+```
+
+这证明 C 在三个 seed 上稳定；D 的 Spirit 同进程失败是协议层面的登录预算问题，
+不是 checkpoint 无效。仍然没有完整四臂 × 多 seed，也没有冻结。

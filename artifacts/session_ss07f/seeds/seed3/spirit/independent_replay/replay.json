@@ -1,0 +1,24 @@
+{
+ "app": "spirit",
+ "checkpoint": "/home/landasika/icassp/artifacts/session_ss07f/seeds/seed3/spirit/d/sc-6d5a1dbb25ba.json",
+ "status": "PREPARATION_VERIFIED",
+ "preparation_verified": true,
+ "suffix_target_covered": true,
+ "conditions_verified": true,
+ "prefix_len": 1,
+ "suffix_len": 1,
+ "costs": {
+  "target_http_requests": 3,
+  "sequence_attempts": 3,
+  "atheris_inputs": 0,
+  "bootstrap_http_requests": 0,
+  "checkpoint_validation_http_requests": 1,
+  "prefix_replay_http_requests": 1,
+  "suffix_http_requests": 1,
+  "observer_calls": 4,
+  "reset_calls": 8,
+  "scheduler_decisions": 0,
+  "elapsed_wall_seconds": 2.544347,
+  "analysis_wall_seconds": 0.0
+ }
+}
