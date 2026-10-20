@@ -1,0 +1,76 @@
+{
+ "protocol": "ss07-controlled-v1",
+ "frozen": true,
+ "frozen_at": 1792486854.5643992,
+ "source_revision": "927607067ae4b5fcb9b76a2349cbc3fb062b1602",
+ "source_hashes": {
+  "stateforge/evaluation/session_ss06.py": "1d133fc44ca2e882b98f2c7d33f13cbae1f57a414a14891da57ef455b3d8e705",
+  "stateforge/evaluation/session_experiment.py": "1386ddc041812a9b4097687223162b9e8f199781aea51dce469cae8b50f6c357",
+  "stateforge/fuzzing/entry_driver.py": "84bcc5ee76aa6312d221212ef1145eb0bda952faf471e1e9722fae950021e676",
+  "stateforge/fuzzing/session_online.py": "4fb787b298c626b5d762413f7bcde2c3b7da21b1a96514421fde4f88876bb872",
+  "stateforge/evaluation/ss07d.py": "97783d4d9b7f5a17656f87d0df9bb74e25785cae6996ea512d29e3424490b6ec"
+ },
+ "protocol_file_hash": "97783d4d9b7f5a17656f87d0df9bb74e25785cae6996ea512d29e3424490b6ec",
+ "test_command": "python -m pytest stateforge/tests/evaluation/test_ss07d.py -q",
+ "test_result": "7 passed",
+ "validation": {
+  "ok": true,
+  "checks": {
+   "all_arms_equal_seed_count": {
+    "ok": true,
+    "detail": "{\"SINGLE\": 2, \"SEQUENCE\": 2, \"STATE_GUIDED\": 2, \"STATE_REUSE\": 2}"
+   },
+   "all_seeds_present": {
+    "ok": true,
+    "detail": ""
+   },
+   "physical_request_budget": {
+    "ok": true,
+    "detail": "over=[]"
+   },
+   "wall_clock_measured": {
+    "ok": true,
+    "detail": "zero=[]"
+   },
+   "d_no_bootstrap": {
+    "ok": true,
+    "detail": "boot=[]"
+   },
+   "d_checkpoint_bound": {
+    "ok": true,
+    "detail": "[]"
+   },
+   "root_logs_recomputable": {
+    "ok": true,
+    "detail": "root=494 per_run=494"
+   },
+   "online_consumed_after_start": {
+    "ok": true,
+    "detail": "consumed=85 switches=14"
+   },
+   "online_feedback_changed_focus": {
+    "ok": true,
+    "detail": "switches=14"
+   }
+  },
+  "run_count": 8,
+  "budget": 80,
+  "seeds": [
+   1,
+   2
+  ],
+  "checked_at": 1792486854.5643966
+ },
+ "run_count": 8,
+ "budget": 80,
+ "seeds": [
+  1,
+  2
+ ],
+ "raw_logs": {
+  "per_request": "artifacts/session_ss07d/per_request.jsonl",
+  "per_sequence": "artifacts/session_ss07d/per_sequence.jsonl",
+  "scheduler": "artifacts/session_ss07d/scheduler.jsonl",
+  "per_run": "artifacts/session_ss07d/per_run.jsonl"
+ }
+}
