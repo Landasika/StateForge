@@ -24,11 +24,11 @@
   "linkding": "ADAPTER_C_D_PASS",
   "Spirit": "ADAPTER_C_D_PASS"
  },
- "arms_completed": 8,
+ "arms_completed": 16,
  "arms_required": 20,
  "blind_fuzzing_claimed": false,
  "frozen": false,
- "reason": "only microblog C/D run; other apps lack adapters; Spirit blocked",
+ "reason": "five apps C/D pass; only partial four-arm/one-seed; no five-app x multi-seed frozen blind run",
  "ctfd": {
   "adapter": "stateforge/targets/real_apps/ctfd/inproc_target.py",
   "contract": "artifacts/session_ss07f/ctfd/contract.json",
@@ -83,6 +83,34 @@
    "isolation": true,
    "target_http_requests": 6,
    "bootstrap_http_requests": 0
+  }
+ },
+ "arms": {
+  "SINGLE": {
+   "microblog": {
+    "target": false
+   }
+  },
+  "SEQUENCE": {
+   "microblog": true,
+   "CTFd": false,
+   "healthchecks": false,
+   "linkding": true,
+   "Spirit": false
+  },
+  "STATE_GUIDED": {
+   "microblog": true,
+   "CTFd": true,
+   "healthchecks": true,
+   "linkding": true,
+   "Spirit": true
+  },
+  "STATE_REUSE": {
+   "microblog": true,
+   "CTFd": true,
+   "healthchecks": true,
+   "linkding": true,
+   "Spirit": true
   }
  }
 }

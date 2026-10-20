@@ -221,3 +221,17 @@ Spirit       C/D（test_project 已生成）
 
 **仍然不是完整五应用盲测**：没有做五应用 × 多 seed × 四臂，也没有冻结。
 `blind_fuzzing_claimed=false`、`frozen=false` 保持不变。
+
+## 五应用 C/D 与单 seed SEQUENCE
+
+```text
+app           C/STATE_GUIDED   D/STATE_REUSE   SEQUENCE
+microblog     PASS             PASS            PASS
+CTFd          PASS             PASS            FAIL (40)
+healthchecks  PASS             PASS            FAIL (40)
+linkding      PASS             PASS            PASS (29)
+Spirit        PASS             PASS            FAIL (40)
+```
+
+C/D 五应用全部真实跑通；SEQUENCE 在三个应用上 40 次内未找到。
+这仍然是 **单 seed 的功能对照**，不能当作统计结论。
