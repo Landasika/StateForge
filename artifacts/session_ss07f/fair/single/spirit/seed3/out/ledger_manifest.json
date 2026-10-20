@@ -1,0 +1,9 @@
+{
+ "run_id": "sp-fair-3",
+ "arm": "",
+ "seed": 3,
+ "target_block": "",
+ "app": "/home/landasika/icassp/stateforge/targets/real_apps/spirit",
+ "request_limit": 40,
+ "boundary": "target-callable-invocation"
+}

@@ -1,0 +1,9 @@
+{
+ "run_id": "ctfd-fair-2",
+ "arm": "",
+ "seed": 2,
+ "target_block": "",
+ "app": "/home/landasika/icassp/stateforge/targets/real_apps/ctfd",
+ "request_limit": 40,
+ "boundary": "target-callable-invocation"
+}

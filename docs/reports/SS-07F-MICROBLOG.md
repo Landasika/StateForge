@@ -394,3 +394,29 @@ SINGLE target: false  五应用 × seed 1/2/3
 
 预算并不等价，所以这不是“公平四臂冻结矩阵”。
 `blind_fuzzing_claimed=false`、`frozen=false` 保持不变。
+
+## 统一 40 预算的四臂
+
+SINGLE 从 10 输入 smoke 提到 **40 输入**，与 SEQUENCE 的 40 次结构搜索、
+C/D 的 40 次搜索上限对齐。
+
+```text
+arm           结果（15 个 app×seed 点）
+SINGLE        0/15 命中
+SEQUENCE      7/15 命中
+STATE_GUIDED  15/15 命中
+STATE_REUSE   15/15 命中，bootstrap_http=0
+```
+
+机器可读：
+
+```text
+artifacts/session_ss07f/FAIR_MATRIX.json
+```
+
+这是目前最接近公平四臂的证据；仍然不是盲测冻结：
+
+- C/D 的 Session 合约是应用接入时预注册的；
+- SINGLE 是随机单请求，不是完整 C10 多步输入；
+- 最终 freeze 仍要求独立 replay 和完整矩阵，但没有把
+  `blind_fuzzing_claimed` 或 `frozen` 置真。

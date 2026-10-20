@@ -1,0 +1,19 @@
+{
+ "target_http_requests": 40,
+ "sequence_attempts": 40,
+ "atheris_inputs": 40,
+ "bootstrap_http_requests": 0,
+ "checkpoint_validation_http_requests": 0,
+ "prefix_replay_http_requests": 0,
+ "suffix_http_requests": 0,
+ "observer_calls": 0,
+ "reset_calls": 0,
+ "scheduler_decisions": 0,
+ "elapsed_wall_seconds": 16.912162,
+ "analysis_wall_seconds": 0.0,
+ "run_id": "sp-fair-3",
+ "arm": "",
+ "seed": 3,
+ "target_block": "",
+ "app": "/home/landasika/icassp/stateforge/targets/real_apps/spirit"
+}

@@ -1,0 +1,283 @@
+{
+ "protocol": "ss07f-fair-budget-40",
+ "budget": 40,
+ "seeds": [
+  1,
+  2,
+  3
+ ],
+ "SINGLE": {
+  "microblog": {
+   "1": {
+    "target": false,
+    "http": 40,
+    "inputs": 40
+   },
+   "2": {
+    "target": false,
+    "http": 40,
+    "inputs": 40
+   },
+   "3": {
+    "target": false,
+    "http": 40,
+    "inputs": 40
+   }
+  },
+  "ctfd": {
+   "1": {
+    "target": false,
+    "http": 40,
+    "inputs": 40
+   },
+   "2": {
+    "target": false,
+    "http": 40,
+    "inputs": 40
+   },
+   "3": {
+    "target": false,
+    "http": 40,
+    "inputs": 40
+   }
+  },
+  "healthchecks": {
+   "1": {
+    "target": false,
+    "http": 40,
+    "inputs": 40
+   },
+   "2": {
+    "target": false,
+    "http": 40,
+    "inputs": 40
+   },
+   "3": {
+    "target": false,
+    "http": 40,
+    "inputs": 40
+   }
+  },
+  "linkding": {
+   "1": {
+    "target": false,
+    "http": 40,
+    "inputs": 40
+   },
+   "2": {
+    "target": false,
+    "http": 40,
+    "inputs": 40
+   },
+   "3": {
+    "target": false,
+    "http": 40,
+    "inputs": 40
+   }
+  },
+  "spirit": {
+   "1": {
+    "target": false,
+    "http": 40,
+    "inputs": 40
+   },
+   "2": {
+    "target": false,
+    "http": 40,
+    "inputs": 40
+   },
+   "3": {
+    "target": false,
+    "http": 40,
+    "inputs": 40
+   }
+  }
+ },
+ "SEQUENCE": {
+  "microblog": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "ctfd": {
+   "1": false,
+   "2": false,
+   "3": false
+  },
+  "healthchecks": {
+   "1": false,
+   "2": true,
+   "3": false
+  },
+  "linkding": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "spirit": {
+   "1": false,
+   "2": false,
+   "3": false
+  }
+ },
+ "STATE_GUIDED": {
+  "microblog": {
+   "1": {
+    "target": true,
+    "executions": 7
+   },
+   "2": {
+    "target": true,
+    "executions": 7
+   },
+   "3": {
+    "target": true,
+    "executions": 7
+   }
+  },
+  "ctfd": {
+   "1": {
+    "target": true,
+    "executions": 6
+   },
+   "2": {
+    "target": true,
+    "executions": 6
+   },
+   "3": {
+    "target": true,
+    "executions": 6
+   }
+  },
+  "healthchecks": {
+   "1": {
+    "target": true,
+    "executions": 6
+   },
+   "2": {
+    "target": true,
+    "executions": 6
+   },
+   "3": {
+    "target": true,
+    "executions": 6
+   }
+  },
+  "linkding": {
+   "1": {
+    "target": true,
+    "executions": 6
+   },
+   "2": {
+    "target": true,
+    "executions": 6
+   },
+   "3": {
+    "target": true,
+    "executions": 6
+   }
+  },
+  "spirit": {
+   "1": {
+    "target": true,
+    "executions": 6
+   },
+   "2": {
+    "target": true,
+    "executions": 6
+   },
+   "3": {
+    "target": true,
+    "executions": 6
+   }
+  }
+ },
+ "STATE_REUSE": {
+  "microblog": {
+   "1": {
+    "target": true,
+    "http": 9,
+    "bootstrap_http": 0
+   },
+   "2": {
+    "target": true,
+    "http": 6,
+    "bootstrap_http": 0
+   },
+   "3": {
+    "target": true,
+    "http": 6,
+    "bootstrap_http": 0
+   }
+  },
+  "ctfd": {
+   "1": {
+    "target": true,
+    "http": 6,
+    "bootstrap_http": 0
+   },
+   "2": {
+    "target": true,
+    "http": 6,
+    "bootstrap_http": 0
+   },
+   "3": {
+    "target": true,
+    "http": 6,
+    "bootstrap_http": 0
+   }
+  },
+  "healthchecks": {
+   "1": {
+    "target": true,
+    "http": 6,
+    "bootstrap_http": 0
+   },
+   "2": {
+    "target": true,
+    "http": 6,
+    "bootstrap_http": 0
+   },
+   "3": {
+    "target": true,
+    "http": 6,
+    "bootstrap_http": 0
+   }
+  },
+  "linkding": {
+   "1": {
+    "target": true,
+    "http": 6,
+    "bootstrap_http": 0
+   },
+   "2": {
+    "target": true,
+    "http": 6,
+    "bootstrap_http": 0
+   },
+   "3": {
+    "target": true,
+    "http": 6,
+    "bootstrap_http": 0
+   }
+  },
+  "spirit": {
+   "1": {
+    "target": true,
+    "http": 6,
+    "bootstrap_http": 0
+   },
+   "2": {
+    "target": true,
+    "http": 6,
+    "bootstrap_http": 0
+   },
+   "3": {
+    "target": true,
+    "http": 6,
+    "bootstrap_http": 0
+   }
+  }
+ },
+ "note": "SINGLE 40 Atheris inputs; SEQUENCE 40 structural search executions; C/D max 40 search/40 HTTP and stop early on success"
+}
