@@ -22,7 +22,7 @@
 - 完成了有界的 Session 定向多请求搜索，能从一组单请求里自己拼出
   `登录 -> 访问受保护页面`，不需要预置完整序列。
 - 完成了运行时 Session 观测、条件判定、检查点冷启动重放和跨客户端隔离。
-- 全量回归：`755 passed, 1 skipped, 26 deselected`。
+- 全量回归：`756 passed, 1 skipped, 26 deselected`。
 - 三臂实验里，只有单请求种子的 BASE 组 3 次都没到目标；有定向搜索和
   检查点复用的两组 3 次都到了目标。
 
@@ -326,9 +326,9 @@ python -m stateforge.evaluation.session_experiment \
 ### 5.1 测试
 
 - Session 相关 + 靶 + 架构边界：SS-05D 时点 `100 passed`；
-  加入 SS-06 协议/变体后，全量 `755 passed`。
-- 全量：`755 passed, 1 skipped, 26 deselected`
-- 相对基线 656，新增 99 个测试，没有旧测试回归。
+  加入 SS-06 协议/变体后，全量 `756 passed`。
+- 全量：`756 passed, 1 skipped, 26 deselected`
+- 相对基线 656，新增 100 个测试，没有旧测试回归。
 - 架构边界：`5 passed`
 - `micro_benchmark`：静态 21 个用例的 CFG/CALL/RETURN 指标全 1.00，
   动态 5 个用例 trace accuracy 全 1.00。
