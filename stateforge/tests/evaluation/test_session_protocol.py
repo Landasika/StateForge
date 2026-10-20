@@ -15,17 +15,26 @@ def test_summary_counts_d_reuse_separately():
         r = _base_record(1, arm)
         r["target_reached"] = arm in ("STATE_GUIDED", "STATE_REUSE")
         r["session_condition_verified"] = True
+        r["target_http_requests"] = 10
         r["total_target_execs"] = 10
         r["bootstrap_execs"] = 0 if arm == "SINGLE" else 5
+        r["bootstrap_http_requests"] = 0 if arm == "SINGLE" else 5
         r["checkpoint_validation_execs"] = 1 if arm == "STATE_GUIDED" else 0
+        r["checkpoint_validation_http_requests"] = (
+            1 if arm == "STATE_GUIDED" else 0)
         r["prefix_replay_execs"] = 4 if arm == "STATE_REUSE" else 0
+        r["prefix_replay_http_requests"] = 4 if arm == "STATE_REUSE" else 0
+        r["elapsed_wall_seconds"] = 0.5
         records.append(r)
     summary = _summarize(records, {
         "seeds": [1],
         "source_revision": "deadbeef",
+        "total_target_exec_budget": 10,
     })
-    assert summary["arms"]["STATE_REUSE"]["mean_prefix_replay_execs"] == 4
-    assert summary["arms"]["STATE_GUIDED"]["mean_checkpoint_validation_execs"] == 1
+    assert summary["arms"]["STATE_REUSE"][
+        "mean_prefix_replay_http_requests"] == 4
+    assert summary["arms"]["STATE_GUIDED"][
+        "mean_checkpoint_validation_http_requests"] == 1
     assert summary["paired_C_minus_B"][0]["seed"] == 1
 
 

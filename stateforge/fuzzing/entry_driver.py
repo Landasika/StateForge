@@ -111,6 +111,15 @@ def main() -> int:
                         help="SS-03: 定向搜索随机种子(默认取 --seed)")
     parser.add_argument("--max-runs", type=int, default=None,
                         help="SS-06: 可选的最大 Atheris 输入次数;默认不限制")
+    parser.add_argument("--cost-ledger", action="store_true",
+                        help="SS-07A: 记录真实 target HTTP 请求、序列和 reset 成本")
+    parser.add_argument("--max-target-http-requests", type=int, default=None,
+                        help="SS-07A: 硬请求上限，超过则在 target 调用前停止")
+    parser.add_argument("--run-id", default="")
+    parser.add_argument("--arm", default="")
+    parser.add_argument("--target-block", default="")
+    parser.add_argument("--cost-out", default=None,
+                        help="SS-07A: 独立计量目录(默认与 out_dir 相同)")
     args = parser.parse_args()
 
     Path(args.corpus_dir).mkdir(parents=True, exist_ok=True)
@@ -119,6 +128,16 @@ def main() -> int:
     target = _load_target(args.target)
     import sys as _sys
     _target_module = _sys.modules["sf_target"]
+    ledger = None
+    if args.cost_ledger:
+        from stateforge.runtime.execution_costs import ExecutionCostLedger
+        ledger = ExecutionCostLedger(
+            out_dir=(args.cost_out or args.out_dir),
+            run_id=args.run_id or f"driver-{args.seed}",
+            arm=args.arm, seed=args.seed, app=str(Path(args.target).parent),
+            target_block=args.target_block,
+            request_limit=args.max_target_http_requests)
+        target = ledger.wrap_target(target, phase="atheris")
 
     # P0-A/P0-B:执行上下文(生命周期 + 观测器)。默认全关 = 行为与旧版
     # 逐字节一致(NoopLifecycle + 无观测);显式开启才引入隔离/证据,
@@ -160,6 +179,8 @@ def main() -> int:
 
         def handler(data: bytes) -> None:
             t0 = time.monotonic()
+            if ledger is not None:
+                ledger.begin_sequence("atheris-input")
             try:
                 if execution is not None:          # P0-A:off 模式同样走生命周期
                     execution.begin_run()
@@ -178,6 +199,9 @@ def main() -> int:
                     "error": str(exc)})
             except Exception:                # noqa: BLE001
                 pass
+            finally:
+                if ledger is not None:
+                    ledger.end_sequence()
             recorder.tick(time.monotonic() - t0, 0.0, 0, 0, False, None, 0)
     else:
         import json as _json
@@ -244,7 +268,13 @@ def main() -> int:
                                           state_ledger=state_ledger)
 
             def handler(data: bytes) -> None:
-                collector.handle(dispatch, data)
+                if ledger is not None:
+                    ledger.begin_sequence("atheris-input")
+                try:
+                    collector.handle(dispatch, data)
+                finally:
+                    if ledger is not None:
+                        ledger.end_sequence()
         else:
             corpus = (CorpusManager(Path(args.out_dir) / "spool")
                       if args.mode == "feedback" else None)
@@ -255,7 +285,13 @@ def main() -> int:
                                            state_ledger=state_ledger)
 
             def handler(data: bytes) -> None:
-                collector.handle(dispatch, data)
+                if ledger is not None:
+                    ledger.begin_sequence("atheris-input")
+                try:
+                    collector.handle(dispatch, data)
+                finally:
+                    if ledger is not None:
+                        ledger.end_sequence()
 
     # 原生覆盖必须开(否则盲变异、语料不增长);用选择性插桩只打目标模块——
     # instrument_all 会把解释器全量模块插桩,启动 ~30s 且与 tracer 冲突风险高。
@@ -272,6 +308,8 @@ def main() -> int:
         if args.max_runs <= 0:
             parser.error("--max-runs 必须 > 0")
         argv.append(f"-runs={args.max_runs}")
+    if ledger is not None:
+        ledger.snapshot()
     atheris.Setup(argv, handler)
     atheris.Fuzz()                            # _Exit 结束,产物靠逐行 flush 存活
     return 0

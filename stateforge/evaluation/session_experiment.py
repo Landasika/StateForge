@@ -87,7 +87,9 @@ def _make_checkpoint(out_dir: Path):
 
 def _run_driver(arm: str, seed: int, corpus: Path, out: Path,
                 seconds: float, pool_path: Path, guided: bool,
-                max_runs: int | None = None) -> dict:
+                max_runs: int | None = None, *, cost_ledger: bool = False,
+                max_target_http_requests: int | None = None,
+                run_id: str = "") -> dict:
     cmd = [sys.executable, "-m", "stateforge.fuzzing.entry_driver",
            str(GATE / "fuzz_target.py"), str(out / "ir.json"),
            str(corpus), str(out),
@@ -96,6 +98,14 @@ def _run_driver(arm: str, seed: int, corpus: Path, out: Path,
            "--observe-state"]
     if max_runs is not None:
         cmd += ["--max-runs", str(max_runs)]
+    if cost_ledger:
+        cost_dir = out / "atheris_cost"
+        cmd += ["--cost-ledger", "--run-id", run_id or f"{arm}-{seed}",
+                "--arm", arm, "--target-block", TARGET_BLOCK,
+                "--cost-out", str(cost_dir)]
+        if max_target_http_requests is not None:
+            cmd += ["--max-target-http-requests",
+                    str(max_target_http_requests)]
     if guided:
         cmd += ["--session-guided", "--session-target-block", TARGET_BLOCK,
                 "--session-request-pool", str(pool_path),
@@ -118,10 +128,15 @@ def _run_driver(arm: str, seed: int, corpus: Path, out: Path,
     gr = out / "session_guided" / "result.json"
     if gr.exists():
         guided_result = json.loads(gr.read_text(encoding="utf-8"))
+    costs = {}
+    if cost_ledger:
+        from stateforge.runtime.execution_costs import read_costs
+        costs = read_costs(out / "atheris_cost")
     return {
         "arm": arm,
         "seed": seed,
         "returncode": proc.returncode,
+        "costs": costs,
         "atheris_executions": atheris_execs,
         "guided_search_executions": int(guided_result.get("executions", 0)),
         "total_executions": atheris_execs + int(guided_result.get("executions", 0)),

@@ -431,6 +431,7 @@ def replay_session_checkpoint(ckpt: SessionReplayCheckpoint, target,
                               ir: ProgramIR, *, reset_hook=None,
                               session_probe=None, trace_root=None,
                               suffix_steps: list[dict] | None = None,
+                              cost_ledger=None,
                               ) -> SessionReplayResult:
     """Replay a checkpoint from a cold client.
 
@@ -446,6 +447,13 @@ def replay_session_checkpoint(ckpt: SessionReplayCheckpoint, target,
     suffix = [dict(s) for s in (suffix_steps if suffix_steps is not None
                                 else ckpt.suffix_steps())]
     is_preparation = ckpt.checkpoint_kind == "state_preparation"
+
+    probe = session_probe
+    if cost_ledger is not None:
+        if reset_hook is not None:
+            reset_hook = cost_ledger.wrap_reset(reset_hook)
+        if probe is not None:
+            probe = cost_ledger.wrap_observer(probe)
 
     if reset_hook is None:
         return SessionReplayResult(
@@ -463,15 +471,20 @@ def replay_session_checkpoint(ckpt: SessionReplayCheckpoint, target,
                                       source="after_prefix")
     prefix_step_spans: list[tuple[int, int]] = []
     suffix_step_spans: list[tuple[int, int]] = []
+    prefix_call = (cost_ledger.wrap_target(target, phase="checkpoint")
+                   if cost_ledger is not None else target)
+    if cost_ledger is not None:
+        cost_ledger.begin_sequence("checkpoint-validation")
     try:
         with prefix_trace:
             for step in prefix:
                 start_ev = len(prefix_trace.events)
-                target(json.dumps(step, ensure_ascii=False,
-                                  sort_keys=True).encode("utf-8"))
+                prefix_call(json.dumps(step, ensure_ascii=False,
+                                       sort_keys=True).encode("utf-8"))
                 prefix_step_spans.append((start_ev, len(prefix_trace.events)))
-            prefix_view = _view_from_probe(session_probe)
+            prefix_view = _view_from_probe(probe)
     finally:
+        cost_ledger.end_sequence() if cost_ledger is not None else None
         reset_hook()
     prefix_covered = tuple(sorted(set(map_trace(prefix_trace.events, ir).block_hits)))
     prefix_target = ckpt.target_block in prefix_covered
@@ -501,20 +514,28 @@ def replay_session_checkpoint(ckpt: SessionReplayCheckpoint, target,
                                               observation_point="after_suffix",
                                               source="after_suffix")
             suffix_step_spans: list[tuple[int, int]] = []
+            prep_prefix_call = (cost_ledger.wrap_target(target,
+                                                        phase="prefix_replay")
+                                if cost_ledger is not None else target)
+            prep_suffix_call = (cost_ledger.wrap_target(target, phase="suffix")
+                                if cost_ledger is not None else target)
+            if cost_ledger is not None:
+                cost_ledger.begin_sequence("prefix-suffix-replay")
             try:
                 with trace:
                     for step in prefix:
-                        target(json.dumps(step, ensure_ascii=False,
-                                          sort_keys=True).encode("utf-8"))
+                        prep_prefix_call(json.dumps(step, ensure_ascii=False,
+                                                    sort_keys=True).encode("utf-8"))
                     boundary = len(trace.events)
                     for step in suffix:
                         start_ev = len(trace.events)
-                        target(json.dumps(step, ensure_ascii=False,
-                                          sort_keys=True).encode("utf-8"))
+                        prep_suffix_call(json.dumps(step, ensure_ascii=False,
+                                                    sort_keys=True).encode("utf-8"))
                         suffix_step_spans.append((start_ev,
                                                   len(trace.events)))
-                    suffix_view = _view_from_probe(session_probe)
+                    suffix_view = _view_from_probe(probe)
             finally:
+                cost_ledger.end_sequence() if cost_ledger is not None else None
                 reset_hook()
             suffix_covered = tuple(sorted(_map_span(
                 trace.events, boundary, len(trace.events), ir)))
@@ -550,19 +571,27 @@ def replay_session_checkpoint(ckpt: SessionReplayCheckpoint, target,
                                         source="after_full_sequence")
         boundary = 0
         suffix_step_spans = []
+        witness_prefix_call = (cost_ledger.wrap_target(target,
+                                                       phase="prefix_replay")
+                              if cost_ledger is not None else target)
+        witness_suffix_call = (cost_ledger.wrap_target(target, phase="suffix")
+                               if cost_ledger is not None else target)
+        if cost_ledger is not None:
+            cost_ledger.begin_sequence("target-witness")
         try:
             with trace:
                 for step in prefix:
-                    target(json.dumps(step, ensure_ascii=False,
-                                      sort_keys=True).encode("utf-8"))
+                    witness_prefix_call(json.dumps(step, ensure_ascii=False,
+                                                   sort_keys=True).encode("utf-8"))
                 boundary = len(trace.events)
                 for step in suffix:
                     start_ev = len(trace.events)
-                    target(json.dumps(step, ensure_ascii=False,
-                                      sort_keys=True).encode("utf-8"))
+                    witness_suffix_call(json.dumps(step, ensure_ascii=False,
+                                                   sort_keys=True).encode("utf-8"))
                     suffix_step_spans.append((start_ev, len(trace.events)))
-                full_view = _view_from_probe(session_probe)
+                full_view = _view_from_probe(probe)
         finally:
+            cost_ledger.end_sequence() if cost_ledger is not None else None
             reset_hook()
         full_covered = tuple(sorted(set(map_trace(trace.events, ir).block_hits)))
         whole_covered = full_covered

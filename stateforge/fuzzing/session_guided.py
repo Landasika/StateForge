@@ -609,7 +609,8 @@ def bootstrap_session_guided(target_module, target_callable, ir: ProgramIR,
                              corpus_dir: str | Path, out_dir: str | Path, *,
                              max_steps: int = 3, max_execs: int = 200,
                              seed: int = 0, guided: bool = True,
-                             session_probe=None) -> SessionGuidedResult:
+                             session_probe=None, cost_ledger=None
+                             ) -> SessionGuidedResult:
     """Build index/frontier, run the bounded search, and inject one seed."""
     from stateforge.state.session_access import extract_session_accesses
     from stateforge.state.session_index import (build_session_index,
@@ -624,6 +625,10 @@ def bootstrap_session_guided(target_module, target_callable, ir: ProgramIR,
     reset_hook = getattr(target_module, "reset_state", None)
     if not callable(reset_hook):
         reset_hook = None
+    if cost_ledger is not None:
+        if reset_hook is not None:
+            reset_hook = cost_ledger.wrap_reset(reset_hook)
+        probe = cost_ledger.wrap_observer(probe)
     result = SessionGuidedSearch(
         target_callable, ir, target_block, frontier, request_pool,
         max_execs=max_execs, max_steps=max_steps, seed=seed, guided=guided,
