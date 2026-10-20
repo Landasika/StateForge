@@ -10,7 +10,7 @@
 > 这个值可能是哪个请求写进去的？
 > Fuzzer 能不能自己把这两个请求拼起来，而不是靠人提前写好答案？
 
-实现按 SS-00 到 SS-04 分五批完成，每批单独提交、单独测试。本文记录设计、
+实现按 SS-00 到 SS-06 分多批完成，每批单独提交、单独测试。本文记录设计、
 提交、测试结果和已知问题。
 
 ---
@@ -22,7 +22,7 @@
 - 完成了有界的 Session 定向多请求搜索，能从一组单请求里自己拼出
   `登录 -> 访问受保护页面`，不需要预置完整序列。
 - 完成了运行时 Session 观测、条件判定、检查点冷启动重放和跨客户端隔离。
-- 全量回归：`731 passed, 1 skipped, 26 deselected`。
+- 全量回归：`755 passed, 1 skipped, 26 deselected`。
 - 三臂实验里，只有单请求种子的 BASE 组 3 次都没到目标；有定向搜索和
   检查点复用的两组 3 次都到了目标。
 
@@ -299,7 +299,7 @@ python -m pytest \
 python -m pytest -q
 ```
 
-三臂实验：
+旧三臂实验（历史对照）：
 
 ```bash
 python -m stateforge.evaluation.session_experiment --seeds 1,2,3 --seconds 2
@@ -307,20 +307,33 @@ python -m stateforge.evaluation.session_experiment --seeds 1,2,3 --seconds 2
 
 结果写到 `artifacts/session_first/`。
 
+SS-06 四臂公平实验：
+
+```bash
+python -m stateforge.evaluation.session_experiment \
+  --protocol ss06-v1 \
+  --seeds 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20 \
+  --seconds 1 --total-target-exec-budget 80 \
+  --out artifacts/session_ss06
+```
+
+结果写到 `artifacts/session_ss06/`。
+
 ---
 
 ## 5. 测试和实验
 
 ### 5.1 测试
 
-- Session 相关 + 靶 + 架构边界：`80 passed`
-- 全量：`731 passed, 1 skipped, 26 deselected`
-- 相对基线 656，新增 75 个测试，没有旧测试回归。
+- Session 相关 + 靶 + 架构边界：SS-05D 时点 `100 passed`；
+  加入 SS-06 协议/变体后，全量 `755 passed`。
+- 全量：`755 passed, 1 skipped, 26 deselected`
+- 相对基线 656，新增 99 个测试，没有旧测试回归。
 - 架构边界：`5 passed`
 - `micro_benchmark`：静态 21 个用例的 CFG/CALL/RETURN 指标全 1.00，
   动态 5 个用例 trace accuracy 全 1.00。
 
-### 5.2 三臂实验
+### 5.2 三臂实验（历史）
 
 同一请求池、同一 2 秒预算、同一 reset 隔离，3 个 seed：
 
@@ -330,11 +343,23 @@ python -m stateforge.evaluation.session_experiment --seeds 1,2,3 --seconds 2
 | SESSION-GUIDED | 3/3 | 3/3 | 3/3 | 486.3 |
 | SESSION-REUSE | 3/3 | 3/3 | 3/3 | 459.7 |
 
-BASE 组有点意思：它虽然到了登录写入块，也读回了 `uid=7`，但三次都没
-走到 `/protected` 的目标块。这正好说明“写块覆盖”和“目标到达”不是一回事。
+BASE 组虽然到了登录写入块，也读回了 `uid=7`，但三次都没走到
+`/protected` 的目标块。这正好说明“写块覆盖”和“目标到达”不是一回事。
 
-检查点 `sc-49405742647b` 冷启动重放结果是 `REPLAY_VERIFIED`，
-`uid=7`；不带前缀、只跑后缀时目标不到，隔离对照通过。
+### 5.3 SS-06 四臂实验
+
+20 个配对 seed、1 秒、80 次预算：
+
+| 组 | 目标到达 | Session 已验证 | 平均总执行 |
+|---|---:|---:|---:|
+| SINGLE | 0/20 | 20/20 | 80.0 |
+| SEQUENCE | 8/20 | 20/20 | 80.0 |
+| STATE_GUIDED | 20/20 | 20/20 | 81.0 |
+| STATE_REUSE | 20/20 | 20/20 | 20.0 |
+
+C 相对 B 的差异是功能性目标到达率，不是统计显著结论。D 的 20.0 是
+“准备前缀发现/验证 + 两个后缀”的成本，不含 C 为目标单独跑的 Atheris，
+不能直接说 D 比 C 快。
 
 ---
 
@@ -346,8 +371,11 @@ BASE 组有点意思：它虽然到了登录写入块，也读回了 `uid=7`，�
 - 静态查询可能是 `partial`。这不是失败，表示还有路径、客户端或动态 key
   没被证明。
 - 检查点只适合已验证前缀；不要拿它去证明别的目标。
-- 实验是 3 个 seed、2 秒、单个微型靶，只能说明功能可用，不能说明统计显著
-  或通用性能优势。
+- 实验是 20 个 seed、1 秒、一个微型靶加两个结构变体，只能说明功能可用，
+  不能说明统计显著或通用性能优势。
+- 缺 key 的 `EQ/TRUTHY` 目前是 UNKNOWN；没有实现显式
+  `session.get(key, default)` 的默认值语义。
+- 跨函数动态 key 的读取仍是 PARTIAL/UNKNOWN 边界。
 
 ---
 
@@ -362,4 +390,11 @@ BASE 组有点意思：它虽然到了登录写入块，也读回了 `uid=7`，�
 | SS-03 | `0752a3c` | 有界定向多请求搜索 |
 | SS-04 | `1d4a00f` | 运行时验证、检查点、重放、隔离 |
 | SS-04a | `c859262` | 空/不存在 Session 的检查点修复 |
+| SS-05A | `55e9138` | 移除搜索器靶特定参数值，来源审计 |
+| SS-05B | `795c6e2` | 统一三值判定，MISSING 不按 None |
+| SS-05C | `8aacea6` | 准备前缀提取，前后缀 Trace 分段 |
+| SS-05D | 门禁 | Session + 全量回归 + micro_benchmark |
+| SS-06A | `1706883` | 四臂公平消融协议与计量 |
+| SS-06B | `3b69923` | T1/T2 结构变体与泛化测试 |
+| SS-06C | 本次 | 20-seed 实验与报告 |
 | 文档 | `3fe5f33` 等 | 报告和实验记录 |
