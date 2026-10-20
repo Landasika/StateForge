@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import dataclasses
 import importlib.util
 import json
 import sys
@@ -53,10 +54,8 @@ def _frontier():
 
 def _probe(mod):
     def probe():
-        snap = mod.observe_session()
-        if snap.status == "decoded" and snap.values is not None:
-            return dict(snap.values)
-        return {}
+        # Trusted view: status/client/observation-point survive the probe.
+        return mod.session_view()
     return probe
 
 
@@ -260,10 +259,11 @@ def test_parameterized_passcode_and_business_neutral_routes():
         mod._dispatch_request(step, holder["client"])
 
     def probe():
+        from stateforge.state.session_observation import snapshot_view
         snap = mod._APP_MOD.observe_session(holder["client"], app)
-        if snap.status == "decoded" and snap.values is not None:
-            return dict(snap.values)
-        return {}
+        return snapshot_view(snap, client_id="param-client",
+                             observation_point="after_response",
+                             source="parameterized-test")
 
     pool = [
         {"method": "POST", "path": "/p1",
@@ -281,3 +281,45 @@ def test_parameterized_passcode_and_business_neutral_routes():
     assert result.steps[1]["path"] == "/p2"
     assert any(s.startswith("form:single-request-pool")
                for a in result.attempts for s in a.candidate_sources)
+
+
+def test_invalid_probe_never_becomes_verified_or_checkpoint():
+    mod = _load_target()
+    ir, _accesses, frontier = _frontier()
+    from stateforge.state.session_observation import SessionSnapshotView
+    result = _search(
+        mod, ir, frontier, POOL,
+        session_probe=lambda: SessionSnapshotView(
+            "invalid", observation_point="bad-signature",
+            source="test-invalid"))
+
+    assert result.found is True
+    assert result.status == STATUS_PROXY
+    assert result.checkpoint_eligible is False
+    assert result.session_witness is None
+    assert all(a.session_verified is None for a in result.attempts)
+
+
+def test_empty_condition_group_cannot_become_a_witness():
+    mod = _load_target()
+    ir, _accesses, frontier = _frontier()
+    empty = dataclasses.replace(frontier, path_constraint_groups=())
+    result = _search(mod, ir, empty, POOL)
+
+    assert result.found is True
+    assert result.status == STATUS_PROXY
+    assert result.checkpoint_eligible is False
+    assert result.session_witness is None
+
+
+def test_probe_exception_is_unknown_and_keeps_a_reason():
+    mod = _load_target()
+    ir, _accesses, frontier = _frontier()
+
+    def boom():
+        raise RuntimeError("observer broke")
+
+    result = _search(mod, ir, frontier, POOL, session_probe=boom)
+    assert result.found in (True, False)
+    assert result.checkpoint_eligible is False
+    assert result.session_witness is None

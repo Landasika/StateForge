@@ -76,6 +76,7 @@ class SessionSnapshotView:
     client_id: str = "client-0"
     observation_point: str = "after_response"
     observed_at: int = -1
+    source: str = ""
 
     @property
     def decoded(self) -> bool:
@@ -97,12 +98,14 @@ class SessionSnapshotView:
             "client_id": self.client_id,
             "observation_point": self.observation_point,
             "observed_at": self.observed_at,
+            "source": self.source,
         }
 
 
 def snapshot_view(snapshot, *, client_id: str = "client-0",
                   observation_point: str = "after_response",
-                  observed_at: int = -1) -> SessionSnapshotView:
+                  observed_at: int = -1,
+                  source: str = "target-snapshot") -> SessionSnapshotView:
     """Adapt the target's read-only ``SessionSnapshot`` to a view."""
     status = getattr(snapshot, "status", SESSION_STATUS_UNKNOWN)
     values = getattr(snapshot, "values", None)
@@ -116,7 +119,8 @@ def snapshot_view(snapshot, *, client_id: str = "client-0",
     return SessionSnapshotView(status=status, values=values,
                                client_id=client_id,
                                observation_point=observation_point,
-                               observed_at=observed_at)
+                               observed_at=observed_at,
+                               source=source)
 
 
 def _source(view: SessionSnapshotView, cond: SessionCondition | None = None) -> str:
@@ -219,6 +223,13 @@ def evaluate_session_condition(cond: SessionCondition,
         truth = present
     elif cond.op == COND_NOT_EXISTS:
         truth = not present
+    elif not present:
+        # A missing key is not Python ``None``.  Equality/truthiness on a
+        # missing key is unobservable unless the caller explicitly models a
+        # ``get(key, default)`` default; that is a separate, opt-in feature.
+        return SessionConditionVerdict(
+            cond, UNKNOWN, Evidence.UNKNOWN, None,
+            reason="missing-key")
     elif cond.op == COND_TRUTHY:
         truth = bool(actual)
     elif cond.op == COND_FALSY:

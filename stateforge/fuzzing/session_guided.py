@@ -40,6 +40,15 @@ from stateforge.state.session_index import (COND_EQ, COND_EXISTS, COND_FALSY,
                                             COND_IN, COND_NE, COND_NOT_EXISTS,
                                             COND_NOT_IN, COND_TRUTHY,
                                             SessionCondition, SessionFrontier)
+from stateforge.state.session_observation import (
+    SESSION_STATUS_DECODED,
+    UNKNOWN as SESSION_UNKNOWN,
+    VERIFIED_FALSE,
+    VERIFIED_TRUE,
+    SessionSnapshotView,
+    evaluate_session_conditions,
+    snapshot_view,
+)
 
 STATUS_VERIFIED = "VERIFIED"
 STATUS_PROXY = "PROXY_PROGRESS"
@@ -76,6 +85,8 @@ class GuidedAttempt:
     score: float
     status: str
     session_values: dict | None = None
+    session_verdict: str | None = None
+    session_witness: dict | None = None
     trace_span: tuple[int, int] = (0, 0)
     step_spans: tuple[tuple[int, int], ...] = ()
     candidate_sources: tuple[str, ...] = ()
@@ -94,6 +105,8 @@ class GuidedAttempt:
             "score": round(self.score, 4),
             "status": self.status,
             "session_values": self.session_values,
+            "session_verdict": self.session_verdict,
+            "session_witness": self.session_witness,
             "trace_span": list(self.trace_span),
             "step_spans": [list(x) for x in self.step_spans],
             "candidate_sources": list(self.candidate_sources),
@@ -160,51 +173,42 @@ def _sequence_hash(target_block: str, guided: bool, steps: Iterable[dict]) -> st
     return hashlib.sha256(payload).hexdigest()[:16]
 
 
-def _condition_matches(cond: SessionCondition, values: dict | None) -> bool | None:
-    if values is None:
-        return None
-    present = cond.key_expr in values
-    actual = values.get(cond.key_expr)
-    if cond.op == COND_EXISTS:
-        return present
-    if cond.op == COND_NOT_EXISTS:
-        return not present
-    if not present:
-        return False
-    if cond.op == COND_TRUTHY:
-        return bool(actual)
-    if cond.op == COND_FALSY:
-        return not bool(actual)
-    if cond.op == COND_EQ:
-        return actual == cond.value
-    if cond.op == COND_NE:
-        return actual != cond.value
-    if cond.op == COND_IN:
-        try:
-            return actual in cond.value
-        except TypeError:
-            return False
-    if cond.op == COND_NOT_IN:
-        try:
-            return actual not in cond.value
-        except TypeError:
-            return False
-    return None
+def _coerce_probe_view(raw) -> SessionSnapshotView:
+    """Adapt a probe result without losing its status.
+
+    A ``SessionSnapshotView`` is already trusted.  A target snapshot is
+    adapted by ``snapshot_view``.  A raw mapping is accepted only as an
+    explicitly-labelled legacy test probe; production probes should return a
+    view or the target's own snapshot.
+    """
+    if isinstance(raw, SessionSnapshotView):
+        return raw
+    if isinstance(raw, dict):
+        return SessionSnapshotView(
+            SESSION_STATUS_DECODED, dict(raw),
+            observation_point="legacy-mapping-probe",
+            source="legacy-mapping-probe")
+    return snapshot_view(raw, observation_point="probe-snapshot",
+                         source="probe-snapshot")
 
 
 def group_satisfied(group: tuple[SessionCondition, ...],
-                    values: dict | None) -> bool | None:
-    """True only if every condition is verified from the probe values."""
-    if values is None:
+                    view_or_values: SessionSnapshotView | dict | None
+                    ) -> bool | None:
+    """Compatibility wrapper around the authoritative group evaluator.
+
+    Never returns True for an empty group, an unknown view, a missing key, or
+    a condition group with an UNKNOWN component.
+    """
+    if view_or_values is None:
         return None
-    result = True
-    for cond in group:
-        verdict = _condition_matches(cond, values)
-        if verdict is False:
-            return False
-        if verdict is None:
-            result = None
-    return result
+    view = _coerce_probe_view(view_or_values)
+    verdict = evaluate_session_conditions(group, view)
+    if verdict.verdict == VERIFIED_TRUE:
+        return True
+    if verdict.verdict == VERIFIED_FALSE:
+        return False
+    return None
 
 
 class SessionGuidedSearch:
@@ -275,13 +279,15 @@ class SessionGuidedSearch:
         if self.reset_hook is not None:
             self.reset_hook()
 
-    def _probe(self) -> dict | None:
+    def _probe(self) -> SessionSnapshotView | None:
         if self.session_probe is None:
             return None
         try:
-            return self.session_probe()
+            return _coerce_probe_view(self.session_probe())
         except Exception:                          # noqa: BLE001
-            return None
+            return SessionSnapshotView(
+                "unknown", observation_point="probe-exception",
+                source="probe-exception")
 
     def _execute(self, steps: tuple[dict, ...]) -> GuidedAttempt:
         h = _sequence_hash(self.target_block, self.guided, steps)
@@ -305,21 +311,37 @@ class SessionGuidedSearch:
                         error = f"{type(exc).__name__}: {exc}"
                     step_spans.append((start_ev, len(trace.events)))
         finally:
-            values = self._probe()
+            view = self._probe()
             self._reset()
         mapped = map_trace(trace.events, self.ir)
         covered = tuple(sorted(mapped.block_hits))
         writer_hits = tuple(sorted(self._writer_blocks & set(covered)))
         target_covered = self.target_block in covered
         witness = None
-        if values is not None:
+        session_verdict = None
+        values = None
+        if view is not None and view.authoritative:
+            values = dict(view.values) if view.values is not None else {}
             for group in self.frontier.path_constraint_groups:
-                if group_satisfied(group, values) is True:
+                verdict = evaluate_session_conditions(group, view)
+                if verdict.verdict == VERIFIED_TRUE:
                     witness = {"values": dict(values), "conditions": [
-                        c.to_dict() for c in group]}
+                        c.to_dict() for c in group],
+                        "verdict": verdict.to_dict()}
+                    session_verdict = VERIFIED_TRUE
                     break
-        if target_covered and values is not None:
-            status = STATUS_VERIFIED if witness else "TARGET_REACHED_UNVERIFIED"
+                if verdict.verdict == VERIFIED_FALSE:
+                    session_verdict = VERIFIED_FALSE
+                elif session_verdict is None:
+                    session_verdict = SESSION_UNKNOWN
+            if session_verdict is None:
+                session_verdict = SESSION_UNKNOWN
+        elif view is not None:
+            session_verdict = SESSION_UNKNOWN
+        if target_covered and witness is not None:
+            status = STATUS_VERIFIED
+        elif target_covered and view is not None and view.authoritative:
+            status = "TARGET_REACHED_UNVERIFIED"
         elif target_covered:
             status = STATUS_PROXY
         else:
@@ -332,9 +354,12 @@ class SessionGuidedSearch:
             index=len(self._attempts) + 1, steps=steps, sequence_hash=h,
             covered_blocks=covered, writer_blocks=writer_hits,
             target_covered=target_covered,
-            session_verified=(witness is not None) if values is not None else None,
+            session_verified=(witness is not None) if view is not None and
+            view.authoritative else None,
             distance=dist, score=score, status=status,
-            session_values=dict(values) if values is not None else None,
+            session_values=values,
+            session_verdict=session_verdict,
+            session_witness=witness,
             trace_span=(0, len(trace.events)),
             step_spans=tuple(step_spans),
             candidate_sources=self.candidate_sources(steps), error=error)
@@ -515,13 +540,7 @@ class SessionGuidedSearch:
                 dedup_skips=self._dedup_skips, stop_reason=stop,
                 seed_value=self.seed_value, max_steps=self.max_steps,
                 max_execs=self.max_execs)
-        witness = None
-        if best.target_covered and best.session_verified and best.session_values is not None:
-            for group in self.frontier.path_constraint_groups:
-                if group_satisfied(group, best.session_values) is True:
-                    witness = {"values": dict(best.session_values),
-                               "conditions": [c.to_dict() for c in group]}
-                    break
+        witness = best.session_witness if best.target_covered else None
         if best.target_covered and best.session_verified:
             status = STATUS_VERIFIED
         elif best.target_covered:
@@ -578,11 +597,9 @@ def _module_session_probe(target_module):
 
     def probe():
         snap = observe()
-        status = getattr(snap, "status", None)
-        values = getattr(snap, "values", None)
-        if status == "decoded" and values is not None:
-            return dict(values)
-        return {}
+        return snapshot_view(
+            snap, client_id="client-0", observation_point="after_response",
+            source="module-observe_session")
     return probe
 
 

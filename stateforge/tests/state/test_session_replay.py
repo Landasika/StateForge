@@ -45,10 +45,7 @@ def _load_target(name):
 
 def _probe(mod):
     def probe():
-        snap = mod.observe_session()
-        if snap.status == "decoded" and snap.values is not None:
-            return dict(snap.values)
-        return {}
+        return mod.session_view()
     return probe
 
 

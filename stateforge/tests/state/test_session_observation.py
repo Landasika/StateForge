@@ -67,10 +67,12 @@ def test_absent_is_verified_absence_not_unknown():
     view = _view(status="absent")
     assert evaluate_session_condition(_cond(COND_EXISTS), view).verdict == VERIFIED_FALSE
     assert evaluate_session_condition(_cond(COND_NOT_EXISTS), view).verdict == VERIFIED_TRUE
-    assert evaluate_session_condition(_cond(COND_TRUTHY), view).verdict == VERIFIED_FALSE
-    assert evaluate_session_condition(_cond(COND_FALSY), view).verdict == VERIFIED_TRUE
-    # session.get() would return None; equality to None is resolved, not guessed.
-    assert evaluate_session_condition(_cond(COND_EQ, value=None), view).verdict == VERIFIED_TRUE
+    # A missing key is not Python None: only EXISTS/NOT_EXISTS are
+    # authoritative here.  Value/truthiness comparisons need an explicit
+    # get(key, default) model, which this condition does not carry.
+    assert evaluate_session_condition(_cond(COND_TRUTHY), view).verdict == UNKNOWN
+    assert evaluate_session_condition(_cond(COND_FALSY), view).verdict == UNKNOWN
+    assert evaluate_session_condition(_cond(COND_EQ, value=None), view).verdict == UNKNOWN
 
 
 @pytest.mark.parametrize("status", ["invalid", "unknown"])
@@ -180,3 +182,68 @@ def test_target_observer_downgrades_invalid_cookie():
     verdict = observer.observe_conditions(group)
     assert verdict.verdict == UNKNOWN
     assert verdict.evidence is Evidence.UNKNOWN
+
+
+def test_missing_key_is_unknown_for_value_ops_but_null_is_present():
+    missing = _view(values={})
+    assert evaluate_session_condition(_cond(COND_EXISTS), missing).verdict == VERIFIED_FALSE
+    assert evaluate_session_condition(_cond(COND_NOT_EXISTS), missing).verdict == VERIFIED_TRUE
+    for op in (COND_TRUTHY, COND_FALSY, COND_EQ, COND_NE, COND_IN, COND_NOT_IN):
+        verdict = evaluate_session_condition(_cond(op, value=None), missing)
+        assert verdict.verdict == UNKNOWN, (op, verdict)
+        assert verdict.reason == "missing-key"
+        assert verdict.observation is None
+
+    null = _view(values={"uid": None})
+    assert evaluate_session_condition(_cond(COND_EXISTS), null).verdict == VERIFIED_TRUE
+    assert evaluate_session_condition(_cond(COND_EQ, value=None), null).verdict == VERIFIED_TRUE
+    assert evaluate_session_condition(_cond(COND_TRUTHY), null).verdict == VERIFIED_FALSE
+    assert evaluate_session_condition(_cond(COND_FALSY), null).verdict == VERIFIED_TRUE
+
+
+def test_empty_condition_group_is_unknown_never_a_witness():
+    verdict = evaluate_session_conditions((), _view(values={"uid": 7}))
+    assert verdict.verdict == UNKNOWN
+    assert verdict.verified is False
+    assert verdict.reason == "empty-condition-group"
+
+
+def test_view_preserves_source_and_observation_point():
+    view = SessionSnapshotView("decoded", {"uid": 7}, client_id="c1",
+                               observation_point="after_prefix",
+                               source="target-snapshot")
+    payload = view.to_dict()
+    assert payload["source"] == "target-snapshot"
+    assert payload["client_id"] == "c1"
+    assert payload["observation_point"] == "after_prefix"
+
+
+def test_module_probe_preserves_invalid_instead_of_returning_empty_dict():
+    from stateforge.fuzzing.session_guided import _module_session_probe
+
+    class Snap:
+        status = "invalid"
+        values = None
+
+    class Mod:
+        @staticmethod
+        def observe_session():
+            return Snap()
+
+    probe = _module_session_probe(Mod)
+    view = probe()
+    assert isinstance(view, SessionSnapshotView)
+    assert view.status == "invalid"
+    assert view.values is None
+    assert evaluate_session_conditions((_cond(COND_EXISTS),), view).verdict == UNKNOWN
+
+
+def test_group_satisfied_compat_wrapper_never_upgrades_empty_or_unknown():
+    from stateforge.fuzzing.session_guided import group_satisfied
+    assert group_satisfied((), _view(values={"uid": 7})) is None
+    assert group_satisfied((_cond(COND_EXISTS),),
+                           _view(status="invalid")) is None
+    assert group_satisfied((_cond(COND_EXISTS),),
+                           _view(values={})) is False
+    assert group_satisfied((_cond(COND_EXISTS),),
+                           _view(values={"uid": 7})) is True
