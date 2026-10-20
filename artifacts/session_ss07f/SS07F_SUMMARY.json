@@ -200,5 +200,9 @@
   "SINGLE": 0,
   "SEQUENCE": 3,
   "independent_replay": 5
+ },
+ "full_suite": {
+  "command": "pytest -q --ignore=exp",
+  "result": "783 passed, 1 skipped, 26 deselected, 1 warning in 631.53s"
  }
 }

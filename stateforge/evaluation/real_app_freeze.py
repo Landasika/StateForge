@@ -64,6 +64,38 @@ def validate(matrix_path: Path, replay_root: Path) -> dict:
     }
 
 
+def validate_heldout(directory: Path) -> dict:
+    """Validate a pre-registered held-out run, including hash drift."""
+    pre = _load(directory / "PREREGISTRATION.json")
+    results = _load(directory / "RESULTS.json")
+    checks: dict[str, dict] = {}
+
+    def check(name: str, ok: bool, detail: str = "") -> None:
+        checks[name] = {"ok": bool(ok), "detail": detail}
+
+    check("budget-40", pre.get("budget") == BUDGET, str(pre.get("budget")))
+    check("heldout-seed", isinstance(pre.get("heldout_seed"), int),
+          str(pre.get("heldout_seed")))
+    hashes_ok = all(_sha(ROOT / f) == h
+                    for f, h in pre.get("engine_hashes", {}).items())
+    app_hashes_ok = all(_sha(ROOT / f) == h
+                        for fs in pre.get("app_hashes", {}).values()
+                        for f, h in fs.items())
+    check("engine-hashes-match", hashes_ok)
+    check("app-hashes-match", app_hashes_ok)
+    check("results-hashes-match", bool(results.get("hashes_match")))
+    summary = results.get("summary", {})
+    check("state-guided-5", summary.get("C") == 5, str(summary.get("C")))
+    check("state-reuse-5", summary.get("D") == 5, str(summary.get("D")))
+    check("replay-5", summary.get("replay") == 5, str(summary.get("replay")))
+    check("acceptance", bool(results.get("acceptance_met")))
+    manifest = _load(directory / "FREEZE_MANIFEST.json")
+    check("freeze-manifest", bool(manifest.get("frozen"))
+          and bool(manifest.get("blind_fuzzing_claimed")))
+    return {"ok": all(c["ok"] for c in checks.values()), "checks": checks,
+            "directory": str(directory), "seed": pre.get("heldout_seed")}
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--matrix", default=str(
@@ -72,7 +104,13 @@ def main(argv=None) -> int:
         ROOT / "artifacts/session_ss07f/independent_replay"))
     parser.add_argument("--out", default=str(
         ROOT / "artifacts/session_ss07f/FREEZE_REFUSED.json"))
+    parser.add_argument("--heldout", default="")
     args = parser.parse_args(argv)
+    if args.heldout:
+        result = validate_heldout(Path(args.heldout))
+        print("FROZEN" if result["ok"] else "REFUSED",
+              json.dumps(result["checks"], ensure_ascii=False))
+        return 0 if result["ok"] else 1
     result = validate(Path(args.matrix), Path(args.replay_root))
     result["validated_at"] = time.time()
     out = Path(args.out)

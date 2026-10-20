@@ -46,5 +46,9 @@
   "SINGLE is a 40-input random single-request smoke, not C10 multi-step",
   "target-request budget 40, wall clock not equalized",
   "healthchecks login token buckets cleared before some runs"
- ]
+ ],
+ "full_suite": {
+  "command": "pytest -q --ignore=exp",
+  "result": "783 passed, 1 skipped, 26 deselected, 1 warning in 631.53s"
+ }
 }

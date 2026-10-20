@@ -78,3 +78,49 @@ block）。health 200 不能冒充 `target_reached`，受控 `session_gate` 的
 
 A–D 可在受控目标上复现并通过全量测试；E 的预注册和启动证据已保存；
 F 仍被真实应用适配缺口阻塞，不能声称 SS-07F 完成。
+
+## held-out seed 5 最终冻结（补充）
+
+在 seed 5 前预注册 `heldout_v2/PREREGISTRATION.json`，把 D-only 新进程显式
+定为 STATE_REUSE 主路径。seed 5 结果：
+
+```text
+C bootstrap       5/5
+D-only reuse      5/5（bootstrap_http=0）
+SINGLE 40         0/5
+SEQUENCE          3/5
+independent replay 5/5
+hashes_match      true
+acceptance_met    true
+```
+
+冻结：
+
+```text
+artifacts/session_ss07f/heldout_v2/FREEZE_MANIFEST.json
+```
+
+复核命令：
+
+```text
+python -m stateforge.evaluation.real_app_freeze \
+  --heldout artifacts/session_ss07f/heldout_v2
+```
+
+范围限制：这是 held-out seed 盲测，不是对五个应用完全未知的盲测；
+adapter/contract 在 seed 1–4 已存在，只是在 seed 5 前冻结哈希。
+
+全量回归：
+
+```text
+pytest -q --ignore=exp
+783 passed, 1 skipped, 26 deselected, 1 warning in 631.53s
+```
+
+冻结校验器复核：
+
+```text
+python -m stateforge.evaluation.real_app_freeze \
+  --heldout artifacts/session_ss07f/heldout_v2
+=> FROZEN
+```
