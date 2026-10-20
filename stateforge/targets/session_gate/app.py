@@ -71,18 +71,18 @@ class SessionSnapshot:
         return self.values.get(key, default)
 
 
-def create_app(passcode: str = DEFAULT_PASSCODE) -> Flask:
+def create_app(passcode: str = DEFAULT_PASSCODE,
+               routes: Mapping[str, str] | None = None) -> Flask:
     """Build a fresh target application with an empty target-hit ledger.
 
     No module-level Flask app is created here: callers own the instance, so
     independent clients/apps never share a Cookie Jar or hit ledger.
     """
-
     app = Flask(__name__)
     app.secret_key = DEV_SECRET_KEY
     app.config[PASSCODE_CONFIG_KEY] = passcode
     app.config[TARGET_HITS_KEY] = []
-    _register_routes(app)
+    _register_routes(app, routes)
     return app
 
 
@@ -154,9 +154,9 @@ def subscript_target_block() -> None:
 # -------------------------------------------------------------------- routes
 
 
-def _register_routes(app: Flask) -> None:
+def _register_routes(app: Flask, routes: Mapping[str, str] | None = None) -> None:
 
-    @app.post("/authenticate")
+    @app.post((routes or {}).get("authenticate", "/authenticate"))
     def authenticate():
         # Credential check is immediate: a failed write must not persist a
         # session cookie.  The passcode is target config, never a session key.
@@ -165,7 +165,7 @@ def _register_routes(app: Flask) -> None:
         session["uid"] = 7
         return "ok"
 
-    @app.get("/protected")
+    @app.get((routes or {}).get("protected", "/protected"))
     def protected():
         uid = session.get("uid")
         if uid is None:
@@ -175,7 +175,7 @@ def _register_routes(app: Flask) -> None:
 
     # Guard-form variants for extraction tests.  They share the ``uid`` key
     # but have distinct markers, so the primary target block stays unique.
-    @app.get("/protected_truthy")
+    @app.get((routes or {}).get("protected_truthy", "/protected_truthy"))
     def protected_truthy():
         uid = session.get("uid")
         if uid:
@@ -183,14 +183,14 @@ def _register_routes(app: Flask) -> None:
             return "TRUTHY_TARGET"
         return "deny", 401
 
-    @app.get("/protected_membership")
+    @app.get((routes or {}).get("protected_membership", "/protected_membership"))
     def protected_membership():
         if "uid" in session:
             membership_target_block()
             return "MEMBERSHIP_TARGET"
         return "deny", 401
 
-    @app.get("/protected_subscript")
+    @app.get((routes or {}).get("protected_subscript", "/protected_subscript"))
     def protected_subscript():
         try:
             uid = session["uid"]
@@ -199,17 +199,17 @@ def _register_routes(app: Flask) -> None:
         subscript_target_block()
         return "SUBSCRIPT_TARGET"
 
-    @app.post("/logout")
+    @app.post((routes or {}).get("logout", "/logout"))
     def logout():
         session.pop("uid", None)
         return "ok"
 
-    @app.post("/clear")
+    @app.post((routes or {}).get("clear", "/clear"))
     def clear():
         session.clear()
         return "ok"
 
-    @app.post("/noise")
+    @app.post((routes or {}).get("noise", "/noise"))
     def noise():
         # A successful write to a different key: HTTP 200 must not be read as
         # evidence that the ``uid`` guard is satisfied.

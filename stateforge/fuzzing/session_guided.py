@@ -45,6 +45,23 @@ STATUS_VERIFIED = "VERIFIED"
 STATUS_PROXY = "PROXY_PROGRESS"
 STATUS_NOT_FOUND = "NOT_FOUND"
 
+# Typed boundary values only.  They are generic mutation operators, not target
+# credentials: no "valid"/"wrong"/"admin" and no business-looking "7".
+GENERIC_BOUNDARY_VALUES = (None, True, False, 0, 1, "")
+
+
+@dataclass(frozen=True)
+class ParameterCandidate:
+    """One parameter-mutation value plus an auditable provenance label."""
+
+    value: object
+    source: str          # single-request-pool | generic-boundary | corpus
+
+    def key(self) -> tuple[str, str]:
+        # Keep 0 and False as distinct candidates even though Python compares
+        # them equal.
+        return (type(self.value).__name__, repr(self.value))
+
 
 @dataclass(frozen=True)
 class GuidedAttempt:
@@ -61,6 +78,7 @@ class GuidedAttempt:
     session_values: dict | None = None
     trace_span: tuple[int, int] = (0, 0)
     step_spans: tuple[tuple[int, int], ...] = ()
+    candidate_sources: tuple[str, ...] = ()
     error: str | None = None
 
     def to_dict(self) -> dict:
@@ -78,6 +96,7 @@ class GuidedAttempt:
             "session_values": self.session_values,
             "trace_span": list(self.trace_span),
             "step_spans": [list(x) for x in self.step_spans],
+            "candidate_sources": list(self.candidate_sources),
             "error": self.error,
         }
 
@@ -317,7 +336,8 @@ class SessionGuidedSearch:
             distance=dist, score=score, status=status,
             session_values=dict(values) if values is not None else None,
             trace_span=(0, len(trace.events)),
-            step_spans=tuple(step_spans), error=error)
+            step_spans=tuple(step_spans),
+            candidate_sources=self.candidate_sources(steps), error=error)
         self._attempts.append(attempt)
         return attempt
 
@@ -337,19 +357,53 @@ class SessionGuidedSearch:
 
     # -------------------------------------------------------------- mutation
 
-    def _collect_values(self) -> list:
-        values = []
+    def _collect_values(self) -> list[ParameterCandidate]:
+        """Collect mutation values with an explicit source for each one.
+
+        The engine must not know a target's valid credential.  It may reuse
+        values that already appear in a legitimate single-request pool, plus
+        type-boundary values that are generic to any parameter.  Callers can
+        audit ``_value_pool`` / ``candidate_sources`` to see exactly where a
+        candidate came from.
+        """
+        values: list[ParameterCandidate] = []
+        seen: set[tuple[str, str]] = set()
         for step in self.request_pool:
             for section in ("query", "form", "json"):
                 body = step.get(section)
                 if isinstance(body, dict):
-                    for v in body.values():
-                        if v not in values:
-                            values.append(v)
-        for v in ("valid", "wrong", "admin", "7", "0", ""):
-            if v not in values:
-                values.append(v)
+                    for value in body.values():
+                        cand = ParameterCandidate(value, "single-request-pool")
+                        if cand.key() not in seen:
+                            seen.add(cand.key())
+                            values.append(cand)
+        for value in GENERIC_BOUNDARY_VALUES:
+            cand = ParameterCandidate(value, "generic-boundary")
+            if cand.key() not in seen:
+                seen.add(cand.key())
+                values.append(cand)
         return values
+
+    def _value_candidate(self, value) -> ParameterCandidate:
+        for cand in self._value_pool:
+            if type(cand.value) is type(value) and cand.value == value:
+                return cand
+        return ParameterCandidate(value, "unknown")
+
+    def candidate_sources(self, steps: tuple[dict, ...]) -> tuple[str, ...]:
+        """Provenance for the parameter values present in a candidate."""
+        out: list[str] = []
+        for step in steps:
+            for section in ("query", "form", "json"):
+                body = step.get(section)
+                if not isinstance(body, dict):
+                    continue
+                for value in body.values():
+                    cand = self._value_candidate(value)
+                    label = f"{section}:{cand.source}"
+                    if label not in out:
+                        out.append(label)
+        return tuple(out)
 
     def _parameter_mutants(self, steps: tuple[dict, ...]) -> list[tuple[dict, ...]]:
         out: list[tuple[dict, ...]] = []
@@ -361,8 +415,9 @@ class SessionGuidedSearch:
                 if not isinstance(body, dict) or not body:
                     continue
                 for key in body:
-                    for value in self._value_pool:
-                        if value == body[key]:
+                    for cand in self._value_pool:
+                        value = cand.value
+                        if type(value) is type(body[key]) and value == body[key]:
                             continue
                         new_body = dict(body)
                         new_body[key] = value

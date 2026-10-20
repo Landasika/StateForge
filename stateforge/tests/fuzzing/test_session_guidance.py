@@ -204,3 +204,80 @@ def test_structure_mutation_appends_replaces_and_deletes():
     param = search._parameter_mutants((POOL[0],))
     assert param
     assert any(m[0]["form"]["passcode"] != "wrong" for m in param)
+
+
+def test_no_target_specific_parameter_literals_are_injected():
+    mod = _load_target()
+    ir, _accesses, frontier = _frontier()
+    search = SessionGuidedSearch(
+        mod.target, ir, TARGET, frontier,
+        [{"method": "POST", "path": "/authenticate",
+          "form": {"passcode": "wrong"}}],
+        max_execs=5, max_steps=2, seed=0, reset_hook=mod.reset_state,
+        trace_root=GATE)
+
+    values = [(c.value, type(c.value).__name__, c.source)
+              for c in search._value_pool]
+    assert not any(v == "valid" for v, _t, _s in values)
+    assert not any(v == "admin" for v, _t, _s in values)
+    assert not any(v == "7" for v, _t, _s in values)
+    assert ("wrong", "str", "single-request-pool") in values
+    assert (0, "int", "generic-boundary") in values
+    assert (1, "int", "generic-boundary") in values
+    assert all(s in ("single-request-pool", "generic-boundary")
+               for _v, _t, s in values)
+
+
+def test_wrong_credentials_only_do_not_get_mutated_into_a_valid_login():
+    mod = _load_target()
+    ir, _accesses, frontier = _frontier()
+    pool = [
+        {"method": "POST", "path": "/authenticate",
+         "form": {"passcode": "wrong"}},
+        {"method": "GET", "path": "/protected"},
+    ]
+    result = _search(mod, ir, frontier, pool, max_execs=40)
+
+    assert result.found is False
+    assert result.status == STATUS_NOT_FOUND
+    assert result.seed is None
+    assert result.stop_reason in ("budget", "exhausted")
+
+
+def test_parameterized_passcode_and_business_neutral_routes():
+    mod = _load_target()
+    ir, _accesses, frontier = _frontier()
+    app = mod._APP_MOD.create_app(
+        passcode="gate-9f3a",
+        routes={"authenticate": "/p1", "protected": "/p2"})
+    holder = {"client": app.test_client()}
+
+    def reset():
+        holder["client"] = app.test_client()
+
+    def target(data):
+        step = json.loads(data)
+        mod._dispatch_request(step, holder["client"])
+
+    def probe():
+        snap = mod._APP_MOD.observe_session(holder["client"], app)
+        if snap.status == "decoded" and snap.values is not None:
+            return dict(snap.values)
+        return {}
+
+    pool = [
+        {"method": "POST", "path": "/p1",
+         "form": {"passcode": "gate-9f3a"}},
+        {"method": "GET", "path": "/p2"},
+    ]
+    result = SessionGuidedSearch(
+        target, ir, TARGET, frontier, pool, max_execs=60, max_steps=3,
+        seed=0, guided=True, reset_hook=reset, trace_root=GATE,
+        session_probe=probe).run()
+
+    assert result.found is True
+    assert result.steps[0]["path"] == "/p1"
+    assert result.steps[0]["form"]["passcode"] == "gate-9f3a"
+    assert result.steps[1]["path"] == "/p2"
+    assert any(s.startswith("form:single-request-pool")
+               for a in result.attempts for s in a.candidate_sources)
