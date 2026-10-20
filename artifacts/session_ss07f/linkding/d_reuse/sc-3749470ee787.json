@@ -1,0 +1,125 @@
+{
+ "checkpoint_id": "sc-3749470ee787",
+ "protocol_version": "session-checkpoint-v2",
+ "created_from": "session-guided",
+ "checkpoint_kind": "state_preparation",
+ "target_block": "views/bookmarks.py::index::43-43::entry::1",
+ "source_file": "/home/landasika/icassp/external/linkding/bookmarks/views/bookmarks.py",
+ "steps": [
+  {
+   "method": "POST",
+   "path": "/login/",
+   "form": {
+    "username": "lduser",
+    "password": "ldpass"
+   }
+  }
+ ],
+ "prefix_len": 1,
+ "condition_groups": [
+  [
+   {
+    "key_kind": "CONST",
+    "key_expr": "_auth_user_id",
+    "op": "EXISTS",
+    "value": null,
+    "value_kind": "NONE",
+    "direction": "true",
+    "guard_block": "views/bookmarks.py::index::43-43::entry::1",
+    "source_file": "views/bookmarks.py",
+    "source_line": 43,
+    "source_col": 0,
+    "reader_site_id": "ld-bookmarks",
+    "resolvable": true,
+    "note": ""
+   }
+  ]
+ ],
+ "session_values": {
+  "_auth_user_id": "1",
+  "_auth_user_backend": "django.contrib.auth.backends.ModelBackend",
+  "_auth_user_hash": "834bf0aafb7d407acb6387a0e0bb365a76e669a3045b85d5a1731509de64d0d3"
+ },
+ "writer_blocks": [],
+ "evidence": [
+  {
+   "key": "Session._auth_user_backend{linkding-client@session}",
+   "value": true,
+   "evidence": "runtime_verified",
+   "source": "session_cookie:linkding-client:after_response",
+   "observed_value": "django.contrib.auth.backends.ModelBackend",
+   "value_kind": "STRING"
+  },
+  {
+   "key": "Session._auth_user_hash{linkding-client@session}",
+   "value": true,
+   "evidence": "runtime_verified",
+   "source": "session_cookie:linkding-client:after_response",
+   "observed_value": "834bf0aafb7d407acb6387a0e0bb365a76e669a3045b85d5a1731509de64d0d3",
+   "value_kind": "STRING"
+  },
+  {
+   "key": "Session._auth_user_id{linkding-client@session}",
+   "value": true,
+   "evidence": "runtime_verified",
+   "source": "session_cookie:linkding-client:after_response",
+   "observed_value": "1",
+   "value_kind": "STRING"
+  }
+ ],
+ "baseline_id": "baseline-2dc2202e3d99",
+ "baseline_fingerprint": "baseline-73c9d0b0e4ca4822ac2e",
+ "app_source_hash": "e7984b79e46e7c52343f9ad8f6a5d27aa20a4417ad9f2f20c760d8118351859e",
+ "session_backend": "flask-cookie",
+ "fixture_id": "session-gate",
+ "initialization_seed": "",
+ "client_scope": "linkding-client",
+ "condition_group_id": "cond-f68af5f81ef2",
+ "source_sequence_hash": "654a2cdef2a8af7b",
+ "validation_observation_point": "after_response",
+ "verified_condition_witness": {
+  "verdict": "VERIFIED_TRUE",
+  "evidence": "runtime_verified",
+  "reason": "all-true",
+  "conditions": [
+   {
+    "condition": {
+     "key_kind": "CONST",
+     "key_expr": "_auth_user_id",
+     "op": "EXISTS",
+     "value": null,
+     "value_kind": "NONE",
+     "direction": "true",
+     "guard_block": "views/bookmarks.py::index::43-43::entry::1",
+     "source_file": "views/bookmarks.py",
+     "source_line": 43,
+     "source_col": 0,
+     "reader_site_id": "ld-bookmarks",
+     "resolvable": true,
+     "note": ""
+    },
+    "verdict": "VERIFIED_TRUE",
+    "evidence": "runtime_verified",
+    "reason": "observed",
+    "observation": {
+     "key": "Session._auth_user_id.exists{linkding-client@session}",
+     "value": true,
+     "evidence": "runtime_verified",
+     "source": "session_cookie:linkding-client:after_response:guard=views/bookmarks.py::index::43-43::entry::1:line=43",
+     "observed_value": "1",
+     "value_kind": "STRING"
+    }
+   }
+  ],
+  "observations": [
+   {
+    "key": "Session._auth_user_id.exists{linkding-client@session}",
+    "value": true,
+    "evidence": "runtime_verified",
+    "source": "session_cookie:linkding-client:after_response:guard=views/bookmarks.py::index::43-43::entry::1:line=43",
+    "observed_value": "1",
+    "value_kind": "STRING"
+   }
+  ]
+ }
+}

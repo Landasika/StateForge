@@ -1,0 +1,18 @@
+{
+ "function": "index",
+ "file": "views/bookmarks.py",
+ "trace_root": "/home/landasika/icassp/external/linkding/bookmarks",
+ "groups": [[
+   {"key_kind": "CONST", "key_expr": "_auth_user_id", "op": "EXISTS",
+    "value": null, "value_kind": "NONE", "direction": "true",
+    "guard_block": "views/bookmarks.py::index::43-43::entry::1",
+    "source_file": "views/bookmarks.py", "source_line": 43, "source_col": 0,
+    "reader_site_id": "ld-bookmarks", "resolvable": true}
+ ]],
+ "writers": [
+   {"writer_site_id": "ld-login", "reader_site_id": "ld-bookmarks",
+    "writer_block": "views/auth.py::get_context_data::19-22::block::1",
+    "reader_block": "views/bookmarks.py::index::43-43::entry::1",
+    "key_overlap": "_auth_user_id"}
+ ]
+}

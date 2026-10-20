@@ -1,0 +1,6 @@
+[
+ {"method": "POST", "path": "/accounts/login/", "form": {"action": "login", "email": "hc@example.com", "password": "hcpass"}},
+ {"method": "GET", "path": "/accounts/profile/"},
+ {"method": "GET", "path": "/"},
+ {"method": "POST", "path": "/accounts/logout/", "form": {}}
+]

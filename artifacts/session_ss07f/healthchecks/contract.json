@@ -1,0 +1,18 @@
+{
+ "function": "profile",
+ "file": "accounts/views.py",
+ "trace_root": "/home/landasika/icassp/external/healthchecks/hc",
+ "groups": [[
+   {"key_kind": "CONST", "key_expr": "_auth_user_id", "op": "EXISTS",
+    "value": null, "value_kind": "NONE", "direction": "true",
+    "guard_block": "accounts/views.py::profile::288-288::entry::1",
+    "source_file": "accounts/views.py", "source_line": 288, "source_col": 0,
+    "reader_site_id": "hc-profile", "resolvable": true}
+ ]],
+ "writers": [
+   {"writer_site_id": "hc-login", "reader_site_id": "hc-profile",
+    "writer_block": "accounts/views.py::_check_2fa::144-144::block::1",
+    "reader_block": "accounts/views.py::profile::288-288::entry::1",
+    "key_overlap": "_auth_user_id"}
+ ]
+}

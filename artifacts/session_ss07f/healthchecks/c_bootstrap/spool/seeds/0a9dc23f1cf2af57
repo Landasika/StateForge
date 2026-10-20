@@ -1,0 +1,1 @@
+{"steps": [{"form": {"action": "login", "email": "hc@example.com", "password": "hcpass"}, "method": "POST", "path": "/accounts/login/"}, {"method": "GET", "path": "/accounts/profile/"}]}

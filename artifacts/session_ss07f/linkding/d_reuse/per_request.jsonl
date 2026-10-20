@@ -1,0 +1,29 @@
+{"event": "reset", "run_id": "ld-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/linkding", "target_block": "views/bookmarks.py::index::43-43::entry::1", "elapsed": 2.7e-05}
+{"event": "request", "run_id": "ld-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/linkding", "target_block": "views/bookmarks.py::index::43-43::entry::1", "sequence_id": null, "step_index": 1, "phase": "checkpoint", "elapsed": 1.308476, "error": null, "status": "ok"}
+{"event": "observer", "run_id": "ld-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/linkding", "target_block": "views/bookmarks.py::index::43-43::entry::1", "elapsed": 0.001936}
+{"event": "reset", "run_id": "ld-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/linkding", "target_block": "views/bookmarks.py::index::43-43::entry::1", "elapsed": 1.2e-05}
+{"event": "reset", "run_id": "ld-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/linkding", "target_block": "views/bookmarks.py::index::43-43::entry::1", "elapsed": 1.4e-05}
+{"event": "reset", "run_id": "ld-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/linkding", "target_block": "views/bookmarks.py::index::43-43::entry::1", "elapsed": 4e-05}
+{"event": "request", "run_id": "ld-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/linkding", "target_block": "views/bookmarks.py::index::43-43::entry::1", "sequence_id": "ld-d:seq:2", "step_index": 1, "phase": "checkpoint", "elapsed": 0.620345, "error": null, "status": "ok"}
+{"event": "observer", "run_id": "ld-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/linkding", "target_block": "views/bookmarks.py::index::43-43::entry::1", "elapsed": 0.001501}
+{"event": "observer", "run_id": "ld-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/linkding", "target_block": "views/bookmarks.py::index::43-43::entry::1", "elapsed": 0.001547}
+{"event": "reset", "run_id": "ld-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/linkding", "target_block": "views/bookmarks.py::index::43-43::entry::1", "elapsed": 1.4e-05}
+{"event": "reset", "run_id": "ld-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/linkding", "target_block": "views/bookmarks.py::index::43-43::entry::1", "elapsed": 4e-05}
+{"event": "reset", "run_id": "ld-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/linkding", "target_block": "views/bookmarks.py::index::43-43::entry::1", "elapsed": 1.5e-05}
+{"event": "reset", "run_id": "ld-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/linkding", "target_block": "views/bookmarks.py::index::43-43::entry::1", "elapsed": 4.5e-05}
+{"event": "request", "run_id": "ld-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/linkding", "target_block": "views/bookmarks.py::index::43-43::entry::1", "sequence_id": "ld-d:seq:4", "step_index": 1, "phase": "checkpoint", "elapsed": 0.672353, "error": null, "status": "ok"}
+{"event": "observer", "run_id": "ld-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/linkding", "target_block": "views/bookmarks.py::index::43-43::entry::1", "elapsed": 0.001585}
+{"event": "observer", "run_id": "ld-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/linkding", "target_block": "views/bookmarks.py::index::43-43::entry::1", "elapsed": 0.001631}
+{"event": "reset", "run_id": "ld-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/linkding", "target_block": "views/bookmarks.py::index::43-43::entry::1", "elapsed": 1.5e-05}
+{"event": "reset", "run_id": "ld-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/linkding", "target_block": "views/bookmarks.py::index::43-43::entry::1", "elapsed": 5.5e-05}
+{"event": "reset", "run_id": "ld-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/linkding", "target_block": "views/bookmarks.py::index::43-43::entry::1", "elapsed": 1.6e-05}
+{"event": "reset", "run_id": "ld-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/linkding", "target_block": "views/bookmarks.py::index::43-43::entry::1", "elapsed": 8.2e-05}
+{"event": "request", "run_id": "ld-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/linkding", "target_block": "views/bookmarks.py::index::43-43::entry::1", "sequence_id": "ld-d:seq:5", "step_index": 1, "phase": "prefix_replay", "elapsed": 0.620767, "error": null, "status": "ok"}
+{"event": "request", "run_id": "ld-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/linkding", "target_block": "views/bookmarks.py::index::43-43::entry::1", "sequence_id": "ld-d:seq:5", "step_index": 2, "phase": "suffix", "elapsed": 0.220192, "error": null, "status": "ok"}
+{"event": "observer", "run_id": "ld-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/linkding", "target_block": "views/bookmarks.py::index::43-43::entry::1", "elapsed": 0.001501}
+{"event": "observer", "run_id": "ld-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/linkding", "target_block": "views/bookmarks.py::index::43-43::entry::1", "elapsed": 0.001553}
+{"event": "reset", "run_id": "ld-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/linkding", "target_block": "views/bookmarks.py::index::43-43::entry::1", "elapsed": 1.5e-05}
+{"event": "reset", "run_id": "ld-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/linkding", "target_block": "views/bookmarks.py::index::43-43::entry::1", "elapsed": 3.9e-05}
+{"event": "reset", "run_id": "ld-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/linkding", "target_block": "views/bookmarks.py::index::43-43::entry::1", "elapsed": 1.5e-05}
+{"event": "request", "run_id": "ld-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/linkding", "target_block": "views/bookmarks.py::index::43-43::entry::1", "sequence_id": "ld-d:seq:6", "step_index": 1, "phase": "suffix", "elapsed": 0.007133, "error": null, "status": "ok"}
+{"event": "reset", "run_id": "ld-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/linkding", "target_block": "views/bookmarks.py::index::43-43::entry::1", "elapsed": 9e-06}

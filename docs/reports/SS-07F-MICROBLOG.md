@@ -141,3 +141,45 @@ D reuse      prefix_len=1, PREPARATION_VERIFIED,
 
 CTFd 的 Session 是服务端存储，所以观察器不假装解码 cookie，而是在
 `test_request_context` 中通过应用自身 Session 接口读取 `id`。
+
+## linkding（追加）
+
+```text
+adapter: stateforge/targets/real_apps/linkding/inproc_target.py
+target: views/bookmarks.py::index::43-43::entry::1
+condition: Session._auth_user_id EXISTS
+```
+
+```text
+C bootstrap  found=true, VERIFIED, 2 steps, 6 executions
+D reuse      prefix_len=1, PREPARATION_VERIFIED,
+             primary_suffix_target=true, isolation=true,
+             target_http_requests=6, bootstrap_http_requests=0
+```
+
+## healthchecks（追加）
+
+```text
+adapter: stateforge/targets/real_apps/healthchecks/inproc_target.py
+target: accounts/views.py::profile::288-288::entry::1
+condition: Session._auth_user_id EXISTS
+```
+
+```text
+C bootstrap  found=true, VERIFIED, 2 steps, 6 executions
+D reuse      prefix_len=1, PREPARATION_VERIFIED,
+             primary_suffix_target=true, isolation=true,
+             target_http_requests=6, bootstrap_http_requests=0
+```
+
+## 当前覆盖
+
+```text
+microblog    C/D + 单 seed 四臂
+CTFd         C/D
+healthchecks C/D
+linkding     C/D
+Spirit       test_project 已生成, 适配器待接
+```
+
+仍不是五应用完整盲测；没有写 `frozen=true`。

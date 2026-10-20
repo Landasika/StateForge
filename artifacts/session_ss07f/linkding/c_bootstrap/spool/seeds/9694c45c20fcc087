@@ -1,0 +1,1 @@
+{"steps": [{"form": {"password": "ldpass", "username": "lduser"}, "method": "POST", "path": "/login/"}, {"method": "GET", "path": "/bookmarks"}]}

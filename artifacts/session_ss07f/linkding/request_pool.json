@@ -1,0 +1,6 @@
+[
+ {"method": "POST", "path": "/login/", "form": {"username": "lduser", "password": "ldpass"}},
+ {"method": "GET", "path": "/bookmarks"},
+ {"method": "GET", "path": "/"},
+ {"method": "POST", "path": "/logout/", "form": {}}
+]

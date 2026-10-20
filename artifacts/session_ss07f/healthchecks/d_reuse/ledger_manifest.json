@@ -1,0 +1,9 @@
+{
+ "run_id": "hc-d",
+ "arm": "STATE_REUSE",
+ "seed": 1,
+ "target_block": "accounts/views.py::profile::288-288::entry::1",
+ "app": "external/healthchecks",
+ "request_limit": 30,
+ "boundary": "target-callable-invocation"
+}
