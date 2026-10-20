@@ -437,6 +437,7 @@ def run_protocol(seeds=(1, 2, 3), seconds: float = 1.0,
                 "guided_status": atheris.get("guided_status"),
                 "guided_found": atheris.get("guided_found"),
                 "corpus_sequences": atheris.get("corpus_sequences"),
+                "online_summary": atheris.get("online_summary", {}),
                 "failures": atheris.get("failures", []),
             })
             if arm == "STATE_GUIDED" and c_ctx is not None:
