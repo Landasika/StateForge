@@ -107,6 +107,10 @@ def main() -> int:
                         help="SS-03: 搜索序列最大请求步数(默认 3)")
     parser.add_argument("--session-max-execs", type=int, default=200,
                         help="SS-03: 定向搜索执行预算(默认 200)")
+    parser.add_argument("--session-online", action="store_true",
+                        help="SS-07C: Atheris 运行中消费 Session 反馈(默认关)")
+    parser.add_argument("--session-online-exploration", type=float, default=0.15,
+                        help="SS-07C: 在线调度探索比例(默认 0.15)")
     parser.add_argument("--session-seed", type=int, default=None,
                         help="SS-03: 定向搜索随机种子(默认取 --seed)")
     parser.add_argument("--max-runs", type=int, default=None,
@@ -125,6 +129,12 @@ def main() -> int:
     Path(args.corpus_dir).mkdir(parents=True, exist_ok=True)
     if args.session_guided and args.mode == "off":
         parser.error("--session-guided 仅支持 --mode feedback/frontier")
+    if args.session_online:
+        if args.mode not in ("feedback", "frontier"):
+            parser.error("--session-online 仅支持 --mode feedback/frontier")
+        if not args.session_target_block or not args.session_request_pool:
+            parser.error("--session-online 需要 --session-target-block "
+                         "与 --session-request-pool")
     target = _load_target(args.target)
     import sys as _sys
     _target_module = _sys.modules["sf_target"]
@@ -172,6 +182,7 @@ def main() -> int:
     def _make_recorder():
         return ExperimentRecorder(args.out_dir, args.group, args.epoch)
 
+    online = None
     if args.mode == "off":
         import time
 
@@ -223,6 +234,30 @@ def main() -> int:
                 max_execs=args.session_max_execs,
                 seed=(args.session_seed if args.session_seed is not None
                       else args.seed))
+        online = None
+        if args.session_online:
+            from stateforge.state.session_access import extract_session_accesses
+            from stateforge.state.session_index import (build_session_index,
+                                                        query_session_frontier)
+            from stateforge.fuzzing.session_online import (
+                scheduler_from_frontier)
+            source = Path(args.target).resolve().parent
+            accesses = extract_session_accesses(source, ir=ir)
+            index = build_session_index(accesses)
+            frontier = query_session_frontier(
+                ir, index, args.session_target_block, accesses)
+            from stateforge.fuzzing.session_guided import load_request_pool
+            online_pool = load_request_pool(args.session_request_pool)
+            online = scheduler_from_frontier(
+                frontier, target_block=args.session_target_block,
+                request_pool=online_pool,
+                out_dir=Path(args.out_dir) / "online",
+                run_id=args.run_id or f"online-{args.seed}",
+                ledger=ledger, max_steps=args.session_max_steps,
+                seed=args.seed,
+                exploration_ratio=args.session_online_exploration)
+        else:
+            online = None
         session = TraceSession(root=root)
         session.__enter__()
         # 反馈对象按模式先建(frontier 需要 load_state 恢复前沿/冠军)
@@ -246,6 +281,25 @@ def main() -> int:
                 payload["state_evidence"] = state_ledger.to_payload()
             state_path.write_text(_json.dumps(payload), encoding="utf-8")
 
+        def _online_after(data: bytes, start: int) -> None:
+            if online is None:
+                return
+            from stateforge.runtime.mapper import map_trace
+            mapped = map_trace(session.events[start:], ir)
+            view = None
+            probe = getattr(_target_module, "session_view", None)
+            if callable(probe):
+                try:
+                    view = probe()
+                except Exception:                 # noqa: BLE001
+                    view = None
+            online.observe_execution(
+                mapped, view, sequence_id=f"atheris-{online.decisions}",
+                data=data)
+
+        def _online_mutator(data: bytes, max_size: int, seed: int) -> bytes:
+            return online.mutate(data, max_size, seed, atheris)
+
         recorder = ExperimentRecorder(args.out_dir, args.group, args.epoch,
                                        on_sample=_dump_state)
         if state_path.exists():
@@ -268,10 +322,12 @@ def main() -> int:
                                           state_ledger=state_ledger)
 
             def handler(data: bytes) -> None:
+                start = len(session.events)
                 if ledger is not None:
                     ledger.begin_sequence("atheris-input")
                 try:
                     collector.handle(dispatch, data)
+                    _online_after(data, start)
                 finally:
                     if ledger is not None:
                         ledger.end_sequence()
@@ -285,10 +341,12 @@ def main() -> int:
                                            state_ledger=state_ledger)
 
             def handler(data: bytes) -> None:
+                start = len(session.events)
                 if ledger is not None:
                     ledger.begin_sequence("atheris-input")
                 try:
                     collector.handle(dispatch, data)
+                    _online_after(data, start)
                 finally:
                     if ledger is not None:
                         ledger.end_sequence()
@@ -310,7 +368,10 @@ def main() -> int:
         argv.append(f"-runs={args.max_runs}")
     if ledger is not None:
         ledger.snapshot()
-    atheris.Setup(argv, handler)
+    if online is not None:
+        atheris.Setup(argv, handler, custom_mutator=_online_mutator)
+    else:
+        atheris.Setup(argv, handler)
     atheris.Fuzz()                            # _Exit 结束,产物靠逐行 flush 存活
     return 0
 

@@ -147,13 +147,16 @@ def _base_record(seed: int, arm: str) -> dict:
 def _run_atheris(seed: int, arm: str, corpus: Path, out: Path, seconds: float,
                  pool_path: Path, max_runs: int, *,
                  max_requests: int | None = None,
-                 run_id: str = "") -> dict:
+                 run_id: str = "", online: bool = False,
+                 online_exploration: float = 0.0) -> dict:
     t0 = time.monotonic()
     raw = _run_driver(arm, seed, corpus, out, seconds, pool_path,
                       guided=False, max_runs=max_runs, cost_ledger=True,
                       max_target_http_requests=max_requests,
-                      run_id=run_id)
+                      run_id=run_id, session_online=online,
+                      online_exploration=online_exploration)
     rec = _base_record(seed, arm)
+    rec["online_summary"] = raw.get("online_summary", {})
     costs = raw.get("costs", {}) or {}
     rec.update({
         "atheris_execs": raw["atheris_executions"],
@@ -220,7 +223,8 @@ def _apply_costs(rec: dict, ledger: ExecutionCostLedger) -> None:
 
 def run_protocol(seeds=(1, 2, 3), seconds: float = 1.0,
                  total_target_exec_budget: int = 120, max_steps: int = 3,
-                 arms=ARMS, out_root: Path | None = None) -> dict:
+                 arms=ARMS, out_root: Path | None = None,
+                 online: bool = False, online_exploration: float = 0.0) -> dict:
     out_root = Path(out_root or (ROOT / "artifacts" / "session_ss06"))
     raw_dir = out_root / "raw"
     raw_dir.mkdir(parents=True, exist_ok=True)
@@ -414,7 +418,8 @@ def run_protocol(seeds=(1, 2, 3), seconds: float = 1.0,
             atheris = _run_atheris(
                 seed, arm, corpus, out, seconds, pool_path,
                 max_runs=remaining, max_requests=remaining,
-                run_id=f"{arm}-{seed}")
+                run_id=f"{arm}-{seed}", online=(online and arm == "STATE_GUIDED"),
+                online_exploration=online_exploration)
             parent_elapsed = ledger.costs.elapsed_wall_seconds
             ledger.merge(atheris["execution_costs"])
             ledger.override_elapsed(

@@ -89,7 +89,8 @@ def _run_driver(arm: str, seed: int, corpus: Path, out: Path,
                 seconds: float, pool_path: Path, guided: bool,
                 max_runs: int | None = None, *, cost_ledger: bool = False,
                 max_target_http_requests: int | None = None,
-                run_id: str = "") -> dict:
+                run_id: str = "", session_online: bool = False,
+                online_exploration: float = 0.0) -> dict:
     cmd = [sys.executable, "-m", "stateforge.fuzzing.entry_driver",
            str(GATE / "fuzz_target.py"), str(out / "ir.json"),
            str(corpus), str(out),
@@ -110,6 +111,11 @@ def _run_driver(arm: str, seed: int, corpus: Path, out: Path,
         cmd += ["--session-guided", "--session-target-block", TARGET_BLOCK,
                 "--session-request-pool", str(pool_path),
                 "--session-max-execs", "60", "--session-max-steps", "3"]
+    if session_online:
+        cmd += ["--session-online", "--session-online-exploration",
+                str(online_exploration),
+                "--session-target-block", TARGET_BLOCK,
+                "--session-request-pool", str(pool_path)]
     proc = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True,
                           timeout=120)
     stderr = proc.stderr or ""
@@ -132,9 +138,17 @@ def _run_driver(arm: str, seed: int, corpus: Path, out: Path,
     if cost_ledger:
         from stateforge.runtime.execution_costs import read_costs
         costs = read_costs(out / "atheris_cost")
+    online_summary = {}
+    op = out / "online" / "online_summary.json"
+    if op.exists():
+        try:
+            online_summary = json.loads(op.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            online_summary = {}
     return {
         "arm": arm,
         "seed": seed,
+        "online_summary": online_summary,
         "returncode": proc.returncode,
         "costs": costs,
         "atheris_executions": atheris_execs,
@@ -330,6 +344,10 @@ def main() -> int:
     parser.add_argument("--arms", default="SINGLE,SEQUENCE,STATE_GUIDED,STATE_REUSE")
     parser.add_argument("--total-target-exec-budget", type=int, default=120)
     parser.add_argument("--max-steps", type=int, default=3)
+    parser.add_argument("--session-online", action="store_true",
+                        help="SS-07C: 在线 Session 反馈(仅 STATE_GUIDED)")
+    parser.add_argument("--session-online-exploration", type=float,
+                        default=0.0)
     args = parser.parse_args()
     seeds = tuple(int(x) for x in args.seeds.split(",") if x.strip())
     if args.protocol:
@@ -340,7 +358,9 @@ def main() -> int:
         run_protocol(seeds=seeds, seconds=args.seconds,
                      total_target_exec_budget=args.total_target_exec_budget,
                      max_steps=args.max_steps, arms=arms,
-                     out_root=Path(args.out) if args.out else None)
+                     out_root=Path(args.out) if args.out else None,
+                     online=args.session_online,
+                     online_exploration=args.session_online_exploration)
         return 0
     run(seeds=seeds, seconds=args.seconds,
         out_root=Path(args.out) if args.out else None)
