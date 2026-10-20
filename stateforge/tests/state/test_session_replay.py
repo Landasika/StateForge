@@ -16,13 +16,19 @@ from stateforge.state.session_access import extract_session_accesses
 from stateforge.state.session_index import (COND_EQ, build_session_index,
                                             query_session_frontier)
 from stateforge.state.session_observation import SessionSnapshotView
-from stateforge.solving.session_replay import (REPLAY_TARGET_ONLY,
-                                             REPLAY_VERIFIED,
-                                             SessionReplayCheckpoint,
-                                             checkpoint_from_guided_result,
-                                             inject_session_checkpoint_seed,
-                                             replay_session_checkpoint,
-                                             suffix_without_prefix_reaches_target)
+from stateforge.solving.session_replay import (
+    PREPARATION_NONE,
+    PREPARATION_VERIFIED,
+    REPLAY_TARGET_ONLY,
+    REPLAY_UNKNOWN,
+    REPLAY_VERIFIED,
+    SessionReplayCheckpoint,
+    checkpoint_from_guided_result,
+    find_verified_preparation_prefix,
+    inject_session_checkpoint_seed,
+    preparation_checkpoint_from_guided_result,
+    replay_session_checkpoint,
+    suffix_without_prefix_reaches_target)
 
 GATE = Path(__file__).resolve().parents[2] / "targets" / "session_gate"
 TARGET = "app.py::protected::173-173::block::1"
@@ -196,3 +202,164 @@ def test_checkpoint_seed_injection_is_c10_and_deduplicated(tmp_path):
     data = (tmp_path / cid).read_bytes()
     assert decode_sequence_seed(data) == ckpt.prefix_steps()
     assert inject_session_checkpoint_seed(ckpt, tmp_path) is None
+
+
+def _prepared(name="sg_prep"):
+    mod = _load_target(name)
+    ir = build_icfg(GATE)
+    accesses = extract_session_accesses(GATE, ir=ir)
+    index = build_session_index(accesses)
+    frontier = query_session_frontier(ir, index, TARGET, accesses)
+    result = _search(mod, ir, frontier)
+    assert result.status == STATUS_VERIFIED
+    ckpt = preparation_checkpoint_from_guided_result(
+        result, GATE / "app.py", ir, target=mod.target,
+        reset_hook=mod.reset_state, session_probe=mod.session_view,
+        trace_root=GATE)
+    assert ckpt is not None
+    return mod, ir, ckpt, result
+
+
+def test_preparation_prefix_is_shorter_than_the_target_sequence():
+    mod, ir, ckpt, result = _prepared("sg_prep_shape")
+    assert ckpt.checkpoint_kind == "state_preparation"
+    assert ckpt.protocol_version == "session-checkpoint-v2"
+    assert len(ckpt.prefix_steps()) == 1
+    assert ckpt.prefix_steps()[0]["path"] == "/authenticate"
+    assert ckpt.suffix_steps() == []
+    assert ckpt.source_sequence_hash
+    assert ckpt.condition_group_id
+    assert ckpt.baseline_id
+    assert ckpt.verified_condition_witness["verdict"] == "VERIFIED_TRUE"
+    # The full sequence is still a target witness, but the checkpoint is only
+    # the independently validated preparation prefix.
+    assert len(result.steps) == 2
+    assert ckpt.steps != list(result.steps)
+
+
+def test_preparation_prefix_replays_cold_but_is_not_a_target_witness():
+    mod, ir, ckpt, _result = _prepared("sg_prep_replay")
+    result = replay_session_checkpoint(
+        ckpt, mod.target, ir, reset_hook=mod.reset_state,
+        session_probe=mod.session_view, trace_root=GATE)
+    assert result.status == PREPARATION_VERIFIED
+    assert result.preparation_verified is True
+    assert result.replay_success is False
+    assert result.target_witness_replayed is False
+    assert result.target_covered is False
+    assert result.prefix_target_covered is False
+    assert result.conditions_verified is True
+    assert result.values == {"uid": 7}
+    assert result.started_from_reset is True
+
+
+def test_suffix_target_is_measured_only_in_the_suffix_span():
+    mod, ir, ckpt, _result = _prepared("sg_prep_suffix")
+    suffix = [{"method": "GET", "path": "/protected"}]
+    result = replay_session_checkpoint(
+        ckpt, mod.target, ir, reset_hook=mod.reset_state,
+        session_probe=mod.session_view, trace_root=GATE,
+        suffix_steps=suffix)
+    assert result.status == PREPARATION_VERIFIED
+    assert result.preparation_verified is True
+    assert result.prefix_target_covered is False
+    assert result.suffix_target_covered is True
+    assert result.whole_sequence_target_covered is True
+    assert ckpt.target_block in result.suffix_incremental_blocks
+    assert suffix_without_prefix_reaches_target(
+        ckpt, mod.target, ir, reset_hook=mod.reset_state,
+        trace_root=GATE, suffix_steps=suffix) is False
+
+
+def test_two_suffixes_share_the_prefix_but_not_a_live_client():
+    mod, ir, ckpt, _result = _prepared("sg_prep_two_suffixes")
+    truthy = next(b.id for b in ir.blocks.values()
+                  if b.function == "protected_truthy"
+                  and b.id.endswith("block::1"))
+    primary = replay_session_checkpoint(
+        ckpt, mod.target, ir, reset_hook=mod.reset_state,
+        session_probe=mod.session_view, trace_root=GATE,
+        suffix_steps=[{"method": "GET", "path": "/protected"}])
+    variant = replay_session_checkpoint(
+        ckpt, mod.target, ir, reset_hook=mod.reset_state,
+        session_probe=mod.session_view, trace_root=GATE,
+        suffix_steps=[{"method": "GET", "path": "/protected_truthy"}])
+    assert primary.status == PREPARATION_VERIFIED
+    assert variant.status == PREPARATION_VERIFIED
+    assert primary.values == {"uid": 7}
+    assert variant.values == {"uid": 7}
+    assert primary.suffix_target_covered is True
+    assert variant.suffix_target_covered is False
+    assert truthy in variant.suffix_covered
+    # Both runs began from a fresh reset, not from the other run's jar.
+    assert mod.observe_session().status in ("absent", "decoded")
+
+
+def test_logout_after_prefix_cannot_borrow_history_for_target_coverage():
+    mod, ir, ckpt, _result = _prepared("sg_prep_logout")
+    result = replay_session_checkpoint(
+        ckpt, mod.target, ir, reset_hook=mod.reset_state,
+        session_probe=mod.session_view, trace_root=GATE,
+        suffix_steps=[{"method": "POST", "path": "/logout"},
+                      {"method": "GET", "path": "/protected"}])
+    assert result.preparation_verified is True
+    assert result.suffix_target_covered is False
+    assert result.whole_sequence_target_covered is False
+    assert result.status == PREPARATION_VERIFIED
+
+
+def test_no_reset_or_wrong_client_scope_is_unverifiable():
+    mod, ir, ckpt, _result = _prepared("sg_prep_scope")
+    no_reset = replay_session_checkpoint(
+        ckpt, mod.target, ir, reset_hook=None,
+        session_probe=mod.session_view, trace_root=GATE)
+    assert no_reset.status == REPLAY_UNKNOWN
+    assert no_reset.preparation_verified is False
+    assert no_reset.started_from_reset is False
+
+    wrong_scope = dataclasses.replace(ckpt, client_scope="someone-else")
+    result = replay_session_checkpoint(
+        wrong_scope, mod.target, ir, reset_hook=mod.reset_state,
+        session_probe=mod.session_view, trace_root=GATE)
+    assert result.status == REPLAY_UNKNOWN
+    assert result.preparation_verified is False
+    assert result.reason == "client-scope-mismatch"
+
+
+def test_find_prefix_returns_no_reusable_prefix_for_one_step_or_no_probe():
+    mod = _load_target("sg_prep_find")
+    ir = build_icfg(GATE)
+    accesses = extract_session_accesses(GATE, ir=ir)
+    index = build_session_index(accesses)
+    frontier = query_session_frontier(ir, index, TARGET, accesses)
+    groups = [[c for c in g] for g in frontier.path_constraint_groups]
+
+    one = find_verified_preparation_prefix(
+        [{"method": "GET", "path": "/protected"}], groups, mod.target, ir,
+        TARGET, reset_hook=mod.reset_state, session_probe=mod.session_view,
+        trace_root=GATE)
+    assert one.status == PREPARATION_NONE
+
+    no_probe = find_verified_preparation_prefix(
+        [{"method": "POST", "path": "/authenticate",
+          "form": {"passcode": "valid"}},
+         {"method": "GET", "path": "/protected"}],
+        groups, mod.target, ir, TARGET, reset_hook=mod.reset_state,
+        session_probe=None, trace_root=GATE)
+    assert no_probe.status == "UNVERIFIABLE"
+
+
+def test_target_witness_checkpoint_still_separates_suffix_from_prefix():
+    mod, ir, witness = _verified("sg_prep_witness_suffix")
+    suffix = [{"method": "POST", "path": "/noise"}]
+    result = replay_session_checkpoint(
+        witness, mod.target, ir, reset_hook=mod.reset_state,
+        session_probe=mod.session_view, trace_root=GATE,
+        suffix_steps=suffix)
+    assert witness.checkpoint_kind == "target_witness"
+    assert result.status == REPLAY_VERIFIED
+    assert result.target_witness_replayed is True
+    assert result.replay_success is True
+    assert result.prefix_target_covered is True
+    assert result.suffix_target_covered is False
+    assert result.whole_sequence_target_covered is True
