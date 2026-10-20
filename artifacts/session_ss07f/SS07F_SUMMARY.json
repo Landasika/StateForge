@@ -24,11 +24,11 @@
   "linkding": "ADAPTER_C_D_PASS",
   "Spirit": "ADAPTER_C_D_PASS"
  },
- "arms_completed": 16,
+ "arms_completed": 20,
  "arms_required": 20,
  "blind_fuzzing_claimed": false,
  "frozen": false,
- "reason": "five apps C/D pass; only partial four-arm/one-seed; no five-app x multi-seed frozen blind run",
+ "reason": "one seed x five apps x four arms recorded; no multi-seed frozen blind run; SINGLE is 10-input smoke",
  "ctfd": {
   "adapter": "stateforge/targets/real_apps/ctfd/inproc_target.py",
   "contract": "artifacts/session_ss07f/ctfd/contract.json",
@@ -87,9 +87,11 @@
  },
  "arms": {
   "SINGLE": {
-   "microblog": {
-    "target": false
-   }
+   "microblog": false,
+   "CTFd": false,
+   "healthchecks": false,
+   "linkding": false,
+   "Spirit": false
   },
   "SEQUENCE": {
    "microblog": true,
@@ -112,5 +114,6 @@
    "linkding": true,
    "Spirit": true
   }
- }
+ },
+ "matrix_seed1": "artifacts/session_ss07f/MATRIX_SEED1.json"
 }

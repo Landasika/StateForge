@@ -235,3 +235,26 @@ Spirit        PASS             PASS            FAIL (40)
 
 C/D 五应用全部真实跑通；SEQUENCE 在三个应用上 40 次内未找到。
 这仍然是 **单 seed 的功能对照**，不能当作统计结论。
+
+## 单 seed × 五应用 × 四臂
+
+已补齐 SINGLE 的 10-input smoke，并生成机器可读矩阵：
+
+```text
+artifacts/session_ss07f/MATRIX_SEED1.json
+```
+
+摘要：
+
+```text
+app           SINGLE  SEQUENCE  STATE_GUIDED  STATE_REUSE
+microblog     false   true      true          true
+CTFd          false   false     true          true
+healthchecks  false   false     true          true
+linkding      false   true      true          true
+Spirit        false   false     true          true
+```
+
+注意：SINGLE 是 10 个输入的 smoke，不是与搜索臂等价的 80 预算；
+SEQUENCE 在三应用 40 次搜索内失败。因此这仍不是公平的多 seed 盲测，
+`blind_fuzzing_claimed=false`、`frozen=false` 不变。

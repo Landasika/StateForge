@@ -1,0 +1,9 @@
+{
+ "run_id": "ld-single",
+ "arm": "",
+ "seed": 1,
+ "target_block": "",
+ "app": "/home/landasika/icassp/stateforge/targets/real_apps/linkding",
+ "request_limit": 30,
+ "boundary": "target-callable-invocation"
+}

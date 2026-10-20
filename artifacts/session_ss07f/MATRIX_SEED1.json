@@ -1,0 +1,141 @@
+{
+ "protocol": "ss07f-real-apps-v1",
+ "seed": 1,
+ "apps": {
+  "microblog": {
+   "app": "microblog",
+   "STATE_GUIDED": {
+    "target": true,
+    "status": "VERIFIED",
+    "executions": 7,
+    "steps": 2
+   },
+   "STATE_REUSE": {
+    "target": true,
+    "status": "PREPARATION_VERIFIED",
+    "http": 9,
+    "bootstrap_http": 0
+   },
+   "SEQUENCE": {
+    "target": true,
+    "status": "VERIFIED",
+    "executions": 40,
+    "steps": 2
+   },
+   "SINGLE": {
+    "target": false,
+    "http": 10,
+    "atheris_inputs": 10,
+    "note": "10-input smoke; no target confirmation emitted"
+   }
+  },
+  "ctfd": {
+   "app": "ctfd",
+   "STATE_GUIDED": {
+    "target": true,
+    "status": "VERIFIED",
+    "executions": 6,
+    "steps": 2
+   },
+   "STATE_REUSE": {
+    "target": true,
+    "status": "PREPARATION_VERIFIED",
+    "http": 6,
+    "bootstrap_http": 0
+   },
+   "SEQUENCE": {
+    "target": false,
+    "status": "NOT_FOUND",
+    "executions": 40,
+    "steps": 1
+   },
+   "SINGLE": {
+    "target": false,
+    "http": 10,
+    "atheris_inputs": 10,
+    "note": "10-input smoke; no target confirmation emitted"
+   }
+  },
+  "healthchecks": {
+   "app": "healthchecks",
+   "STATE_GUIDED": {
+    "target": true,
+    "status": "VERIFIED",
+    "executions": 6,
+    "steps": 2
+   },
+   "STATE_REUSE": {
+    "target": true,
+    "status": "PREPARATION_VERIFIED",
+    "http": 6,
+    "bootstrap_http": 0
+   },
+   "SEQUENCE": {
+    "target": false,
+    "status": "NOT_FOUND",
+    "executions": 40,
+    "steps": 1
+   },
+   "SINGLE": {
+    "target": false,
+    "http": 10,
+    "atheris_inputs": 10,
+    "note": "10-input smoke; no target confirmation emitted"
+   }
+  },
+  "linkding": {
+   "app": "linkding",
+   "STATE_GUIDED": {
+    "target": true,
+    "status": "VERIFIED",
+    "executions": 6,
+    "steps": 2
+   },
+   "STATE_REUSE": {
+    "target": true,
+    "status": "PREPARATION_VERIFIED",
+    "http": 6,
+    "bootstrap_http": 0
+   },
+   "SEQUENCE": {
+    "target": true,
+    "status": "VERIFIED",
+    "executions": 29,
+    "steps": 2
+   },
+   "SINGLE": {
+    "target": false,
+    "http": 10,
+    "atheris_inputs": 10,
+    "note": "10-input smoke; no target confirmation emitted"
+   }
+  },
+  "spirit": {
+   "app": "spirit",
+   "STATE_GUIDED": {
+    "target": true,
+    "status": "VERIFIED",
+    "executions": 6,
+    "steps": 2
+   },
+   "STATE_REUSE": {
+    "target": true,
+    "status": "PREPARATION_VERIFIED",
+    "http": 6,
+    "bootstrap_http": 0
+   },
+   "SEQUENCE": {
+    "target": false,
+    "status": "NOT_FOUND",
+    "executions": 40,
+    "steps": 1
+   },
+   "SINGLE": {
+    "target": false,
+    "http": 10,
+    "atheris_inputs": 10,
+    "note": "10-input smoke; no target confirmation emitted"
+   }
+  }
+ }
+}
