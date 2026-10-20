@@ -87,9 +87,20 @@ artifacts/session_ss07f/microblog/d_reuse/per_request.jsonl
 artifacts/session_ss07f/microblog/d_reuse/sc-a4cf478e34e0.json
 ```
 
+## microblog 四臂（1 seed）
+
+```text
+SINGLE        target=false, HTTP=10, Atheris inputs=10
+SEQUENCE      target=true,  VERIFIED, 40 search executions
+STATE_GUIDED  target=true,  VERIFIED, 7 search executions
+STATE_REUSE   target=true,  HTTP=9, bootstrap=0, prefix_len=1, isolation=true
+```
+
+这是单应用、单 seed 的功能对照，不是五应用统计结论。
+
 ## 仍然缺什么
 
-- 只跑了 microblog 的 C bootstrap + D 复用；没有跑完整四臂 × 多 seed。
+- 只跑了 microblog；没有跑五应用 × 多 seed 的完整盲测。
 - `/explore` 作为第二后缀未命中目标 block（`suffix_target_covered=false`），
   未把它写成成功。
 - CTFd、healthchecks、linkding 只有启动探针；Spirit 仍缺 `test_project`。

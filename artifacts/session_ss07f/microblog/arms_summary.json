@@ -1,0 +1,30 @@
+{
+ "seed": 1,
+ "app": "microblog",
+ "target_block": "main/routes.py::index::29-29::block::1",
+ "SINGLE": {
+  "target": false,
+  "target_http_requests": 10,
+  "atheris_inputs": 10
+ },
+ "SEQUENCE": {
+  "target": true,
+  "status": "VERIFIED",
+  "executions": 40,
+  "steps": 2
+ },
+ "STATE_GUIDED": {
+  "target": true,
+  "status": "VERIFIED",
+  "executions": 7,
+  "steps": 2
+ },
+ "STATE_REUSE": {
+  "target": true,
+  "target_http_requests": 9,
+  "bootstrap_http_requests": 0,
+  "prefix_len": 1,
+  "primary_suffix_target": true,
+  "isolation": true
+ }
+}
