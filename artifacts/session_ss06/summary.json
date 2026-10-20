@@ -1,6 +1,6 @@
 {
  "protocol": "ss06-v1",
- "source_revision": "3b69923e85e52b22586b6aea8195db162ff3ebdd",
+ "source_revision": "43a744ef42573f373e52508246f60c12934636fd",
  "seeds": [
   1,
   2,
@@ -33,7 +33,7 @@
    "mean_bootstrap_execs": 0.0,
    "mean_checkpoint_validation_execs": 0.0,
    "mean_prefix_replay_execs": 0.0,
-   "mean_elapsed_wall_seconds": 0.815,
+   "mean_elapsed_wall_seconds": 0.799,
    "failures": []
   },
   "SEQUENCE": {
@@ -45,7 +45,7 @@
    "mean_bootstrap_execs": 34.1,
    "mean_checkpoint_validation_execs": 0.0,
    "mean_prefix_replay_execs": 0.0,
-   "mean_elapsed_wall_seconds": 0.608,
+   "mean_elapsed_wall_seconds": 0.59,
    "failures": []
   },
   "STATE_GUIDED": {
@@ -57,7 +57,7 @@
    "mean_bootstrap_execs": 15.0,
    "mean_checkpoint_validation_execs": 1.0,
    "mean_prefix_replay_execs": 0.0,
-   "mean_elapsed_wall_seconds": 0.74,
+   "mean_elapsed_wall_seconds": 0.717,
    "failures": []
   },
   "STATE_REUSE": {
