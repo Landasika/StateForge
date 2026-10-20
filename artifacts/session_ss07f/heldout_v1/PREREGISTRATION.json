@@ -1,0 +1,51 @@
+{
+ "protocol": "ss07f-heldout-seed4-v1",
+ "created_at": 1792503687.3172626,
+ "created_at_iso": "2026-10-20T21:41:27+0800",
+ "heldout_seed": 4,
+ "budget": 40,
+ "app_hashes": {
+  "microblog": {
+   "stateforge/targets/real_apps/microblog/inproc_target.py": "63b8d9daf5679ff71154d87edb296b74f12d779b3dd649519a3b7d08b7bb85bb",
+   "artifacts/session_ss07f/microblog/contract.json": "5884c4bde2f3ce6fe0d49e28999731850eb4b7a3b2f1467e9367b0093e3e373c",
+   "artifacts/session_ss07f/microblog/request_pool.json": "4f58989324b35fcbcb07a50de23f61fec4b9c4e54ffb9f9c723c43b78af662c8"
+  },
+  "ctfd": {
+   "stateforge/targets/real_apps/ctfd/inproc_target.py": "533b3f1c8aff1f51e86ce070d06af7eb2ae3c051497c90f03419037ec0a844a0",
+   "artifacts/session_ss07f/ctfd/contract.json": "c3eb0b2e53db5154d851e6e04d71f433931c2e26655a931fa1ef2f0d9cb26291",
+   "artifacts/session_ss07f/ctfd/request_pool.json": "a58e3028fb9cb2fc0d61d78fce40f001db9408a2e03440edc8a34d0a9c0ebce2"
+  },
+  "healthchecks": {
+   "stateforge/targets/real_apps/healthchecks/inproc_target.py": "c59147b9660166bc349688677fdc32ff9f930023e889d80dbe098529eab52ad2",
+   "artifacts/session_ss07f/healthchecks/contract.json": "efd70ec4662743034b14ea364669681c7468de5996b3bfc86ffb7b767acdc5ae",
+   "artifacts/session_ss07f/healthchecks/request_pool.json": "9cef905b504bffa39df67ae920eb28871df43160aec88844dc0079f7fb8fbf6d"
+  },
+  "linkding": {
+   "stateforge/targets/real_apps/linkding/inproc_target.py": "b5053e7d91c4a78899ae780a329a47e8b853c4c63cb530ea491e045ef29bfc58",
+   "artifacts/session_ss07f/linkding/contract.json": "67cf95a84e88d852599cba9e2106b751de032bfccfa8d8281c0496ec964de731",
+   "artifacts/session_ss07f/linkding/request_pool.json": "918858aa6a615f9eb6b7d6dd545d558402d314090f24ab9ee54f9b27c31a77fd"
+  },
+  "spirit": {
+   "stateforge/targets/real_apps/spirit/inproc_target.py": "137c2dbed15a2c670aded472e4a75ac32e95ac0df097177237ac2657a1d9e42b",
+   "artifacts/session_ss07f/spirit/contract.json": "88dcce3299f39dda1d60ca8a1db841472c38952aec9da2e3aad0316c8c586f1b",
+   "artifacts/session_ss07f/spirit/request_pool.json": "fdb8468bc8be7f5522dfd1d1e48cb1e434b4b4ee25e6d3a950b326cda2c8703d"
+  }
+ },
+ "engine_hashes": {
+  "stateforge/evaluation/real_app_point.py": "ef69332f419ed98ae418e256985d0a297f50d7885eb625e68b0df7449455a0fe",
+  "stateforge/evaluation/real_app_sequence.py": "d6046404e48aa1f409c6cc4a00659f8fc92fda735106f211818c749c139de23d",
+  "stateforge/evaluation/real_app_replay.py": "edb34ab11f527d36b682808b42c4beaa2633da19ed261c07b6b41cb72108b803",
+  "stateforge/fuzzing/session_guided.py": "6ba113ad111479a7ff0214d4e052927935634ee68521b8ea4b8a9d848e4e028e",
+  "stateforge/solving/session_replay.py": "85ba0a39d301657dc1caf4aa13fe3152515d28108f3c1ce51909bd856ac7fd18",
+  "stateforge/runtime/execution_costs.py": "ffb612b469f215642255c9702994d3a3d5e4748a9fe03aff43b8d225b3371521"
+ },
+ "arm_order": [
+  "SINGLE",
+  "SEQUENCE",
+  "STATE_GUIDED",
+  "STATE_REUSE"
+ ],
+ "prediction": "STATE_GUIDED 5/5, STATE_REUSE 5/5, SEQUENCE 2/5-3/5, SINGLE 0/5",
+ "acceptance": "freeze only if C and D are 5/5 and independent replay 5/5; failures recorded",
+ "note": "held-out seed only; adapters/contracts were authored during seed1-3 development and are frozen here before seed4"
+}
