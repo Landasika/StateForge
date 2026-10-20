@@ -189,6 +189,8 @@ class SessionReplayResult:
     suffix_incremental_blocks: tuple[str, ...] = ()
     prefix_covered: tuple[str, ...] = ()
     suffix_covered: tuple[str, ...] = ()
+    prefix_step_spans: tuple[tuple[int, int], ...] = ()
+    suffix_step_spans: tuple[tuple[int, int], ...] = ()
 
     def to_dict(self) -> dict:
         return {
@@ -215,6 +217,8 @@ class SessionReplayResult:
             "suffix_incremental_blocks": list(self.suffix_incremental_blocks),
             "prefix_covered": list(self.prefix_covered),
             "suffix_covered": list(self.suffix_covered),
+            "prefix_step_spans": [list(x) for x in self.prefix_step_spans],
+            "suffix_step_spans": [list(x) for x in self.suffix_step_spans],
         }
 
 
@@ -353,6 +357,11 @@ def find_verified_preparation_prefix(
         # A prefix that already reaches the target is not a reusable
         # preparation prefix: keep the full target witness instead.
         if target_block in covered:
+            # No shorter prefix can be a *preparation* prefix if the first
+            # step already reaches the target.  Still record whether the
+            # observation was authoritative, so the final status distinguishes
+            # "nothing reusable" from "we could not observe at all".
+            had_authoritative = had_authoritative or view.authoritative
             continue
         if not view.authoritative:
             continue
@@ -452,11 +461,15 @@ def replay_session_checkpoint(ckpt: SessionReplayCheckpoint, target,
     prefix_view = SessionSnapshotView(SESSION_STATUS_UNKNOWN,
                                       observation_point="after_prefix",
                                       source="after_prefix")
+    prefix_step_spans: list[tuple[int, int]] = []
+    suffix_step_spans: list[tuple[int, int]] = []
     try:
         with prefix_trace:
             for step in prefix:
+                start_ev = len(prefix_trace.events)
                 target(json.dumps(step, ensure_ascii=False,
                                   sort_keys=True).encode("utf-8"))
+                prefix_step_spans.append((start_ev, len(prefix_trace.events)))
             prefix_view = _view_from_probe(session_probe)
     finally:
         reset_hook()
@@ -487,6 +500,7 @@ def replay_session_checkpoint(ckpt: SessionReplayCheckpoint, target,
             suffix_view = SessionSnapshotView(SESSION_STATUS_UNKNOWN,
                                               observation_point="after_suffix",
                                               source="after_suffix")
+            suffix_step_spans: list[tuple[int, int]] = []
             try:
                 with trace:
                     for step in prefix:
@@ -494,8 +508,11 @@ def replay_session_checkpoint(ckpt: SessionReplayCheckpoint, target,
                                           sort_keys=True).encode("utf-8"))
                     boundary = len(trace.events)
                     for step in suffix:
+                        start_ev = len(trace.events)
                         target(json.dumps(step, ensure_ascii=False,
                                           sort_keys=True).encode("utf-8"))
+                        suffix_step_spans.append((start_ev,
+                                                  len(trace.events)))
                     suffix_view = _view_from_probe(session_probe)
             finally:
                 reset_hook()
@@ -532,6 +549,7 @@ def replay_session_checkpoint(ckpt: SessionReplayCheckpoint, target,
                                         observation_point="after_full_sequence",
                                         source="after_full_sequence")
         boundary = 0
+        suffix_step_spans = []
         try:
             with trace:
                 for step in prefix:
@@ -539,8 +557,10 @@ def replay_session_checkpoint(ckpt: SessionReplayCheckpoint, target,
                                       sort_keys=True).encode("utf-8"))
                 boundary = len(trace.events)
                 for step in suffix:
+                    start_ev = len(trace.events)
                     target(json.dumps(step, ensure_ascii=False,
                                       sort_keys=True).encode("utf-8"))
+                    suffix_step_spans.append((start_ev, len(trace.events)))
                 full_view = _view_from_probe(session_probe)
         finally:
             reset_hook()
@@ -605,7 +625,9 @@ def replay_session_checkpoint(ckpt: SessionReplayCheckpoint, target,
         prefix_target_covered=prefix_target,
         whole_sequence_target_covered=whole_target,
         suffix_incremental_blocks=suffix_incremental,
-        prefix_covered=prefix_covered, suffix_covered=suffix_covered)
+        prefix_covered=prefix_covered, suffix_covered=suffix_covered,
+        prefix_step_spans=tuple(prefix_step_spans),
+        suffix_step_spans=tuple(suffix_step_spans))
 
 
 def suffix_without_prefix_reaches_target(ckpt: SessionReplayCheckpoint,

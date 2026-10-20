@@ -251,6 +251,8 @@ def test_preparation_prefix_replays_cold_but_is_not_a_target_witness():
     assert result.conditions_verified is True
     assert result.values == {"uid": 7}
     assert result.started_from_reset is True
+    assert len(result.prefix_step_spans) == 1
+    assert result.prefix_step_spans[0][1] > result.prefix_step_spans[0][0]
 
 
 def test_suffix_target_is_measured_only_in_the_suffix_span():
@@ -266,6 +268,8 @@ def test_suffix_target_is_measured_only_in_the_suffix_span():
     assert result.suffix_target_covered is True
     assert result.whole_sequence_target_covered is True
     assert ckpt.target_block in result.suffix_incremental_blocks
+    assert len(result.suffix_step_spans) == 1
+    assert result.suffix_step_spans[0][1] > result.suffix_step_spans[0][0]
     assert suffix_without_prefix_reaches_target(
         ckpt, mod.target, ir, reset_hook=mod.reset_state,
         trace_root=GATE, suffix_steps=suffix) is False
@@ -363,3 +367,4 @@ def test_target_witness_checkpoint_still_separates_suffix_from_prefix():
     assert result.prefix_target_covered is True
     assert result.suffix_target_covered is False
     assert result.whole_sequence_target_covered is True
+    assert len(result.suffix_step_spans) == 1
