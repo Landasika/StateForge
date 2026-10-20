@@ -1,0 +1,9 @@
+System check identified some issues:
+
+WARNINGS:
+?: (staticfiles.W004) The directory '/home/landasika/icassp/external/linkding/data/favicons' in the STATICFILES_DIRS setting does not exist.
+?: (staticfiles.W004) The directory '/home/landasika/icassp/external/linkding/data/previews' in the STATICFILES_DIRS setting does not exist.
+
+System check identified 2 issues (0 silenced).
+[20/Oct/2026 09:03:18] "GET /login HTTP/1.1" 301 0
+[20/Oct/2026 09:03:18] "GET /login/ HTTP/1.1" 200 3392

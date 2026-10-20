@@ -1,0 +1,11 @@
+System check identified some issues:
+
+WARNINGS:
+?: (hc.api.W002) No SMTP configuration, cannot send email
+	HINT: See https://github.com/healthchecks/healthchecks#sending-emails
+?: (mail.W001) Your MAILERS setting has no 'default' entry. Sending email without a valid mailer will fail.
+	HINT: Add a 'default' entry to MAILERS.
+
+System check identified 2 issues (0 silenced).
+[20/Oct/2026 09:03:16] "GET / HTTP/1.1" 302 0
+[20/Oct/2026 09:03:16] "GET /accounts/login/ HTTP/1.1" 200 9795

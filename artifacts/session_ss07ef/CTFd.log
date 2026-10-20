@@ -1,0 +1,20 @@
+ * Serving Flask app 'wsgi' (lazy loading)
+ * Environment: development
+ * Debug mode: on
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [werkzeug] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5011
+INFO  [werkzeug] [33mPress CTRL+C to quit[0m
+INFO  [werkzeug]  * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 224-260-494
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+127.0.0.1 - - [20/Oct/2026 17:03:15] "[32mGET / HTTP/1.1[0m" 302 -
+INFO  [werkzeug] 127.0.0.1 - - [20/Oct/2026 17:03:15] "[32mGET / HTTP/1.1[0m" 302 -
+127.0.0.1 - - [20/Oct/2026 17:03:15] "GET /setup HTTP/1.1" 200 -
+INFO  [werkzeug] 127.0.0.1 - - [20/Oct/2026 17:03:15] "GET /setup HTTP/1.1" 200 -
+ * Loaded module, <module 'CTFd.plugins.challenges' from '/home/landasika/icassp/external/CTFd/CTFd/plugins/challenges/__init__.py'>
+ * Loaded module, <module 'CTFd.plugins.dynamic_challenges' from '/home/landasika/icassp/external/CTFd/CTFd/plugins/dynamic_challenges/__init__.py'>
+ * Loaded module, <module 'CTFd.plugins.flags' from '/home/landasika/icassp/external/CTFd/CTFd/plugins/flags/__init__.py'>

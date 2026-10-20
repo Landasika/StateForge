@@ -1,0 +1,211 @@
+{
+ "protocol": "ss07-five-apps-v1",
+ "source_revision": "d363bf84e5489ffa050655839dca7425a31b38c6",
+ "pre_registered": {
+  "protocol": "ss07-five-apps-v1",
+  "created_at": 1792486991.1340597,
+  "source_revision": "d363bf84e5489ffa050655839dca7425a31b38c6",
+  "apps": [
+   {
+    "name": "CTFd",
+    "path": "external/CTFd",
+    "python": "external/CTFd/.venv/bin/python",
+    "command": [
+     "-m",
+     "flask",
+     "run",
+     "--port",
+     "5011"
+    ],
+    "health": "http://127.0.0.1:5011/",
+    "env": {
+     "DATABASE_URL": "sqlite:////tmp/sf_ctfd.sqlite",
+     "SECRET_KEY": "sf-ctfd-test",
+     "FLASK_RUN_FROM_CLI": "1",
+     "FLASK_APP": "wsgi"
+    },
+    "source_hash": "c45bd0e0cf9289aa93979c35c22124d4250b3b2ebad15ffd958df8b23417a1ba",
+    "pre_registered": true
+   },
+   {
+    "name": "healthchecks",
+    "path": "external/healthchecks",
+    "python": "external/healthchecks/.venv/bin/python",
+    "command": [
+     "manage.py",
+     "runserver",
+     "127.0.0.1:5012",
+     "--noreload"
+    ],
+    "health": "http://127.0.0.1:5012/",
+    "env": {
+     "DB_NAME": "/tmp/sf_healthchecks.sqlite",
+     "SECRET_KEY": "sf-hc-test",
+     "DEBUG": "True",
+     "ALLOWED_HOSTS": "127.0.0.1,localhost"
+    },
+    "source_hash": "a8eb3ea8b8bb3df335f481d49e10ba80ff990ca61ac91075a4ea2e4f082f3de6",
+    "pre_registered": true
+   },
+   {
+    "name": "linkding",
+    "path": "external/linkding",
+    "python": "external/linkding/.venv/bin/python",
+    "command": [
+     "manage.py",
+     "runserver",
+     "127.0.0.1:5013",
+     "--noreload"
+    ],
+    "health": "http://127.0.0.1:5013/login",
+    "env": {
+     "LD_SUPERUSER_NAME": "admin",
+     "LD_SUPERUSER_PASSWORD": "x",
+     "DJANGO_DEBUG": "0"
+    },
+    "source_hash": "4926d735a2d5c38bf5533883c1ec18d68b0eb2793465fd5e4eca3080a4396ce2",
+    "pre_registered": true
+   },
+   {
+    "name": "Spirit",
+    "path": "external/Spirit",
+    "python": "external/Spirit/.venv/bin/python",
+    "command": [
+     "runtests.py"
+    ],
+    "health": "http://127.0.0.1:5014/",
+    "env": {},
+    "source_hash": "ffb4571da67c59f68fb4f3f6eb7c60c697ba1eed068bde43509496bf0b8aa486",
+    "pre_registered": true
+   },
+   {
+    "name": "microblog",
+    "path": "external/microblog",
+    "python": "external/microblog/.venv/bin/python",
+    "command": [
+     "-m",
+     "flask",
+     "--app",
+     "microblog.py",
+     "run",
+     "--host",
+     "127.0.0.1",
+     "--port",
+     "5010"
+    ],
+    "health": "http://127.0.0.1:5010/auth/login",
+    "env": {
+     "DATABASE_URL": "sqlite:////tmp/sf_microblog.db",
+     "SECRET_KEY": "sf-microblog-test",
+     "FLASK_APP": "microblog.py"
+    },
+    "source_hash": "d3380292e88717a10d0e7acc46dffd94c45abbb8b0fcd468314e5045a7f20ace",
+    "pre_registered": true
+   }
+  ]
+ },
+ "results": [
+  {
+   "app": "CTFd",
+   "status": "SMOKE_PASS",
+   "reason": "HTTP 200",
+   "source_hash": "c45bd0e0cf9289aa93979c35c22124d4250b3b2ebad15ffd958df8b23417a1ba",
+   "pre_registered_hash": "c45bd0e0cf9289aa93979c35c22124d4250b3b2ebad15ffd958df8b23417a1ba",
+   "launch_command": [
+    "/home/landasika/icassp/external/CTFd/.venv/bin/python",
+    "-m",
+    "flask",
+    "run",
+    "--port",
+    "5011"
+   ],
+   "health": "http://127.0.0.1:5011/",
+   "log": "artifacts/session_ss07ef/CTFd.log",
+   "elapsed_wall_seconds": 2.406021,
+   "arms_run": 0,
+   "seeds_run": 0
+  },
+  {
+   "app": "healthchecks",
+   "status": "SMOKE_PASS",
+   "reason": "HTTP 200",
+   "source_hash": "a8eb3ea8b8bb3df335f481d49e10ba80ff990ca61ac91075a4ea2e4f082f3de6",
+   "pre_registered_hash": "a8eb3ea8b8bb3df335f481d49e10ba80ff990ca61ac91075a4ea2e4f082f3de6",
+   "launch_command": [
+    "/home/landasika/icassp/external/healthchecks/.venv/bin/python",
+    "manage.py",
+    "runserver",
+    "127.0.0.1:5012",
+    "--noreload"
+   ],
+   "health": "http://127.0.0.1:5012/",
+   "log": "artifacts/session_ss07ef/healthchecks.log",
+   "elapsed_wall_seconds": 0.745729,
+   "arms_run": 0,
+   "seeds_run": 0
+  },
+  {
+   "app": "linkding",
+   "status": "SMOKE_PASS",
+   "reason": "HTTP 200",
+   "source_hash": "4926d735a2d5c38bf5533883c1ec18d68b0eb2793465fd5e4eca3080a4396ce2",
+   "pre_registered_hash": "4926d735a2d5c38bf5533883c1ec18d68b0eb2793465fd5e4eca3080a4396ce2",
+   "launch_command": [
+    "/home/landasika/icassp/external/linkding/.venv/bin/python",
+    "manage.py",
+    "runserver",
+    "127.0.0.1:5013",
+    "--noreload"
+   ],
+   "health": "http://127.0.0.1:5013/login",
+   "log": "artifacts/session_ss07ef/linkding.log",
+   "elapsed_wall_seconds": 0.733702,
+   "arms_run": 0,
+   "seeds_run": 0
+  },
+  {
+   "app": "Spirit",
+   "status": "ENV_BLOCKED",
+   "reason": "process-exit=1",
+   "source_hash": "ffb4571da67c59f68fb4f3f6eb7c60c697ba1eed068bde43509496bf0b8aa486",
+   "pre_registered_hash": "ffb4571da67c59f68fb4f3f6eb7c60c697ba1eed068bde43509496bf0b8aa486",
+   "launch_command": [
+    "/home/landasika/icassp/external/Spirit/.venv/bin/python",
+    "runtests.py"
+   ],
+   "health": "http://127.0.0.1:5014/",
+   "log": "artifacts/session_ss07ef/Spirit.log",
+   "elapsed_wall_seconds": 0.251134,
+   "arms_run": 0,
+   "seeds_run": 0
+  },
+  {
+   "app": "microblog",
+   "status": "SMOKE_PASS",
+   "reason": "HTTP 200",
+   "source_hash": "d3380292e88717a10d0e7acc46dffd94c45abbb8b0fcd468314e5045a7f20ace",
+   "pre_registered_hash": "d3380292e88717a10d0e7acc46dffd94c45abbb8b0fcd468314e5045a7f20ace",
+   "launch_command": [
+    "/home/landasika/icassp/external/microblog/.venv/bin/python",
+    "-m",
+    "flask",
+    "--app",
+    "microblog.py",
+    "run",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "5010"
+   ],
+   "health": "http://127.0.0.1:5010/auth/login",
+   "log": "artifacts/session_ss07ef/microblog.log",
+   "elapsed_wall_seconds": 0.206725,
+   "arms_run": 0,
+   "seeds_run": 0
+  }
+ ],
+ "summary": {
+  "SMOKE_PASS": 4,
+  "ENV_BLOCKED": 1
+ }
+}
