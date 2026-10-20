@@ -1,0 +1,44 @@
+[
+ {
+  "method": "POST",
+  "path": "/authenticate",
+  "form": {
+   "passcode": "wrong"
+  }
+ },
+ {
+  "method": "POST",
+  "path": "/authenticate",
+  "form": {
+   "passcode": "valid"
+  }
+ },
+ {
+  "method": "GET",
+  "path": "/protected"
+ },
+ {
+  "method": "GET",
+  "path": "/protected_truthy"
+ },
+ {
+  "method": "GET",
+  "path": "/protected_membership"
+ },
+ {
+  "method": "GET",
+  "path": "/protected_subscript"
+ },
+ {
+  "method": "POST",
+  "path": "/noise"
+ },
+ {
+  "method": "POST",
+  "path": "/logout"
+ },
+ {
+  "method": "POST",
+  "path": "/clear"
+ }
+]
