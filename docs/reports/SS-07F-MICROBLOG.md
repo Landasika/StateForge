@@ -336,3 +336,22 @@ artifacts/session_ss07f/MATRIX_SEEDS_1_3.json
 
 这证明 C 在三个 seed 上稳定；D 的 Spirit 同进程失败是协议层面的登录预算问题，
 不是 checkpoint 无效。仍然没有完整四臂 × 多 seed，也没有冻结。
+
+## 修复 Spirit 同进程 D 限流
+
+给 `real_app_point.py` 加了 `--d-only`：复用已保存的 C 结果，在**新进程**
+中只跑 D。Spirit seed 2/3 用该模式重跑：
+
+```text
+seed 2  D  PREPARATION_VERIFIED  suffix_target=true  isolation=true
+seed 3  D  PREPARATION_VERIFIED  suffix_target=true  isolation=true
+```
+
+因此现在：
+
+```text
+C/D 15/15
+```
+
+其中 seed 2/3 的 Spirit 是 D-only 新进程；同进程失败仍保留在历史记录里。
+这不是完整四臂多 seed，`frozen=false` 不变。

@@ -10,3 +10,15 @@
 {"event": "sequence_end", "sequence_id": "spirit-3-d:seq:5", "run_id": "spirit-3-d", "arm": "STATE_REUSE", "seed": 3, "status": "ok", "steps": 2}
 {"event": "sequence_start", "sequence_id": "spirit-3-d:seq:6", "run_id": "spirit-3-d", "arm": "STATE_REUSE", "seed": 3, "kind": "isolation"}
 {"event": "sequence_end", "sequence_id": "spirit-3-d:seq:6", "run_id": "spirit-3-d", "arm": "STATE_REUSE", "seed": 3, "status": "ok", "steps": 1}
+{"event": "sequence_start", "sequence_id": "spirit-3-d:seq:1", "run_id": "spirit-3-d", "arm": "STATE_REUSE", "seed": 3, "kind": "checkpoint"}
+{"event": "sequence_end", "sequence_id": "spirit-3-d:seq:1", "run_id": "spirit-3-d", "arm": "STATE_REUSE", "seed": 3, "status": "ok", "steps": 0}
+{"event": "sequence_start", "sequence_id": "spirit-3-d:seq:2", "run_id": "spirit-3-d", "arm": "STATE_REUSE", "seed": 3, "kind": "checkpoint-validation"}
+{"event": "sequence_end", "sequence_id": "spirit-3-d:seq:2", "run_id": "spirit-3-d", "arm": "STATE_REUSE", "seed": 3, "status": "ok", "steps": 1}
+{"event": "sequence_start", "sequence_id": "spirit-3-d:seq:3", "run_id": "spirit-3-d", "arm": "STATE_REUSE", "seed": 3, "kind": "suffix"}
+{"event": "sequence_end", "sequence_id": "spirit-3-d:seq:3", "run_id": "spirit-3-d", "arm": "STATE_REUSE", "seed": 3, "status": "ok", "steps": 0}
+{"event": "sequence_start", "sequence_id": "spirit-3-d:seq:4", "run_id": "spirit-3-d", "arm": "STATE_REUSE", "seed": 3, "kind": "checkpoint-validation"}
+{"event": "sequence_end", "sequence_id": "spirit-3-d:seq:4", "run_id": "spirit-3-d", "arm": "STATE_REUSE", "seed": 3, "status": "ok", "steps": 1}
+{"event": "sequence_start", "sequence_id": "spirit-3-d:seq:5", "run_id": "spirit-3-d", "arm": "STATE_REUSE", "seed": 3, "kind": "prefix-suffix-replay"}
+{"event": "sequence_end", "sequence_id": "spirit-3-d:seq:5", "run_id": "spirit-3-d", "arm": "STATE_REUSE", "seed": 3, "status": "ok", "steps": 2}
+{"event": "sequence_start", "sequence_id": "spirit-3-d:seq:6", "run_id": "spirit-3-d", "arm": "STATE_REUSE", "seed": 3, "kind": "isolation"}
+{"event": "sequence_end", "sequence_id": "spirit-3-d:seq:6", "run_id": "spirit-3-d", "arm": "STATE_REUSE", "seed": 3, "status": "ok", "steps": 1}

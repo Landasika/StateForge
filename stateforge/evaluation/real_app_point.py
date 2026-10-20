@@ -69,6 +69,8 @@ def main(argv=None) -> int:
     parser.add_argument("app", choices=sorted(APPS))
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--max-execs", type=int, default=40)
+    parser.add_argument("--d-only", action="store_true",
+                        help="reuse out/c result and run only D in this process")
     parser.add_argument("--out", required=True)
     args = parser.parse_args(argv)
     cfg = APPS[args.app]
@@ -86,28 +88,48 @@ def main(argv=None) -> int:
     source = ROOT / cfg["source"]
     ir = build_icfg(source)
     pool = load_request_pool(ROOT / cfg["pool"])
-    c_ledger = ExecutionCostLedger(
-        out_dir=out / "c", run_id=f"{args.app}-{args.seed}-c",
-        arm="STATE_GUIDED", seed=args.seed, app=cfg["source"],
-        target_block=cfg["target"], request_limit=80)
-    c_target = c_ledger.wrap_target(adapter.target, phase="bootstrap")
-    c_reset = c_ledger.wrap_reset(adapter.reset_state)
-    c_probe = c_ledger.wrap_observer(adapter.session_view)
-    c_ledger.begin_sequence("bootstrap")
-    result = bootstrap_session_guided(
-        adapter, c_target, ir, source_dir=source, target_block=cfg["target"],
-        request_pool=pool, corpus_dir=out / "corpus", out_dir=out / "c",
-        max_steps=3, max_execs=args.max_execs, seed=args.seed,
-        guided=True, session_contract=ROOT / cfg["contract"])
-    c_ledger.end_sequence()
-    c_costs = c_ledger.finish()
-    record = {
-        "app": args.app, "seed": args.seed,
-        "c": {"found": result.found, "status": result.status,
-              "executions": result.executions,
-              "steps": list(result.steps), "costs": c_costs},
-        "d": None,
-    }
+    if args.d_only:
+        raw = json.loads((out / "c/session_guided/result.json").read_text(
+            encoding="utf-8"))
+        from stateforge.fuzzing.session_guided import SessionGuidedResult
+        result = SessionGuidedResult(
+            target_block=cfg["target"], guided=True,
+            found=raw["found"], status=raw["status"],
+            seed=None, steps=tuple(raw.get("steps") or ()),
+            writer_blocks=tuple(raw.get("writer_blocks") or ()),
+            session_witness=raw.get("session_witness"),
+            executions=raw.get("executions", 0))
+        record = {
+            "app": args.app, "seed": args.seed,
+            "c": {"found": result.found, "status": result.status,
+                  "executions": result.executions,
+                  "steps": list(result.steps), "costs": {},
+                  "reused_from": str(out / "c/session_guided/result.json")},
+            "d": None,
+        }
+    else:
+        c_ledger = ExecutionCostLedger(
+            out_dir=out / "c", run_id=f"{args.app}-{args.seed}-c",
+            arm="STATE_GUIDED", seed=args.seed, app=cfg["source"],
+            target_block=cfg["target"], request_limit=80)
+        c_target = c_ledger.wrap_target(adapter.target, phase="bootstrap")
+        c_reset = c_ledger.wrap_reset(adapter.reset_state)
+        c_probe = c_ledger.wrap_observer(adapter.session_view)
+        c_ledger.begin_sequence("bootstrap")
+        result = bootstrap_session_guided(
+            adapter, c_target, ir, source_dir=source, target_block=cfg["target"],
+            request_pool=pool, corpus_dir=out / "corpus", out_dir=out / "c",
+            max_steps=3, max_execs=args.max_execs, seed=args.seed,
+            guided=True, session_contract=ROOT / cfg["contract"])
+        c_ledger.end_sequence()
+        c_costs = c_ledger.finish()
+        record = {
+            "app": args.app, "seed": args.seed,
+            "c": {"found": result.found, "status": result.status,
+                  "executions": result.executions,
+                  "steps": list(result.steps), "costs": c_costs},
+            "d": None,
+        }
     if result.found:
         d_ledger = ExecutionCostLedger(
             out_dir=out / "d", run_id=f"{args.app}-{args.seed}-d",

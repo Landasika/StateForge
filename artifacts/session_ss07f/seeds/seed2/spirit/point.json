@@ -19,25 +19,13 @@
     "path": "/user/"
    }
   ],
-  "costs": {
-   "target_http_requests": 8,
-   "sequence_attempts": 1,
-   "atheris_inputs": 0,
-   "bootstrap_http_requests": 8,
-   "checkpoint_validation_http_requests": 0,
-   "prefix_replay_http_requests": 0,
-   "suffix_http_requests": 0,
-   "observer_calls": 0,
-   "reset_calls": 0,
-   "scheduler_decisions": 0,
-   "elapsed_wall_seconds": 3.126461,
-   "analysis_wall_seconds": 0.0
-  }
+  "costs": {},
+  "reused_from": "/home/landasika/icassp/artifacts/session_ss07f/seeds/seed2/spirit/c/session_guided/result.json"
  },
  "d": {
-  "status": "REPLAY_FAILED",
-  "preparation_verified": false,
-  "suffix_target_covered": false,
+  "status": "PREPARATION_VERIFIED",
+  "preparation_verified": true,
+  "suffix_target_covered": true,
   "isolation": true,
   "prefix_len": 1,
   "checkpoint_id": "sc-6d5a1dbb25ba",
@@ -53,7 +41,7 @@
    "observer_calls": 7,
    "reset_calls": 16,
    "scheduler_decisions": 0,
-   "elapsed_wall_seconds": 0.387949,
+   "elapsed_wall_seconds": 2.915629,
    "analysis_wall_seconds": 0.0
   }
  }

@@ -74,7 +74,7 @@
  "app_source_hash": "f6e999350ecbb9568703d4e4bffa6fb33b2bc77e0c7fdf52b6b3e243d144e84e",
  "session_backend": "flask-cookie",
  "fixture_id": "session-gate",
- "initialization_seed": "5ffa8eff39ff89b3",
+ "initialization_seed": "",
  "client_scope": "spirit-client",
  "condition_group_id": "cond-c56e9b1dd68d",
  "source_sequence_hash": "c2bd24bdd97fa13c",

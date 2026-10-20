@@ -9,7 +9,7 @@
  "observer_calls": 7,
  "reset_calls": 16,
  "scheduler_decisions": 0,
- "elapsed_wall_seconds": 0.387965,
+ "elapsed_wall_seconds": 2.915644,
  "analysis_wall_seconds": 0.0,
  "run_id": "spirit-2-d",
  "arm": "STATE_REUSE",

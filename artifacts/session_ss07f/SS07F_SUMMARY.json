@@ -28,7 +28,7 @@
  "arms_required": 20,
  "blind_fuzzing_claimed": false,
  "frozen": false,
- "reason": "three seeds C pass; D same-process fails Spirit seed2/3 due login rate limit; independent replay passes; full four-arm multi-seed and freeze still absent",
+ "reason": "C/D 15/15; independent replay 5/5; full four-arm multi-seed and frozen blind protocol still absent",
  "ctfd": {
   "adapter": "stateforge/targets/real_apps/ctfd/inproc_target.py",
   "contract": "artifacts/session_ss07f/ctfd/contract.json",
@@ -131,7 +131,8 @@
  "seed2_3": {
   "c_pass": 10,
   "d_same_process_pass": 8,
-  "d_same_process_fail": "Spirit seed2/3 (login rate limit)",
-  "independent_replay_pass": 10
- }
+  "d_after_fresh_d_only_pass": 10,
+  "note": "Spirit same-process D hit login rate limit; D-only fresh process passes seed2/3"
+ },
+ "d_points": "15/15 (seed1 in-process; seed2/3 four in-process plus Spirit D-only fresh)"
 }

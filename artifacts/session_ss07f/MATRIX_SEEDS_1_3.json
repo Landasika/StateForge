@@ -79,16 +79,18 @@
   },
   "spirit": {
    "2": {
-    "target": false,
-    "status": "REPLAY_FAILED",
+    "target": true,
+    "status": "PREPARATION_VERIFIED",
     "isolation": true,
-    "checkpoint": "sc-6d5a1dbb25ba"
+    "checkpoint": "sc-6d5a1dbb25ba",
+    "d_only": true
    },
    "3": {
-    "target": false,
-    "status": "REPLAY_FAILED",
+    "target": true,
+    "status": "PREPARATION_VERIFIED",
     "isolation": true,
-    "checkpoint": "sc-6d5a1dbb25ba"
+    "checkpoint": "sc-6d5a1dbb25ba",
+    "d_only": true
    },
    "1": {
     "target": true,
