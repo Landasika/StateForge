@@ -22,9 +22,9 @@
   "CTFd": "ADAPTER_C_D_PASS",
   "healthchecks": "SMOKE_PASS",
   "linkding": "ADAPTER_C_D_PASS",
-  "Spirit": "ENV_BLOCKED"
+  "Spirit": "ADAPTER_C_D_PASS"
  },
- "arms_completed": 6,
+ "arms_completed": 8,
  "arms_required": 20,
  "blind_fuzzing_claimed": false,
  "frozen": false,
@@ -65,5 +65,24 @@
    "bootstrap_http_requests": 0
   }
  },
- "spirit_fixture": "generated test_project; probe pending"
+ "spirit_fixture": "generated test_project",
+ "spirit": {
+  "adapter": "stateforge/targets/real_apps/spirit/inproc_target.py",
+  "contract": "artifacts/session_ss07f/spirit/contract.json",
+  "fixture": "external/Spirit/test_project generated with: PATH=$PWD/.venv/bin:$PATH .venv/bin/spirit startproject test_project",
+  "c_bootstrap": {
+   "found": true,
+   "status": "VERIFIED",
+   "executions": 6,
+   "steps": 2
+  },
+  "d_reuse": {
+   "prefix_len": 1,
+   "validation": "PREPARATION_VERIFIED",
+   "primary_suffix_target": true,
+   "isolation": true,
+   "target_http_requests": 6,
+   "bootstrap_http_requests": 0
+  }
+ }
 }

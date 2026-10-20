@@ -1,0 +1,23 @@
+{
+ "checkpoint_id": "sc-6d5a1dbb25ba",
+ "prefix_len": 1,
+ "validation": "PREPARATION_VERIFIED",
+ "prep_verified": true,
+ "primary": "PREPARATION_VERIFIED",
+ "primary_suffix_target": true,
+ "isolation": true,
+ "cost": {
+  "target_http_requests": 6,
+  "sequence_attempts": 6,
+  "atheris_inputs": 0,
+  "bootstrap_http_requests": 0,
+  "checkpoint_validation_http_requests": 3,
+  "prefix_replay_http_requests": 1,
+  "suffix_http_requests": 2,
+  "observer_calls": 7,
+  "reset_calls": 16,
+  "scheduler_decisions": 0,
+  "elapsed_wall_seconds": 2.815122,
+  "analysis_wall_seconds": 0.0
+ }
+}

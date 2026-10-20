@@ -1,0 +1,18 @@
+{
+ "function": "update",
+ "file": "user/views.py",
+ "trace_root": "/home/landasika/icassp/external/Spirit/spirit",
+ "groups": [[
+   {"key_kind": "CONST", "key_expr": "_auth_user_id", "op": "EXISTS",
+    "value": null, "value_kind": "NONE", "direction": "true",
+    "guard_block": "user/views.py::update::24-24::entry::1",
+    "source_file": "user/views.py", "source_line": 24, "source_col": 0,
+    "reader_site_id": "spirit-profile", "resolvable": true}
+ ]],
+ "writers": [
+   {"writer_site_id": "spirit-login", "reader_site_id": "spirit-profile",
+    "writer_block": "user/auth/views.py::custom_login::70-70::terminal::1",
+    "reader_block": "user/views.py::update::24-24::entry::1",
+    "key_overlap": "_auth_user_id"}
+ ]
+}

@@ -183,3 +183,41 @@ Spirit       test_project 已生成, 适配器待接
 ```
 
 仍不是五应用完整盲测；没有写 `frozen=true`。
+
+## Spirit（追加，环境阻塞已解除）
+
+之前 `ENV_BLOCKED` 的原因是仓库里没有 `test_project`。用 Spirit 自己的
+CLI 生成了测试项目：
+
+```bash
+cd external/Spirit
+PATH=$PWD/.venv/bin:$PATH .venv/bin/spirit startproject test_project
+```
+
+然后接入：
+
+```text
+adapter: stateforge/targets/real_apps/spirit/inproc_target.py
+target: user/views.py::update::24-24::entry::1
+condition: Session._auth_user_id EXISTS
+```
+
+```text
+C bootstrap  found=true, VERIFIED, 2 steps, 6 executions
+D reuse      prefix_len=1, PREPARATION_VERIFIED,
+             primary_suffix_target=true, isolation=true,
+             target_http_requests=6, bootstrap_http_requests=0
+```
+
+## 五应用当前覆盖
+
+```text
+microblog    C/D + 单 seed 四臂
+CTFd         C/D
+healthchecks C/D
+linkding     C/D
+Spirit       C/D（test_project 已生成）
+```
+
+**仍然不是完整五应用盲测**：没有做五应用 × 多 seed × 四臂，也没有冻结。
+`blind_fuzzing_claimed=false`、`frozen=false` 保持不变。

@@ -1,0 +1,29 @@
+{"event": "reset", "run_id": "sp-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/Spirit", "target_block": "user/views.py::update::24-24::entry::1", "elapsed": 2e-05}
+{"event": "request", "run_id": "sp-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/Spirit", "target_block": "user/views.py::update::24-24::entry::1", "sequence_id": null, "step_index": 1, "phase": "checkpoint", "elapsed": 0.432386, "error": null, "status": "ok"}
+{"event": "observer", "run_id": "sp-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/Spirit", "target_block": "user/views.py::update::24-24::entry::1", "elapsed": 0.001528}
+{"event": "reset", "run_id": "sp-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/Spirit", "target_block": "user/views.py::update::24-24::entry::1", "elapsed": 1e-05}
+{"event": "reset", "run_id": "sp-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/Spirit", "target_block": "user/views.py::update::24-24::entry::1", "elapsed": 2.1e-05}
+{"event": "reset", "run_id": "sp-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/Spirit", "target_block": "user/views.py::update::24-24::entry::1", "elapsed": 9.7e-05}
+{"event": "request", "run_id": "sp-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/Spirit", "target_block": "user/views.py::update::24-24::entry::1", "sequence_id": "sp-d:seq:2", "step_index": 1, "phase": "checkpoint", "elapsed": 0.080127, "error": null, "status": "ok"}
+{"event": "observer", "run_id": "sp-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/Spirit", "target_block": "user/views.py::update::24-24::entry::1", "elapsed": 0.002076}
+{"event": "observer", "run_id": "sp-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/Spirit", "target_block": "user/views.py::update::24-24::entry::1", "elapsed": 0.00214}
+{"event": "reset", "run_id": "sp-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/Spirit", "target_block": "user/views.py::update::24-24::entry::1", "elapsed": 1.3e-05}
+{"event": "reset", "run_id": "sp-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/Spirit", "target_block": "user/views.py::update::24-24::entry::1", "elapsed": 4.3e-05}
+{"event": "reset", "run_id": "sp-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/Spirit", "target_block": "user/views.py::update::24-24::entry::1", "elapsed": 1.3e-05}
+{"event": "reset", "run_id": "sp-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/Spirit", "target_block": "user/views.py::update::24-24::entry::1", "elapsed": 4.2e-05}
+{"event": "request", "run_id": "sp-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/Spirit", "target_block": "user/views.py::update::24-24::entry::1", "sequence_id": "sp-d:seq:4", "step_index": 1, "phase": "checkpoint", "elapsed": 0.08081, "error": null, "status": "ok"}
+{"event": "observer", "run_id": "sp-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/Spirit", "target_block": "user/views.py::update::24-24::entry::1", "elapsed": 0.001655}
+{"event": "observer", "run_id": "sp-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/Spirit", "target_block": "user/views.py::update::24-24::entry::1", "elapsed": 0.001692}
+{"event": "reset", "run_id": "sp-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/Spirit", "target_block": "user/views.py::update::24-24::entry::1", "elapsed": 1.3e-05}
+{"event": "reset", "run_id": "sp-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/Spirit", "target_block": "user/views.py::update::24-24::entry::1", "elapsed": 3.6e-05}
+{"event": "reset", "run_id": "sp-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/Spirit", "target_block": "user/views.py::update::24-24::entry::1", "elapsed": 1.3e-05}
+{"event": "reset", "run_id": "sp-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/Spirit", "target_block": "user/views.py::update::24-24::entry::1", "elapsed": 7.9e-05}
+{"event": "request", "run_id": "sp-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/Spirit", "target_block": "user/views.py::update::24-24::entry::1", "sequence_id": "sp-d:seq:5", "step_index": 1, "phase": "prefix_replay", "elapsed": 0.076781, "error": null, "status": "ok"}
+{"event": "request", "run_id": "sp-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/Spirit", "target_block": "user/views.py::update::24-24::entry::1", "sequence_id": "sp-d:seq:5", "step_index": 2, "phase": "suffix", "elapsed": 0.193476, "error": null, "status": "ok"}
+{"event": "observer", "run_id": "sp-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/Spirit", "target_block": "user/views.py::update::24-24::entry::1", "elapsed": 0.001863}
+{"event": "observer", "run_id": "sp-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/Spirit", "target_block": "user/views.py::update::24-24::entry::1", "elapsed": 0.001922}
+{"event": "reset", "run_id": "sp-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/Spirit", "target_block": "user/views.py::update::24-24::entry::1", "elapsed": 1.4e-05}
+{"event": "reset", "run_id": "sp-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/Spirit", "target_block": "user/views.py::update::24-24::entry::1", "elapsed": 4.5e-05}
+{"event": "reset", "run_id": "sp-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/Spirit", "target_block": "user/views.py::update::24-24::entry::1", "elapsed": 1.4e-05}
+{"event": "request", "run_id": "sp-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/Spirit", "target_block": "user/views.py::update::24-24::entry::1", "sequence_id": "sp-d:seq:6", "step_index": 1, "phase": "suffix", "elapsed": 0.007913, "error": null, "status": "ok"}
+{"event": "reset", "run_id": "sp-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/Spirit", "target_block": "user/views.py::update::24-24::entry::1", "elapsed": 1.1e-05}
