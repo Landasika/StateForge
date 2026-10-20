@@ -1,0 +1,238 @@
+{
+ "protocol": "ss06-v1",
+ "source_revision": "3b69923e85e52b22586b6aea8195db162ff3ebdd",
+ "seeds": [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20
+ ],
+ "arms": {
+  "SINGLE": {
+   "runs": 20,
+   "target_reached": 0,
+   "session_condition_verified": 20,
+   "mean_total_target_execs": 80.0,
+   "mean_atheris_execs": 80.0,
+   "mean_bootstrap_execs": 0.0,
+   "mean_checkpoint_validation_execs": 0.0,
+   "mean_prefix_replay_execs": 0.0,
+   "mean_elapsed_wall_seconds": 0.815,
+   "failures": []
+  },
+  "SEQUENCE": {
+   "runs": 20,
+   "target_reached": 8,
+   "session_condition_verified": 20,
+   "mean_total_target_execs": 80.0,
+   "mean_atheris_execs": 45.9,
+   "mean_bootstrap_execs": 34.1,
+   "mean_checkpoint_validation_execs": 0.0,
+   "mean_prefix_replay_execs": 0.0,
+   "mean_elapsed_wall_seconds": 0.608,
+   "failures": []
+  },
+  "STATE_GUIDED": {
+   "runs": 20,
+   "target_reached": 20,
+   "session_condition_verified": 20,
+   "mean_total_target_execs": 81.0,
+   "mean_atheris_execs": 65.0,
+   "mean_bootstrap_execs": 15.0,
+   "mean_checkpoint_validation_execs": 1.0,
+   "mean_prefix_replay_execs": 0.0,
+   "mean_elapsed_wall_seconds": 0.74,
+   "failures": []
+  },
+  "STATE_REUSE": {
+   "runs": 20,
+   "target_reached": 20,
+   "session_condition_verified": 20,
+   "mean_total_target_execs": 20.0,
+   "mean_atheris_execs": 0.0,
+   "mean_bootstrap_execs": 15.0,
+   "mean_checkpoint_validation_execs": 1.0,
+   "mean_prefix_replay_execs": 2.0,
+   "mean_elapsed_wall_seconds": 0.0,
+   "failures": []
+  }
+ },
+ "paired_C_minus_B": [
+  {
+   "seed": 1,
+   "C_minus_B_total_execs": 1,
+   "B_target": false,
+   "C_target": true,
+   "B_verified": true,
+   "C_verified": true
+  },
+  {
+   "seed": 2,
+   "C_minus_B_total_execs": 1,
+   "B_target": true,
+   "C_target": true,
+   "B_verified": true,
+   "C_verified": true
+  },
+  {
+   "seed": 3,
+   "C_minus_B_total_execs": 1,
+   "B_target": true,
+   "C_target": true,
+   "B_verified": true,
+   "C_verified": true
+  },
+  {
+   "seed": 4,
+   "C_minus_B_total_execs": 1,
+   "B_target": false,
+   "C_target": true,
+   "B_verified": true,
+   "C_verified": true
+  },
+  {
+   "seed": 5,
+   "C_minus_B_total_execs": 1,
+   "B_target": false,
+   "C_target": true,
+   "B_verified": true,
+   "C_verified": true
+  },
+  {
+   "seed": 6,
+   "C_minus_B_total_execs": 1,
+   "B_target": false,
+   "C_target": true,
+   "B_verified": true,
+   "C_verified": true
+  },
+  {
+   "seed": 7,
+   "C_minus_B_total_execs": 1,
+   "B_target": true,
+   "C_target": true,
+   "B_verified": true,
+   "C_verified": true
+  },
+  {
+   "seed": 8,
+   "C_minus_B_total_execs": 1,
+   "B_target": false,
+   "C_target": true,
+   "B_verified": true,
+   "C_verified": true
+  },
+  {
+   "seed": 9,
+   "C_minus_B_total_execs": 1,
+   "B_target": true,
+   "C_target": true,
+   "B_verified": true,
+   "C_verified": true
+  },
+  {
+   "seed": 10,
+   "C_minus_B_total_execs": 1,
+   "B_target": false,
+   "C_target": true,
+   "B_verified": true,
+   "C_verified": true
+  },
+  {
+   "seed": 11,
+   "C_minus_B_total_execs": 1,
+   "B_target": true,
+   "C_target": true,
+   "B_verified": true,
+   "C_verified": true
+  },
+  {
+   "seed": 12,
+   "C_minus_B_total_execs": 1,
+   "B_target": false,
+   "C_target": true,
+   "B_verified": true,
+   "C_verified": true
+  },
+  {
+   "seed": 13,
+   "C_minus_B_total_execs": 1,
+   "B_target": true,
+   "C_target": true,
+   "B_verified": true,
+   "C_verified": true
+  },
+  {
+   "seed": 14,
+   "C_minus_B_total_execs": 1,
+   "B_target": true,
+   "C_target": true,
+   "B_verified": true,
+   "C_verified": true
+  },
+  {
+   "seed": 15,
+   "C_minus_B_total_execs": 1,
+   "B_target": false,
+   "C_target": true,
+   "B_verified": true,
+   "C_verified": true
+  },
+  {
+   "seed": 16,
+   "C_minus_B_total_execs": 1,
+   "B_target": false,
+   "C_target": true,
+   "B_verified": true,
+   "C_verified": true
+  },
+  {
+   "seed": 17,
+   "C_minus_B_total_execs": 1,
+   "B_target": false,
+   "C_target": true,
+   "B_verified": true,
+   "C_verified": true
+  },
+  {
+   "seed": 18,
+   "C_minus_B_total_execs": 1,
+   "B_target": true,
+   "C_target": true,
+   "B_verified": true,
+   "C_verified": true
+  },
+  {
+   "seed": 19,
+   "C_minus_B_total_execs": 1,
+   "B_target": false,
+   "C_target": true,
+   "B_verified": true,
+   "C_verified": true
+  },
+  {
+   "seed": 20,
+   "C_minus_B_total_execs": 1,
+   "B_target": false,
+   "C_target": true,
+   "B_verified": true,
+   "C_verified": true
+  }
+ ]
+}

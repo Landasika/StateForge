@@ -1,0 +1,5853 @@
+{
+  "blocks": {
+    "app.py::_register_routes::157-157::entry::1": {
+      "id": "app.py::_register_routes::157-157::entry::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "_register_routes",
+      "start_line": 157,
+      "end_line": 157,
+      "kind": "entry",
+      "statements": [],
+      "line_numbers": [
+        157
+      ]
+    },
+    "app.py::_register_routes::160-213::block::1": {
+      "id": "app.py::_register_routes::160-213::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "_register_routes",
+      "start_line": 160,
+      "end_line": 213,
+      "kind": "block",
+      "statements": [
+        "@app.post((routes or {}).get('authenticate', '/authenticate'))\ndef authenticate():\n    if request.form.get('passcode') != current_app.config[PASSCODE_CONFIG_KEY]:\n        return ('deny', 403)\n    session['uid'] = 7\n    return 'ok'",
+        "@app.get((routes or {}).get('protected', '/protected'))\ndef protected():\n    uid = session.get('uid')\n    if uid is None:\n        return ('deny', 401)\n    target_block()\n    return 'TARGET_BLOCK'",
+        "@app.get((routes or {}).get('protected_truthy', '/protected_truthy'))\ndef protected_truthy():\n    uid = session.get('uid')\n    if uid:\n        truthy_target_block()\n        return 'TRUTHY_TARGET'\n    return ('deny', 401)",
+        "@app.get((routes or {}).get('protected_membership', '/protected_membership'))\ndef protected_membership():\n    if 'uid' in session:\n        membership_target_block()\n        return 'MEMBERSHIP_TARGET'\n    return ('deny', 401)",
+        "@app.get((routes or {}).get('protected_subscript', '/protected_subscript'))\ndef protected_subscript():\n    try:\n        uid = session['uid']\n    except KeyError:\n        return ('deny', 401)\n    subscript_target_block()\n    return 'SUBSCRIPT_TARGET'",
+        "@app.post((routes or {}).get('logout', '/logout'))\ndef logout():\n    session.pop('uid', None)\n    return 'ok'",
+        "@app.post((routes or {}).get('clear', '/clear'))\ndef clear():\n    session.clear()\n    return 'ok'",
+        "@app.post((routes or {}).get('noise', '/noise'))\ndef noise():\n    session['other'] = 7\n    return 'ok'"
+      ],
+      "line_numbers": [
+        160,
+        169,
+        179,
+        187,
+        194,
+        203,
+        208,
+        213
+      ]
+    },
+    "app.py::_register_routes::157-157::exit::1": {
+      "id": "app.py::_register_routes::157-157::exit::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "_register_routes",
+      "start_line": 157,
+      "end_line": 157,
+      "kind": "exit",
+      "statements": [],
+      "line_numbers": [
+        157
+      ]
+    },
+    "app.py::noise::213-213::entry::1": {
+      "id": "app.py::noise::213-213::entry::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "noise",
+      "start_line": 213,
+      "end_line": 213,
+      "kind": "entry",
+      "statements": [],
+      "line_numbers": [
+        213
+      ]
+    },
+    "app.py::noise::216-216::block::1": {
+      "id": "app.py::noise::216-216::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "noise",
+      "start_line": 216,
+      "end_line": 216,
+      "kind": "block",
+      "statements": [
+        "session['other'] = 7"
+      ],
+      "line_numbers": [
+        216
+      ]
+    },
+    "app.py::noise::217-217::terminal::1": {
+      "id": "app.py::noise::217-217::terminal::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "noise",
+      "start_line": 217,
+      "end_line": 217,
+      "kind": "terminal",
+      "statements": [
+        "return 'ok'"
+      ],
+      "line_numbers": [
+        217
+      ]
+    },
+    "app.py::noise::213-213::exit::1": {
+      "id": "app.py::noise::213-213::exit::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "noise",
+      "start_line": 213,
+      "end_line": 213,
+      "kind": "exit",
+      "statements": [],
+      "line_numbers": [
+        213
+      ]
+    },
+    "app.py::clear::208-208::entry::1": {
+      "id": "app.py::clear::208-208::entry::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "clear",
+      "start_line": 208,
+      "end_line": 208,
+      "kind": "entry",
+      "statements": [],
+      "line_numbers": [
+        208
+      ]
+    },
+    "app.py::clear::209-209::block::1": {
+      "id": "app.py::clear::209-209::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "clear",
+      "start_line": 209,
+      "end_line": 209,
+      "kind": "block",
+      "statements": [
+        "session.clear()"
+      ],
+      "line_numbers": [
+        209
+      ]
+    },
+    "app.py::clear::210-210::terminal::1": {
+      "id": "app.py::clear::210-210::terminal::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "clear",
+      "start_line": 210,
+      "end_line": 210,
+      "kind": "terminal",
+      "statements": [
+        "return 'ok'"
+      ],
+      "line_numbers": [
+        210
+      ]
+    },
+    "app.py::clear::208-208::exit::1": {
+      "id": "app.py::clear::208-208::exit::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "clear",
+      "start_line": 208,
+      "end_line": 208,
+      "kind": "exit",
+      "statements": [],
+      "line_numbers": [
+        208
+      ]
+    },
+    "app.py::logout::203-203::entry::1": {
+      "id": "app.py::logout::203-203::entry::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "logout",
+      "start_line": 203,
+      "end_line": 203,
+      "kind": "entry",
+      "statements": [],
+      "line_numbers": [
+        203
+      ]
+    },
+    "app.py::logout::204-204::block::1": {
+      "id": "app.py::logout::204-204::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "logout",
+      "start_line": 204,
+      "end_line": 204,
+      "kind": "block",
+      "statements": [
+        "session.pop('uid', None)"
+      ],
+      "line_numbers": [
+        204
+      ]
+    },
+    "app.py::logout::205-205::terminal::1": {
+      "id": "app.py::logout::205-205::terminal::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "logout",
+      "start_line": 205,
+      "end_line": 205,
+      "kind": "terminal",
+      "statements": [
+        "return 'ok'"
+      ],
+      "line_numbers": [
+        205
+      ]
+    },
+    "app.py::logout::203-203::exit::1": {
+      "id": "app.py::logout::203-203::exit::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "logout",
+      "start_line": 203,
+      "end_line": 203,
+      "kind": "exit",
+      "statements": [],
+      "line_numbers": [
+        203
+      ]
+    },
+    "app.py::protected_subscript::194-194::entry::1": {
+      "id": "app.py::protected_subscript::194-194::entry::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "protected_subscript",
+      "start_line": 194,
+      "end_line": 194,
+      "kind": "entry",
+      "statements": [],
+      "line_numbers": [
+        194
+      ]
+    },
+    "app.py::protected_subscript::194-194::try::1": {
+      "id": "app.py::protected_subscript::194-194::try::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "protected_subscript",
+      "start_line": 194,
+      "end_line": 194,
+      "kind": "try",
+      "statements": [],
+      "line_numbers": [
+        194
+      ]
+    },
+    "app.py::protected_subscript::196-199::block::1": {
+      "id": "app.py::protected_subscript::196-199::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "protected_subscript",
+      "start_line": 196,
+      "end_line": 199,
+      "kind": "block",
+      "statements": [
+        "uid = session['uid']",
+        "subscript_target_block()"
+      ],
+      "line_numbers": [
+        196,
+        199
+      ]
+    },
+    "app.py::protected_subscript::198-198::terminal::1": {
+      "id": "app.py::protected_subscript::198-198::terminal::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "protected_subscript",
+      "start_line": 198,
+      "end_line": 198,
+      "kind": "terminal",
+      "statements": [
+        "return ('deny', 401)"
+      ],
+      "line_numbers": [
+        198
+      ]
+    },
+    "app.py::protected_subscript::200-200::terminal::1": {
+      "id": "app.py::protected_subscript::200-200::terminal::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "protected_subscript",
+      "start_line": 200,
+      "end_line": 200,
+      "kind": "terminal",
+      "statements": [
+        "return 'SUBSCRIPT_TARGET'"
+      ],
+      "line_numbers": [
+        200
+      ]
+    },
+    "app.py::protected_subscript::194-194::exit::1": {
+      "id": "app.py::protected_subscript::194-194::exit::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "protected_subscript",
+      "start_line": 194,
+      "end_line": 194,
+      "kind": "exit",
+      "statements": [],
+      "line_numbers": [
+        194
+      ]
+    },
+    "app.py::protected_membership::187-187::entry::1": {
+      "id": "app.py::protected_membership::187-187::entry::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "protected_membership",
+      "start_line": 187,
+      "end_line": 187,
+      "kind": "entry",
+      "statements": [],
+      "line_numbers": [
+        187
+      ]
+    },
+    "app.py::protected_membership::188-188::branch::1": {
+      "id": "app.py::protected_membership::188-188::branch::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "protected_membership",
+      "start_line": 188,
+      "end_line": 188,
+      "kind": "branch",
+      "statements": [
+        "<test> 'uid' in session"
+      ],
+      "line_numbers": [
+        188
+      ]
+    },
+    "app.py::protected_membership::189-189::block::1": {
+      "id": "app.py::protected_membership::189-189::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "protected_membership",
+      "start_line": 189,
+      "end_line": 189,
+      "kind": "block",
+      "statements": [
+        "membership_target_block()"
+      ],
+      "line_numbers": [
+        189
+      ]
+    },
+    "app.py::protected_membership::190-190::terminal::1": {
+      "id": "app.py::protected_membership::190-190::terminal::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "protected_membership",
+      "start_line": 190,
+      "end_line": 190,
+      "kind": "terminal",
+      "statements": [
+        "return 'MEMBERSHIP_TARGET'"
+      ],
+      "line_numbers": [
+        190
+      ]
+    },
+    "app.py::protected_membership::191-191::terminal::1": {
+      "id": "app.py::protected_membership::191-191::terminal::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "protected_membership",
+      "start_line": 191,
+      "end_line": 191,
+      "kind": "terminal",
+      "statements": [
+        "return ('deny', 401)"
+      ],
+      "line_numbers": [
+        191
+      ]
+    },
+    "app.py::protected_membership::187-187::exit::1": {
+      "id": "app.py::protected_membership::187-187::exit::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "protected_membership",
+      "start_line": 187,
+      "end_line": 187,
+      "kind": "exit",
+      "statements": [],
+      "line_numbers": [
+        187
+      ]
+    },
+    "app.py::protected_truthy::179-179::entry::1": {
+      "id": "app.py::protected_truthy::179-179::entry::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "protected_truthy",
+      "start_line": 179,
+      "end_line": 179,
+      "kind": "entry",
+      "statements": [],
+      "line_numbers": [
+        179
+      ]
+    },
+    "app.py::protected_truthy::180-180::block::1": {
+      "id": "app.py::protected_truthy::180-180::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "protected_truthy",
+      "start_line": 180,
+      "end_line": 180,
+      "kind": "block",
+      "statements": [
+        "uid = session.get('uid')"
+      ],
+      "line_numbers": [
+        180
+      ]
+    },
+    "app.py::protected_truthy::181-181::branch::1": {
+      "id": "app.py::protected_truthy::181-181::branch::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "protected_truthy",
+      "start_line": 181,
+      "end_line": 181,
+      "kind": "branch",
+      "statements": [
+        "<test> uid"
+      ],
+      "line_numbers": [
+        181
+      ]
+    },
+    "app.py::protected_truthy::182-182::block::1": {
+      "id": "app.py::protected_truthy::182-182::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "protected_truthy",
+      "start_line": 182,
+      "end_line": 182,
+      "kind": "block",
+      "statements": [
+        "truthy_target_block()"
+      ],
+      "line_numbers": [
+        182
+      ]
+    },
+    "app.py::protected_truthy::183-183::terminal::1": {
+      "id": "app.py::protected_truthy::183-183::terminal::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "protected_truthy",
+      "start_line": 183,
+      "end_line": 183,
+      "kind": "terminal",
+      "statements": [
+        "return 'TRUTHY_TARGET'"
+      ],
+      "line_numbers": [
+        183
+      ]
+    },
+    "app.py::protected_truthy::184-184::terminal::1": {
+      "id": "app.py::protected_truthy::184-184::terminal::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "protected_truthy",
+      "start_line": 184,
+      "end_line": 184,
+      "kind": "terminal",
+      "statements": [
+        "return ('deny', 401)"
+      ],
+      "line_numbers": [
+        184
+      ]
+    },
+    "app.py::protected_truthy::179-179::exit::1": {
+      "id": "app.py::protected_truthy::179-179::exit::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "protected_truthy",
+      "start_line": 179,
+      "end_line": 179,
+      "kind": "exit",
+      "statements": [],
+      "line_numbers": [
+        179
+      ]
+    },
+    "app.py::protected::169-169::entry::1": {
+      "id": "app.py::protected::169-169::entry::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "protected",
+      "start_line": 169,
+      "end_line": 169,
+      "kind": "entry",
+      "statements": [],
+      "line_numbers": [
+        169
+      ]
+    },
+    "app.py::protected::170-170::block::1": {
+      "id": "app.py::protected::170-170::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "protected",
+      "start_line": 170,
+      "end_line": 170,
+      "kind": "block",
+      "statements": [
+        "uid = session.get('uid')"
+      ],
+      "line_numbers": [
+        170
+      ]
+    },
+    "app.py::protected::171-171::branch::1": {
+      "id": "app.py::protected::171-171::branch::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "protected",
+      "start_line": 171,
+      "end_line": 171,
+      "kind": "branch",
+      "statements": [
+        "<test> uid is None"
+      ],
+      "line_numbers": [
+        171
+      ]
+    },
+    "app.py::protected::172-172::terminal::1": {
+      "id": "app.py::protected::172-172::terminal::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "protected",
+      "start_line": 172,
+      "end_line": 172,
+      "kind": "terminal",
+      "statements": [
+        "return ('deny', 401)"
+      ],
+      "line_numbers": [
+        172
+      ]
+    },
+    "app.py::protected::173-173::block::1": {
+      "id": "app.py::protected::173-173::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "protected",
+      "start_line": 173,
+      "end_line": 173,
+      "kind": "block",
+      "statements": [
+        "target_block()"
+      ],
+      "line_numbers": [
+        173
+      ]
+    },
+    "app.py::protected::174-174::terminal::1": {
+      "id": "app.py::protected::174-174::terminal::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "protected",
+      "start_line": 174,
+      "end_line": 174,
+      "kind": "terminal",
+      "statements": [
+        "return 'TARGET_BLOCK'"
+      ],
+      "line_numbers": [
+        174
+      ]
+    },
+    "app.py::protected::169-169::exit::1": {
+      "id": "app.py::protected::169-169::exit::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "protected",
+      "start_line": 169,
+      "end_line": 169,
+      "kind": "exit",
+      "statements": [],
+      "line_numbers": [
+        169
+      ]
+    },
+    "app.py::authenticate::160-160::entry::1": {
+      "id": "app.py::authenticate::160-160::entry::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "authenticate",
+      "start_line": 160,
+      "end_line": 160,
+      "kind": "entry",
+      "statements": [],
+      "line_numbers": [
+        160
+      ]
+    },
+    "app.py::authenticate::163-163::branch::1": {
+      "id": "app.py::authenticate::163-163::branch::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "authenticate",
+      "start_line": 163,
+      "end_line": 163,
+      "kind": "branch",
+      "statements": [
+        "<test> request.form.get('passcode') != current_app.config[PASSCODE_CONFIG_KEY]"
+      ],
+      "line_numbers": [
+        163
+      ]
+    },
+    "app.py::authenticate::164-164::terminal::1": {
+      "id": "app.py::authenticate::164-164::terminal::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "authenticate",
+      "start_line": 164,
+      "end_line": 164,
+      "kind": "terminal",
+      "statements": [
+        "return ('deny', 403)"
+      ],
+      "line_numbers": [
+        164
+      ]
+    },
+    "app.py::authenticate::165-165::block::1": {
+      "id": "app.py::authenticate::165-165::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "authenticate",
+      "start_line": 165,
+      "end_line": 165,
+      "kind": "block",
+      "statements": [
+        "session['uid'] = 7"
+      ],
+      "line_numbers": [
+        165
+      ]
+    },
+    "app.py::authenticate::166-166::terminal::1": {
+      "id": "app.py::authenticate::166-166::terminal::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "authenticate",
+      "start_line": 166,
+      "end_line": 166,
+      "kind": "terminal",
+      "statements": [
+        "return 'ok'"
+      ],
+      "line_numbers": [
+        166
+      ]
+    },
+    "app.py::authenticate::160-160::exit::1": {
+      "id": "app.py::authenticate::160-160::exit::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "authenticate",
+      "start_line": 160,
+      "end_line": 160,
+      "kind": "exit",
+      "statements": [],
+      "line_numbers": [
+        160
+      ]
+    },
+    "app.py::subscript_target_block::150-150::entry::1": {
+      "id": "app.py::subscript_target_block::150-150::entry::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "subscript_target_block",
+      "start_line": 150,
+      "end_line": 150,
+      "kind": "entry",
+      "statements": [],
+      "line_numbers": [
+        150
+      ]
+    },
+    "app.py::subscript_target_block::151-151::block::1": {
+      "id": "app.py::subscript_target_block::151-151::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "subscript_target_block",
+      "start_line": 151,
+      "end_line": 151,
+      "kind": "block",
+      "statements": [
+        "_hit('subscript_target_block')"
+      ],
+      "line_numbers": [
+        151
+      ]
+    },
+    "app.py::subscript_target_block::150-150::exit::1": {
+      "id": "app.py::subscript_target_block::150-150::exit::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "subscript_target_block",
+      "start_line": 150,
+      "end_line": 150,
+      "kind": "exit",
+      "statements": [],
+      "line_numbers": [
+        150
+      ]
+    },
+    "app.py::membership_target_block::146-146::entry::1": {
+      "id": "app.py::membership_target_block::146-146::entry::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "membership_target_block",
+      "start_line": 146,
+      "end_line": 146,
+      "kind": "entry",
+      "statements": [],
+      "line_numbers": [
+        146
+      ]
+    },
+    "app.py::membership_target_block::147-147::block::1": {
+      "id": "app.py::membership_target_block::147-147::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "membership_target_block",
+      "start_line": 147,
+      "end_line": 147,
+      "kind": "block",
+      "statements": [
+        "_hit('membership_target_block')"
+      ],
+      "line_numbers": [
+        147
+      ]
+    },
+    "app.py::membership_target_block::146-146::exit::1": {
+      "id": "app.py::membership_target_block::146-146::exit::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "membership_target_block",
+      "start_line": 146,
+      "end_line": 146,
+      "kind": "exit",
+      "statements": [],
+      "line_numbers": [
+        146
+      ]
+    },
+    "app.py::truthy_target_block::142-142::entry::1": {
+      "id": "app.py::truthy_target_block::142-142::entry::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "truthy_target_block",
+      "start_line": 142,
+      "end_line": 142,
+      "kind": "entry",
+      "statements": [],
+      "line_numbers": [
+        142
+      ]
+    },
+    "app.py::truthy_target_block::143-143::block::1": {
+      "id": "app.py::truthy_target_block::143-143::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "truthy_target_block",
+      "start_line": 143,
+      "end_line": 143,
+      "kind": "block",
+      "statements": [
+        "_hit('truthy_target_block')"
+      ],
+      "line_numbers": [
+        143
+      ]
+    },
+    "app.py::truthy_target_block::142-142::exit::1": {
+      "id": "app.py::truthy_target_block::142-142::exit::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "truthy_target_block",
+      "start_line": 142,
+      "end_line": 142,
+      "kind": "exit",
+      "statements": [],
+      "line_numbers": [
+        142
+      ]
+    },
+    "app.py::target_block::137-137::entry::1": {
+      "id": "app.py::target_block::137-137::entry::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "target_block",
+      "start_line": 137,
+      "end_line": 137,
+      "kind": "entry",
+      "statements": [],
+      "line_numbers": [
+        137
+      ]
+    },
+    "app.py::target_block::138-139::block::1": {
+      "id": "app.py::target_block::138-139::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "target_block",
+      "start_line": 138,
+      "end_line": 139,
+      "kind": "block",
+      "statements": [
+        "'Primary target block: reached only after the ``/protected`` guard.'",
+        "_hit('target_block')"
+      ],
+      "line_numbers": [
+        138,
+        139
+      ]
+    },
+    "app.py::target_block::137-137::exit::1": {
+      "id": "app.py::target_block::137-137::exit::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "target_block",
+      "start_line": 137,
+      "end_line": 137,
+      "kind": "exit",
+      "statements": [],
+      "line_numbers": [
+        137
+      ]
+    },
+    "app.py::_hit::133-133::entry::1": {
+      "id": "app.py::_hit::133-133::entry::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "_hit",
+      "start_line": 133,
+      "end_line": 133,
+      "kind": "entry",
+      "statements": [],
+      "line_numbers": [
+        133
+      ]
+    },
+    "app.py::_hit::134-134::block::1": {
+      "id": "app.py::_hit::134-134::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "_hit",
+      "start_line": 134,
+      "end_line": 134,
+      "kind": "block",
+      "statements": [
+        "current_app.config.setdefault(TARGET_HITS_KEY, []).append({'block': block})"
+      ],
+      "line_numbers": [
+        134
+      ]
+    },
+    "app.py::_hit::133-133::exit::1": {
+      "id": "app.py::_hit::133-133::exit::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "_hit",
+      "start_line": 133,
+      "end_line": 133,
+      "kind": "exit",
+      "statements": [],
+      "line_numbers": [
+        133
+      ]
+    },
+    "app.py::target_hits::125-125::entry::1": {
+      "id": "app.py::target_hits::125-125::entry::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "target_hits",
+      "start_line": 125,
+      "end_line": 125,
+      "kind": "entry",
+      "statements": [],
+      "line_numbers": [
+        125
+      ]
+    },
+    "app.py::target_hits::126-126::block::1": {
+      "id": "app.py::target_hits::126-126::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "target_hits",
+      "start_line": 126,
+      "end_line": 126,
+      "kind": "block",
+      "statements": [
+        "'Copy of the target-block ledger (never the live list).'"
+      ],
+      "line_numbers": [
+        126
+      ]
+    },
+    "app.py::target_hits::127-127::terminal::1": {
+      "id": "app.py::target_hits::127-127::terminal::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "target_hits",
+      "start_line": 127,
+      "end_line": 127,
+      "kind": "terminal",
+      "statements": [
+        "return [dict(item) for item in app.config.get(TARGET_HITS_KEY, [])]"
+      ],
+      "line_numbers": [
+        127
+      ]
+    },
+    "app.py::target_hits::125-125::exit::1": {
+      "id": "app.py::target_hits::125-125::exit::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "target_hits",
+      "start_line": 125,
+      "end_line": 125,
+      "kind": "exit",
+      "statements": [],
+      "line_numbers": [
+        125
+      ]
+    },
+    "app.py::observe_session::92-92::entry::1": {
+      "id": "app.py::observe_session::92-92::entry::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "observe_session",
+      "start_line": 92,
+      "end_line": 92,
+      "kind": "entry",
+      "statements": [],
+      "line_numbers": [
+        92
+      ]
+    },
+    "app.py::observe_session::93-105::block::1": {
+      "id": "app.py::observe_session::93-105::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "observe_session",
+      "start_line": 93,
+      "end_line": 105,
+      "kind": "block",
+      "statements": [
+        "\"Decode the client's current session cookie without mutating anything.\\n\\n    This is the target's trusted read-only observation interface.  It reads\\n    the cookie *from the client jar* (the same artifact a next request would\\n    carry) and verifies it with the app's own session serializer.  A missing\\n    cookie, a bad signature and a valid empty payload remain distinguishable;\\n    unknown states are never collapsed into ``{}``.\\n    \"",
+        "app = app or client.application",
+        "interface = app.session_interface",
+        "cookie_name = interface.get_cookie_name(app)",
+        "cookie = client.get_cookie(cookie_name)"
+      ],
+      "line_numbers": [
+        93,
+        102,
+        103,
+        104,
+        105
+      ]
+    },
+    "app.py::observe_session::106-106::branch::1": {
+      "id": "app.py::observe_session::106-106::branch::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "observe_session",
+      "start_line": 106,
+      "end_line": 106,
+      "kind": "branch",
+      "statements": [
+        "<test> cookie is None or not cookie.value"
+      ],
+      "line_numbers": [
+        106
+      ]
+    },
+    "app.py::observe_session::107-107::terminal::1": {
+      "id": "app.py::observe_session::107-107::terminal::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "observe_session",
+      "start_line": 107,
+      "end_line": 107,
+      "kind": "terminal",
+      "statements": [
+        "return SessionSnapshot(SESSION_ABSENT, cookie_name=cookie_name)"
+      ],
+      "line_numbers": [
+        107
+      ]
+    },
+    "app.py::observe_session::109-109::block::1": {
+      "id": "app.py::observe_session::109-109::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "observe_session",
+      "start_line": 109,
+      "end_line": 109,
+      "kind": "block",
+      "statements": [
+        "serializer = interface.get_signing_serializer(app)"
+      ],
+      "line_numbers": [
+        109
+      ]
+    },
+    "app.py::observe_session::110-110::branch::1": {
+      "id": "app.py::observe_session::110-110::branch::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "observe_session",
+      "start_line": 110,
+      "end_line": 110,
+      "kind": "branch",
+      "statements": [
+        "<test> serializer is None"
+      ],
+      "line_numbers": [
+        110
+      ]
+    },
+    "app.py::observe_session::111-111::terminal::1": {
+      "id": "app.py::observe_session::111-111::terminal::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "observe_session",
+      "start_line": 111,
+      "end_line": 111,
+      "kind": "terminal",
+      "statements": [
+        "return SessionSnapshot(SESSION_UNKNOWN, cookie_name=cookie_name, error='session interface has no serializer')"
+      ],
+      "line_numbers": [
+        111
+      ]
+    },
+    "app.py::observe_session::92-92::try::1": {
+      "id": "app.py::observe_session::92-92::try::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "observe_session",
+      "start_line": 92,
+      "end_line": 92,
+      "kind": "try",
+      "statements": [],
+      "line_numbers": [
+        92
+      ]
+    },
+    "app.py::observe_session::114-114::block::1": {
+      "id": "app.py::observe_session::114-114::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "observe_session",
+      "start_line": 114,
+      "end_line": 114,
+      "kind": "block",
+      "statements": [
+        "payload = serializer.loads(cookie.value)"
+      ],
+      "line_numbers": [
+        114
+      ]
+    },
+    "app.py::observe_session::116-116::terminal::1": {
+      "id": "app.py::observe_session::116-116::terminal::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "observe_session",
+      "start_line": 116,
+      "end_line": 116,
+      "kind": "terminal",
+      "statements": [
+        "return SessionSnapshot(SESSION_INVALID, cookie_name=cookie_name, error=type(exc).__name__)"
+      ],
+      "line_numbers": [
+        116
+      ]
+    },
+    "app.py::observe_session::118-118::branch::1": {
+      "id": "app.py::observe_session::118-118::branch::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "observe_session",
+      "start_line": 118,
+      "end_line": 118,
+      "kind": "branch",
+      "statements": [
+        "<test> not isinstance(payload, dict)"
+      ],
+      "line_numbers": [
+        118
+      ]
+    },
+    "app.py::observe_session::119-119::terminal::1": {
+      "id": "app.py::observe_session::119-119::terminal::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "observe_session",
+      "start_line": 119,
+      "end_line": 119,
+      "kind": "terminal",
+      "statements": [
+        "return SessionSnapshot(SESSION_INVALID, cookie_name=cookie_name, error='session payload is not a mapping')"
+      ],
+      "line_numbers": [
+        119
+      ]
+    },
+    "app.py::observe_session::121-121::terminal::1": {
+      "id": "app.py::observe_session::121-121::terminal::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "observe_session",
+      "start_line": 121,
+      "end_line": 121,
+      "kind": "terminal",
+      "statements": [
+        "return SessionSnapshot(SESSION_DECODED, values=dict(payload), cookie_name=cookie_name)"
+      ],
+      "line_numbers": [
+        121
+      ]
+    },
+    "app.py::observe_session::92-92::exit::1": {
+      "id": "app.py::observe_session::92-92::exit::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "observe_session",
+      "start_line": 92,
+      "end_line": 92,
+      "kind": "exit",
+      "statements": [],
+      "line_numbers": [
+        92
+      ]
+    },
+    "app.py::create_app::74-74::entry::1": {
+      "id": "app.py::create_app::74-74::entry::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "create_app",
+      "start_line": 74,
+      "end_line": 74,
+      "kind": "entry",
+      "statements": [],
+      "line_numbers": [
+        74
+      ]
+    },
+    "app.py::create_app::76-85::block::1": {
+      "id": "app.py::create_app::76-85::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "create_app",
+      "start_line": 76,
+      "end_line": 85,
+      "kind": "block",
+      "statements": [
+        "'Build a fresh target application with an empty target-hit ledger.\\n\\n    No module-level Flask app is created here: callers own the instance, so\\n    independent clients/apps never share a Cookie Jar or hit ledger.\\n    '",
+        "app = Flask(__name__)",
+        "app.secret_key = DEV_SECRET_KEY",
+        "app.config[PASSCODE_CONFIG_KEY] = passcode",
+        "app.config[TARGET_HITS_KEY] = []",
+        "_register_routes(app, routes)"
+      ],
+      "line_numbers": [
+        76,
+        81,
+        82,
+        83,
+        84,
+        85
+      ]
+    },
+    "app.py::create_app::86-86::terminal::1": {
+      "id": "app.py::create_app::86-86::terminal::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "create_app",
+      "start_line": 86,
+      "end_line": 86,
+      "kind": "terminal",
+      "statements": [
+        "return app"
+      ],
+      "line_numbers": [
+        86
+      ]
+    },
+    "app.py::create_app::74-74::exit::1": {
+      "id": "app.py::create_app::74-74::exit::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "create_app",
+      "start_line": 74,
+      "end_line": 74,
+      "kind": "exit",
+      "statements": [],
+      "line_numbers": [
+        74
+      ]
+    },
+    "app.py::get::70-70::entry::1": {
+      "id": "app.py::get::70-70::entry::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "get",
+      "start_line": 70,
+      "end_line": 70,
+      "kind": "entry",
+      "statements": [],
+      "line_numbers": [
+        70
+      ]
+    },
+    "app.py::get::71-71::terminal::1": {
+      "id": "app.py::get::71-71::terminal::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "get",
+      "start_line": 71,
+      "end_line": 71,
+      "kind": "terminal",
+      "statements": [
+        "return self.values.get(key, default)"
+      ],
+      "line_numbers": [
+        71
+      ]
+    },
+    "app.py::get::70-70::exit::1": {
+      "id": "app.py::get::70-70::exit::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "get",
+      "start_line": 70,
+      "end_line": 70,
+      "kind": "exit",
+      "statements": [],
+      "line_numbers": [
+        70
+      ]
+    },
+    "app.py::verified::67-67::entry::1": {
+      "id": "app.py::verified::67-67::entry::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "verified",
+      "start_line": 67,
+      "end_line": 67,
+      "kind": "entry",
+      "statements": [],
+      "line_numbers": [
+        67
+      ]
+    },
+    "app.py::verified::68-68::terminal::1": {
+      "id": "app.py::verified::68-68::terminal::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "verified",
+      "start_line": 68,
+      "end_line": 68,
+      "kind": "terminal",
+      "statements": [
+        "return self.status == SESSION_DECODED"
+      ],
+      "line_numbers": [
+        68
+      ]
+    },
+    "app.py::verified::67-67::exit::1": {
+      "id": "app.py::verified::67-67::exit::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "verified",
+      "start_line": 67,
+      "end_line": 67,
+      "kind": "exit",
+      "statements": [],
+      "line_numbers": [
+        67
+      ]
+    },
+    "app.py::present::63-63::entry::1": {
+      "id": "app.py::present::63-63::entry::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "present",
+      "start_line": 63,
+      "end_line": 63,
+      "kind": "entry",
+      "statements": [],
+      "line_numbers": [
+        63
+      ]
+    },
+    "app.py::present::64-64::terminal::1": {
+      "id": "app.py::present::64-64::terminal::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "present",
+      "start_line": 64,
+      "end_line": 64,
+      "kind": "terminal",
+      "statements": [
+        "return self.status != SESSION_ABSENT"
+      ],
+      "line_numbers": [
+        64
+      ]
+    },
+    "app.py::present::63-63::exit::1": {
+      "id": "app.py::present::63-63::exit::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "present",
+      "start_line": 63,
+      "end_line": 63,
+      "kind": "exit",
+      "statements": [],
+      "line_numbers": [
+        63
+      ]
+    },
+    "fuzz_target.py::run_input::183-183::entry::1": {
+      "id": "fuzz_target.py::run_input::183-183::entry::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "run_input",
+      "start_line": 183,
+      "end_line": 183,
+      "kind": "entry",
+      "statements": [],
+      "line_numbers": [
+        183
+      ]
+    },
+    "fuzz_target.py::run_input::184-185::block::1": {
+      "id": "fuzz_target.py::run_input::184-185::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "run_input",
+      "start_line": 184,
+      "end_line": 185,
+      "kind": "block",
+      "statements": [
+        "'Test helper: one isolated input made of several ordered steps.'",
+        "with input_scope():\n    for step in steps:\n        _handle(step)"
+      ],
+      "line_numbers": [
+        184,
+        185
+      ]
+    },
+    "fuzz_target.py::run_input::183-183::exit::1": {
+      "id": "fuzz_target.py::run_input::183-183::exit::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "run_input",
+      "start_line": 183,
+      "end_line": 183,
+      "kind": "exit",
+      "statements": [],
+      "line_numbers": [
+        183
+      ]
+    },
+    "fuzz_target.py::target::170-170::entry::1": {
+      "id": "fuzz_target.py::target::170-170::entry::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "target",
+      "start_line": 170,
+      "end_line": 170,
+      "kind": "entry",
+      "statements": [],
+      "line_numbers": [
+        170
+      ]
+    },
+    "fuzz_target.py::target::171-173::block::1": {
+      "id": "fuzz_target.py::target::171-173::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "target",
+      "start_line": 171,
+      "end_line": 173,
+      "kind": "block",
+      "statements": [
+        "'One Atheris input: a single C10 step or a whole steps seed.'",
+        "seed = _decode(data)"
+      ],
+      "line_numbers": [
+        171,
+        173
+      ]
+    },
+    "fuzz_target.py::target::174-174::branch::1": {
+      "id": "fuzz_target.py::target::174-174::branch::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "target",
+      "start_line": 174,
+      "end_line": 174,
+      "kind": "branch",
+      "statements": [
+        "<test> seed is None"
+      ],
+      "line_numbers": [
+        174
+      ]
+    },
+    "fuzz_target.py::target::175-175::terminal::1": {
+      "id": "fuzz_target.py::target::175-175::terminal::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "target",
+      "start_line": 175,
+      "end_line": 175,
+      "kind": "terminal",
+      "statements": [
+        "return"
+      ],
+      "line_numbers": [
+        175
+      ]
+    },
+    "fuzz_target.py::target::176-176::branch::1": {
+      "id": "fuzz_target.py::target::176-176::branch::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "target",
+      "start_line": 176,
+      "end_line": 176,
+      "kind": "branch",
+      "statements": [
+        "<test> isinstance(seed, dict) and isinstance(seed.get('steps'), list)"
+      ],
+      "line_numbers": [
+        176
+      ]
+    },
+    "fuzz_target.py::target::177-177::branch::1": {
+      "id": "fuzz_target.py::target::177-177::branch::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "target",
+      "start_line": 177,
+      "end_line": 177,
+      "kind": "branch",
+      "statements": [
+        "<test> seed['steps']"
+      ],
+      "line_numbers": [
+        177
+      ]
+    },
+    "fuzz_target.py::target::170-170::loop_exit::1": {
+      "id": "fuzz_target.py::target::170-170::loop_exit::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "target",
+      "start_line": 170,
+      "end_line": 170,
+      "kind": "loop_exit",
+      "statements": [],
+      "line_numbers": [
+        170
+      ]
+    },
+    "fuzz_target.py::target::178-178::block::1": {
+      "id": "fuzz_target.py::target::178-178::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "target",
+      "start_line": 178,
+      "end_line": 178,
+      "kind": "block",
+      "statements": [
+        "_handle(step)"
+      ],
+      "line_numbers": [
+        178
+      ]
+    },
+    "fuzz_target.py::target::179-179::terminal::1": {
+      "id": "fuzz_target.py::target::179-179::terminal::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "target",
+      "start_line": 179,
+      "end_line": 179,
+      "kind": "terminal",
+      "statements": [
+        "return"
+      ],
+      "line_numbers": [
+        179
+      ]
+    },
+    "fuzz_target.py::target::180-180::block::1": {
+      "id": "fuzz_target.py::target::180-180::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "target",
+      "start_line": 180,
+      "end_line": 180,
+      "kind": "block",
+      "statements": [
+        "_handle(seed)"
+      ],
+      "line_numbers": [
+        180
+      ]
+    },
+    "fuzz_target.py::target::170-170::exit::1": {
+      "id": "fuzz_target.py::target::170-170::exit::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "target",
+      "start_line": 170,
+      "end_line": 170,
+      "kind": "exit",
+      "statements": [],
+      "line_numbers": [
+        170
+      ]
+    },
+    "fuzz_target.py::_decode::163-163::entry::1": {
+      "id": "fuzz_target.py::_decode::163-163::entry::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_decode",
+      "start_line": 163,
+      "end_line": 163,
+      "kind": "entry",
+      "statements": [],
+      "line_numbers": [
+        163
+      ]
+    },
+    "fuzz_target.py::_decode::163-163::try::1": {
+      "id": "fuzz_target.py::_decode::163-163::try::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_decode",
+      "start_line": 163,
+      "end_line": 163,
+      "kind": "try",
+      "statements": [],
+      "line_numbers": [
+        163
+      ]
+    },
+    "fuzz_target.py::_decode::165-165::terminal::1": {
+      "id": "fuzz_target.py::_decode::165-165::terminal::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_decode",
+      "start_line": 165,
+      "end_line": 165,
+      "kind": "terminal",
+      "statements": [
+        "return json.loads(data) if data else {}"
+      ],
+      "line_numbers": [
+        165
+      ]
+    },
+    "fuzz_target.py::_decode::167-167::terminal::1": {
+      "id": "fuzz_target.py::_decode::167-167::terminal::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_decode",
+      "start_line": 167,
+      "end_line": 167,
+      "kind": "terminal",
+      "statements": [
+        "return None"
+      ],
+      "line_numbers": [
+        167
+      ]
+    },
+    "fuzz_target.py::_decode::163-163::exit::1": {
+      "id": "fuzz_target.py::_decode::163-163::exit::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_decode",
+      "start_line": 163,
+      "end_line": 163,
+      "kind": "exit",
+      "statements": [],
+      "line_numbers": [
+        163
+      ]
+    },
+    "fuzz_target.py::_handle::158-158::entry::1": {
+      "id": "fuzz_target.py::_handle::158-158::entry::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_handle",
+      "start_line": 158,
+      "end_line": 158,
+      "kind": "entry",
+      "statements": [],
+      "line_numbers": [
+        158
+      ]
+    },
+    "fuzz_target.py::_handle::159-159::branch::1": {
+      "id": "fuzz_target.py::_handle::159-159::branch::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_handle",
+      "start_line": 159,
+      "end_line": 159,
+      "kind": "branch",
+      "statements": [
+        "<test> isinstance(step, dict)"
+      ],
+      "line_numbers": [
+        159
+      ]
+    },
+    "fuzz_target.py::_handle::160-160::block::1": {
+      "id": "fuzz_target.py::_handle::160-160::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_handle",
+      "start_line": 160,
+      "end_line": 160,
+      "kind": "block",
+      "statements": [
+        "_dispatch_request(step)"
+      ],
+      "line_numbers": [
+        160
+      ]
+    },
+    "fuzz_target.py::_handle::158-158::exit::1": {
+      "id": "fuzz_target.py::_handle::158-158::exit::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_handle",
+      "start_line": 158,
+      "end_line": 158,
+      "kind": "exit",
+      "statements": [],
+      "line_numbers": [
+        158
+      ]
+    },
+    "fuzz_target.py::_dispatch_request::130-130::entry::1": {
+      "id": "fuzz_target.py::_dispatch_request::130-130::entry::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_dispatch_request",
+      "start_line": 130,
+      "end_line": 130,
+      "kind": "entry",
+      "statements": [],
+      "line_numbers": [
+        130
+      ]
+    },
+    "fuzz_target.py::_dispatch_request::131-136::block::1": {
+      "id": "fuzz_target.py::_dispatch_request::131-136::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_dispatch_request",
+      "start_line": 131,
+      "end_line": 136,
+      "kind": "block",
+      "statements": [
+        "client = client or _CLIENT",
+        "method = str(step.get('method', 'GET')).upper()",
+        "path = str(step.get('path', '/'))",
+        "kwargs: dict = {}",
+        "headers = step.get('header')"
+      ],
+      "line_numbers": [
+        131,
+        132,
+        133,
+        135,
+        136
+      ]
+    },
+    "fuzz_target.py::_dispatch_request::137-137::branch::1": {
+      "id": "fuzz_target.py::_dispatch_request::137-137::branch::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_dispatch_request",
+      "start_line": 137,
+      "end_line": 137,
+      "kind": "branch",
+      "statements": [
+        "<test> headers is None"
+      ],
+      "line_numbers": [
+        137
+      ]
+    },
+    "fuzz_target.py::_dispatch_request::138-138::block::1": {
+      "id": "fuzz_target.py::_dispatch_request::138-138::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_dispatch_request",
+      "start_line": 138,
+      "end_line": 138,
+      "kind": "block",
+      "statements": [
+        "headers = step.get('headers')"
+      ],
+      "line_numbers": [
+        138
+      ]
+    },
+    "fuzz_target.py::_dispatch_request::139-139::branch::1": {
+      "id": "fuzz_target.py::_dispatch_request::139-139::branch::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_dispatch_request",
+      "start_line": 139,
+      "end_line": 139,
+      "kind": "branch",
+      "statements": [
+        "<test> isinstance(headers, dict)"
+      ],
+      "line_numbers": [
+        139
+      ]
+    },
+    "fuzz_target.py::_dispatch_request::140-140::block::1": {
+      "id": "fuzz_target.py::_dispatch_request::140-140::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_dispatch_request",
+      "start_line": 140,
+      "end_line": 140,
+      "kind": "block",
+      "statements": [
+        "kwargs['headers'] = {str(k): str(v) for k, v in headers.items()}"
+      ],
+      "line_numbers": [
+        140
+      ]
+    },
+    "fuzz_target.py::_dispatch_request::142-142::block::1": {
+      "id": "fuzz_target.py::_dispatch_request::142-142::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_dispatch_request",
+      "start_line": 142,
+      "end_line": 142,
+      "kind": "block",
+      "statements": [
+        "form = step.get('form')"
+      ],
+      "line_numbers": [
+        142
+      ]
+    },
+    "fuzz_target.py::_dispatch_request::143-143::branch::1": {
+      "id": "fuzz_target.py::_dispatch_request::143-143::branch::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_dispatch_request",
+      "start_line": 143,
+      "end_line": 143,
+      "kind": "branch",
+      "statements": [
+        "<test> isinstance(form, dict)"
+      ],
+      "line_numbers": [
+        143
+      ]
+    },
+    "fuzz_target.py::_dispatch_request::144-144::block::1": {
+      "id": "fuzz_target.py::_dispatch_request::144-144::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_dispatch_request",
+      "start_line": 144,
+      "end_line": 144,
+      "kind": "block",
+      "statements": [
+        "kwargs['data'] = {str(k): _coerce(v) for k, v in form.items()}"
+      ],
+      "line_numbers": [
+        144
+      ]
+    },
+    "fuzz_target.py::_dispatch_request::146-146::block::1": {
+      "id": "fuzz_target.py::_dispatch_request::146-146::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_dispatch_request",
+      "start_line": 146,
+      "end_line": 146,
+      "kind": "block",
+      "statements": [
+        "json_body = step.get('json')"
+      ],
+      "line_numbers": [
+        146
+      ]
+    },
+    "fuzz_target.py::_dispatch_request::147-147::branch::1": {
+      "id": "fuzz_target.py::_dispatch_request::147-147::branch::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_dispatch_request",
+      "start_line": 147,
+      "end_line": 147,
+      "kind": "branch",
+      "statements": [
+        "<test> isinstance(json_body, dict)"
+      ],
+      "line_numbers": [
+        147
+      ]
+    },
+    "fuzz_target.py::_dispatch_request::148-148::block::1": {
+      "id": "fuzz_target.py::_dispatch_request::148-148::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_dispatch_request",
+      "start_line": 148,
+      "end_line": 148,
+      "kind": "block",
+      "statements": [
+        "kwargs['json'] = {str(k): _coerce(v) for k, v in json_body.items()}"
+      ],
+      "line_numbers": [
+        148
+      ]
+    },
+    "fuzz_target.py::_dispatch_request::150-150::block::1": {
+      "id": "fuzz_target.py::_dispatch_request::150-150::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_dispatch_request",
+      "start_line": 150,
+      "end_line": 150,
+      "kind": "block",
+      "statements": [
+        "query = step.get('query')"
+      ],
+      "line_numbers": [
+        150
+      ]
+    },
+    "fuzz_target.py::_dispatch_request::151-151::branch::1": {
+      "id": "fuzz_target.py::_dispatch_request::151-151::branch::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_dispatch_request",
+      "start_line": 151,
+      "end_line": 151,
+      "kind": "branch",
+      "statements": [
+        "<test> isinstance(query, dict)"
+      ],
+      "line_numbers": [
+        151
+      ]
+    },
+    "fuzz_target.py::_dispatch_request::152-152::block::1": {
+      "id": "fuzz_target.py::_dispatch_request::152-152::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_dispatch_request",
+      "start_line": 152,
+      "end_line": 152,
+      "kind": "block",
+      "statements": [
+        "kwargs['query_string'] = {str(k): _coerce(v) for k, v in query.items()}"
+      ],
+      "line_numbers": [
+        152
+      ]
+    },
+    "fuzz_target.py::_dispatch_request::155-155::terminal::1": {
+      "id": "fuzz_target.py::_dispatch_request::155-155::terminal::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_dispatch_request",
+      "start_line": 155,
+      "end_line": 155,
+      "kind": "terminal",
+      "statements": [
+        "return client.open(path, method=method, **kwargs)"
+      ],
+      "line_numbers": [
+        155
+      ]
+    },
+    "fuzz_target.py::_dispatch_request::130-130::exit::1": {
+      "id": "fuzz_target.py::_dispatch_request::130-130::exit::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_dispatch_request",
+      "start_line": 130,
+      "end_line": 130,
+      "kind": "exit",
+      "statements": [],
+      "line_numbers": [
+        130
+      ]
+    },
+    "fuzz_target.py::_coerce::123-123::entry::1": {
+      "id": "fuzz_target.py::_coerce::123-123::entry::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_coerce",
+      "start_line": 123,
+      "end_line": 123,
+      "kind": "entry",
+      "statements": [],
+      "line_numbers": [
+        123
+      ]
+    },
+    "fuzz_target.py::_coerce::124-124::block::1": {
+      "id": "fuzz_target.py::_coerce::124-124::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_coerce",
+      "start_line": 124,
+      "end_line": 124,
+      "kind": "block",
+      "statements": [
+        "'Digit-only strings -> int (mirror the existing C10 adapters).'"
+      ],
+      "line_numbers": [
+        124
+      ]
+    },
+    "fuzz_target.py::_coerce::125-125::branch::1": {
+      "id": "fuzz_target.py::_coerce::125-125::branch::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_coerce",
+      "start_line": 125,
+      "end_line": 125,
+      "kind": "branch",
+      "statements": [
+        "<test> isinstance(value, str) and value.isdigit()"
+      ],
+      "line_numbers": [
+        125
+      ]
+    },
+    "fuzz_target.py::_coerce::126-126::terminal::1": {
+      "id": "fuzz_target.py::_coerce::126-126::terminal::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_coerce",
+      "start_line": 126,
+      "end_line": 126,
+      "kind": "terminal",
+      "statements": [
+        "return int(value)"
+      ],
+      "line_numbers": [
+        126
+      ]
+    },
+    "fuzz_target.py::_coerce::127-127::terminal::1": {
+      "id": "fuzz_target.py::_coerce::127-127::terminal::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_coerce",
+      "start_line": 127,
+      "end_line": 127,
+      "kind": "terminal",
+      "statements": [
+        "return value"
+      ],
+      "line_numbers": [
+        127
+      ]
+    },
+    "fuzz_target.py::_coerce::123-123::exit::1": {
+      "id": "fuzz_target.py::_coerce::123-123::exit::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_coerce",
+      "start_line": 123,
+      "end_line": 123,
+      "kind": "exit",
+      "statements": [],
+      "line_numbers": [
+        123
+      ]
+    },
+    "fuzz_target.py::sf_state_observer::114-114::entry::1": {
+      "id": "fuzz_target.py::sf_state_observer::114-114::entry::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "sf_state_observer",
+      "start_line": 114,
+      "end_line": 114,
+      "kind": "entry",
+      "statements": [],
+      "line_numbers": [
+        114
+      ]
+    },
+    "fuzz_target.py::sf_state_observer::115-116::block::1": {
+      "id": "fuzz_target.py::sf_state_observer::115-116::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "sf_state_observer",
+      "start_line": 115,
+      "end_line": 116,
+      "kind": "block",
+      "statements": [
+        "'P0-B/SS-04 observer factory discovered by observer_from_module.'",
+        "from stateforge.state.session_observation import SessionRuntimeObserver"
+      ],
+      "line_numbers": [
+        115,
+        116
+      ]
+    },
+    "fuzz_target.py::sf_state_observer::117-117::terminal::1": {
+      "id": "fuzz_target.py::sf_state_observer::117-117::terminal::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "sf_state_observer",
+      "start_line": 117,
+      "end_line": 117,
+      "kind": "terminal",
+      "statements": [
+        "return SessionRuntimeObserver(session_view)"
+      ],
+      "line_numbers": [
+        117
+      ]
+    },
+    "fuzz_target.py::sf_state_observer::114-114::exit::1": {
+      "id": "fuzz_target.py::sf_state_observer::114-114::exit::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "sf_state_observer",
+      "start_line": 114,
+      "end_line": 114,
+      "kind": "exit",
+      "statements": [],
+      "line_numbers": [
+        114
+      ]
+    },
+    "fuzz_target.py::session_view::107-107::entry::1": {
+      "id": "fuzz_target.py::session_view::107-107::entry::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "session_view",
+      "start_line": 107,
+      "end_line": 107,
+      "kind": "entry",
+      "statements": [],
+      "line_numbers": [
+        107
+      ]
+    },
+    "fuzz_target.py::session_view::108-109::block::1": {
+      "id": "fuzz_target.py::session_view::108-109::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "session_view",
+      "start_line": 108,
+      "end_line": 109,
+      "kind": "block",
+      "statements": [
+        "'SS-04: read-only observation point view for the runtime observer.'",
+        "from stateforge.state.session_observation import snapshot_view"
+      ],
+      "line_numbers": [
+        108,
+        109
+      ]
+    },
+    "fuzz_target.py::session_view::110-110::terminal::1": {
+      "id": "fuzz_target.py::session_view::110-110::terminal::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "session_view",
+      "start_line": 110,
+      "end_line": 110,
+      "kind": "terminal",
+      "statements": [
+        "return snapshot_view(observe_session(client), client_id='client-0', observation_point='after_response')"
+      ],
+      "line_numbers": [
+        110
+      ]
+    },
+    "fuzz_target.py::session_view::107-107::exit::1": {
+      "id": "fuzz_target.py::session_view::107-107::exit::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "session_view",
+      "start_line": 107,
+      "end_line": 107,
+      "kind": "exit",
+      "statements": [],
+      "line_numbers": [
+        107
+      ]
+    },
+    "fuzz_target.py::observe_session::104-104::entry::1": {
+      "id": "fuzz_target.py::observe_session::104-104::entry::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "observe_session",
+      "start_line": 104,
+      "end_line": 104,
+      "kind": "entry",
+      "statements": [],
+      "line_numbers": [
+        104
+      ]
+    },
+    "fuzz_target.py::observe_session::105-105::terminal::1": {
+      "id": "fuzz_target.py::observe_session::105-105::terminal::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "observe_session",
+      "start_line": 105,
+      "end_line": 105,
+      "kind": "terminal",
+      "statements": [
+        "return _APP_MOD.observe_session(client or _CLIENT, _APP)"
+      ],
+      "line_numbers": [
+        105
+      ]
+    },
+    "fuzz_target.py::observe_session::104-104::exit::1": {
+      "id": "fuzz_target.py::observe_session::104-104::exit::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "observe_session",
+      "start_line": 104,
+      "end_line": 104,
+      "kind": "exit",
+      "statements": [],
+      "line_numbers": [
+        104
+      ]
+    },
+    "fuzz_target.py::target_hits::100-100::entry::1": {
+      "id": "fuzz_target.py::target_hits::100-100::entry::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "target_hits",
+      "start_line": 100,
+      "end_line": 100,
+      "kind": "entry",
+      "statements": [],
+      "line_numbers": [
+        100
+      ]
+    },
+    "fuzz_target.py::target_hits::101-101::terminal::1": {
+      "id": "fuzz_target.py::target_hits::101-101::terminal::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "target_hits",
+      "start_line": 101,
+      "end_line": 101,
+      "kind": "terminal",
+      "statements": [
+        "return _APP_MOD.target_hits(_APP)"
+      ],
+      "line_numbers": [
+        101
+      ]
+    },
+    "fuzz_target.py::target_hits::100-100::exit::1": {
+      "id": "fuzz_target.py::target_hits::100-100::exit::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "target_hits",
+      "start_line": 100,
+      "end_line": 100,
+      "kind": "exit",
+      "statements": [],
+      "line_numbers": [
+        100
+      ]
+    },
+    "fuzz_target.py::current_client::96-96::entry::1": {
+      "id": "fuzz_target.py::current_client::96-96::entry::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "current_client",
+      "start_line": 96,
+      "end_line": 96,
+      "kind": "entry",
+      "statements": [],
+      "line_numbers": [
+        96
+      ]
+    },
+    "fuzz_target.py::current_client::97-97::terminal::1": {
+      "id": "fuzz_target.py::current_client::97-97::terminal::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "current_client",
+      "start_line": 97,
+      "end_line": 97,
+      "kind": "terminal",
+      "statements": [
+        "return _CLIENT"
+      ],
+      "line_numbers": [
+        97
+      ]
+    },
+    "fuzz_target.py::current_client::96-96::exit::1": {
+      "id": "fuzz_target.py::current_client::96-96::exit::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "current_client",
+      "start_line": 96,
+      "end_line": 96,
+      "kind": "exit",
+      "statements": [],
+      "line_numbers": [
+        96
+      ]
+    },
+    "fuzz_target.py::input_scope::81-81::entry::1": {
+      "id": "fuzz_target.py::input_scope::81-81::entry::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "input_scope",
+      "start_line": 81,
+      "end_line": 81,
+      "kind": "entry",
+      "statements": [],
+      "line_numbers": [
+        81
+      ]
+    },
+    "fuzz_target.py::input_scope::82-89::block::1": {
+      "id": "fuzz_target.py::input_scope::82-89::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "input_scope",
+      "start_line": 82,
+      "end_line": 89,
+      "kind": "block",
+      "statements": [
+        "\"Run one input, then restore a clean client for whatever follows.\\n\\n    The ledger is cleared on entry only, so assertions made after the scope\\n    can still see this input's target hits while the Cookie Jar is already\\n    fresh.\\n    \"",
+        "reset_state()"
+      ],
+      "line_numbers": [
+        82,
+        89
+      ]
+    },
+    "fuzz_target.py::input_scope::81-81::try::1": {
+      "id": "fuzz_target.py::input_scope::81-81::try::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "input_scope",
+      "start_line": 81,
+      "end_line": 81,
+      "kind": "try",
+      "statements": [],
+      "line_numbers": [
+        81
+      ]
+    },
+    "fuzz_target.py::input_scope::91-93::block::1": {
+      "id": "fuzz_target.py::input_scope::91-93::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "input_scope",
+      "start_line": 91,
+      "end_line": 93,
+      "kind": "block",
+      "statements": [
+        "yield _CLIENT",
+        "_replace_client()"
+      ],
+      "line_numbers": [
+        91,
+        93
+      ]
+    },
+    "fuzz_target.py::input_scope::81-81::exit::1": {
+      "id": "fuzz_target.py::input_scope::81-81::exit::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "input_scope",
+      "start_line": 81,
+      "end_line": 81,
+      "kind": "exit",
+      "statements": [],
+      "line_numbers": [
+        81
+      ]
+    },
+    "fuzz_target.py::reset_state::69-69::entry::1": {
+      "id": "fuzz_target.py::reset_state::69-69::entry::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "reset_state",
+      "start_line": 69,
+      "end_line": 69,
+      "kind": "entry",
+      "statements": [],
+      "line_numbers": [
+        69
+      ]
+    },
+    "fuzz_target.py::reset_state::70-77::block::1": {
+      "id": "fuzz_target.py::reset_state::70-77::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "reset_state",
+      "start_line": 70,
+      "end_line": 77,
+      "kind": "block",
+      "statements": [
+        "'Start a clean input (fresh Cookie Jar, empty hit ledger).\\n\\n    This is also the ``--lifecycle reset`` hook discovered by\\n    ``execution_context.lifecycle_from_module``.\\n    '",
+        "_replace_client()",
+        "_APP.config.setdefault(TARGET_HITS_KEY, []).clear()"
+      ],
+      "line_numbers": [
+        70,
+        76,
+        77
+      ]
+    },
+    "fuzz_target.py::reset_state::69-69::exit::1": {
+      "id": "fuzz_target.py::reset_state::69-69::exit::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "reset_state",
+      "start_line": 69,
+      "end_line": 69,
+      "kind": "exit",
+      "statements": [],
+      "line_numbers": [
+        69
+      ]
+    },
+    "fuzz_target.py::_replace_client::63-63::entry::1": {
+      "id": "fuzz_target.py::_replace_client::63-63::entry::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_replace_client",
+      "start_line": 63,
+      "end_line": 63,
+      "kind": "entry",
+      "statements": [],
+      "line_numbers": [
+        63
+      ]
+    },
+    "fuzz_target.py::_replace_client::64-65::block::1": {
+      "id": "fuzz_target.py::_replace_client::64-65::block::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_replace_client",
+      "start_line": 64,
+      "end_line": 65,
+      "kind": "block",
+      "statements": [
+        "global _CLIENT",
+        "_CLIENT = _APP.test_client()"
+      ],
+      "line_numbers": [
+        64,
+        65
+      ]
+    },
+    "fuzz_target.py::_replace_client::66-66::terminal::1": {
+      "id": "fuzz_target.py::_replace_client::66-66::terminal::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_replace_client",
+      "start_line": 66,
+      "end_line": 66,
+      "kind": "terminal",
+      "statements": [
+        "return _CLIENT"
+      ],
+      "line_numbers": [
+        66
+      ]
+    },
+    "fuzz_target.py::_replace_client::63-63::exit::1": {
+      "id": "fuzz_target.py::_replace_client::63-63::exit::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_replace_client",
+      "start_line": 63,
+      "end_line": 63,
+      "kind": "exit",
+      "statements": [],
+      "line_numbers": [
+        63
+      ]
+    },
+    "app.py::clear::209-209::callsite::1": {
+      "id": "app.py::clear::209-209::callsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "clear",
+      "start_line": 209,
+      "end_line": 209,
+      "kind": "callsite",
+      "statements": [
+        "<call> app.clear"
+      ],
+      "line_numbers": [
+        209
+      ]
+    },
+    "app.py::clear::209-209::returnsite::1": {
+      "id": "app.py::clear::209-209::returnsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "clear",
+      "start_line": 209,
+      "end_line": 209,
+      "kind": "returnsite",
+      "statements": [
+        "<ret> app.clear"
+      ],
+      "line_numbers": [
+        209
+      ]
+    },
+    "app.py::protected_subscript::199-199::callsite::1": {
+      "id": "app.py::protected_subscript::199-199::callsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "protected_subscript",
+      "start_line": 199,
+      "end_line": 199,
+      "kind": "callsite",
+      "statements": [
+        "<call> app.subscript_target_block"
+      ],
+      "line_numbers": [
+        199
+      ]
+    },
+    "app.py::protected_subscript::199-199::returnsite::1": {
+      "id": "app.py::protected_subscript::199-199::returnsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "protected_subscript",
+      "start_line": 199,
+      "end_line": 199,
+      "kind": "returnsite",
+      "statements": [
+        "<ret> app.subscript_target_block"
+      ],
+      "line_numbers": [
+        199
+      ]
+    },
+    "app.py::protected_membership::189-189::callsite::1": {
+      "id": "app.py::protected_membership::189-189::callsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "protected_membership",
+      "start_line": 189,
+      "end_line": 189,
+      "kind": "callsite",
+      "statements": [
+        "<call> app.membership_target_block"
+      ],
+      "line_numbers": [
+        189
+      ]
+    },
+    "app.py::protected_membership::189-189::returnsite::1": {
+      "id": "app.py::protected_membership::189-189::returnsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "protected_membership",
+      "start_line": 189,
+      "end_line": 189,
+      "kind": "returnsite",
+      "statements": [
+        "<ret> app.membership_target_block"
+      ],
+      "line_numbers": [
+        189
+      ]
+    },
+    "app.py::protected_truthy::182-182::callsite::1": {
+      "id": "app.py::protected_truthy::182-182::callsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "protected_truthy",
+      "start_line": 182,
+      "end_line": 182,
+      "kind": "callsite",
+      "statements": [
+        "<call> app.truthy_target_block"
+      ],
+      "line_numbers": [
+        182
+      ]
+    },
+    "app.py::protected_truthy::182-182::returnsite::1": {
+      "id": "app.py::protected_truthy::182-182::returnsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "protected_truthy",
+      "start_line": 182,
+      "end_line": 182,
+      "kind": "returnsite",
+      "statements": [
+        "<ret> app.truthy_target_block"
+      ],
+      "line_numbers": [
+        182
+      ]
+    },
+    "app.py::protected::173-173::callsite::1": {
+      "id": "app.py::protected::173-173::callsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "protected",
+      "start_line": 173,
+      "end_line": 173,
+      "kind": "callsite",
+      "statements": [
+        "<call> app.target_block"
+      ],
+      "line_numbers": [
+        173
+      ]
+    },
+    "app.py::protected::173-173::returnsite::1": {
+      "id": "app.py::protected::173-173::returnsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "protected",
+      "start_line": 173,
+      "end_line": 173,
+      "kind": "returnsite",
+      "statements": [
+        "<ret> app.target_block"
+      ],
+      "line_numbers": [
+        173
+      ]
+    },
+    "app.py::subscript_target_block::151-151::callsite::1": {
+      "id": "app.py::subscript_target_block::151-151::callsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "subscript_target_block",
+      "start_line": 151,
+      "end_line": 151,
+      "kind": "callsite",
+      "statements": [
+        "<call> app._hit"
+      ],
+      "line_numbers": [
+        151
+      ]
+    },
+    "app.py::subscript_target_block::151-151::returnsite::1": {
+      "id": "app.py::subscript_target_block::151-151::returnsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "subscript_target_block",
+      "start_line": 151,
+      "end_line": 151,
+      "kind": "returnsite",
+      "statements": [
+        "<ret> app._hit"
+      ],
+      "line_numbers": [
+        151
+      ]
+    },
+    "app.py::membership_target_block::147-147::callsite::1": {
+      "id": "app.py::membership_target_block::147-147::callsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "membership_target_block",
+      "start_line": 147,
+      "end_line": 147,
+      "kind": "callsite",
+      "statements": [
+        "<call> app._hit"
+      ],
+      "line_numbers": [
+        147
+      ]
+    },
+    "app.py::membership_target_block::147-147::returnsite::1": {
+      "id": "app.py::membership_target_block::147-147::returnsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "membership_target_block",
+      "start_line": 147,
+      "end_line": 147,
+      "kind": "returnsite",
+      "statements": [
+        "<ret> app._hit"
+      ],
+      "line_numbers": [
+        147
+      ]
+    },
+    "app.py::truthy_target_block::143-143::callsite::1": {
+      "id": "app.py::truthy_target_block::143-143::callsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "truthy_target_block",
+      "start_line": 143,
+      "end_line": 143,
+      "kind": "callsite",
+      "statements": [
+        "<call> app._hit"
+      ],
+      "line_numbers": [
+        143
+      ]
+    },
+    "app.py::truthy_target_block::143-143::returnsite::1": {
+      "id": "app.py::truthy_target_block::143-143::returnsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "truthy_target_block",
+      "start_line": 143,
+      "end_line": 143,
+      "kind": "returnsite",
+      "statements": [
+        "<ret> app._hit"
+      ],
+      "line_numbers": [
+        143
+      ]
+    },
+    "app.py::target_block::139-139::callsite::1": {
+      "id": "app.py::target_block::139-139::callsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "target_block",
+      "start_line": 139,
+      "end_line": 139,
+      "kind": "callsite",
+      "statements": [
+        "<call> app._hit"
+      ],
+      "line_numbers": [
+        139
+      ]
+    },
+    "app.py::target_block::139-139::returnsite::1": {
+      "id": "app.py::target_block::139-139::returnsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "target_block",
+      "start_line": 139,
+      "end_line": 139,
+      "kind": "returnsite",
+      "statements": [
+        "<ret> app._hit"
+      ],
+      "line_numbers": [
+        139
+      ]
+    },
+    "app.py::create_app::85-85::callsite::1": {
+      "id": "app.py::create_app::85-85::callsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "create_app",
+      "start_line": 85,
+      "end_line": 85,
+      "kind": "callsite",
+      "statements": [
+        "<call> app._register_routes"
+      ],
+      "line_numbers": [
+        85
+      ]
+    },
+    "app.py::create_app::85-85::returnsite::1": {
+      "id": "app.py::create_app::85-85::returnsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "function": "create_app",
+      "start_line": 85,
+      "end_line": 85,
+      "kind": "returnsite",
+      "statements": [
+        "<ret> app._register_routes"
+      ],
+      "line_numbers": [
+        85
+      ]
+    },
+    "fuzz_target.py::run_input::185-185::callsite::1": {
+      "id": "fuzz_target.py::run_input::185-185::callsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "run_input",
+      "start_line": 185,
+      "end_line": 185,
+      "kind": "callsite",
+      "statements": [
+        "<call> fuzz_target.input_scope"
+      ],
+      "line_numbers": [
+        185
+      ]
+    },
+    "fuzz_target.py::run_input::185-185::returnsite::1": {
+      "id": "fuzz_target.py::run_input::185-185::returnsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "run_input",
+      "start_line": 185,
+      "end_line": 185,
+      "kind": "returnsite",
+      "statements": [
+        "<ret> fuzz_target.input_scope"
+      ],
+      "line_numbers": [
+        185
+      ]
+    },
+    "fuzz_target.py::target::180-180::callsite::1": {
+      "id": "fuzz_target.py::target::180-180::callsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "target",
+      "start_line": 180,
+      "end_line": 180,
+      "kind": "callsite",
+      "statements": [
+        "<call> fuzz_target._handle"
+      ],
+      "line_numbers": [
+        180
+      ]
+    },
+    "fuzz_target.py::target::180-180::returnsite::1": {
+      "id": "fuzz_target.py::target::180-180::returnsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "target",
+      "start_line": 180,
+      "end_line": 180,
+      "kind": "returnsite",
+      "statements": [
+        "<ret> fuzz_target._handle"
+      ],
+      "line_numbers": [
+        180
+      ]
+    },
+    "fuzz_target.py::target::178-178::callsite::1": {
+      "id": "fuzz_target.py::target::178-178::callsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "target",
+      "start_line": 178,
+      "end_line": 178,
+      "kind": "callsite",
+      "statements": [
+        "<call> fuzz_target._handle"
+      ],
+      "line_numbers": [
+        178
+      ]
+    },
+    "fuzz_target.py::target::178-178::returnsite::1": {
+      "id": "fuzz_target.py::target::178-178::returnsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "target",
+      "start_line": 178,
+      "end_line": 178,
+      "kind": "returnsite",
+      "statements": [
+        "<ret> fuzz_target._handle"
+      ],
+      "line_numbers": [
+        178
+      ]
+    },
+    "fuzz_target.py::target::173-173::callsite::1": {
+      "id": "fuzz_target.py::target::173-173::callsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "target",
+      "start_line": 173,
+      "end_line": 173,
+      "kind": "callsite",
+      "statements": [
+        "<call> fuzz_target._decode"
+      ],
+      "line_numbers": [
+        173
+      ]
+    },
+    "fuzz_target.py::target::173-173::returnsite::1": {
+      "id": "fuzz_target.py::target::173-173::returnsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "target",
+      "start_line": 173,
+      "end_line": 173,
+      "kind": "returnsite",
+      "statements": [
+        "<ret> fuzz_target._decode"
+      ],
+      "line_numbers": [
+        173
+      ]
+    },
+    "fuzz_target.py::_handle::160-160::callsite::1": {
+      "id": "fuzz_target.py::_handle::160-160::callsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_handle",
+      "start_line": 160,
+      "end_line": 160,
+      "kind": "callsite",
+      "statements": [
+        "<call> fuzz_target._dispatch_request"
+      ],
+      "line_numbers": [
+        160
+      ]
+    },
+    "fuzz_target.py::_handle::160-160::returnsite::1": {
+      "id": "fuzz_target.py::_handle::160-160::returnsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_handle",
+      "start_line": 160,
+      "end_line": 160,
+      "kind": "returnsite",
+      "statements": [
+        "<ret> fuzz_target._dispatch_request"
+      ],
+      "line_numbers": [
+        160
+      ]
+    },
+    "fuzz_target.py::_dispatch_request::152-152::callsite::1": {
+      "id": "fuzz_target.py::_dispatch_request::152-152::callsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_dispatch_request",
+      "start_line": 152,
+      "end_line": 152,
+      "kind": "callsite",
+      "statements": [
+        "<call> fuzz_target._coerce"
+      ],
+      "line_numbers": [
+        152
+      ]
+    },
+    "fuzz_target.py::_dispatch_request::152-152::returnsite::1": {
+      "id": "fuzz_target.py::_dispatch_request::152-152::returnsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_dispatch_request",
+      "start_line": 152,
+      "end_line": 152,
+      "kind": "returnsite",
+      "statements": [
+        "<ret> fuzz_target._coerce"
+      ],
+      "line_numbers": [
+        152
+      ]
+    },
+    "fuzz_target.py::_dispatch_request::148-148::callsite::1": {
+      "id": "fuzz_target.py::_dispatch_request::148-148::callsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_dispatch_request",
+      "start_line": 148,
+      "end_line": 148,
+      "kind": "callsite",
+      "statements": [
+        "<call> fuzz_target._coerce"
+      ],
+      "line_numbers": [
+        148
+      ]
+    },
+    "fuzz_target.py::_dispatch_request::148-148::returnsite::1": {
+      "id": "fuzz_target.py::_dispatch_request::148-148::returnsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_dispatch_request",
+      "start_line": 148,
+      "end_line": 148,
+      "kind": "returnsite",
+      "statements": [
+        "<ret> fuzz_target._coerce"
+      ],
+      "line_numbers": [
+        148
+      ]
+    },
+    "fuzz_target.py::_dispatch_request::144-144::callsite::1": {
+      "id": "fuzz_target.py::_dispatch_request::144-144::callsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_dispatch_request",
+      "start_line": 144,
+      "end_line": 144,
+      "kind": "callsite",
+      "statements": [
+        "<call> fuzz_target._coerce"
+      ],
+      "line_numbers": [
+        144
+      ]
+    },
+    "fuzz_target.py::_dispatch_request::144-144::returnsite::1": {
+      "id": "fuzz_target.py::_dispatch_request::144-144::returnsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "_dispatch_request",
+      "start_line": 144,
+      "end_line": 144,
+      "kind": "returnsite",
+      "statements": [
+        "<ret> fuzz_target._coerce"
+      ],
+      "line_numbers": [
+        144
+      ]
+    },
+    "fuzz_target.py::session_view::110-110::callsite::1": {
+      "id": "fuzz_target.py::session_view::110-110::callsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "session_view",
+      "start_line": 110,
+      "end_line": 110,
+      "kind": "callsite",
+      "statements": [
+        "<call> fuzz_target.observe_session"
+      ],
+      "line_numbers": [
+        110
+      ]
+    },
+    "fuzz_target.py::session_view::110-110::returnsite::1": {
+      "id": "fuzz_target.py::session_view::110-110::returnsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "session_view",
+      "start_line": 110,
+      "end_line": 110,
+      "kind": "returnsite",
+      "statements": [
+        "<ret> fuzz_target.observe_session"
+      ],
+      "line_numbers": [
+        110
+      ]
+    },
+    "fuzz_target.py::observe_session::105-105::callsite::1": {
+      "id": "fuzz_target.py::observe_session::105-105::callsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "observe_session",
+      "start_line": 105,
+      "end_line": 105,
+      "kind": "callsite",
+      "statements": [
+        "<call> fuzz_target.observe_session"
+      ],
+      "line_numbers": [
+        105
+      ]
+    },
+    "fuzz_target.py::observe_session::105-105::returnsite::1": {
+      "id": "fuzz_target.py::observe_session::105-105::returnsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "observe_session",
+      "start_line": 105,
+      "end_line": 105,
+      "kind": "returnsite",
+      "statements": [
+        "<ret> fuzz_target.observe_session"
+      ],
+      "line_numbers": [
+        105
+      ]
+    },
+    "fuzz_target.py::target_hits::101-101::callsite::1": {
+      "id": "fuzz_target.py::target_hits::101-101::callsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "target_hits",
+      "start_line": 101,
+      "end_line": 101,
+      "kind": "callsite",
+      "statements": [
+        "<call> fuzz_target.target_hits"
+      ],
+      "line_numbers": [
+        101
+      ]
+    },
+    "fuzz_target.py::target_hits::101-101::returnsite::1": {
+      "id": "fuzz_target.py::target_hits::101-101::returnsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "target_hits",
+      "start_line": 101,
+      "end_line": 101,
+      "kind": "returnsite",
+      "statements": [
+        "<ret> fuzz_target.target_hits"
+      ],
+      "line_numbers": [
+        101
+      ]
+    },
+    "fuzz_target.py::input_scope::93-93::callsite::1": {
+      "id": "fuzz_target.py::input_scope::93-93::callsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "input_scope",
+      "start_line": 93,
+      "end_line": 93,
+      "kind": "callsite",
+      "statements": [
+        "<call> fuzz_target._replace_client"
+      ],
+      "line_numbers": [
+        93
+      ]
+    },
+    "fuzz_target.py::input_scope::93-93::returnsite::1": {
+      "id": "fuzz_target.py::input_scope::93-93::returnsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "input_scope",
+      "start_line": 93,
+      "end_line": 93,
+      "kind": "returnsite",
+      "statements": [
+        "<ret> fuzz_target._replace_client"
+      ],
+      "line_numbers": [
+        93
+      ]
+    },
+    "fuzz_target.py::input_scope::89-89::callsite::1": {
+      "id": "fuzz_target.py::input_scope::89-89::callsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "input_scope",
+      "start_line": 89,
+      "end_line": 89,
+      "kind": "callsite",
+      "statements": [
+        "<call> fuzz_target.reset_state"
+      ],
+      "line_numbers": [
+        89
+      ]
+    },
+    "fuzz_target.py::input_scope::89-89::returnsite::1": {
+      "id": "fuzz_target.py::input_scope::89-89::returnsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "input_scope",
+      "start_line": 89,
+      "end_line": 89,
+      "kind": "returnsite",
+      "statements": [
+        "<ret> fuzz_target.reset_state"
+      ],
+      "line_numbers": [
+        89
+      ]
+    },
+    "fuzz_target.py::reset_state::76-76::callsite::1": {
+      "id": "fuzz_target.py::reset_state::76-76::callsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "reset_state",
+      "start_line": 76,
+      "end_line": 76,
+      "kind": "callsite",
+      "statements": [
+        "<call> fuzz_target._replace_client"
+      ],
+      "line_numbers": [
+        76
+      ]
+    },
+    "fuzz_target.py::reset_state::76-76::returnsite::1": {
+      "id": "fuzz_target.py::reset_state::76-76::returnsite::1",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "reset_state",
+      "start_line": 76,
+      "end_line": 76,
+      "kind": "returnsite",
+      "statements": [
+        "<ret> fuzz_target._replace_client"
+      ],
+      "line_numbers": [
+        76
+      ]
+    },
+    "fuzz_target.py::reset_state::77-77::callsite::2": {
+      "id": "fuzz_target.py::reset_state::77-77::callsite::2",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "reset_state",
+      "start_line": 77,
+      "end_line": 77,
+      "kind": "callsite",
+      "statements": [
+        "<call> app.clear"
+      ],
+      "line_numbers": [
+        77
+      ]
+    },
+    "fuzz_target.py::reset_state::77-77::returnsite::2": {
+      "id": "fuzz_target.py::reset_state::77-77::returnsite::2",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "function": "reset_state",
+      "start_line": 77,
+      "end_line": 77,
+      "kind": "returnsite",
+      "statements": [
+        "<ret> app.clear"
+      ],
+      "line_numbers": [
+        77
+      ]
+    }
+  },
+  "functions": {
+    "app._register_routes": {
+      "name": "app._register_routes",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "entry": "app.py::_register_routes::157-157::entry::1",
+      "exit": "app.py::_register_routes::157-157::exit::1",
+      "blocks": [
+        "app.py::_register_routes::157-157::entry::1",
+        "app.py::_register_routes::160-213::block::1",
+        "app.py::_register_routes::157-157::exit::1"
+      ]
+    },
+    "app.noise": {
+      "name": "app.noise",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "entry": "app.py::noise::213-213::entry::1",
+      "exit": "app.py::noise::213-213::exit::1",
+      "blocks": [
+        "app.py::noise::213-213::entry::1",
+        "app.py::noise::216-216::block::1",
+        "app.py::noise::217-217::terminal::1",
+        "app.py::noise::213-213::exit::1"
+      ]
+    },
+    "app.clear": {
+      "name": "app.clear",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "entry": "app.py::clear::208-208::entry::1",
+      "exit": "app.py::clear::208-208::exit::1",
+      "blocks": [
+        "app.py::clear::208-208::entry::1",
+        "app.py::clear::209-209::block::1",
+        "app.py::clear::210-210::terminal::1",
+        "app.py::clear::208-208::exit::1",
+        "app.py::clear::209-209::callsite::1",
+        "app.py::clear::209-209::returnsite::1"
+      ]
+    },
+    "app.logout": {
+      "name": "app.logout",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "entry": "app.py::logout::203-203::entry::1",
+      "exit": "app.py::logout::203-203::exit::1",
+      "blocks": [
+        "app.py::logout::203-203::entry::1",
+        "app.py::logout::204-204::block::1",
+        "app.py::logout::205-205::terminal::1",
+        "app.py::logout::203-203::exit::1"
+      ]
+    },
+    "app.protected_subscript": {
+      "name": "app.protected_subscript",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "entry": "app.py::protected_subscript::194-194::entry::1",
+      "exit": "app.py::protected_subscript::194-194::exit::1",
+      "blocks": [
+        "app.py::protected_subscript::194-194::entry::1",
+        "app.py::protected_subscript::194-194::try::1",
+        "app.py::protected_subscript::196-199::block::1",
+        "app.py::protected_subscript::198-198::terminal::1",
+        "app.py::protected_subscript::200-200::terminal::1",
+        "app.py::protected_subscript::194-194::exit::1",
+        "app.py::protected_subscript::199-199::callsite::1",
+        "app.py::protected_subscript::199-199::returnsite::1"
+      ]
+    },
+    "app.protected_membership": {
+      "name": "app.protected_membership",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "entry": "app.py::protected_membership::187-187::entry::1",
+      "exit": "app.py::protected_membership::187-187::exit::1",
+      "blocks": [
+        "app.py::protected_membership::187-187::entry::1",
+        "app.py::protected_membership::188-188::branch::1",
+        "app.py::protected_membership::189-189::block::1",
+        "app.py::protected_membership::190-190::terminal::1",
+        "app.py::protected_membership::191-191::terminal::1",
+        "app.py::protected_membership::187-187::exit::1",
+        "app.py::protected_membership::189-189::callsite::1",
+        "app.py::protected_membership::189-189::returnsite::1"
+      ]
+    },
+    "app.protected_truthy": {
+      "name": "app.protected_truthy",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "entry": "app.py::protected_truthy::179-179::entry::1",
+      "exit": "app.py::protected_truthy::179-179::exit::1",
+      "blocks": [
+        "app.py::protected_truthy::179-179::entry::1",
+        "app.py::protected_truthy::180-180::block::1",
+        "app.py::protected_truthy::181-181::branch::1",
+        "app.py::protected_truthy::182-182::block::1",
+        "app.py::protected_truthy::183-183::terminal::1",
+        "app.py::protected_truthy::184-184::terminal::1",
+        "app.py::protected_truthy::179-179::exit::1",
+        "app.py::protected_truthy::182-182::callsite::1",
+        "app.py::protected_truthy::182-182::returnsite::1"
+      ]
+    },
+    "app.protected": {
+      "name": "app.protected",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "entry": "app.py::protected::169-169::entry::1",
+      "exit": "app.py::protected::169-169::exit::1",
+      "blocks": [
+        "app.py::protected::169-169::entry::1",
+        "app.py::protected::170-170::block::1",
+        "app.py::protected::171-171::branch::1",
+        "app.py::protected::172-172::terminal::1",
+        "app.py::protected::173-173::block::1",
+        "app.py::protected::174-174::terminal::1",
+        "app.py::protected::169-169::exit::1",
+        "app.py::protected::173-173::callsite::1",
+        "app.py::protected::173-173::returnsite::1"
+      ]
+    },
+    "app.authenticate": {
+      "name": "app.authenticate",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "entry": "app.py::authenticate::160-160::entry::1",
+      "exit": "app.py::authenticate::160-160::exit::1",
+      "blocks": [
+        "app.py::authenticate::160-160::entry::1",
+        "app.py::authenticate::163-163::branch::1",
+        "app.py::authenticate::164-164::terminal::1",
+        "app.py::authenticate::165-165::block::1",
+        "app.py::authenticate::166-166::terminal::1",
+        "app.py::authenticate::160-160::exit::1"
+      ]
+    },
+    "app.subscript_target_block": {
+      "name": "app.subscript_target_block",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "entry": "app.py::subscript_target_block::150-150::entry::1",
+      "exit": "app.py::subscript_target_block::150-150::exit::1",
+      "blocks": [
+        "app.py::subscript_target_block::150-150::entry::1",
+        "app.py::subscript_target_block::151-151::block::1",
+        "app.py::subscript_target_block::150-150::exit::1",
+        "app.py::subscript_target_block::151-151::callsite::1",
+        "app.py::subscript_target_block::151-151::returnsite::1"
+      ]
+    },
+    "app.membership_target_block": {
+      "name": "app.membership_target_block",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "entry": "app.py::membership_target_block::146-146::entry::1",
+      "exit": "app.py::membership_target_block::146-146::exit::1",
+      "blocks": [
+        "app.py::membership_target_block::146-146::entry::1",
+        "app.py::membership_target_block::147-147::block::1",
+        "app.py::membership_target_block::146-146::exit::1",
+        "app.py::membership_target_block::147-147::callsite::1",
+        "app.py::membership_target_block::147-147::returnsite::1"
+      ]
+    },
+    "app.truthy_target_block": {
+      "name": "app.truthy_target_block",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "entry": "app.py::truthy_target_block::142-142::entry::1",
+      "exit": "app.py::truthy_target_block::142-142::exit::1",
+      "blocks": [
+        "app.py::truthy_target_block::142-142::entry::1",
+        "app.py::truthy_target_block::143-143::block::1",
+        "app.py::truthy_target_block::142-142::exit::1",
+        "app.py::truthy_target_block::143-143::callsite::1",
+        "app.py::truthy_target_block::143-143::returnsite::1"
+      ]
+    },
+    "app.target_block": {
+      "name": "app.target_block",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "entry": "app.py::target_block::137-137::entry::1",
+      "exit": "app.py::target_block::137-137::exit::1",
+      "blocks": [
+        "app.py::target_block::137-137::entry::1",
+        "app.py::target_block::138-139::block::1",
+        "app.py::target_block::137-137::exit::1",
+        "app.py::target_block::139-139::callsite::1",
+        "app.py::target_block::139-139::returnsite::1"
+      ]
+    },
+    "app._hit": {
+      "name": "app._hit",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "entry": "app.py::_hit::133-133::entry::1",
+      "exit": "app.py::_hit::133-133::exit::1",
+      "blocks": [
+        "app.py::_hit::133-133::entry::1",
+        "app.py::_hit::134-134::block::1",
+        "app.py::_hit::133-133::exit::1"
+      ]
+    },
+    "app.target_hits": {
+      "name": "app.target_hits",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "entry": "app.py::target_hits::125-125::entry::1",
+      "exit": "app.py::target_hits::125-125::exit::1",
+      "blocks": [
+        "app.py::target_hits::125-125::entry::1",
+        "app.py::target_hits::126-126::block::1",
+        "app.py::target_hits::127-127::terminal::1",
+        "app.py::target_hits::125-125::exit::1"
+      ]
+    },
+    "app.observe_session": {
+      "name": "app.observe_session",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "entry": "app.py::observe_session::92-92::entry::1",
+      "exit": "app.py::observe_session::92-92::exit::1",
+      "blocks": [
+        "app.py::observe_session::92-92::entry::1",
+        "app.py::observe_session::93-105::block::1",
+        "app.py::observe_session::106-106::branch::1",
+        "app.py::observe_session::107-107::terminal::1",
+        "app.py::observe_session::109-109::block::1",
+        "app.py::observe_session::110-110::branch::1",
+        "app.py::observe_session::111-111::terminal::1",
+        "app.py::observe_session::92-92::try::1",
+        "app.py::observe_session::114-114::block::1",
+        "app.py::observe_session::116-116::terminal::1",
+        "app.py::observe_session::118-118::branch::1",
+        "app.py::observe_session::119-119::terminal::1",
+        "app.py::observe_session::121-121::terminal::1",
+        "app.py::observe_session::92-92::exit::1"
+      ]
+    },
+    "app.create_app": {
+      "name": "app.create_app",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "entry": "app.py::create_app::74-74::entry::1",
+      "exit": "app.py::create_app::74-74::exit::1",
+      "blocks": [
+        "app.py::create_app::74-74::entry::1",
+        "app.py::create_app::76-85::block::1",
+        "app.py::create_app::86-86::terminal::1",
+        "app.py::create_app::74-74::exit::1",
+        "app.py::create_app::85-85::callsite::1",
+        "app.py::create_app::85-85::returnsite::1"
+      ]
+    },
+    "app.SessionSnapshot.get": {
+      "name": "app.get",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "entry": "app.py::get::70-70::entry::1",
+      "exit": "app.py::get::70-70::exit::1",
+      "blocks": [
+        "app.py::get::70-70::entry::1",
+        "app.py::get::71-71::terminal::1",
+        "app.py::get::70-70::exit::1"
+      ]
+    },
+    "app.SessionSnapshot.verified": {
+      "name": "app.verified",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "entry": "app.py::verified::67-67::entry::1",
+      "exit": "app.py::verified::67-67::exit::1",
+      "blocks": [
+        "app.py::verified::67-67::entry::1",
+        "app.py::verified::68-68::terminal::1",
+        "app.py::verified::67-67::exit::1"
+      ]
+    },
+    "app.SessionSnapshot.present": {
+      "name": "app.present",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/app.py",
+      "module": "app",
+      "entry": "app.py::present::63-63::entry::1",
+      "exit": "app.py::present::63-63::exit::1",
+      "blocks": [
+        "app.py::present::63-63::entry::1",
+        "app.py::present::64-64::terminal::1",
+        "app.py::present::63-63::exit::1"
+      ]
+    },
+    "fuzz_target.run_input": {
+      "name": "fuzz_target.run_input",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "entry": "fuzz_target.py::run_input::183-183::entry::1",
+      "exit": "fuzz_target.py::run_input::183-183::exit::1",
+      "blocks": [
+        "fuzz_target.py::run_input::183-183::entry::1",
+        "fuzz_target.py::run_input::184-185::block::1",
+        "fuzz_target.py::run_input::183-183::exit::1",
+        "fuzz_target.py::run_input::185-185::callsite::1",
+        "fuzz_target.py::run_input::185-185::returnsite::1"
+      ]
+    },
+    "fuzz_target.target": {
+      "name": "fuzz_target.target",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "entry": "fuzz_target.py::target::170-170::entry::1",
+      "exit": "fuzz_target.py::target::170-170::exit::1",
+      "blocks": [
+        "fuzz_target.py::target::170-170::entry::1",
+        "fuzz_target.py::target::171-173::block::1",
+        "fuzz_target.py::target::174-174::branch::1",
+        "fuzz_target.py::target::175-175::terminal::1",
+        "fuzz_target.py::target::176-176::branch::1",
+        "fuzz_target.py::target::177-177::branch::1",
+        "fuzz_target.py::target::170-170::loop_exit::1",
+        "fuzz_target.py::target::178-178::block::1",
+        "fuzz_target.py::target::179-179::terminal::1",
+        "fuzz_target.py::target::180-180::block::1",
+        "fuzz_target.py::target::170-170::exit::1",
+        "fuzz_target.py::target::180-180::callsite::1",
+        "fuzz_target.py::target::180-180::returnsite::1",
+        "fuzz_target.py::target::178-178::callsite::1",
+        "fuzz_target.py::target::178-178::returnsite::1",
+        "fuzz_target.py::target::173-173::callsite::1",
+        "fuzz_target.py::target::173-173::returnsite::1"
+      ]
+    },
+    "fuzz_target._decode": {
+      "name": "fuzz_target._decode",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "entry": "fuzz_target.py::_decode::163-163::entry::1",
+      "exit": "fuzz_target.py::_decode::163-163::exit::1",
+      "blocks": [
+        "fuzz_target.py::_decode::163-163::entry::1",
+        "fuzz_target.py::_decode::163-163::try::1",
+        "fuzz_target.py::_decode::165-165::terminal::1",
+        "fuzz_target.py::_decode::167-167::terminal::1",
+        "fuzz_target.py::_decode::163-163::exit::1"
+      ]
+    },
+    "fuzz_target._handle": {
+      "name": "fuzz_target._handle",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "entry": "fuzz_target.py::_handle::158-158::entry::1",
+      "exit": "fuzz_target.py::_handle::158-158::exit::1",
+      "blocks": [
+        "fuzz_target.py::_handle::158-158::entry::1",
+        "fuzz_target.py::_handle::159-159::branch::1",
+        "fuzz_target.py::_handle::160-160::block::1",
+        "fuzz_target.py::_handle::158-158::exit::1",
+        "fuzz_target.py::_handle::160-160::callsite::1",
+        "fuzz_target.py::_handle::160-160::returnsite::1"
+      ]
+    },
+    "fuzz_target._dispatch_request": {
+      "name": "fuzz_target._dispatch_request",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "entry": "fuzz_target.py::_dispatch_request::130-130::entry::1",
+      "exit": "fuzz_target.py::_dispatch_request::130-130::exit::1",
+      "blocks": [
+        "fuzz_target.py::_dispatch_request::130-130::entry::1",
+        "fuzz_target.py::_dispatch_request::131-136::block::1",
+        "fuzz_target.py::_dispatch_request::137-137::branch::1",
+        "fuzz_target.py::_dispatch_request::138-138::block::1",
+        "fuzz_target.py::_dispatch_request::139-139::branch::1",
+        "fuzz_target.py::_dispatch_request::140-140::block::1",
+        "fuzz_target.py::_dispatch_request::142-142::block::1",
+        "fuzz_target.py::_dispatch_request::143-143::branch::1",
+        "fuzz_target.py::_dispatch_request::144-144::block::1",
+        "fuzz_target.py::_dispatch_request::146-146::block::1",
+        "fuzz_target.py::_dispatch_request::147-147::branch::1",
+        "fuzz_target.py::_dispatch_request::148-148::block::1",
+        "fuzz_target.py::_dispatch_request::150-150::block::1",
+        "fuzz_target.py::_dispatch_request::151-151::branch::1",
+        "fuzz_target.py::_dispatch_request::152-152::block::1",
+        "fuzz_target.py::_dispatch_request::155-155::terminal::1",
+        "fuzz_target.py::_dispatch_request::130-130::exit::1",
+        "fuzz_target.py::_dispatch_request::152-152::callsite::1",
+        "fuzz_target.py::_dispatch_request::152-152::returnsite::1",
+        "fuzz_target.py::_dispatch_request::148-148::callsite::1",
+        "fuzz_target.py::_dispatch_request::148-148::returnsite::1",
+        "fuzz_target.py::_dispatch_request::144-144::callsite::1",
+        "fuzz_target.py::_dispatch_request::144-144::returnsite::1"
+      ]
+    },
+    "fuzz_target._coerce": {
+      "name": "fuzz_target._coerce",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "entry": "fuzz_target.py::_coerce::123-123::entry::1",
+      "exit": "fuzz_target.py::_coerce::123-123::exit::1",
+      "blocks": [
+        "fuzz_target.py::_coerce::123-123::entry::1",
+        "fuzz_target.py::_coerce::124-124::block::1",
+        "fuzz_target.py::_coerce::125-125::branch::1",
+        "fuzz_target.py::_coerce::126-126::terminal::1",
+        "fuzz_target.py::_coerce::127-127::terminal::1",
+        "fuzz_target.py::_coerce::123-123::exit::1"
+      ]
+    },
+    "fuzz_target.sf_state_observer": {
+      "name": "fuzz_target.sf_state_observer",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "entry": "fuzz_target.py::sf_state_observer::114-114::entry::1",
+      "exit": "fuzz_target.py::sf_state_observer::114-114::exit::1",
+      "blocks": [
+        "fuzz_target.py::sf_state_observer::114-114::entry::1",
+        "fuzz_target.py::sf_state_observer::115-116::block::1",
+        "fuzz_target.py::sf_state_observer::117-117::terminal::1",
+        "fuzz_target.py::sf_state_observer::114-114::exit::1"
+      ]
+    },
+    "fuzz_target.session_view": {
+      "name": "fuzz_target.session_view",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "entry": "fuzz_target.py::session_view::107-107::entry::1",
+      "exit": "fuzz_target.py::session_view::107-107::exit::1",
+      "blocks": [
+        "fuzz_target.py::session_view::107-107::entry::1",
+        "fuzz_target.py::session_view::108-109::block::1",
+        "fuzz_target.py::session_view::110-110::terminal::1",
+        "fuzz_target.py::session_view::107-107::exit::1",
+        "fuzz_target.py::session_view::110-110::callsite::1",
+        "fuzz_target.py::session_view::110-110::returnsite::1"
+      ]
+    },
+    "fuzz_target.observe_session": {
+      "name": "fuzz_target.observe_session",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "entry": "fuzz_target.py::observe_session::104-104::entry::1",
+      "exit": "fuzz_target.py::observe_session::104-104::exit::1",
+      "blocks": [
+        "fuzz_target.py::observe_session::104-104::entry::1",
+        "fuzz_target.py::observe_session::105-105::terminal::1",
+        "fuzz_target.py::observe_session::104-104::exit::1",
+        "fuzz_target.py::observe_session::105-105::callsite::1",
+        "fuzz_target.py::observe_session::105-105::returnsite::1"
+      ]
+    },
+    "fuzz_target.target_hits": {
+      "name": "fuzz_target.target_hits",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "entry": "fuzz_target.py::target_hits::100-100::entry::1",
+      "exit": "fuzz_target.py::target_hits::100-100::exit::1",
+      "blocks": [
+        "fuzz_target.py::target_hits::100-100::entry::1",
+        "fuzz_target.py::target_hits::101-101::terminal::1",
+        "fuzz_target.py::target_hits::100-100::exit::1",
+        "fuzz_target.py::target_hits::101-101::callsite::1",
+        "fuzz_target.py::target_hits::101-101::returnsite::1"
+      ]
+    },
+    "fuzz_target.current_client": {
+      "name": "fuzz_target.current_client",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "entry": "fuzz_target.py::current_client::96-96::entry::1",
+      "exit": "fuzz_target.py::current_client::96-96::exit::1",
+      "blocks": [
+        "fuzz_target.py::current_client::96-96::entry::1",
+        "fuzz_target.py::current_client::97-97::terminal::1",
+        "fuzz_target.py::current_client::96-96::exit::1"
+      ]
+    },
+    "fuzz_target.input_scope": {
+      "name": "fuzz_target.input_scope",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "entry": "fuzz_target.py::input_scope::81-81::entry::1",
+      "exit": "fuzz_target.py::input_scope::81-81::exit::1",
+      "blocks": [
+        "fuzz_target.py::input_scope::81-81::entry::1",
+        "fuzz_target.py::input_scope::82-89::block::1",
+        "fuzz_target.py::input_scope::81-81::try::1",
+        "fuzz_target.py::input_scope::91-93::block::1",
+        "fuzz_target.py::input_scope::81-81::exit::1",
+        "fuzz_target.py::input_scope::93-93::callsite::1",
+        "fuzz_target.py::input_scope::93-93::returnsite::1",
+        "fuzz_target.py::input_scope::89-89::callsite::1",
+        "fuzz_target.py::input_scope::89-89::returnsite::1"
+      ]
+    },
+    "fuzz_target.reset_state": {
+      "name": "fuzz_target.reset_state",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "entry": "fuzz_target.py::reset_state::69-69::entry::1",
+      "exit": "fuzz_target.py::reset_state::69-69::exit::1",
+      "blocks": [
+        "fuzz_target.py::reset_state::69-69::entry::1",
+        "fuzz_target.py::reset_state::70-77::block::1",
+        "fuzz_target.py::reset_state::69-69::exit::1",
+        "fuzz_target.py::reset_state::76-76::callsite::1",
+        "fuzz_target.py::reset_state::76-76::returnsite::1",
+        "fuzz_target.py::reset_state::77-77::callsite::2",
+        "fuzz_target.py::reset_state::77-77::returnsite::2"
+      ]
+    },
+    "fuzz_target._replace_client": {
+      "name": "fuzz_target._replace_client",
+      "file": "/home/landasika/icassp/stateforge/targets/session_gate/fuzz_target.py",
+      "module": "fuzz_target",
+      "entry": "fuzz_target.py::_replace_client::63-63::entry::1",
+      "exit": "fuzz_target.py::_replace_client::63-63::exit::1",
+      "blocks": [
+        "fuzz_target.py::_replace_client::63-63::entry::1",
+        "fuzz_target.py::_replace_client::64-65::block::1",
+        "fuzz_target.py::_replace_client::66-66::terminal::1",
+        "fuzz_target.py::_replace_client::63-63::exit::1"
+      ]
+    }
+  },
+  "edges": [
+    {
+      "src": "app.py::_register_routes::157-157::entry::1",
+      "dst": "app.py::_register_routes::160-213::block::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::_register_routes::160-213::block::1",
+      "dst": "app.py::_register_routes::157-157::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::noise::213-213::entry::1",
+      "dst": "app.py::noise::216-216::block::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::noise::216-216::block::1",
+      "dst": "app.py::noise::217-217::terminal::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::noise::217-217::terminal::1",
+      "dst": "app.py::noise::213-213::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::clear::208-208::entry::1",
+      "dst": "app.py::clear::209-209::block::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::clear::210-210::terminal::1",
+      "dst": "app.py::clear::208-208::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::logout::203-203::entry::1",
+      "dst": "app.py::logout::204-204::block::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::logout::204-204::block::1",
+      "dst": "app.py::logout::205-205::terminal::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::logout::205-205::terminal::1",
+      "dst": "app.py::logout::203-203::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::protected_subscript::194-194::entry::1",
+      "dst": "app.py::protected_subscript::194-194::try::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::protected_subscript::194-194::try::1",
+      "dst": "app.py::protected_subscript::196-199::block::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::protected_subscript::194-194::try::1",
+      "dst": "app.py::protected_subscript::198-198::terminal::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::protected_subscript::198-198::terminal::1",
+      "dst": "app.py::protected_subscript::194-194::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::protected_subscript::200-200::terminal::1",
+      "dst": "app.py::protected_subscript::194-194::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::protected_membership::187-187::entry::1",
+      "dst": "app.py::protected_membership::188-188::branch::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::protected_membership::188-188::branch::1",
+      "dst": "app.py::protected_membership::189-189::block::1",
+      "kind": "true",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::protected_membership::188-188::branch::1",
+      "dst": "app.py::protected_membership::191-191::terminal::1",
+      "kind": "false",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::protected_membership::190-190::terminal::1",
+      "dst": "app.py::protected_membership::187-187::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::protected_membership::191-191::terminal::1",
+      "dst": "app.py::protected_membership::187-187::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::protected_truthy::179-179::entry::1",
+      "dst": "app.py::protected_truthy::180-180::block::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::protected_truthy::180-180::block::1",
+      "dst": "app.py::protected_truthy::181-181::branch::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::protected_truthy::181-181::branch::1",
+      "dst": "app.py::protected_truthy::182-182::block::1",
+      "kind": "true",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::protected_truthy::181-181::branch::1",
+      "dst": "app.py::protected_truthy::184-184::terminal::1",
+      "kind": "false",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::protected_truthy::183-183::terminal::1",
+      "dst": "app.py::protected_truthy::179-179::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::protected_truthy::184-184::terminal::1",
+      "dst": "app.py::protected_truthy::179-179::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::protected::169-169::entry::1",
+      "dst": "app.py::protected::170-170::block::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::protected::170-170::block::1",
+      "dst": "app.py::protected::171-171::branch::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::protected::171-171::branch::1",
+      "dst": "app.py::protected::172-172::terminal::1",
+      "kind": "true",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::protected::171-171::branch::1",
+      "dst": "app.py::protected::173-173::block::1",
+      "kind": "false",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::protected::172-172::terminal::1",
+      "dst": "app.py::protected::169-169::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::protected::174-174::terminal::1",
+      "dst": "app.py::protected::169-169::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::authenticate::160-160::entry::1",
+      "dst": "app.py::authenticate::163-163::branch::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::authenticate::163-163::branch::1",
+      "dst": "app.py::authenticate::164-164::terminal::1",
+      "kind": "true",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::authenticate::163-163::branch::1",
+      "dst": "app.py::authenticate::165-165::block::1",
+      "kind": "false",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::authenticate::165-165::block::1",
+      "dst": "app.py::authenticate::166-166::terminal::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::authenticate::164-164::terminal::1",
+      "dst": "app.py::authenticate::160-160::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::authenticate::166-166::terminal::1",
+      "dst": "app.py::authenticate::160-160::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::subscript_target_block::150-150::entry::1",
+      "dst": "app.py::subscript_target_block::151-151::block::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::membership_target_block::146-146::entry::1",
+      "dst": "app.py::membership_target_block::147-147::block::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::truthy_target_block::142-142::entry::1",
+      "dst": "app.py::truthy_target_block::143-143::block::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::target_block::137-137::entry::1",
+      "dst": "app.py::target_block::138-139::block::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::_hit::133-133::entry::1",
+      "dst": "app.py::_hit::134-134::block::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::_hit::134-134::block::1",
+      "dst": "app.py::_hit::133-133::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::target_hits::125-125::entry::1",
+      "dst": "app.py::target_hits::126-126::block::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::target_hits::126-126::block::1",
+      "dst": "app.py::target_hits::127-127::terminal::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::target_hits::127-127::terminal::1",
+      "dst": "app.py::target_hits::125-125::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::observe_session::92-92::entry::1",
+      "dst": "app.py::observe_session::93-105::block::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::observe_session::93-105::block::1",
+      "dst": "app.py::observe_session::106-106::branch::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::observe_session::106-106::branch::1",
+      "dst": "app.py::observe_session::107-107::terminal::1",
+      "kind": "true",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::observe_session::106-106::branch::1",
+      "dst": "app.py::observe_session::109-109::block::1",
+      "kind": "false",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::observe_session::109-109::block::1",
+      "dst": "app.py::observe_session::110-110::branch::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::observe_session::110-110::branch::1",
+      "dst": "app.py::observe_session::111-111::terminal::1",
+      "kind": "true",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::observe_session::110-110::branch::1",
+      "dst": "app.py::observe_session::92-92::try::1",
+      "kind": "false",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::observe_session::92-92::try::1",
+      "dst": "app.py::observe_session::114-114::block::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::observe_session::92-92::try::1",
+      "dst": "app.py::observe_session::116-116::terminal::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::observe_session::114-114::block::1",
+      "dst": "app.py::observe_session::118-118::branch::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::observe_session::118-118::branch::1",
+      "dst": "app.py::observe_session::119-119::terminal::1",
+      "kind": "true",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::observe_session::118-118::branch::1",
+      "dst": "app.py::observe_session::121-121::terminal::1",
+      "kind": "false",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::observe_session::107-107::terminal::1",
+      "dst": "app.py::observe_session::92-92::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::observe_session::111-111::terminal::1",
+      "dst": "app.py::observe_session::92-92::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::observe_session::116-116::terminal::1",
+      "dst": "app.py::observe_session::92-92::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::observe_session::119-119::terminal::1",
+      "dst": "app.py::observe_session::92-92::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::observe_session::121-121::terminal::1",
+      "dst": "app.py::observe_session::92-92::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::create_app::74-74::entry::1",
+      "dst": "app.py::create_app::76-85::block::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::create_app::86-86::terminal::1",
+      "dst": "app.py::create_app::74-74::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::get::70-70::entry::1",
+      "dst": "app.py::get::71-71::terminal::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::get::71-71::terminal::1",
+      "dst": "app.py::get::70-70::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::verified::67-67::entry::1",
+      "dst": "app.py::verified::68-68::terminal::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::verified::68-68::terminal::1",
+      "dst": "app.py::verified::67-67::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::present::63-63::entry::1",
+      "dst": "app.py::present::64-64::terminal::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::present::64-64::terminal::1",
+      "dst": "app.py::present::63-63::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::run_input::183-183::entry::1",
+      "dst": "fuzz_target.py::run_input::184-185::block::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::target::170-170::entry::1",
+      "dst": "fuzz_target.py::target::171-173::block::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::target::174-174::branch::1",
+      "dst": "fuzz_target.py::target::175-175::terminal::1",
+      "kind": "true",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::target::174-174::branch::1",
+      "dst": "fuzz_target.py::target::176-176::branch::1",
+      "kind": "false",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::target::176-176::branch::1",
+      "dst": "fuzz_target.py::target::177-177::branch::1",
+      "kind": "true",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::target::177-177::branch::1",
+      "dst": "fuzz_target.py::target::178-178::block::1",
+      "kind": "true",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::target::177-177::branch::1",
+      "dst": "fuzz_target.py::target::170-170::loop_exit::1",
+      "kind": "false",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::target::170-170::loop_exit::1",
+      "dst": "fuzz_target.py::target::179-179::terminal::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::target::176-176::branch::1",
+      "dst": "fuzz_target.py::target::180-180::block::1",
+      "kind": "false",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::target::175-175::terminal::1",
+      "dst": "fuzz_target.py::target::170-170::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::target::179-179::terminal::1",
+      "dst": "fuzz_target.py::target::170-170::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_decode::163-163::entry::1",
+      "dst": "fuzz_target.py::_decode::163-163::try::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_decode::163-163::try::1",
+      "dst": "fuzz_target.py::_decode::165-165::terminal::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_decode::163-163::try::1",
+      "dst": "fuzz_target.py::_decode::167-167::terminal::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_decode::165-165::terminal::1",
+      "dst": "fuzz_target.py::_decode::163-163::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_decode::167-167::terminal::1",
+      "dst": "fuzz_target.py::_decode::163-163::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_handle::158-158::entry::1",
+      "dst": "fuzz_target.py::_handle::159-159::branch::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_handle::159-159::branch::1",
+      "dst": "fuzz_target.py::_handle::160-160::block::1",
+      "kind": "true",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_handle::159-159::branch::1",
+      "dst": "fuzz_target.py::_handle::158-158::exit::1",
+      "kind": "false",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_dispatch_request::130-130::entry::1",
+      "dst": "fuzz_target.py::_dispatch_request::131-136::block::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_dispatch_request::131-136::block::1",
+      "dst": "fuzz_target.py::_dispatch_request::137-137::branch::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_dispatch_request::137-137::branch::1",
+      "dst": "fuzz_target.py::_dispatch_request::138-138::block::1",
+      "kind": "true",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_dispatch_request::138-138::block::1",
+      "dst": "fuzz_target.py::_dispatch_request::139-139::branch::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_dispatch_request::137-137::branch::1",
+      "dst": "fuzz_target.py::_dispatch_request::139-139::branch::1",
+      "kind": "false",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_dispatch_request::139-139::branch::1",
+      "dst": "fuzz_target.py::_dispatch_request::140-140::block::1",
+      "kind": "true",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_dispatch_request::140-140::block::1",
+      "dst": "fuzz_target.py::_dispatch_request::142-142::block::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_dispatch_request::139-139::branch::1",
+      "dst": "fuzz_target.py::_dispatch_request::142-142::block::1",
+      "kind": "false",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_dispatch_request::142-142::block::1",
+      "dst": "fuzz_target.py::_dispatch_request::143-143::branch::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_dispatch_request::143-143::branch::1",
+      "dst": "fuzz_target.py::_dispatch_request::144-144::block::1",
+      "kind": "true",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_dispatch_request::143-143::branch::1",
+      "dst": "fuzz_target.py::_dispatch_request::146-146::block::1",
+      "kind": "false",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_dispatch_request::146-146::block::1",
+      "dst": "fuzz_target.py::_dispatch_request::147-147::branch::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_dispatch_request::147-147::branch::1",
+      "dst": "fuzz_target.py::_dispatch_request::148-148::block::1",
+      "kind": "true",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_dispatch_request::147-147::branch::1",
+      "dst": "fuzz_target.py::_dispatch_request::150-150::block::1",
+      "kind": "false",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_dispatch_request::150-150::block::1",
+      "dst": "fuzz_target.py::_dispatch_request::151-151::branch::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_dispatch_request::151-151::branch::1",
+      "dst": "fuzz_target.py::_dispatch_request::152-152::block::1",
+      "kind": "true",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_dispatch_request::151-151::branch::1",
+      "dst": "fuzz_target.py::_dispatch_request::155-155::terminal::1",
+      "kind": "false",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_dispatch_request::155-155::terminal::1",
+      "dst": "fuzz_target.py::_dispatch_request::130-130::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_coerce::123-123::entry::1",
+      "dst": "fuzz_target.py::_coerce::124-124::block::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_coerce::124-124::block::1",
+      "dst": "fuzz_target.py::_coerce::125-125::branch::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_coerce::125-125::branch::1",
+      "dst": "fuzz_target.py::_coerce::126-126::terminal::1",
+      "kind": "true",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_coerce::125-125::branch::1",
+      "dst": "fuzz_target.py::_coerce::127-127::terminal::1",
+      "kind": "false",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_coerce::126-126::terminal::1",
+      "dst": "fuzz_target.py::_coerce::123-123::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_coerce::127-127::terminal::1",
+      "dst": "fuzz_target.py::_coerce::123-123::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::sf_state_observer::114-114::entry::1",
+      "dst": "fuzz_target.py::sf_state_observer::115-116::block::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::sf_state_observer::115-116::block::1",
+      "dst": "fuzz_target.py::sf_state_observer::117-117::terminal::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::sf_state_observer::117-117::terminal::1",
+      "dst": "fuzz_target.py::sf_state_observer::114-114::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::session_view::107-107::entry::1",
+      "dst": "fuzz_target.py::session_view::108-109::block::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::session_view::108-109::block::1",
+      "dst": "fuzz_target.py::session_view::110-110::terminal::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::observe_session::104-104::entry::1",
+      "dst": "fuzz_target.py::observe_session::105-105::terminal::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::target_hits::100-100::entry::1",
+      "dst": "fuzz_target.py::target_hits::101-101::terminal::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::current_client::96-96::entry::1",
+      "dst": "fuzz_target.py::current_client::97-97::terminal::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::current_client::97-97::terminal::1",
+      "dst": "fuzz_target.py::current_client::96-96::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::input_scope::81-81::entry::1",
+      "dst": "fuzz_target.py::input_scope::82-89::block::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::input_scope::81-81::try::1",
+      "dst": "fuzz_target.py::input_scope::91-93::block::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::reset_state::69-69::entry::1",
+      "dst": "fuzz_target.py::reset_state::70-77::block::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_replace_client::63-63::entry::1",
+      "dst": "fuzz_target.py::_replace_client::64-65::block::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_replace_client::64-65::block::1",
+      "dst": "fuzz_target.py::_replace_client::66-66::terminal::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_replace_client::66-66::terminal::1",
+      "dst": "fuzz_target.py::_replace_client::63-63::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::clear::209-209::block::1",
+      "dst": "app.py::clear::209-209::callsite::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": 209,
+      "callee": "app.clear"
+    },
+    {
+      "src": "app.py::clear::209-209::callsite::1",
+      "dst": "app.py::clear::208-208::entry::1",
+      "kind": "call",
+      "condition": null,
+      "callsite_line": 209,
+      "callee": "app.clear"
+    },
+    {
+      "src": "app.py::clear::208-208::exit::1",
+      "dst": "app.py::clear::209-209::returnsite::1",
+      "kind": "return",
+      "condition": null,
+      "callsite_line": 209,
+      "callee": "app.clear"
+    },
+    {
+      "src": "app.py::clear::209-209::returnsite::1",
+      "dst": "app.py::clear::210-210::terminal::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::protected_subscript::196-199::block::1",
+      "dst": "app.py::protected_subscript::199-199::callsite::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": 199,
+      "callee": "app.subscript_target_block"
+    },
+    {
+      "src": "app.py::protected_subscript::199-199::callsite::1",
+      "dst": "app.py::subscript_target_block::150-150::entry::1",
+      "kind": "call",
+      "condition": null,
+      "callsite_line": 199,
+      "callee": "app.subscript_target_block"
+    },
+    {
+      "src": "app.py::subscript_target_block::150-150::exit::1",
+      "dst": "app.py::protected_subscript::199-199::returnsite::1",
+      "kind": "return",
+      "condition": null,
+      "callsite_line": 199,
+      "callee": "app.subscript_target_block"
+    },
+    {
+      "src": "app.py::protected_subscript::199-199::returnsite::1",
+      "dst": "app.py::protected_subscript::200-200::terminal::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::protected_membership::189-189::block::1",
+      "dst": "app.py::protected_membership::189-189::callsite::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": 189,
+      "callee": "app.membership_target_block"
+    },
+    {
+      "src": "app.py::protected_membership::189-189::callsite::1",
+      "dst": "app.py::membership_target_block::146-146::entry::1",
+      "kind": "call",
+      "condition": null,
+      "callsite_line": 189,
+      "callee": "app.membership_target_block"
+    },
+    {
+      "src": "app.py::membership_target_block::146-146::exit::1",
+      "dst": "app.py::protected_membership::189-189::returnsite::1",
+      "kind": "return",
+      "condition": null,
+      "callsite_line": 189,
+      "callee": "app.membership_target_block"
+    },
+    {
+      "src": "app.py::protected_membership::189-189::returnsite::1",
+      "dst": "app.py::protected_membership::190-190::terminal::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::protected_truthy::182-182::block::1",
+      "dst": "app.py::protected_truthy::182-182::callsite::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": 182,
+      "callee": "app.truthy_target_block"
+    },
+    {
+      "src": "app.py::protected_truthy::182-182::callsite::1",
+      "dst": "app.py::truthy_target_block::142-142::entry::1",
+      "kind": "call",
+      "condition": null,
+      "callsite_line": 182,
+      "callee": "app.truthy_target_block"
+    },
+    {
+      "src": "app.py::truthy_target_block::142-142::exit::1",
+      "dst": "app.py::protected_truthy::182-182::returnsite::1",
+      "kind": "return",
+      "condition": null,
+      "callsite_line": 182,
+      "callee": "app.truthy_target_block"
+    },
+    {
+      "src": "app.py::protected_truthy::182-182::returnsite::1",
+      "dst": "app.py::protected_truthy::183-183::terminal::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::protected::173-173::block::1",
+      "dst": "app.py::protected::173-173::callsite::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": 173,
+      "callee": "app.target_block"
+    },
+    {
+      "src": "app.py::protected::173-173::callsite::1",
+      "dst": "app.py::target_block::137-137::entry::1",
+      "kind": "call",
+      "condition": null,
+      "callsite_line": 173,
+      "callee": "app.target_block"
+    },
+    {
+      "src": "app.py::target_block::137-137::exit::1",
+      "dst": "app.py::protected::173-173::returnsite::1",
+      "kind": "return",
+      "condition": null,
+      "callsite_line": 173,
+      "callee": "app.target_block"
+    },
+    {
+      "src": "app.py::protected::173-173::returnsite::1",
+      "dst": "app.py::protected::174-174::terminal::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::subscript_target_block::151-151::block::1",
+      "dst": "app.py::subscript_target_block::151-151::callsite::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": 151,
+      "callee": "app._hit"
+    },
+    {
+      "src": "app.py::subscript_target_block::151-151::callsite::1",
+      "dst": "app.py::_hit::133-133::entry::1",
+      "kind": "call",
+      "condition": null,
+      "callsite_line": 151,
+      "callee": "app._hit"
+    },
+    {
+      "src": "app.py::_hit::133-133::exit::1",
+      "dst": "app.py::subscript_target_block::151-151::returnsite::1",
+      "kind": "return",
+      "condition": null,
+      "callsite_line": 151,
+      "callee": "app._hit"
+    },
+    {
+      "src": "app.py::subscript_target_block::151-151::returnsite::1",
+      "dst": "app.py::subscript_target_block::150-150::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::membership_target_block::147-147::block::1",
+      "dst": "app.py::membership_target_block::147-147::callsite::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": 147,
+      "callee": "app._hit"
+    },
+    {
+      "src": "app.py::membership_target_block::147-147::callsite::1",
+      "dst": "app.py::_hit::133-133::entry::1",
+      "kind": "call",
+      "condition": null,
+      "callsite_line": 147,
+      "callee": "app._hit"
+    },
+    {
+      "src": "app.py::_hit::133-133::exit::1",
+      "dst": "app.py::membership_target_block::147-147::returnsite::1",
+      "kind": "return",
+      "condition": null,
+      "callsite_line": 147,
+      "callee": "app._hit"
+    },
+    {
+      "src": "app.py::membership_target_block::147-147::returnsite::1",
+      "dst": "app.py::membership_target_block::146-146::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::truthy_target_block::143-143::block::1",
+      "dst": "app.py::truthy_target_block::143-143::callsite::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": 143,
+      "callee": "app._hit"
+    },
+    {
+      "src": "app.py::truthy_target_block::143-143::callsite::1",
+      "dst": "app.py::_hit::133-133::entry::1",
+      "kind": "call",
+      "condition": null,
+      "callsite_line": 143,
+      "callee": "app._hit"
+    },
+    {
+      "src": "app.py::_hit::133-133::exit::1",
+      "dst": "app.py::truthy_target_block::143-143::returnsite::1",
+      "kind": "return",
+      "condition": null,
+      "callsite_line": 143,
+      "callee": "app._hit"
+    },
+    {
+      "src": "app.py::truthy_target_block::143-143::returnsite::1",
+      "dst": "app.py::truthy_target_block::142-142::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::target_block::138-139::block::1",
+      "dst": "app.py::target_block::139-139::callsite::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": 139,
+      "callee": "app._hit"
+    },
+    {
+      "src": "app.py::target_block::139-139::callsite::1",
+      "dst": "app.py::_hit::133-133::entry::1",
+      "kind": "call",
+      "condition": null,
+      "callsite_line": 139,
+      "callee": "app._hit"
+    },
+    {
+      "src": "app.py::_hit::133-133::exit::1",
+      "dst": "app.py::target_block::139-139::returnsite::1",
+      "kind": "return",
+      "condition": null,
+      "callsite_line": 139,
+      "callee": "app._hit"
+    },
+    {
+      "src": "app.py::target_block::139-139::returnsite::1",
+      "dst": "app.py::target_block::137-137::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "app.py::create_app::76-85::block::1",
+      "dst": "app.py::create_app::85-85::callsite::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": 85,
+      "callee": "app._register_routes"
+    },
+    {
+      "src": "app.py::create_app::85-85::callsite::1",
+      "dst": "app.py::_register_routes::157-157::entry::1",
+      "kind": "call",
+      "condition": null,
+      "callsite_line": 85,
+      "callee": "app._register_routes"
+    },
+    {
+      "src": "app.py::_register_routes::157-157::exit::1",
+      "dst": "app.py::create_app::85-85::returnsite::1",
+      "kind": "return",
+      "condition": null,
+      "callsite_line": 85,
+      "callee": "app._register_routes"
+    },
+    {
+      "src": "app.py::create_app::85-85::returnsite::1",
+      "dst": "app.py::create_app::86-86::terminal::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::run_input::184-185::block::1",
+      "dst": "fuzz_target.py::run_input::185-185::callsite::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": 185,
+      "callee": "fuzz_target.input_scope"
+    },
+    {
+      "src": "fuzz_target.py::run_input::185-185::callsite::1",
+      "dst": "fuzz_target.py::input_scope::81-81::entry::1",
+      "kind": "call",
+      "condition": null,
+      "callsite_line": 185,
+      "callee": "fuzz_target.input_scope"
+    },
+    {
+      "src": "fuzz_target.py::input_scope::81-81::exit::1",
+      "dst": "fuzz_target.py::run_input::185-185::returnsite::1",
+      "kind": "return",
+      "condition": null,
+      "callsite_line": 185,
+      "callee": "fuzz_target.input_scope"
+    },
+    {
+      "src": "fuzz_target.py::run_input::185-185::returnsite::1",
+      "dst": "fuzz_target.py::run_input::183-183::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::target::180-180::block::1",
+      "dst": "fuzz_target.py::target::180-180::callsite::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": 180,
+      "callee": "fuzz_target._handle"
+    },
+    {
+      "src": "fuzz_target.py::target::180-180::callsite::1",
+      "dst": "fuzz_target.py::_handle::158-158::entry::1",
+      "kind": "call",
+      "condition": null,
+      "callsite_line": 180,
+      "callee": "fuzz_target._handle"
+    },
+    {
+      "src": "fuzz_target.py::_handle::158-158::exit::1",
+      "dst": "fuzz_target.py::target::180-180::returnsite::1",
+      "kind": "return",
+      "condition": null,
+      "callsite_line": 180,
+      "callee": "fuzz_target._handle"
+    },
+    {
+      "src": "fuzz_target.py::target::180-180::returnsite::1",
+      "dst": "fuzz_target.py::target::170-170::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::target::178-178::block::1",
+      "dst": "fuzz_target.py::target::178-178::callsite::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": 178,
+      "callee": "fuzz_target._handle"
+    },
+    {
+      "src": "fuzz_target.py::target::178-178::callsite::1",
+      "dst": "fuzz_target.py::_handle::158-158::entry::1",
+      "kind": "call",
+      "condition": null,
+      "callsite_line": 178,
+      "callee": "fuzz_target._handle"
+    },
+    {
+      "src": "fuzz_target.py::_handle::158-158::exit::1",
+      "dst": "fuzz_target.py::target::178-178::returnsite::1",
+      "kind": "return",
+      "condition": null,
+      "callsite_line": 178,
+      "callee": "fuzz_target._handle"
+    },
+    {
+      "src": "fuzz_target.py::target::178-178::returnsite::1",
+      "dst": "fuzz_target.py::target::177-177::branch::1",
+      "kind": "flow",
+      "condition": "back",
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::target::171-173::block::1",
+      "dst": "fuzz_target.py::target::173-173::callsite::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": 173,
+      "callee": "fuzz_target._decode"
+    },
+    {
+      "src": "fuzz_target.py::target::173-173::callsite::1",
+      "dst": "fuzz_target.py::_decode::163-163::entry::1",
+      "kind": "call",
+      "condition": null,
+      "callsite_line": 173,
+      "callee": "fuzz_target._decode"
+    },
+    {
+      "src": "fuzz_target.py::_decode::163-163::exit::1",
+      "dst": "fuzz_target.py::target::173-173::returnsite::1",
+      "kind": "return",
+      "condition": null,
+      "callsite_line": 173,
+      "callee": "fuzz_target._decode"
+    },
+    {
+      "src": "fuzz_target.py::target::173-173::returnsite::1",
+      "dst": "fuzz_target.py::target::174-174::branch::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_handle::160-160::block::1",
+      "dst": "fuzz_target.py::_handle::160-160::callsite::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": 160,
+      "callee": "fuzz_target._dispatch_request"
+    },
+    {
+      "src": "fuzz_target.py::_handle::160-160::callsite::1",
+      "dst": "fuzz_target.py::_dispatch_request::130-130::entry::1",
+      "kind": "call",
+      "condition": null,
+      "callsite_line": 160,
+      "callee": "fuzz_target._dispatch_request"
+    },
+    {
+      "src": "fuzz_target.py::_dispatch_request::130-130::exit::1",
+      "dst": "fuzz_target.py::_handle::160-160::returnsite::1",
+      "kind": "return",
+      "condition": null,
+      "callsite_line": 160,
+      "callee": "fuzz_target._dispatch_request"
+    },
+    {
+      "src": "fuzz_target.py::_handle::160-160::returnsite::1",
+      "dst": "fuzz_target.py::_handle::158-158::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_dispatch_request::152-152::block::1",
+      "dst": "fuzz_target.py::_dispatch_request::152-152::callsite::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": 152,
+      "callee": "fuzz_target._coerce"
+    },
+    {
+      "src": "fuzz_target.py::_dispatch_request::152-152::callsite::1",
+      "dst": "fuzz_target.py::_coerce::123-123::entry::1",
+      "kind": "call",
+      "condition": null,
+      "callsite_line": 152,
+      "callee": "fuzz_target._coerce"
+    },
+    {
+      "src": "fuzz_target.py::_coerce::123-123::exit::1",
+      "dst": "fuzz_target.py::_dispatch_request::152-152::returnsite::1",
+      "kind": "return",
+      "condition": null,
+      "callsite_line": 152,
+      "callee": "fuzz_target._coerce"
+    },
+    {
+      "src": "fuzz_target.py::_dispatch_request::152-152::returnsite::1",
+      "dst": "fuzz_target.py::_dispatch_request::155-155::terminal::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_dispatch_request::148-148::block::1",
+      "dst": "fuzz_target.py::_dispatch_request::148-148::callsite::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": 148,
+      "callee": "fuzz_target._coerce"
+    },
+    {
+      "src": "fuzz_target.py::_dispatch_request::148-148::callsite::1",
+      "dst": "fuzz_target.py::_coerce::123-123::entry::1",
+      "kind": "call",
+      "condition": null,
+      "callsite_line": 148,
+      "callee": "fuzz_target._coerce"
+    },
+    {
+      "src": "fuzz_target.py::_coerce::123-123::exit::1",
+      "dst": "fuzz_target.py::_dispatch_request::148-148::returnsite::1",
+      "kind": "return",
+      "condition": null,
+      "callsite_line": 148,
+      "callee": "fuzz_target._coerce"
+    },
+    {
+      "src": "fuzz_target.py::_dispatch_request::148-148::returnsite::1",
+      "dst": "fuzz_target.py::_dispatch_request::150-150::block::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::_dispatch_request::144-144::block::1",
+      "dst": "fuzz_target.py::_dispatch_request::144-144::callsite::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": 144,
+      "callee": "fuzz_target._coerce"
+    },
+    {
+      "src": "fuzz_target.py::_dispatch_request::144-144::callsite::1",
+      "dst": "fuzz_target.py::_coerce::123-123::entry::1",
+      "kind": "call",
+      "condition": null,
+      "callsite_line": 144,
+      "callee": "fuzz_target._coerce"
+    },
+    {
+      "src": "fuzz_target.py::_coerce::123-123::exit::1",
+      "dst": "fuzz_target.py::_dispatch_request::144-144::returnsite::1",
+      "kind": "return",
+      "condition": null,
+      "callsite_line": 144,
+      "callee": "fuzz_target._coerce"
+    },
+    {
+      "src": "fuzz_target.py::_dispatch_request::144-144::returnsite::1",
+      "dst": "fuzz_target.py::_dispatch_request::146-146::block::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::session_view::110-110::terminal::1",
+      "dst": "fuzz_target.py::session_view::110-110::callsite::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": 110,
+      "callee": "fuzz_target.observe_session"
+    },
+    {
+      "src": "fuzz_target.py::session_view::110-110::callsite::1",
+      "dst": "fuzz_target.py::observe_session::104-104::entry::1",
+      "kind": "call",
+      "condition": null,
+      "callsite_line": 110,
+      "callee": "fuzz_target.observe_session"
+    },
+    {
+      "src": "fuzz_target.py::observe_session::104-104::exit::1",
+      "dst": "fuzz_target.py::session_view::110-110::returnsite::1",
+      "kind": "return",
+      "condition": null,
+      "callsite_line": 110,
+      "callee": "fuzz_target.observe_session"
+    },
+    {
+      "src": "fuzz_target.py::session_view::110-110::returnsite::1",
+      "dst": "fuzz_target.py::session_view::107-107::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::observe_session::105-105::terminal::1",
+      "dst": "fuzz_target.py::observe_session::105-105::callsite::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": 105,
+      "callee": "fuzz_target.observe_session"
+    },
+    {
+      "src": "fuzz_target.py::observe_session::105-105::callsite::1",
+      "dst": "fuzz_target.py::observe_session::104-104::entry::1",
+      "kind": "call",
+      "condition": null,
+      "callsite_line": 105,
+      "callee": "fuzz_target.observe_session"
+    },
+    {
+      "src": "fuzz_target.py::observe_session::104-104::exit::1",
+      "dst": "fuzz_target.py::observe_session::105-105::returnsite::1",
+      "kind": "return",
+      "condition": null,
+      "callsite_line": 105,
+      "callee": "fuzz_target.observe_session"
+    },
+    {
+      "src": "fuzz_target.py::observe_session::105-105::returnsite::1",
+      "dst": "fuzz_target.py::observe_session::104-104::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::target_hits::101-101::terminal::1",
+      "dst": "fuzz_target.py::target_hits::101-101::callsite::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": 101,
+      "callee": "fuzz_target.target_hits"
+    },
+    {
+      "src": "fuzz_target.py::target_hits::101-101::callsite::1",
+      "dst": "fuzz_target.py::target_hits::100-100::entry::1",
+      "kind": "call",
+      "condition": null,
+      "callsite_line": 101,
+      "callee": "fuzz_target.target_hits"
+    },
+    {
+      "src": "fuzz_target.py::target_hits::100-100::exit::1",
+      "dst": "fuzz_target.py::target_hits::101-101::returnsite::1",
+      "kind": "return",
+      "condition": null,
+      "callsite_line": 101,
+      "callee": "fuzz_target.target_hits"
+    },
+    {
+      "src": "fuzz_target.py::target_hits::101-101::returnsite::1",
+      "dst": "fuzz_target.py::target_hits::100-100::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::input_scope::91-93::block::1",
+      "dst": "fuzz_target.py::input_scope::93-93::callsite::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": 93,
+      "callee": "fuzz_target._replace_client"
+    },
+    {
+      "src": "fuzz_target.py::input_scope::93-93::callsite::1",
+      "dst": "fuzz_target.py::_replace_client::63-63::entry::1",
+      "kind": "call",
+      "condition": null,
+      "callsite_line": 93,
+      "callee": "fuzz_target._replace_client"
+    },
+    {
+      "src": "fuzz_target.py::_replace_client::63-63::exit::1",
+      "dst": "fuzz_target.py::input_scope::93-93::returnsite::1",
+      "kind": "return",
+      "condition": null,
+      "callsite_line": 93,
+      "callee": "fuzz_target._replace_client"
+    },
+    {
+      "src": "fuzz_target.py::input_scope::93-93::returnsite::1",
+      "dst": "fuzz_target.py::input_scope::81-81::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::input_scope::82-89::block::1",
+      "dst": "fuzz_target.py::input_scope::89-89::callsite::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": 89,
+      "callee": "fuzz_target.reset_state"
+    },
+    {
+      "src": "fuzz_target.py::input_scope::89-89::callsite::1",
+      "dst": "fuzz_target.py::reset_state::69-69::entry::1",
+      "kind": "call",
+      "condition": null,
+      "callsite_line": 89,
+      "callee": "fuzz_target.reset_state"
+    },
+    {
+      "src": "fuzz_target.py::reset_state::69-69::exit::1",
+      "dst": "fuzz_target.py::input_scope::89-89::returnsite::1",
+      "kind": "return",
+      "condition": null,
+      "callsite_line": 89,
+      "callee": "fuzz_target.reset_state"
+    },
+    {
+      "src": "fuzz_target.py::input_scope::89-89::returnsite::1",
+      "dst": "fuzz_target.py::input_scope::81-81::try::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    },
+    {
+      "src": "fuzz_target.py::reset_state::70-77::block::1",
+      "dst": "fuzz_target.py::reset_state::76-76::callsite::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": 76,
+      "callee": "fuzz_target._replace_client"
+    },
+    {
+      "src": "fuzz_target.py::reset_state::76-76::callsite::1",
+      "dst": "fuzz_target.py::_replace_client::63-63::entry::1",
+      "kind": "call",
+      "condition": null,
+      "callsite_line": 76,
+      "callee": "fuzz_target._replace_client"
+    },
+    {
+      "src": "fuzz_target.py::_replace_client::63-63::exit::1",
+      "dst": "fuzz_target.py::reset_state::76-76::returnsite::1",
+      "kind": "return",
+      "condition": null,
+      "callsite_line": 76,
+      "callee": "fuzz_target._replace_client"
+    },
+    {
+      "src": "fuzz_target.py::reset_state::76-76::returnsite::1",
+      "dst": "fuzz_target.py::reset_state::77-77::callsite::2",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": 77,
+      "callee": "app.clear"
+    },
+    {
+      "src": "fuzz_target.py::reset_state::77-77::callsite::2",
+      "dst": "app.py::clear::208-208::entry::1",
+      "kind": "call",
+      "condition": null,
+      "callsite_line": 77,
+      "callee": "app.clear"
+    },
+    {
+      "src": "app.py::clear::208-208::exit::1",
+      "dst": "fuzz_target.py::reset_state::77-77::returnsite::2",
+      "kind": "return",
+      "condition": null,
+      "callsite_line": 77,
+      "callee": "app.clear"
+    },
+    {
+      "src": "fuzz_target.py::reset_state::77-77::returnsite::2",
+      "dst": "fuzz_target.py::reset_state::69-69::exit::1",
+      "kind": "flow",
+      "condition": null,
+      "callsite_line": null,
+      "callee": null
+    }
+  ],
+  "metadata": {
+    "root": "/home/landasika/icassp/stateforge/targets/session_gate",
+    "kind": "icfg",
+    "version": 1,
+    "callgraph_supplied": false,
+    "function_count": 34,
+    "block_count": 218,
+    "edge_count": 229,
+    "unresolved_calls": [
+      {
+        "caller": "app.logout",
+        "callee": "pop",
+        "line": 204
+      },
+      {
+        "caller": "app.protected_truthy",
+        "callee": "get",
+        "line": 180
+      },
+      {
+        "caller": "app.protected",
+        "callee": "get",
+        "line": 170
+      },
+      {
+        "caller": "app.authenticate",
+        "callee": "get",
+        "line": 163
+      },
+      {
+        "caller": "app._hit",
+        "callee": "append",
+        "line": 134
+      },
+      {
+        "caller": "app._hit",
+        "callee": "setdefault",
+        "line": 134
+      },
+      {
+        "caller": "app.target_hits",
+        "callee": "get",
+        "line": 127
+      },
+      {
+        "caller": "app.target_hits",
+        "callee": "dict",
+        "line": 127
+      },
+      {
+        "caller": "app.observe_session",
+        "callee": "SessionSnapshot",
+        "line": 121
+      },
+      {
+        "caller": "app.observe_session",
+        "callee": "dict",
+        "line": 121
+      },
+      {
+        "caller": "app.observe_session",
+        "callee": "SessionSnapshot",
+        "line": 119
+      },
+      {
+        "caller": "app.observe_session",
+        "callee": "isinstance",
+        "line": 118
+      },
+      {
+        "caller": "app.observe_session",
+        "callee": "SessionSnapshot",
+        "line": 116
+      },
+      {
+        "caller": "app.observe_session",
+        "callee": "type",
+        "line": 117
+      },
+      {
+        "caller": "app.observe_session",
+        "callee": "loads",
+        "line": 114
+      },
+      {
+        "caller": "app.observe_session",
+        "callee": "SessionSnapshot",
+        "line": 111
+      },
+      {
+        "caller": "app.observe_session",
+        "callee": "get_signing_serializer",
+        "line": 109
+      },
+      {
+        "caller": "app.observe_session",
+        "callee": "SessionSnapshot",
+        "line": 107
+      },
+      {
+        "caller": "app.observe_session",
+        "callee": "get_cookie",
+        "line": 105
+      },
+      {
+        "caller": "app.observe_session",
+        "callee": "get_cookie_name",
+        "line": 104
+      },
+      {
+        "caller": "app.create_app",
+        "callee": "Flask",
+        "line": 81
+      },
+      {
+        "caller": "fuzz_target.run_input",
+        "callee": "_handle",
+        "reason": "no host block",
+        "line": 187
+      },
+      {
+        "caller": "fuzz_target.target",
+        "callee": "isinstance",
+        "line": 176
+      },
+      {
+        "caller": "fuzz_target.target",
+        "callee": "get",
+        "line": 176
+      },
+      {
+        "caller": "fuzz_target.target",
+        "callee": "isinstance",
+        "line": 176
+      },
+      {
+        "caller": "fuzz_target._decode",
+        "callee": "loads",
+        "line": 165
+      },
+      {
+        "caller": "fuzz_target._handle",
+        "callee": "isinstance",
+        "line": 159
+      },
+      {
+        "caller": "fuzz_target._dispatch_request",
+        "callee": "open",
+        "line": 155
+      },
+      {
+        "caller": "fuzz_target._dispatch_request",
+        "callee": "items",
+        "line": 152
+      },
+      {
+        "caller": "fuzz_target._dispatch_request",
+        "callee": "str",
+        "line": 152
+      },
+      {
+        "caller": "fuzz_target._dispatch_request",
+        "callee": "isinstance",
+        "line": 151
+      },
+      {
+        "caller": "fuzz_target._dispatch_request",
+        "callee": "get",
+        "line": 150
+      },
+      {
+        "caller": "fuzz_target._dispatch_request",
+        "callee": "items",
+        "line": 148
+      },
+      {
+        "caller": "fuzz_target._dispatch_request",
+        "callee": "str",
+        "line": 148
+      },
+      {
+        "caller": "fuzz_target._dispatch_request",
+        "callee": "isinstance",
+        "line": 147
+      },
+      {
+        "caller": "fuzz_target._dispatch_request",
+        "callee": "get",
+        "line": 146
+      },
+      {
+        "caller": "fuzz_target._dispatch_request",
+        "callee": "items",
+        "line": 144
+      },
+      {
+        "caller": "fuzz_target._dispatch_request",
+        "callee": "str",
+        "line": 144
+      },
+      {
+        "caller": "fuzz_target._dispatch_request",
+        "callee": "isinstance",
+        "line": 143
+      },
+      {
+        "caller": "fuzz_target._dispatch_request",
+        "callee": "get",
+        "line": 142
+      },
+      {
+        "caller": "fuzz_target._dispatch_request",
+        "callee": "items",
+        "line": 140
+      },
+      {
+        "caller": "fuzz_target._dispatch_request",
+        "callee": "str",
+        "line": 140
+      },
+      {
+        "caller": "fuzz_target._dispatch_request",
+        "callee": "str",
+        "line": 140
+      },
+      {
+        "caller": "fuzz_target._dispatch_request",
+        "callee": "isinstance",
+        "line": 139
+      },
+      {
+        "caller": "fuzz_target._dispatch_request",
+        "callee": "get",
+        "line": 138
+      },
+      {
+        "caller": "fuzz_target._dispatch_request",
+        "callee": "get",
+        "line": 136
+      },
+      {
+        "caller": "fuzz_target._dispatch_request",
+        "callee": "str",
+        "line": 133
+      },
+      {
+        "caller": "fuzz_target._dispatch_request",
+        "callee": "get",
+        "line": 133
+      },
+      {
+        "caller": "fuzz_target._dispatch_request",
+        "callee": "upper",
+        "line": 132
+      },
+      {
+        "caller": "fuzz_target._dispatch_request",
+        "callee": "str",
+        "line": 132
+      },
+      {
+        "caller": "fuzz_target._dispatch_request",
+        "callee": "get",
+        "line": 132
+      },
+      {
+        "caller": "fuzz_target._coerce",
+        "callee": "int",
+        "line": 126
+      },
+      {
+        "caller": "fuzz_target._coerce",
+        "callee": "isdigit",
+        "line": 125
+      },
+      {
+        "caller": "fuzz_target._coerce",
+        "callee": "isinstance",
+        "line": 125
+      },
+      {
+        "caller": "fuzz_target.sf_state_observer",
+        "callee": "SessionRuntimeObserver",
+        "line": 117
+      },
+      {
+        "caller": "fuzz_target.session_view",
+        "callee": "snapshot_view",
+        "line": 110
+      },
+      {
+        "caller": "fuzz_target.reset_state",
+        "callee": "setdefault",
+        "line": 77
+      },
+      {
+        "caller": "fuzz_target._replace_client",
+        "callee": "test_client",
+        "line": 65
+      }
+    ],
+    "source_hash": "76887fc72f5b87ae2b0dcf35a05ae73f233e068aac1e5ecba4e5c7348cac6f21"
+  }
+}
