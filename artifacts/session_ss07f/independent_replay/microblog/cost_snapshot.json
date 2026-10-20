@@ -1,0 +1,19 @@
+{
+ "target_http_requests": 3,
+ "sequence_attempts": 3,
+ "atheris_inputs": 0,
+ "bootstrap_http_requests": 0,
+ "checkpoint_validation_http_requests": 1,
+ "prefix_replay_http_requests": 1,
+ "suffix_http_requests": 1,
+ "observer_calls": 4,
+ "reset_calls": 8,
+ "scheduler_decisions": 0,
+ "elapsed_wall_seconds": 0.451213,
+ "analysis_wall_seconds": 0.0,
+ "run_id": "replay-microblog",
+ "arm": "REPLAY",
+ "seed": 0,
+ "target_block": "main/routes.py::index::29-29::block::1",
+ "app": "external/microblog/app"
+}

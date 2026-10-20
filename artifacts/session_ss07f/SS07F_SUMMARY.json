@@ -115,5 +115,12 @@
    "Spirit": true
   }
  },
- "matrix_seed1": "artifacts/session_ss07f/MATRIX_SEED1.json"
+ "matrix_seed1": "artifacts/session_ss07f/MATRIX_SEED1.json",
+ "independent_replay": {
+  "passed": 5,
+  "total": 5,
+  "module": "stateforge/evaluation/real_app_replay.py",
+  "dir": "artifacts/session_ss07f/independent_replay",
+  "note": "each app replayed from saved checkpoint in a fresh interpreter; healthchecks login token bucket was cleared before replay"
+ }
 }

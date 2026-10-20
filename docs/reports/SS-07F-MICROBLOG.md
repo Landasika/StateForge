@@ -258,3 +258,39 @@ Spirit        false   false     true          true
 注意：SINGLE 是 10 个输入的 smoke，不是与搜索臂等价的 80 预算；
 SEQUENCE 在三应用 40 次搜索内失败。因此这仍不是公平的多 seed 盲测，
 `blind_fuzzing_claimed=false`、`frozen=false` 不变。
+
+## 独立进程 replay
+
+新增 `stateforge/evaluation/real_app_replay.py`：在**新的解释器/应用进程**
+中加载已保存 checkpoint，重新打开真实应用，重放 1 步前缀 + 1 步 suffix，
+不读取实验进程状态。
+
+五应用全部通过：
+
+```text
+app           status                 prefix  suffix_target
+microblog     PREPARATION_VERIFIED   1       true
+CTFd          PREPARATION_VERIFIED   1       true
+healthchecks  PREPARATION_VERIFIED   1       true
+linkding      PREPARATION_VERIFIED   1       true
+Spirit        PREPARATION_VERIFIED   1       true
+```
+
+每次 replay 成本：
+
+```text
+target_http_requests = 3
+checkpoint_validation = 1
+prefix_replay = 1
+suffix = 1
+bootstrap_http_requests = 0
+```
+
+原始结果在：
+
+```text
+artifacts/session_ss07f/independent_replay/<app>/replay.json
+```
+
+healthchecks 第一次独立 replay 因登录 token bucket 被前面的实验耗尽而失败，
+清除该应用自身的限流桶后重跑通过；失败记录没有隐藏。

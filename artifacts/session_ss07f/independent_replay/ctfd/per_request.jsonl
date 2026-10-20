@@ -1,0 +1,15 @@
+{"event": "reset", "run_id": "replay-ctfd", "arm": "REPLAY", "seed": 0, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "elapsed": 7.7e-05}
+{"event": "reset", "run_id": "replay-ctfd", "arm": "REPLAY", "seed": 0, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "elapsed": 9.9e-05}
+{"event": "request", "run_id": "replay-ctfd", "arm": "REPLAY", "seed": 0, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "sequence_id": "replay-ctfd:seq:2", "step_index": 1, "phase": "checkpoint", "elapsed": 0.276036, "error": null, "status": "ok"}
+{"event": "observer", "run_id": "replay-ctfd", "arm": "REPLAY", "seed": 0, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "elapsed": 0.001152}
+{"event": "observer", "run_id": "replay-ctfd", "arm": "REPLAY", "seed": 0, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "elapsed": 0.001191}
+{"event": "reset", "run_id": "replay-ctfd", "arm": "REPLAY", "seed": 0, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "elapsed": 4.1e-05}
+{"event": "reset", "run_id": "replay-ctfd", "arm": "REPLAY", "seed": 0, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "elapsed": 8.1e-05}
+{"event": "reset", "run_id": "replay-ctfd", "arm": "REPLAY", "seed": 0, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "elapsed": 9.8e-05}
+{"event": "reset", "run_id": "replay-ctfd", "arm": "REPLAY", "seed": 0, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "elapsed": 0.000175}
+{"event": "request", "run_id": "replay-ctfd", "arm": "REPLAY", "seed": 0, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "sequence_id": "replay-ctfd:seq:3", "step_index": 1, "phase": "prefix_replay", "elapsed": 0.225567, "error": null, "status": "ok"}
+{"event": "request", "run_id": "replay-ctfd", "arm": "REPLAY", "seed": 0, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "sequence_id": "replay-ctfd:seq:3", "step_index": 2, "phase": "suffix", "elapsed": 0.143858, "error": null, "status": "ok"}
+{"event": "observer", "run_id": "replay-ctfd", "arm": "REPLAY", "seed": 0, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "elapsed": 0.001739}
+{"event": "observer", "run_id": "replay-ctfd", "arm": "REPLAY", "seed": 0, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "elapsed": 0.00179}
+{"event": "reset", "run_id": "replay-ctfd", "arm": "REPLAY", "seed": 0, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "elapsed": 6.1e-05}
+{"event": "reset", "run_id": "replay-ctfd", "arm": "REPLAY", "seed": 0, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "elapsed": 8.9e-05}

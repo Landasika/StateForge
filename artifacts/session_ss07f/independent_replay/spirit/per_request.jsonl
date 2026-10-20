@@ -1,0 +1,15 @@
+{"event": "reset", "run_id": "replay-spirit", "arm": "REPLAY", "seed": 0, "app": "external/Spirit/spirit", "target_block": "user/views.py::update::24-24::entry::1", "elapsed": 2.1e-05}
+{"event": "reset", "run_id": "replay-spirit", "arm": "REPLAY", "seed": 0, "app": "external/Spirit/spirit", "target_block": "user/views.py::update::24-24::entry::1", "elapsed": 5.6e-05}
+{"event": "request", "run_id": "replay-spirit", "arm": "REPLAY", "seed": 0, "app": "external/Spirit/spirit", "target_block": "user/views.py::update::24-24::entry::1", "sequence_id": "replay-spirit:seq:2", "step_index": 1, "phase": "checkpoint", "elapsed": 0.545248, "error": null, "status": "ok"}
+{"event": "observer", "run_id": "replay-spirit", "arm": "REPLAY", "seed": 0, "app": "external/Spirit/spirit", "target_block": "user/views.py::update::24-24::entry::1", "elapsed": 0.001964}
+{"event": "observer", "run_id": "replay-spirit", "arm": "REPLAY", "seed": 0, "app": "external/Spirit/spirit", "target_block": "user/views.py::update::24-24::entry::1", "elapsed": 0.002014}
+{"event": "reset", "run_id": "replay-spirit", "arm": "REPLAY", "seed": 0, "app": "external/Spirit/spirit", "target_block": "user/views.py::update::24-24::entry::1", "elapsed": 1.4e-05}
+{"event": "reset", "run_id": "replay-spirit", "arm": "REPLAY", "seed": 0, "app": "external/Spirit/spirit", "target_block": "user/views.py::update::24-24::entry::1", "elapsed": 5.6e-05}
+{"event": "reset", "run_id": "replay-spirit", "arm": "REPLAY", "seed": 0, "app": "external/Spirit/spirit", "target_block": "user/views.py::update::24-24::entry::1", "elapsed": 1.9e-05}
+{"event": "reset", "run_id": "replay-spirit", "arm": "REPLAY", "seed": 0, "app": "external/Spirit/spirit", "target_block": "user/views.py::update::24-24::entry::1", "elapsed": 9.5e-05}
+{"event": "request", "run_id": "replay-spirit", "arm": "REPLAY", "seed": 0, "app": "external/Spirit/spirit", "target_block": "user/views.py::update::24-24::entry::1", "sequence_id": "replay-spirit:seq:3", "step_index": 1, "phase": "prefix_replay", "elapsed": 0.128565, "error": null, "status": "ok"}
+{"event": "request", "run_id": "replay-spirit", "arm": "REPLAY", "seed": 0, "app": "external/Spirit/spirit", "target_block": "user/views.py::update::24-24::entry::1", "sequence_id": "replay-spirit:seq:3", "step_index": 2, "phase": "suffix", "elapsed": 0.247694, "error": null, "status": "ok"}
+{"event": "observer", "run_id": "replay-spirit", "arm": "REPLAY", "seed": 0, "app": "external/Spirit/spirit", "target_block": "user/views.py::update::24-24::entry::1", "elapsed": 0.001578}
+{"event": "observer", "run_id": "replay-spirit", "arm": "REPLAY", "seed": 0, "app": "external/Spirit/spirit", "target_block": "user/views.py::update::24-24::entry::1", "elapsed": 0.001621}
+{"event": "reset", "run_id": "replay-spirit", "arm": "REPLAY", "seed": 0, "app": "external/Spirit/spirit", "target_block": "user/views.py::update::24-24::entry::1", "elapsed": 1.3e-05}
+{"event": "reset", "run_id": "replay-spirit", "arm": "REPLAY", "seed": 0, "app": "external/Spirit/spirit", "target_block": "user/views.py::update::24-24::entry::1", "elapsed": 6.4e-05}
