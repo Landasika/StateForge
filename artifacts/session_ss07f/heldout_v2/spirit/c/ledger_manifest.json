@@ -1,0 +1,9 @@
+{
+ "run_id": "spirit-5-c",
+ "arm": "STATE_GUIDED",
+ "seed": 5,
+ "target_block": "user/views.py::update::24-24::entry::1",
+ "app": "external/Spirit/spirit",
+ "request_limit": 80,
+ "boundary": "target-callable-invocation"
+}

@@ -1,0 +1,9 @@
+{
+ "run_id": "healthchecks-5-seq",
+ "arm": "SEQUENCE",
+ "seed": 5,
+ "target_block": "accounts/views.py::profile::288-288::entry::1",
+ "app": "external/healthchecks/hc",
+ "request_limit": 80,
+ "boundary": "target-callable-invocation"
+}

@@ -1,0 +1,83 @@
+{
+ "protocol": "ss07f-heldout-seed5-v2",
+ "seed": 5,
+ "budget": 40,
+ "preregistration_sha256": "df7cb7e5f19aa821b39b51c258faca761fd366751b87b920d28a9a920effb6d1",
+ "hashes_match": true,
+ "apps": {
+  "microblog": {
+   "c_found": true,
+   "c_executions": 7,
+   "d_target": true,
+   "d_bootstrap_http": 0,
+   "d_http": 6,
+   "sequence_found": true,
+   "single_target": false,
+   "single_inputs": 40,
+   "single_http": 40,
+   "replay_target": true,
+   "replay_http": 3
+  },
+  "ctfd": {
+   "c_found": true,
+   "c_executions": 6,
+   "d_target": true,
+   "d_bootstrap_http": 0,
+   "d_http": 6,
+   "sequence_found": true,
+   "single_target": false,
+   "single_inputs": 40,
+   "single_http": 40,
+   "replay_target": true,
+   "replay_http": 3
+  },
+  "healthchecks": {
+   "c_found": true,
+   "c_executions": 6,
+   "d_target": true,
+   "d_bootstrap_http": 0,
+   "d_http": 6,
+   "sequence_found": false,
+   "single_target": false,
+   "single_inputs": 40,
+   "single_http": 40,
+   "replay_target": true,
+   "replay_http": 3
+  },
+  "linkding": {
+   "c_found": true,
+   "c_executions": 6,
+   "d_target": true,
+   "d_bootstrap_http": 0,
+   "d_http": 6,
+   "sequence_found": true,
+   "single_target": false,
+   "single_inputs": 40,
+   "single_http": 40,
+   "replay_target": true,
+   "replay_http": 3
+  },
+  "spirit": {
+   "c_found": true,
+   "c_executions": 6,
+   "d_target": true,
+   "d_bootstrap_http": 0,
+   "d_http": 6,
+   "sequence_found": false,
+   "single_target": false,
+   "single_inputs": 40,
+   "single_http": 40,
+   "replay_target": true,
+   "replay_http": 3
+  }
+ },
+ "summary": {
+  "C": 5,
+  "D": 5,
+  "SINGLE": 0,
+  "SEQUENCE": 3,
+  "replay": 5
+ },
+ "acceptance_met": true,
+ "scope": "held-out seed only; adapters/contracts frozen before seed5; not blind to the five applications themselves"
+}

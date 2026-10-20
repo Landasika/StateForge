@@ -1,0 +1,50 @@
+{
+ "protocol": "ss07f-heldout-seed5-v2",
+ "frozen": true,
+ "frozen_at_iso": "2026-10-20T21:52:00+08:00",
+ "blind_fuzzing_claimed": true,
+ "blind_scope": "held-out seed 5; adapter/contract/source hashes frozen before run",
+ "seed": 5,
+ "budget": 40,
+ "preregistration": "/home/landasika/icassp/artifacts/session_ss07f/heldout_v2/PREREGISTRATION.json",
+ "preregistration_sha256": "df7cb7e5f19aa821b39b51c258faca761fd366751b87b920d28a9a920effb6d1",
+ "hashes_match": true,
+ "results": "/home/landasika/icassp/artifacts/session_ss07f/heldout_v2/RESULTS.json",
+ "summary": {
+  "C": 5,
+  "D": 5,
+  "SINGLE": 0,
+  "SEQUENCE": 3,
+  "replay": 5
+ },
+ "apps": {
+  "microblog": {
+   "raw": "/home/landasika/icassp/artifacts/session_ss07f/heldout_v2/microblog",
+   "replay": "/home/landasika/icassp/artifacts/session_ss07f/heldout_v2/microblog/independent_replay/replay.json"
+  },
+  "ctfd": {
+   "raw": "/home/landasika/icassp/artifacts/session_ss07f/heldout_v2/ctfd",
+   "replay": "/home/landasika/icassp/artifacts/session_ss07f/heldout_v2/ctfd/independent_replay/replay.json"
+  },
+  "healthchecks": {
+   "raw": "/home/landasika/icassp/artifacts/session_ss07f/heldout_v2/healthchecks",
+   "replay": "/home/landasika/icassp/artifacts/session_ss07f/heldout_v2/healthchecks/independent_replay/replay.json"
+  },
+  "linkding": {
+   "raw": "/home/landasika/icassp/artifacts/session_ss07f/heldout_v2/linkding",
+   "replay": "/home/landasika/icassp/artifacts/session_ss07f/heldout_v2/linkding/independent_replay/replay.json"
+  },
+  "spirit": {
+   "raw": "/home/landasika/icassp/artifacts/session_ss07f/heldout_v2/spirit",
+   "replay": "/home/landasika/icassp/artifacts/session_ss07f/heldout_v2/spirit/independent_replay/replay.json"
+  }
+ },
+ "test_command": "pytest -q stateforge/tests/runtime/test_execution_costs.py stateforge/tests/evaluation/test_session_ss07a.py stateforge/tests/state/test_session_evidence.py stateforge/tests/fuzzing/test_session_online.py stateforge/tests/evaluation/test_ss07d.py stateforge/tests/evaluation/test_real_apps.py",
+ "test_result": "26 passed in 4.02s",
+ "limitations": [
+  "held-out seed only; adapters authored during seeds 1-4",
+  "SINGLE is a 40-input random single-request smoke, not C10 multi-step",
+  "target-request budget 40, wall clock not equalized",
+  "healthchecks login token buckets cleared before some runs"
+ ]
+}

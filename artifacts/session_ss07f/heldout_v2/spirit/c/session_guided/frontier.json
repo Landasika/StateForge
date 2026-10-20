@@ -1,0 +1,45 @@
+{
+ "target_block": "user/views.py::update::24-24::entry::1",
+ "function": "update",
+ "file": "user/views.py",
+ "path_constraint_groups": [
+  [
+   {
+    "key_kind": "CONST",
+    "key_expr": "_auth_user_id",
+    "op": "EXISTS",
+    "value": null,
+    "value_kind": "NONE",
+    "direction": "true",
+    "guard_block": "user/views.py::update::24-24::entry::1",
+    "source_file": "user/views.py",
+    "source_line": 24,
+    "source_col": 0,
+    "reader_site_id": "spirit-profile",
+    "resolvable": true,
+    "note": ""
+   }
+  ]
+ ],
+ "relevant_reads": [],
+ "candidate_writers": [
+  {
+   "writer_site_id": "spirit-login",
+   "reader_site_id": "spirit-profile",
+   "writer_block": "user/auth/views.py::custom_login::70-70::terminal::1",
+   "reader_block": "user/views.py::update::24-24::entry::1",
+   "key_overlap": "_auth_user_id",
+   "client_binding": "writer.?client == reader.?client",
+   "candidate_effect": {},
+   "evidence": "STATIC_MAY",
+   "priority": 4
+  }
+ ],
+ "candidate_blocks": [
+  "user/auth/views.py::custom_login::70-70::terminal::1"
+ ],
+ "unresolved": [],
+ "guard_blocks": [],
+ "partial": false,
+ "evidence": "CONTRACT_PREREGISTERED"
+}

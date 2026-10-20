@@ -478,3 +478,37 @@ artifacts/session_ss07f/heldout_v1/RESULTS.json
 ```
 
 所以仍然不冻结、不宣称盲测完成。
+
+## seed 5：预注册后的通过
+
+在 seed 5 之前先提交了 v2 预注册，显式把 **D-only 新进程** 定为主路径：
+
+```text
+artifacts/session_ss07f/heldout_v2/PREREGISTRATION.json
+```
+
+seed 5 结果：
+
+```text
+C bootstrap       5/5
+D-only 复用       5/5，bootstrap_http=0
+SINGLE 40 输入    0/5
+SEQUENCE          3/5（microblog、CTFd、linkding）
+独立 replay       5/5
+```
+
+哈希复核：
+
+```text
+hashes_match = true
+acceptance_met = true
+```
+
+冻结清单：
+
+```text
+artifacts/session_ss07f/heldout_v2/FREEZE_MANIFEST.json
+```
+
+必须保留的范围说明：这是 **held-out seed 盲测**，adapter/contract 在 seed 1–4
+开发期已经存在，只是在本轮运行前冻结哈希；它不是“对五个应用完全未知”的盲测。

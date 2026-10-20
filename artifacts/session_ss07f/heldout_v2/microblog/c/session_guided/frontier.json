@@ -1,0 +1,45 @@
+{
+ "target_block": "main/routes.py::index::29-29::block::1",
+ "function": "index",
+ "file": "main/routes.py",
+ "path_constraint_groups": [
+  [
+   {
+    "key_kind": "CONST",
+    "key_expr": "_user_id",
+    "op": "EXISTS",
+    "value": null,
+    "value_kind": "NONE",
+    "direction": "true",
+    "guard_block": "main/routes.py::index::29-29::block::1",
+    "source_file": "main/routes.py",
+    "source_line": 29,
+    "source_col": 0,
+    "reader_site_id": "contract-index",
+    "resolvable": true,
+    "note": ""
+   }
+  ]
+ ],
+ "relevant_reads": [],
+ "candidate_writers": [
+  {
+   "writer_site_id": "contract-login",
+   "reader_site_id": "contract-index",
+   "writer_block": "auth/routes.py::login::25-26::block::1",
+   "reader_block": "main/routes.py::index::29-29::block::1",
+   "key_overlap": "_user_id",
+   "client_binding": "writer.?client == reader.?client",
+   "candidate_effect": {},
+   "evidence": "STATIC_MAY",
+   "priority": 4
+  }
+ ],
+ "candidate_blocks": [
+  "auth/routes.py::login::25-26::block::1"
+ ],
+ "unresolved": [],
+ "guard_blocks": [],
+ "partial": false,
+ "evidence": "CONTRACT_PREREGISTERED"
+}

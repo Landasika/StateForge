@@ -1,0 +1,9 @@
+{
+ "run_id": "replay-microblog",
+ "arm": "REPLAY",
+ "seed": 0,
+ "target_block": "main/routes.py::index::29-29::block::1",
+ "app": "external/microblog/app",
+ "request_limit": 20,
+ "boundary": "target-callable-invocation"
+}

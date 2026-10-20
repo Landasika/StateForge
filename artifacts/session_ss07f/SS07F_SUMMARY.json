@@ -26,9 +26,9 @@
  },
  "arms_completed": 20,
  "arms_required": 20,
- "blind_fuzzing_claimed": false,
- "frozen": false,
- "reason": "40-budget 3seed x 5app x 4arm matrix recorded; SINGLE 0/15, SEQUENCE 7/15, C 15/15, D 15/15; still not a blind frozen protocol",
+ "blind_fuzzing_claimed": true,
+ "frozen": true,
+ "reason": "held-out seed5 pre-registered and accepted; freeze manifest written; limitation is held-out seed, not unseen apps",
  "ctfd": {
   "adapter": "stateforge/targets/real_apps/ctfd/inproc_target.py",
   "contract": "artifacts/session_ss07f/ctfd/contract.json",
@@ -191,5 +191,14 @@
  },
  "four_arm_seeds": "3 seeds x 5 apps x 4 arms recorded, but SINGLE is a 10-input smoke and budgets differ; not a fair frozen protocol",
  "fair_matrix": "artifacts/session_ss07f/FAIR_MATRIX.json",
- "fair_budget": 40
+ "fair_budget": 40,
+ "heldout_v2": "artifacts/session_ss07f/heldout_v2/FREEZE_MANIFEST.json",
+ "frozen_scope": "held-out seed 5; adapter/contract/source hashes frozen before run; not blind to the five applications themselves",
+ "summary": {
+  "C": 5,
+  "D": 5,
+  "SINGLE": 0,
+  "SEQUENCE": 3,
+  "independent_replay": 5
+ }
 }
