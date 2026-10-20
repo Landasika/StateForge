@@ -1,0 +1,60 @@
+{
+ "app": "microblog",
+ "seed": 2,
+ "c": {
+  "found": true,
+  "status": "VERIFIED",
+  "executions": 7,
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/auth/login",
+    "form": {
+     "username": "fuzz",
+     "password": "fuzzpass"
+    }
+   },
+   {
+    "method": "GET",
+    "path": "/index"
+   }
+  ],
+  "costs": {
+   "target_http_requests": 9,
+   "sequence_attempts": 1,
+   "atheris_inputs": 0,
+   "bootstrap_http_requests": 9,
+   "checkpoint_validation_http_requests": 0,
+   "prefix_replay_http_requests": 0,
+   "suffix_http_requests": 0,
+   "observer_calls": 0,
+   "reset_calls": 0,
+   "scheduler_decisions": 0,
+   "elapsed_wall_seconds": 0.544614,
+   "analysis_wall_seconds": 0.0
+  }
+ },
+ "d": {
+  "status": "PREPARATION_VERIFIED",
+  "preparation_verified": true,
+  "suffix_target_covered": true,
+  "isolation": true,
+  "prefix_len": 1,
+  "checkpoint_id": "sc-a4cf478e34e0",
+  "validation": "PREPARATION_VERIFIED",
+  "costs": {
+   "target_http_requests": 6,
+   "sequence_attempts": 6,
+   "atheris_inputs": 0,
+   "bootstrap_http_requests": 0,
+   "checkpoint_validation_http_requests": 3,
+   "prefix_replay_http_requests": 1,
+   "suffix_http_requests": 2,
+   "observer_calls": 7,
+   "reset_calls": 16,
+   "scheduler_decisions": 0,
+   "elapsed_wall_seconds": 0.337917,
+   "analysis_wall_seconds": 0.0
+  }
+ }
+}

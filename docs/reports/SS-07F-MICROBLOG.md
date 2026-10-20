@@ -294,3 +294,25 @@ artifacts/session_ss07f/independent_replay/<app>/replay.json
 
 healthchecks 第一次独立 replay 因登录 token bucket 被前面的实验耗尽而失败，
 清除该应用自身的限流桶后重跑通过；失败记录没有隐藏。
+
+## seed 2 的 C/D
+
+新增 `stateforge/evaluation/real_app_point.py`，按 (app, seed) 记录 C/D。
+
+```text
+app           C found   D suffix target   D status
+microblog     true      true              PREPARATION_VERIFIED
+CTFd          true      true              PREPARATION_VERIFIED
+healthchecks  true      true              PREPARATION_VERIFIED
+linkding      true      true              PREPARATION_VERIFIED
+Spirit        true      false              REPLAY_FAILED
+```
+
+Spirit seed 2 的 D 失败发生在同一进程里 C 先登录、D 再登录时，被应用自身
+的登录限流挡住；没有隐藏这个失败，也没有把它写成通过。
+
+多 seed 结果：
+
+```text
+artifacts/session_ss07f/MATRIX_SEED2.json
+```

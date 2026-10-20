@@ -1,0 +1,45 @@
+{
+ "protocol": "ss07f-real-apps-seeds",
+ "seeds": [
+  1,
+  2
+ ],
+ "seed2": {
+  "ctfd": {
+   "c_found": true,
+   "c_exec": 6,
+   "d_target": true,
+   "d_status": "PREPARATION_VERIFIED",
+   "isolation": true
+  },
+  "spirit": {
+   "c_found": true,
+   "c_exec": 6,
+   "d_target": false,
+   "d_status": "REPLAY_FAILED",
+   "isolation": true
+  },
+  "healthchecks": {
+   "c_found": true,
+   "c_exec": 6,
+   "d_target": true,
+   "d_status": "PREPARATION_VERIFIED",
+   "isolation": true
+  },
+  "linkding": {
+   "c_found": true,
+   "c_exec": 6,
+   "d_target": true,
+   "d_status": "PREPARATION_VERIFIED",
+   "isolation": true
+  },
+  "microblog": {
+   "c_found": true,
+   "c_exec": 7,
+   "d_target": true,
+   "d_status": "PREPARATION_VERIFIED",
+   "isolation": true
+  }
+ },
+ "note": "seed1 C/D from prior artifacts; seed2 C/D same-process point runner; Spirit seed2 D failed"
+}

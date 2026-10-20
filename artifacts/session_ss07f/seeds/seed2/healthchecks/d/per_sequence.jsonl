@@ -1,0 +1,12 @@
+{"event": "sequence_start", "sequence_id": "healthchecks-2-d:seq:1", "run_id": "healthchecks-2-d", "arm": "STATE_REUSE", "seed": 2, "kind": "checkpoint"}
+{"event": "sequence_end", "sequence_id": "healthchecks-2-d:seq:1", "run_id": "healthchecks-2-d", "arm": "STATE_REUSE", "seed": 2, "status": "ok", "steps": 0}
+{"event": "sequence_start", "sequence_id": "healthchecks-2-d:seq:2", "run_id": "healthchecks-2-d", "arm": "STATE_REUSE", "seed": 2, "kind": "checkpoint-validation"}
+{"event": "sequence_end", "sequence_id": "healthchecks-2-d:seq:2", "run_id": "healthchecks-2-d", "arm": "STATE_REUSE", "seed": 2, "status": "ok", "steps": 1}
+{"event": "sequence_start", "sequence_id": "healthchecks-2-d:seq:3", "run_id": "healthchecks-2-d", "arm": "STATE_REUSE", "seed": 2, "kind": "suffix"}
+{"event": "sequence_end", "sequence_id": "healthchecks-2-d:seq:3", "run_id": "healthchecks-2-d", "arm": "STATE_REUSE", "seed": 2, "status": "ok", "steps": 0}
+{"event": "sequence_start", "sequence_id": "healthchecks-2-d:seq:4", "run_id": "healthchecks-2-d", "arm": "STATE_REUSE", "seed": 2, "kind": "checkpoint-validation"}
+{"event": "sequence_end", "sequence_id": "healthchecks-2-d:seq:4", "run_id": "healthchecks-2-d", "arm": "STATE_REUSE", "seed": 2, "status": "ok", "steps": 1}
+{"event": "sequence_start", "sequence_id": "healthchecks-2-d:seq:5", "run_id": "healthchecks-2-d", "arm": "STATE_REUSE", "seed": 2, "kind": "prefix-suffix-replay"}
+{"event": "sequence_end", "sequence_id": "healthchecks-2-d:seq:5", "run_id": "healthchecks-2-d", "arm": "STATE_REUSE", "seed": 2, "status": "ok", "steps": 2}
+{"event": "sequence_start", "sequence_id": "healthchecks-2-d:seq:6", "run_id": "healthchecks-2-d", "arm": "STATE_REUSE", "seed": 2, "kind": "isolation"}
+{"event": "sequence_end", "sequence_id": "healthchecks-2-d:seq:6", "run_id": "healthchecks-2-d", "arm": "STATE_REUSE", "seed": 2, "status": "ok", "steps": 1}

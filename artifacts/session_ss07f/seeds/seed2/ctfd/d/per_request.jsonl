@@ -1,0 +1,29 @@
+{"event": "reset", "run_id": "ctfd-2-d", "arm": "STATE_REUSE", "seed": 2, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "elapsed": 8e-05}
+{"event": "request", "run_id": "ctfd-2-d", "arm": "STATE_REUSE", "seed": 2, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "sequence_id": null, "step_index": 1, "phase": "checkpoint", "elapsed": 0.232043, "error": null, "status": "ok"}
+{"event": "observer", "run_id": "ctfd-2-d", "arm": "STATE_REUSE", "seed": 2, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "elapsed": 0.001232}
+{"event": "reset", "run_id": "ctfd-2-d", "arm": "STATE_REUSE", "seed": 2, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "elapsed": 5.5e-05}
+{"event": "reset", "run_id": "ctfd-2-d", "arm": "STATE_REUSE", "seed": 2, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "elapsed": 8.2e-05}
+{"event": "reset", "run_id": "ctfd-2-d", "arm": "STATE_REUSE", "seed": 2, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "elapsed": 0.000126}
+{"event": "request", "run_id": "ctfd-2-d", "arm": "STATE_REUSE", "seed": 2, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "sequence_id": "ctfd-2-d:seq:2", "step_index": 1, "phase": "checkpoint", "elapsed": 0.225796, "error": null, "status": "ok"}
+{"event": "observer", "run_id": "ctfd-2-d", "arm": "STATE_REUSE", "seed": 2, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "elapsed": 0.001103}
+{"event": "observer", "run_id": "ctfd-2-d", "arm": "STATE_REUSE", "seed": 2, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "elapsed": 0.001141}
+{"event": "reset", "run_id": "ctfd-2-d", "arm": "STATE_REUSE", "seed": 2, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "elapsed": 4.6e-05}
+{"event": "reset", "run_id": "ctfd-2-d", "arm": "STATE_REUSE", "seed": 2, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "elapsed": 7e-05}
+{"event": "reset", "run_id": "ctfd-2-d", "arm": "STATE_REUSE", "seed": 2, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "elapsed": 8.9e-05}
+{"event": "reset", "run_id": "ctfd-2-d", "arm": "STATE_REUSE", "seed": 2, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "elapsed": 0.000135}
+{"event": "request", "run_id": "ctfd-2-d", "arm": "STATE_REUSE", "seed": 2, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "sequence_id": "ctfd-2-d:seq:4", "step_index": 1, "phase": "checkpoint", "elapsed": 0.229002, "error": null, "status": "ok"}
+{"event": "observer", "run_id": "ctfd-2-d", "arm": "STATE_REUSE", "seed": 2, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "elapsed": 0.001378}
+{"event": "observer", "run_id": "ctfd-2-d", "arm": "STATE_REUSE", "seed": 2, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "elapsed": 0.001418}
+{"event": "reset", "run_id": "ctfd-2-d", "arm": "STATE_REUSE", "seed": 2, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "elapsed": 4.8e-05}
+{"event": "reset", "run_id": "ctfd-2-d", "arm": "STATE_REUSE", "seed": 2, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "elapsed": 9.4e-05}
+{"event": "reset", "run_id": "ctfd-2-d", "arm": "STATE_REUSE", "seed": 2, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "elapsed": 8.2e-05}
+{"event": "reset", "run_id": "ctfd-2-d", "arm": "STATE_REUSE", "seed": 2, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "elapsed": 0.00015}
+{"event": "request", "run_id": "ctfd-2-d", "arm": "STATE_REUSE", "seed": 2, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "sequence_id": "ctfd-2-d:seq:5", "step_index": 1, "phase": "prefix_replay", "elapsed": 0.221565, "error": null, "status": "ok"}
+{"event": "request", "run_id": "ctfd-2-d", "arm": "STATE_REUSE", "seed": 2, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "sequence_id": "ctfd-2-d:seq:5", "step_index": 2, "phase": "suffix", "elapsed": 0.03258, "error": null, "status": "ok"}
+{"event": "observer", "run_id": "ctfd-2-d", "arm": "STATE_REUSE", "seed": 2, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "elapsed": 0.001257}
+{"event": "observer", "run_id": "ctfd-2-d", "arm": "STATE_REUSE", "seed": 2, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "elapsed": 0.001306}
+{"event": "reset", "run_id": "ctfd-2-d", "arm": "STATE_REUSE", "seed": 2, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "elapsed": 8.6e-05}
+{"event": "reset", "run_id": "ctfd-2-d", "arm": "STATE_REUSE", "seed": 2, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "elapsed": 0.000117}
+{"event": "reset", "run_id": "ctfd-2-d", "arm": "STATE_REUSE", "seed": 2, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "elapsed": 6.9e-05}
+{"event": "request", "run_id": "ctfd-2-d", "arm": "STATE_REUSE", "seed": 2, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "sequence_id": "ctfd-2-d:seq:6", "step_index": 1, "phase": "suffix", "elapsed": 0.006605, "error": null, "status": "ok"}
+{"event": "reset", "run_id": "ctfd-2-d", "arm": "STATE_REUSE", "seed": 2, "app": "external/CTFd/CTFd", "target_block": "challenges.py::listing::24-24::entry::1", "elapsed": 3.6e-05}

@@ -1,0 +1,2 @@
+{"event": "sequence_start", "sequence_id": "spirit-2-c:seq:1", "run_id": "spirit-2-c", "arm": "STATE_GUIDED", "seed": 2, "kind": "bootstrap"}
+{"event": "sequence_end", "sequence_id": "spirit-2-c:seq:1", "run_id": "spirit-2-c", "arm": "STATE_GUIDED", "seed": 2, "status": "ok", "steps": 8}
