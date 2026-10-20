@@ -368,3 +368,24 @@ def test_target_witness_checkpoint_still_separates_suffix_from_prefix():
     assert result.suffix_target_covered is False
     assert result.whole_sequence_target_covered is True
     assert len(result.suffix_step_spans) == 1
+
+
+def test_baseline_fingerprint_mismatch_fails_closed_before_replay():
+    mod, ir, ckpt, _result = _prepared("sg_baseline_mismatch")
+    assert ckpt.baseline_fingerprint
+    assert ckpt.session_backend == "flask-cookie"
+    result = replay_session_checkpoint(
+        ckpt, mod.target, ir, reset_hook=mod.reset_state,
+        session_probe=mod.session_view, trace_root=GATE,
+        baseline="baseline-different-app-or-config")
+    assert result.status == REPLAY_UNKNOWN
+    assert result.reason == "baseline-mismatch"
+    assert result.target_covered is False
+    assert result.conditions_verified is False
+
+    ok = replay_session_checkpoint(
+        ckpt, mod.target, ir, reset_hook=mod.reset_state,
+        session_probe=mod.session_view, trace_root=GATE,
+        baseline=ckpt.baseline_fingerprint)
+    assert ok.status == PREPARATION_VERIFIED
+    assert ok.replay_success is False

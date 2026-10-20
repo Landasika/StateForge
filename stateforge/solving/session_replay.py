@@ -65,6 +65,11 @@ class SessionReplayCheckpoint:
     # SS-05C metadata.  Old v1 files load with these safe defaults.
     checkpoint_kind: str = "target_witness"
     baseline_id: str = "default"
+    baseline_fingerprint: str = ""
+    app_source_hash: str = ""
+    session_backend: str = "flask-cookie"
+    fixture_id: str = ""
+    initialization_seed: str = ""
     client_scope: str = "client-0"
     condition_group_id: str = ""
     source_sequence_hash: str = ""
@@ -105,6 +110,11 @@ class SessionReplayCheckpoint:
             "writer_blocks": self.writer_blocks,
             "evidence": self.evidence,
             "baseline_id": self.baseline_id,
+            "baseline_fingerprint": self.baseline_fingerprint,
+            "app_source_hash": self.app_source_hash,
+            "session_backend": self.session_backend,
+            "fixture_id": self.fixture_id,
+            "initialization_seed": self.initialization_seed,
             "client_scope": self.client_scope,
             "condition_group_id": self.condition_group_id,
             "source_sequence_hash": self.source_sequence_hash,
@@ -237,6 +247,27 @@ def _baseline_id(target_block: str, source_file: str) -> str:
     return "baseline-" + hashlib.sha256(payload).hexdigest()[:12]
 
 
+def baseline_fingerprint(source_file: str | Path, *,
+                         config: dict | None = None,
+                         session_backend: str = "flask-cookie",
+                         fixture_id: str = "",
+                         initialization_seed: str = "") -> str:
+    """Bind a checkpoint to source + run configuration, never to secrets."""
+    path = Path(source_file)
+    try:
+        source_hash = hashlib.sha256(path.read_bytes()).hexdigest()
+    except OSError:
+        source_hash = "missing"
+    payload = json.dumps({
+        "source_hash": source_hash,
+        "config": config or {},
+        "session_backend": session_backend,
+        "fixture_id": fixture_id,
+        "initialization_seed": initialization_seed,
+    }, ensure_ascii=False, sort_keys=True)
+    return "baseline-" + hashlib.sha256(payload.encode("utf-8")).hexdigest()[:20]
+
+
 def checkpoint_from_guided_result(result, source_file: str,
                                   *, prefix_len: int | None = None
                                   ) -> SessionReplayCheckpoint | None:
@@ -296,7 +327,7 @@ def _view_from_probe(probe) -> SessionSnapshotView:
         return SessionSnapshotView(
             SESSION_STATUS_DECODED, dict(raw), client_id="client-0",
             observation_point="legacy-dict-probe",
-            source="legacy-dict-probe")
+            source="legacy-dict-probe", trusted=False)
     return snapshot_view(raw, client_id="client-0",
                          observation_point="after_prefix",
                          source="probe-snapshot")
@@ -365,6 +396,10 @@ def find_verified_preparation_prefix(
             continue
         if not view.authoritative:
             continue
+        if not getattr(view, "trusted", True):
+            # A legacy dict/raw probe is useful for compatibility tests but
+            # cannot become a formal reusable checkpoint.
+            continue
         had_authoritative = True
         for gi, group in enumerate(groups):
             verdict = evaluate_session_conditions(group, view)
@@ -420,6 +455,13 @@ def preparation_checkpoint_from_guided_result(
         protocol_version="session-checkpoint-v2",
         checkpoint_kind="state_preparation",
         baseline_id=_baseline_id(result.target_block, source_file),
+        baseline_fingerprint=baseline_fingerprint(source_file),
+        app_source_hash=hashlib.sha256(
+            Path(source_file).read_bytes()).hexdigest(),
+        session_backend="flask-cookie",
+        fixture_id="session-gate",
+        initialization_seed=(hashlib.sha256(result.seed).hexdigest()[:16]
+                             if getattr(result, "seed", None) else ""),
         client_scope=prep.view.client_id,
         condition_group_id=_group_id(groups_out),
         source_sequence_hash=_source_hash(full_steps),
@@ -432,6 +474,7 @@ def replay_session_checkpoint(ckpt: SessionReplayCheckpoint, target,
                               session_probe=None, trace_root=None,
                               suffix_steps: list[dict] | None = None,
                               cost_ledger=None,
+                              baseline: str | None = None,
                               ) -> SessionReplayResult:
     """Replay a checkpoint from a cold client.
 
@@ -461,6 +504,15 @@ def replay_session_checkpoint(ckpt: SessionReplayCheckpoint, target,
             status=REPLAY_UNKNOWN, replay_success=False, target_covered=False,
             conditions_verified=False, values=None, prefix_len=len(prefix),
             suffix_len=len(suffix), reason="no-reset-hook",
+            started_from_reset=False)
+
+    if (baseline is not None and ckpt.baseline_fingerprint
+            and baseline != ckpt.baseline_fingerprint):
+        return SessionReplayResult(
+            checkpoint_id=ckpt.checkpoint_id, target_block=ckpt.target_block,
+            status=REPLAY_UNKNOWN, replay_success=False, target_covered=False,
+            conditions_verified=False, values=None, prefix_len=len(prefix),
+            suffix_len=len(suffix), reason="baseline-mismatch",
             started_from_reset=False)
 
     # 1) Prefix alone, from a cold client.  This is the preparation check.

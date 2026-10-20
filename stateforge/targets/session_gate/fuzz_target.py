@@ -108,7 +108,9 @@ def session_view(client=None):
     """SS-04: read-only observation point view for the runtime observer."""
     from stateforge.state.session_observation import snapshot_view
     return snapshot_view(observe_session(client), client_id="client-0",
-                         observation_point="after_response")
+                         observation_point="after_response",
+                         source="flask-signed-cookie",
+                         observer_id="flask-signed-cookie-reader")
 
 
 def sf_state_observer():

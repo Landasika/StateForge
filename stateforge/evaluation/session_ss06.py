@@ -317,7 +317,8 @@ def run_protocol(seeds=(1, 2, 3), seconds: float = 1.0,
                     session_probe=c_mod.session_view,
                     trace_root=GATE,
                     suffix_steps=[{"method": "GET", "path": "/protected"}],
-                    cost_ledger=ledger)
+                    cost_ledger=ledger,
+                    baseline=c_prep.baseline_fingerprint)
                 truthy = replay_session_checkpoint(
                     truthy_ckpt, c_mod.target, ir,
                     reset_hook=c_mod.reset_state,
@@ -325,7 +326,8 @@ def run_protocol(seeds=(1, 2, 3), seconds: float = 1.0,
                     trace_root=GATE,
                     suffix_steps=[{"method": "GET",
                                    "path": "/protected_truthy"}],
-                    cost_ledger=ledger)
+                    cost_ledger=ledger,
+                    baseline=c_prep.baseline_fingerprint)
                 control_target = ledger.wrap_target(c_mod.target,
                                                     phase="suffix")
                 ledger.begin_sequence("isolation-control")
@@ -399,7 +401,8 @@ def run_protocol(seeds=(1, 2, 3), seconds: float = 1.0,
                         reset_hook=search_mod.reset_state,
                         session_probe=search_mod.session_view,
                         trace_root=GATE, suffix_steps=[],
-                        cost_ledger=ledger)
+                        cost_ledger=ledger,
+                        baseline=prep.baseline_fingerprint)
                     rec["checkpoint_validation_verified"] = bool(
                         validation.preparation_verified)
                     c_ctx["prep"] = (prep if validation.preparation_verified

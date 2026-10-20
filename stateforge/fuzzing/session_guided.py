@@ -599,7 +599,8 @@ def _module_session_probe(target_module):
         snap = observe()
         return snapshot_view(
             snap, client_id="client-0", observation_point="after_response",
-            source="module-observe_session")
+            source="module-observe_session",
+            observer_id="module-session-observer")
     return probe
 
 

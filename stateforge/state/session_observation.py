@@ -77,6 +77,8 @@ class SessionSnapshotView:
     observation_point: str = "after_response"
     observed_at: int = -1
     source: str = ""
+    trusted: bool = True
+    observer_id: str = ""
 
     @property
     def decoded(self) -> bool:
@@ -99,13 +101,17 @@ class SessionSnapshotView:
             "observation_point": self.observation_point,
             "observed_at": self.observed_at,
             "source": self.source,
+            "trusted": self.trusted,
+            "observer_id": self.observer_id,
         }
 
 
 def snapshot_view(snapshot, *, client_id: str = "client-0",
                   observation_point: str = "after_response",
                   observed_at: int = -1,
-                  source: str = "target-snapshot") -> SessionSnapshotView:
+                  source: str = "target-snapshot",
+                  trusted: bool = True,
+                  observer_id: str = "") -> SessionSnapshotView:
     """Adapt the target's read-only ``SessionSnapshot`` to a view."""
     status = getattr(snapshot, "status", SESSION_STATUS_UNKNOWN)
     values = getattr(snapshot, "values", None)
@@ -120,7 +126,8 @@ def snapshot_view(snapshot, *, client_id: str = "client-0",
                                client_id=client_id,
                                observation_point=observation_point,
                                observed_at=observed_at,
-                               source=source)
+                               source=source, trusted=trusted,
+                               observer_id=observer_id)
 
 
 def _source(view: SessionSnapshotView, cond: SessionCondition | None = None) -> str:
@@ -206,6 +213,80 @@ class SessionGroupVerdict:
             "conditions": [c.to_dict() for c in self.conditions],
             "observations": [o.to_dict() for o in self.observations],
         }
+
+
+@dataclass(frozen=True)
+class SessionEvidence:
+    """SS-07B: auditable evidence for one decision point.
+
+    Only a registered/trusted view may carry a witness.  Legacy raw-dict
+    probes remain available for old tests, but are explicitly untrusted and
+    can never become a formal VERIFIED fact.
+    """
+
+    run_id: str
+    sequence_id: str
+    step_index: int
+    client_scope: str
+    observation_point_id: str
+    observer_id: str
+    observation_status: str
+    predicate_results: tuple = ()
+    witness: dict | None = None
+    reason: str = ""
+
+    @property
+    def trusted(self) -> bool:
+        return (self.observation_status in (SESSION_STATUS_DECODED,
+                                            SESSION_STATUS_ABSENT)
+                and bool(self.observer_id)
+                and self.witness is not None)
+
+    def to_dict(self) -> dict:
+        return {
+            "run_id": self.run_id,
+            "sequence_id": self.sequence_id,
+            "step_index": self.step_index,
+            "client_scope": self.client_scope,
+            "observation_point_id": self.observation_point_id,
+            "observer_id": self.observer_id,
+            "observation_status": self.observation_status,
+            "predicate_results": [dict(x) for x in self.predicate_results],
+            "witness": self.witness,
+            "trusted": self.trusted,
+            "reason": self.reason,
+        }
+
+
+def build_session_evidence(view: SessionSnapshotView,
+                           groups, *, run_id: str = "",
+                           sequence_id: str = "", step_index: int = 0,
+                           observer_id: str = "") -> SessionEvidence:
+    """Formal evidence entry; fail-closed for untrusted views."""
+    observer = observer_id or view.observer_id
+    if not view.trusted or not observer or view.source.startswith("legacy"):
+        return SessionEvidence(
+            run_id, sequence_id, step_index, view.client_id,
+            view.observation_point, observer, view.status, (), None,
+            reason="untrusted-observer")
+    verdicts = tuple(evaluate_session_conditions(g, view) for g in groups)
+    predicates = []
+    for verdict in verdicts:
+        for cv in verdict.conditions:
+            predicates.append({"guard": cv.condition.guard_block,
+                               "source_line": cv.condition.source_line,
+                               "verdict": cv.verdict,
+                               "reason": cv.reason})
+    winner = next((v for v in verdicts if v.verdict == VERIFIED_TRUE), None)
+    witness = None
+    if winner is not None:
+        witness = {"verdict": VERIFIED_TRUE,
+                   "observations": [o.to_dict() for o in winner.observations]}
+    return SessionEvidence(
+        run_id, sequence_id, step_index, view.client_id,
+        view.observation_point, observer, view.status,
+        tuple(predicates), witness,
+        reason="verified" if witness else "no-verified-group")
 
 
 def evaluate_session_condition(cond: SessionCondition,
