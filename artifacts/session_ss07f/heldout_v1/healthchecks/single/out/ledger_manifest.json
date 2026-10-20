@@ -1,0 +1,9 @@
+{
+ "run_id": "hc-h4-single",
+ "arm": "",
+ "seed": 4,
+ "target_block": "",
+ "app": "/home/landasika/icassp/stateforge/targets/real_apps/healthchecks",
+ "request_limit": 40,
+ "boundary": "target-callable-invocation"
+}

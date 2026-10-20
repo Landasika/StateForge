@@ -1,0 +1,79 @@
+{
+ "protocol": "ss07f-heldout-seed4-v1",
+ "preregistration_sha256": "8f4e2458d4c374757bcc624a421b9a7a7f0117e8b19b812dbfaad1594f6dae18",
+ "seed": 4,
+ "budget": 40,
+ "apps": {
+  "microblog": {
+   "c_found": true,
+   "c_exec": 7,
+   "d_target_same_process": true,
+   "d_target_after_d_only": true,
+   "d_bootstrap_http": 0,
+   "sequence_found": false,
+   "single_target": false,
+   "single_http": 40,
+   "single_inputs": 40,
+   "independent_replay": true
+  },
+  "ctfd": {
+   "c_found": true,
+   "c_exec": 6,
+   "d_target_same_process": true,
+   "d_target_after_d_only": true,
+   "d_bootstrap_http": 0,
+   "sequence_found": true,
+   "single_target": false,
+   "single_http": 40,
+   "single_inputs": 40,
+   "independent_replay": true
+  },
+  "healthchecks": {
+   "c_found": true,
+   "c_exec": 6,
+   "d_target_same_process": true,
+   "d_target_after_d_only": true,
+   "d_bootstrap_http": 0,
+   "sequence_found": false,
+   "single_target": false,
+   "single_http": 40,
+   "single_inputs": 40,
+   "independent_replay": true
+  },
+  "linkding": {
+   "c_found": true,
+   "c_exec": 6,
+   "d_target_same_process": true,
+   "d_target_after_d_only": true,
+   "d_bootstrap_http": 0,
+   "sequence_found": true,
+   "single_target": false,
+   "single_http": 40,
+   "single_inputs": 40,
+   "independent_replay": true
+  },
+  "spirit": {
+   "c_found": true,
+   "c_exec": 6,
+   "d_target_same_process": false,
+   "d_target_after_d_only": true,
+   "d_bootstrap_http": 0,
+   "sequence_found": false,
+   "single_target": false,
+   "single_http": 40,
+   "single_inputs": 40,
+   "independent_replay": true
+  }
+ },
+ "summary": {
+  "C": 5,
+  "D_same_process": 4,
+  "D_after_d_only": 5,
+  "SINGLE": 0,
+  "SEQUENCE": 2,
+  "independent_replay": 5
+ },
+ "acceptance_met": false,
+ "freeze_refused_reason": "pre-registered acceptance required STATE_REUSE 5/5; same-process D was 4/5 (Spirit login rate limit). The D-only fresh-process replay subsequently passed, but that was not the pre-registered primary path.",
+ "scope": "held-out seed only; adapters/contracts were frozen before seed 4, not blind to the five applications themselves"
+}

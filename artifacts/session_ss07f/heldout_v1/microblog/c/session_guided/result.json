@@ -1,0 +1,784 @@
+{
+ "target_block": "main/routes.py::index::29-29::block::1",
+ "guided": true,
+ "found": true,
+ "status": "VERIFIED",
+ "checkpoint_eligible": true,
+ "steps": [
+  {
+   "method": "POST",
+   "path": "/auth/login",
+   "form": {
+    "username": "fuzz",
+    "password": "fuzzpass"
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/index"
+  }
+ ],
+ "seed_sha256": "3df86c88290ef0a4144eec9506ada9cd50d53f02fa4ff367cefd810db0dbe2c1",
+ "writer_blocks": [
+  "auth/routes.py::login::25-26::block::1"
+ ],
+ "session_witness": {
+  "values": {
+   "_fresh": true,
+   "_id": "03f095a1c03fdce8fe2ea94737ef9d62c456faf66d67aac9e9d7b2f6548211aab71d5ce5c550e74c31a055e110b5ce1429cfcf4eb860fe2c460a0c6f830c7f59",
+   "_user_id": "1"
+  },
+  "conditions": [
+   {
+    "key_kind": "CONST",
+    "key_expr": "_user_id",
+    "op": "EXISTS",
+    "value": null,
+    "value_kind": "NONE",
+    "direction": "true",
+    "guard_block": "main/routes.py::index::29-29::block::1",
+    "source_file": "main/routes.py",
+    "source_line": 29,
+    "source_col": 0,
+    "reader_site_id": "contract-index",
+    "resolvable": true,
+    "note": ""
+   }
+  ],
+  "verdict": {
+   "verdict": "VERIFIED_TRUE",
+   "evidence": "runtime_verified",
+   "reason": "all-true",
+   "conditions": [
+    {
+     "condition": {
+      "key_kind": "CONST",
+      "key_expr": "_user_id",
+      "op": "EXISTS",
+      "value": null,
+      "value_kind": "NONE",
+      "direction": "true",
+      "guard_block": "main/routes.py::index::29-29::block::1",
+      "source_file": "main/routes.py",
+      "source_line": 29,
+      "source_col": 0,
+      "reader_site_id": "contract-index",
+      "resolvable": true,
+      "note": ""
+     },
+     "verdict": "VERIFIED_TRUE",
+     "evidence": "runtime_verified",
+     "reason": "observed",
+     "observation": {
+      "key": "Session._user_id.exists{client-0@session}",
+      "value": true,
+      "evidence": "runtime_verified",
+      "source": "session_cookie:client-0:after_response:guard=main/routes.py::index::29-29::block::1:line=29",
+      "observed_value": "1",
+      "value_kind": "STRING"
+     }
+    }
+   ],
+   "observations": [
+    {
+     "key": "Session._user_id.exists{client-0@session}",
+     "value": true,
+     "evidence": "runtime_verified",
+     "source": "session_cookie:client-0:after_response:guard=main/routes.py::index::29-29::block::1:line=29",
+     "observed_value": "1",
+     "value_kind": "STRING"
+    }
+   ]
+  }
+ },
+ "executions": 7,
+ "dedup_skips": 5,
+ "stop_reason": "target:seed=3df86c88290ef0a4",
+ "seed_value": 4,
+ "max_steps": 3,
+ "max_execs": 40,
+ "isolated": true,
+ "attempts": [
+  {
+   "index": 1,
+   "steps": [
+    {
+     "method": "GET",
+     "path": "/auth/logout"
+    }
+   ],
+   "sequence_hash": "de4b280bba2dc299",
+   "covered_blocks": [
+    "__init__.py::get_locale::17-17::entry::1",
+    "__init__.py::get_locale::17-17::exit::1",
+    "__init__.py::get_locale::18-18::terminal::1",
+    "auth/routes.py::logout::34-34::entry::1",
+    "auth/routes.py::logout::34-34::exit::1",
+    "auth/routes.py::logout::35-35::block::1",
+    "auth/routes.py::logout::36-36::terminal::1",
+    "main/routes.py::before_request::17-17::entry::1",
+    "main/routes.py::before_request::17-17::exit::1",
+    "main/routes.py::before_request::18-18::branch::1",
+    "main/routes.py::before_request::22-22::block::1",
+    "main/routes.py::before_request::22-22::callsite::1",
+    "main/routes.py::before_request::22-22::returnsite::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    11
+   ],
+   "step_spans": [
+    [
+     0,
+     11
+    ]
+   ],
+   "candidate_sources": [],
+   "error": null
+  },
+  {
+   "index": 2,
+   "steps": [
+    {
+     "method": "GET",
+     "path": "/auth/login"
+    }
+   ],
+   "sequence_hash": "ba1b7f6c0dc6cea2",
+   "covered_blocks": [
+    "__init__.py::get_locale::17-17::entry::1",
+    "__init__.py::get_locale::17-17::exit::1",
+    "__init__.py::get_locale::18-18::terminal::1",
+    "auth/routes.py::login::15-15::entry::1",
+    "auth/routes.py::login::15-15::exit::1",
+    "auth/routes.py::login::16-16::branch::1",
+    "auth/routes.py::login::18-18::block::1",
+    "auth/routes.py::login::19-19::branch::1",
+    "auth/routes.py::login::30-30::terminal::1",
+    "main/routes.py::before_request::17-17::entry::1",
+    "main/routes.py::before_request::17-17::exit::1",
+    "main/routes.py::before_request::18-18::branch::1",
+    "main/routes.py::before_request::22-22::block::1",
+    "main/routes.py::before_request::22-22::callsite::1",
+    "main/routes.py::before_request::22-22::returnsite::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    614
+   ],
+   "step_spans": [
+    [
+     0,
+     614
+    ]
+   ],
+   "candidate_sources": [],
+   "error": null
+  },
+  {
+   "index": 3,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/auth/login",
+     "form": {
+      "username": "fuzz",
+      "password": "fuzzpass"
+     }
+    }
+   ],
+   "sequence_hash": "2583b05d259ec9f3",
+   "covered_blocks": [
+    "__init__.py::get_locale::17-17::entry::1",
+    "__init__.py::get_locale::17-17::exit::1",
+    "__init__.py::get_locale::18-18::terminal::1",
+    "auth/routes.py::login::15-15::entry::1",
+    "auth/routes.py::login::15-15::exit::1",
+    "auth/routes.py::login::16-16::branch::1",
+    "auth/routes.py::login::18-18::block::1",
+    "auth/routes.py::login::19-19::branch::1",
+    "auth/routes.py::login::20-20::block::1",
+    "auth/routes.py::login::22-22::branch::1",
+    "auth/routes.py::login::25-26::block::1",
+    "auth/routes.py::login::27-27::branch::1",
+    "auth/routes.py::login::28-28::block::1",
+    "auth/routes.py::login::29-29::terminal::1",
+    "main/routes.py::before_request::17-17::entry::1",
+    "main/routes.py::before_request::17-17::exit::1",
+    "main/routes.py::before_request::18-18::branch::1",
+    "main/routes.py::before_request::22-22::block::1",
+    "main/routes.py::before_request::22-22::callsite::1",
+    "main/routes.py::before_request::22-22::returnsite::1",
+    "models.py::check_password::137-137::entry::1",
+    "models.py::check_password::137-137::exit::1",
+    "models.py::check_password::138-138::terminal::1"
+   ],
+   "writer_blocks": [
+    "auth/routes.py::login::25-26::block::1"
+   ],
+   "target_covered": false,
+   "session_verified": true,
+   "distance": null,
+   "score": 599.99,
+   "status": "EXPLORE",
+   "session_values": {
+    "_fresh": true,
+    "_id": "03f095a1c03fdce8fe2ea94737ef9d62c456faf66d67aac9e9d7b2f6548211aab71d5ce5c550e74c31a055e110b5ce1429cfcf4eb860fe2c460a0c6f830c7f59",
+    "_user_id": "1"
+   },
+   "session_verdict": "VERIFIED_TRUE",
+   "session_witness": {
+    "values": {
+     "_fresh": true,
+     "_id": "03f095a1c03fdce8fe2ea94737ef9d62c456faf66d67aac9e9d7b2f6548211aab71d5ce5c550e74c31a055e110b5ce1429cfcf4eb860fe2c460a0c6f830c7f59",
+     "_user_id": "1"
+    },
+    "conditions": [
+     {
+      "key_kind": "CONST",
+      "key_expr": "_user_id",
+      "op": "EXISTS",
+      "value": null,
+      "value_kind": "NONE",
+      "direction": "true",
+      "guard_block": "main/routes.py::index::29-29::block::1",
+      "source_file": "main/routes.py",
+      "source_line": 29,
+      "source_col": 0,
+      "reader_site_id": "contract-index",
+      "resolvable": true,
+      "note": ""
+     }
+    ],
+    "verdict": {
+     "verdict": "VERIFIED_TRUE",
+     "evidence": "runtime_verified",
+     "reason": "all-true",
+     "conditions": [
+      {
+       "condition": {
+        "key_kind": "CONST",
+        "key_expr": "_user_id",
+        "op": "EXISTS",
+        "value": null,
+        "value_kind": "NONE",
+        "direction": "true",
+        "guard_block": "main/routes.py::index::29-29::block::1",
+        "source_file": "main/routes.py",
+        "source_line": 29,
+        "source_col": 0,
+        "reader_site_id": "contract-index",
+        "resolvable": true,
+        "note": ""
+       },
+       "verdict": "VERIFIED_TRUE",
+       "evidence": "runtime_verified",
+       "reason": "observed",
+       "observation": {
+        "key": "Session._user_id.exists{client-0@session}",
+        "value": true,
+        "evidence": "runtime_verified",
+        "source": "session_cookie:client-0:after_response:guard=main/routes.py::index::29-29::block::1:line=29",
+        "observed_value": "1",
+        "value_kind": "STRING"
+       }
+      }
+     ],
+     "observations": [
+      {
+       "key": "Session._user_id.exists{client-0@session}",
+       "value": true,
+       "evidence": "runtime_verified",
+       "source": "session_cookie:client-0:after_response:guard=main/routes.py::index::29-29::block::1:line=29",
+       "observed_value": "1",
+       "value_kind": "STRING"
+      }
+     ]
+    }
+   },
+   "trace_span": [
+    0,
+    24
+   ],
+   "step_spans": [
+    [
+     0,
+     24
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool"
+   ],
+   "error": null
+  },
+  {
+   "index": 4,
+   "steps": [
+    {
+     "method": "GET",
+     "path": "/explore"
+    }
+   ],
+   "sequence_hash": "3354c88b542ac8a1",
+   "covered_blocks": [
+    "__init__.py::get_locale::17-17::entry::1",
+    "__init__.py::get_locale::17-17::exit::1",
+    "__init__.py::get_locale::18-18::terminal::1",
+    "main/routes.py::before_request::17-17::entry::1",
+    "main/routes.py::before_request::17-17::exit::1",
+    "main/routes.py::before_request::18-18::branch::1",
+    "main/routes.py::before_request::22-22::block::1",
+    "main/routes.py::before_request::22-22::callsite::1",
+    "main/routes.py::before_request::22-22::returnsite::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {
+    "_flashes": [
+     [
+      "message",
+      "Please log in to access this page."
+     ]
+    ]
+   },
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    7
+   ],
+   "step_spans": [
+    [
+     0,
+     7
+    ]
+   ],
+   "candidate_sources": [],
+   "error": null
+  },
+  {
+   "index": 5,
+   "steps": [
+    {
+     "method": "GET",
+     "path": "/index"
+    }
+   ],
+   "sequence_hash": "ce63286cf4fd3cd3",
+   "covered_blocks": [
+    "__init__.py::get_locale::17-17::entry::1",
+    "__init__.py::get_locale::17-17::exit::1",
+    "__init__.py::get_locale::18-18::terminal::1",
+    "main/routes.py::before_request::17-17::entry::1",
+    "main/routes.py::before_request::17-17::exit::1",
+    "main/routes.py::before_request::18-18::branch::1",
+    "main/routes.py::before_request::22-22::block::1",
+    "main/routes.py::before_request::22-22::callsite::1",
+    "main/routes.py::before_request::22-22::returnsite::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {
+    "_flashes": [
+     [
+      "message",
+      "Please log in to access this page."
+     ]
+    ]
+   },
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    7
+   ],
+   "step_spans": [
+    [
+     0,
+     7
+    ]
+   ],
+   "candidate_sources": [],
+   "error": null
+  },
+  {
+   "index": 6,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/auth/login",
+     "form": {
+      "username": "fuzz",
+      "password": "fuzzpass"
+     }
+    },
+    {
+     "method": "POST",
+     "path": "/auth/login",
+     "form": {
+      "username": "fuzz",
+      "password": "fuzzpass"
+     }
+    }
+   ],
+   "sequence_hash": "4910d9b28143a193",
+   "covered_blocks": [
+    "__init__.py::get_locale::17-17::entry::1",
+    "__init__.py::get_locale::17-17::exit::1",
+    "__init__.py::get_locale::18-18::terminal::1",
+    "auth/routes.py::login::15-15::entry::1",
+    "auth/routes.py::login::15-15::exit::1",
+    "auth/routes.py::login::16-16::branch::1",
+    "auth/routes.py::login::17-17::terminal::1",
+    "auth/routes.py::login::18-18::block::1",
+    "auth/routes.py::login::19-19::branch::1",
+    "auth/routes.py::login::20-20::block::1",
+    "auth/routes.py::login::22-22::branch::1",
+    "auth/routes.py::login::25-26::block::1",
+    "auth/routes.py::login::27-27::branch::1",
+    "auth/routes.py::login::28-28::block::1",
+    "auth/routes.py::login::29-29::terminal::1",
+    "main/forms.py::__init__::17-17::entry::1",
+    "main/forms.py::__init__::17-17::exit::1",
+    "main/forms.py::__init__::43-43::branch::1",
+    "main/forms.py::__init__::44-44::block::1",
+    "main/forms.py::__init__::45-45::branch::1",
+    "main/forms.py::__init__::46-46::block::1",
+    "main/forms.py::__init__::47-47::block::1",
+    "main/routes.py::before_request::17-17::entry::1",
+    "main/routes.py::before_request::17-17::exit::1",
+    "main/routes.py::before_request::18-18::branch::1",
+    "main/routes.py::before_request::19-21::block::1",
+    "main/routes.py::before_request::22-22::block::1",
+    "main/routes.py::before_request::22-22::callsite::1",
+    "main/routes.py::before_request::22-22::returnsite::1",
+    "models.py::after_commit::41-41::entry::1",
+    "models.py::after_commit::41-41::exit::1",
+    "models.py::after_commit::42-42::branch::1",
+    "models.py::after_commit::45-45::branch::1",
+    "models.py::after_commit::46-46::branch::1",
+    "models.py::after_commit::48-48::branch::1",
+    "models.py::after_commit::51-51::block::1",
+    "models.py::before_commit::33-33::entry::1",
+    "models.py::before_commit::33-33::exit::1",
+    "models.py::before_commit::34-34::block::1",
+    "models.py::check_password::137-137::entry::1",
+    "models.py::check_password::137-137::exit::1",
+    "models.py::check_password::138-138::terminal::1",
+    "models.py::load_user::283-283::entry::1",
+    "models.py::load_user::283-283::exit::1",
+    "models.py::load_user::284-284::terminal::1"
+   ],
+   "writer_blocks": [
+    "auth/routes.py::login::25-26::block::1"
+   ],
+   "target_covered": false,
+   "session_verified": true,
+   "distance": null,
+   "score": 599.98,
+   "status": "EXPLORE",
+   "session_values": {
+    "_fresh": true,
+    "_id": "03f095a1c03fdce8fe2ea94737ef9d62c456faf66d67aac9e9d7b2f6548211aab71d5ce5c550e74c31a055e110b5ce1429cfcf4eb860fe2c460a0c6f830c7f59",
+    "_user_id": "1"
+   },
+   "session_verdict": "VERIFIED_TRUE",
+   "session_witness": {
+    "values": {
+     "_fresh": true,
+     "_id": "03f095a1c03fdce8fe2ea94737ef9d62c456faf66d67aac9e9d7b2f6548211aab71d5ce5c550e74c31a055e110b5ce1429cfcf4eb860fe2c460a0c6f830c7f59",
+     "_user_id": "1"
+    },
+    "conditions": [
+     {
+      "key_kind": "CONST",
+      "key_expr": "_user_id",
+      "op": "EXISTS",
+      "value": null,
+      "value_kind": "NONE",
+      "direction": "true",
+      "guard_block": "main/routes.py::index::29-29::block::1",
+      "source_file": "main/routes.py",
+      "source_line": 29,
+      "source_col": 0,
+      "reader_site_id": "contract-index",
+      "resolvable": true,
+      "note": ""
+     }
+    ],
+    "verdict": {
+     "verdict": "VERIFIED_TRUE",
+     "evidence": "runtime_verified",
+     "reason": "all-true",
+     "conditions": [
+      {
+       "condition": {
+        "key_kind": "CONST",
+        "key_expr": "_user_id",
+        "op": "EXISTS",
+        "value": null,
+        "value_kind": "NONE",
+        "direction": "true",
+        "guard_block": "main/routes.py::index::29-29::block::1",
+        "source_file": "main/routes.py",
+        "source_line": 29,
+        "source_col": 0,
+        "reader_site_id": "contract-index",
+        "resolvable": true,
+        "note": ""
+       },
+       "verdict": "VERIFIED_TRUE",
+       "evidence": "runtime_verified",
+       "reason": "observed",
+       "observation": {
+        "key": "Session._user_id.exists{client-0@session}",
+        "value": true,
+        "evidence": "runtime_verified",
+        "source": "session_cookie:client-0:after_response:guard=main/routes.py::index::29-29::block::1:line=29",
+        "observed_value": "1",
+        "value_kind": "STRING"
+       }
+      }
+     ],
+     "observations": [
+      {
+       "key": "Session._user_id.exists{client-0@session}",
+       "value": true,
+       "evidence": "runtime_verified",
+       "source": "session_cookie:client-0:after_response:guard=main/routes.py::index::29-29::block::1:line=29",
+       "observed_value": "1",
+       "value_kind": "STRING"
+      }
+     ]
+    }
+   },
+   "trace_span": [
+    0,
+    62
+   ],
+   "step_spans": [
+    [
+     0,
+     24
+    ],
+    [
+     24,
+     62
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool"
+   ],
+   "error": null
+  },
+  {
+   "index": 7,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/auth/login",
+     "form": {
+      "username": "fuzz",
+      "password": "fuzzpass"
+     }
+    },
+    {
+     "method": "GET",
+     "path": "/index"
+    }
+   ],
+   "sequence_hash": "41ba0b639b38860b",
+   "covered_blocks": [
+    "__init__.py::get_locale::17-17::entry::1",
+    "__init__.py::get_locale::17-17::exit::1",
+    "__init__.py::get_locale::18-18::terminal::1",
+    "auth/routes.py::login::15-15::entry::1",
+    "auth/routes.py::login::15-15::exit::1",
+    "auth/routes.py::login::16-16::branch::1",
+    "auth/routes.py::login::18-18::block::1",
+    "auth/routes.py::login::19-19::branch::1",
+    "auth/routes.py::login::20-20::block::1",
+    "auth/routes.py::login::22-22::branch::1",
+    "auth/routes.py::login::25-26::block::1",
+    "auth/routes.py::login::27-27::branch::1",
+    "auth/routes.py::login::28-28::block::1",
+    "auth/routes.py::login::29-29::terminal::1",
+    "main/forms.py::__init__::17-17::entry::1",
+    "main/forms.py::__init__::17-17::exit::1",
+    "main/forms.py::__init__::43-43::branch::1",
+    "main/forms.py::__init__::44-44::block::1",
+    "main/forms.py::__init__::45-45::branch::1",
+    "main/forms.py::__init__::46-46::block::1",
+    "main/forms.py::__init__::47-47::block::1",
+    "main/routes.py::before_request::17-17::entry::1",
+    "main/routes.py::before_request::17-17::exit::1",
+    "main/routes.py::before_request::18-18::branch::1",
+    "main/routes.py::before_request::19-21::block::1",
+    "main/routes.py::before_request::22-22::block::1",
+    "main/routes.py::before_request::22-22::callsite::1",
+    "main/routes.py::before_request::22-22::returnsite::1",
+    "main/routes.py::index::28-28::entry::1",
+    "main/routes.py::index::28-28::exit::1",
+    "main/routes.py::index::29-29::block::1",
+    "main/routes.py::index::30-30::branch::1",
+    "main/routes.py::index::41-47::block::1",
+    "main/routes.py::index::49-49::terminal::1",
+    "models.py::after_commit::41-41::entry::1",
+    "models.py::after_commit::41-41::exit::1",
+    "models.py::after_commit::42-42::branch::1",
+    "models.py::after_commit::45-45::branch::1",
+    "models.py::after_commit::46-46::branch::1",
+    "models.py::after_commit::48-48::branch::1",
+    "models.py::after_commit::51-51::block::1",
+    "models.py::before_commit::33-33::entry::1",
+    "models.py::before_commit::33-33::exit::1",
+    "models.py::before_commit::34-34::block::1",
+    "models.py::check_password::137-137::entry::1",
+    "models.py::check_password::137-137::exit::1",
+    "models.py::check_password::138-138::terminal::1",
+    "models.py::following_posts::166-166::entry::1",
+    "models.py::following_posts::166-166::exit::1",
+    "models.py::following_posts::167-168::block::1",
+    "models.py::following_posts::169-169::terminal::1",
+    "models.py::get_tasks_in_progress::217-217::entry::1",
+    "models.py::get_tasks_in_progress::217-217::exit::1",
+    "models.py::get_tasks_in_progress::218-218::block::1",
+    "models.py::get_tasks_in_progress::219-219::terminal::1",
+    "models.py::load_user::283-283::entry::1",
+    "models.py::load_user::283-283::exit::1",
+    "models.py::load_user::284-284::terminal::1",
+    "models.py::unread_message_count::195-195::entry::1",
+    "models.py::unread_message_count::195-195::exit::1",
+    "models.py::unread_message_count::196-197::block::1",
+    "models.py::unread_message_count::199-199::terminal::1"
+   ],
+   "writer_blocks": [
+    "auth/routes.py::login::25-26::block::1"
+   ],
+   "target_covered": true,
+   "session_verified": true,
+   "distance": 0,
+   "score": 1619.98,
+   "status": "VERIFIED",
+   "session_values": {
+    "_fresh": true,
+    "_id": "03f095a1c03fdce8fe2ea94737ef9d62c456faf66d67aac9e9d7b2f6548211aab71d5ce5c550e74c31a055e110b5ce1429cfcf4eb860fe2c460a0c6f830c7f59",
+    "_user_id": "1"
+   },
+   "session_verdict": "VERIFIED_TRUE",
+   "session_witness": {
+    "values": {
+     "_fresh": true,
+     "_id": "03f095a1c03fdce8fe2ea94737ef9d62c456faf66d67aac9e9d7b2f6548211aab71d5ce5c550e74c31a055e110b5ce1429cfcf4eb860fe2c460a0c6f830c7f59",
+     "_user_id": "1"
+    },
+    "conditions": [
+     {
+      "key_kind": "CONST",
+      "key_expr": "_user_id",
+      "op": "EXISTS",
+      "value": null,
+      "value_kind": "NONE",
+      "direction": "true",
+      "guard_block": "main/routes.py::index::29-29::block::1",
+      "source_file": "main/routes.py",
+      "source_line": 29,
+      "source_col": 0,
+      "reader_site_id": "contract-index",
+      "resolvable": true,
+      "note": ""
+     }
+    ],
+    "verdict": {
+     "verdict": "VERIFIED_TRUE",
+     "evidence": "runtime_verified",
+     "reason": "all-true",
+     "conditions": [
+      {
+       "condition": {
+        "key_kind": "CONST",
+        "key_expr": "_user_id",
+        "op": "EXISTS",
+        "value": null,
+        "value_kind": "NONE",
+        "direction": "true",
+        "guard_block": "main/routes.py::index::29-29::block::1",
+        "source_file": "main/routes.py",
+        "source_line": 29,
+        "source_col": 0,
+        "reader_site_id": "contract-index",
+        "resolvable": true,
+        "note": ""
+       },
+       "verdict": "VERIFIED_TRUE",
+       "evidence": "runtime_verified",
+       "reason": "observed",
+       "observation": {
+        "key": "Session._user_id.exists{client-0@session}",
+        "value": true,
+        "evidence": "runtime_verified",
+        "source": "session_cookie:client-0:after_response:guard=main/routes.py::index::29-29::block::1:line=29",
+        "observed_value": "1",
+        "value_kind": "STRING"
+       }
+      }
+     ],
+     "observations": [
+      {
+       "key": "Session._user_id.exists{client-0@session}",
+       "value": true,
+       "evidence": "runtime_verified",
+       "source": "session_cookie:client-0:after_response:guard=main/routes.py::index::29-29::block::1:line=29",
+       "observed_value": "1",
+       "value_kind": "STRING"
+      }
+     ]
+    }
+   },
+   "trace_span": [
+    0,
+    771
+   ],
+   "step_spans": [
+    [
+     0,
+     24
+    ],
+    [
+     24,
+     771
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool"
+   ],
+   "error": null
+  }
+ ]
+}

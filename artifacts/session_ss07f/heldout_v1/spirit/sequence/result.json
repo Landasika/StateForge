@@ -1,0 +1,32 @@
+{
+ "app": "spirit",
+ "seed": 4,
+ "arm": "SEQUENCE",
+ "found": false,
+ "status": "NOT_FOUND",
+ "executions": 40,
+ "steps": [
+  {
+   "method": "POST",
+   "path": "/user/login/",
+   "form": {
+    "username": "spuser",
+    "password": "sppass"
+   }
+  }
+ ],
+ "costs": {
+  "target_http_requests": 63,
+  "sequence_attempts": 1,
+  "atheris_inputs": 0,
+  "bootstrap_http_requests": 63,
+  "checkpoint_validation_http_requests": 0,
+  "prefix_replay_http_requests": 0,
+  "suffix_http_requests": 0,
+  "observer_calls": 0,
+  "reset_calls": 0,
+  "scheduler_decisions": 0,
+  "elapsed_wall_seconds": 4.88449,
+  "analysis_wall_seconds": 0.0
+ }
+}

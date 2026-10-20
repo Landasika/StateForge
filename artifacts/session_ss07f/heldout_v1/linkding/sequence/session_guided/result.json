@@ -1,0 +1,3540 @@
+{
+ "target_block": "views/bookmarks.py::index::43-43::entry::1",
+ "guided": false,
+ "found": true,
+ "status": "VERIFIED",
+ "checkpoint_eligible": true,
+ "steps": [
+  {
+   "method": "POST",
+   "path": "/login/",
+   "form": {
+    "username": "lduser",
+    "password": "ldpass"
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/bookmarks"
+  }
+ ],
+ "seed_sha256": "9694c45c20fcc08710ea8d37640bcdc50b8d093b969d4e20a948539c1c58340c",
+ "writer_blocks": [],
+ "session_witness": {
+  "values": {
+   "_auth_user_id": "1",
+   "_auth_user_backend": "django.contrib.auth.backends.ModelBackend",
+   "_auth_user_hash": "834bf0aafb7d407acb6387a0e0bb365a76e669a3045b85d5a1731509de64d0d3"
+  },
+  "conditions": [
+   {
+    "key_kind": "CONST",
+    "key_expr": "_auth_user_id",
+    "op": "EXISTS",
+    "value": null,
+    "value_kind": "NONE",
+    "direction": "true",
+    "guard_block": "views/bookmarks.py::index::43-43::entry::1",
+    "source_file": "views/bookmarks.py",
+    "source_line": 43,
+    "source_col": 0,
+    "reader_site_id": "ld-bookmarks",
+    "resolvable": true,
+    "note": ""
+   }
+  ],
+  "verdict": {
+   "verdict": "VERIFIED_TRUE",
+   "evidence": "runtime_verified",
+   "reason": "all-true",
+   "conditions": [
+    {
+     "condition": {
+      "key_kind": "CONST",
+      "key_expr": "_auth_user_id",
+      "op": "EXISTS",
+      "value": null,
+      "value_kind": "NONE",
+      "direction": "true",
+      "guard_block": "views/bookmarks.py::index::43-43::entry::1",
+      "source_file": "views/bookmarks.py",
+      "source_line": 43,
+      "source_col": 0,
+      "reader_site_id": "ld-bookmarks",
+      "resolvable": true,
+      "note": ""
+     },
+     "verdict": "VERIFIED_TRUE",
+     "evidence": "runtime_verified",
+     "reason": "observed",
+     "observation": {
+      "key": "Session._auth_user_id.exists{client-0@session}",
+      "value": true,
+      "evidence": "runtime_verified",
+      "source": "session_cookie:client-0:after_response:guard=views/bookmarks.py::index::43-43::entry::1:line=43",
+      "observed_value": "1",
+      "value_kind": "STRING"
+     }
+    }
+   ],
+   "observations": [
+    {
+     "key": "Session._auth_user_id.exists{client-0@session}",
+     "value": true,
+     "evidence": "runtime_verified",
+     "source": "session_cookie:client-0:after_response:guard=views/bookmarks.py::index::43-43::entry::1:line=43",
+     "observed_value": "1",
+     "value_kind": "STRING"
+    }
+   ]
+  }
+ },
+ "executions": 31,
+ "dedup_skips": 14,
+ "stop_reason": "target:seed=9694c45c20fcc087",
+ "seed_value": 4,
+ "max_steps": 3,
+ "max_execs": 40,
+ "isolated": true,
+ "attempts": [
+  {
+   "index": 1,
+   "steps": [
+    {
+     "method": "GET",
+     "path": "/"
+    }
+   ],
+   "sequence_hash": "e01827713b7bb18e",
+   "covered_blocks": [
+    "admin.py::get_urls::81-81::entry::1",
+    "admin.py::get_urls::81-81::exit::1",
+    "admin.py::get_urls::82-83::block::1",
+    "admin.py::get_urls::90-90::terminal::1",
+    "middlewares.py::__call__::29-29::entry::1",
+    "middlewares.py::__call__::29-29::exit::1",
+    "middlewares.py::__call__::32-32::block::1",
+    "middlewares.py::__call__::35-35::block::1",
+    "middlewares.py::__call__::38-38::branch::1",
+    "middlewares.py::__call__::42-42::branch::1",
+    "middlewares.py::__call__::45-45::block::1",
+    "middlewares.py::__call__::47-47::block::1",
+    "middlewares.py::__call__::49-49::terminal::1",
+    "middlewares.py::__init__::26-26::entry::1",
+    "middlewares.py::__init__::26-26::exit::1",
+    "middlewares.py::__init__::27-27::block::1",
+    "middlewares.py::__init__::64-66::block::1",
+    "middlewares.py::__init__::67-67::branch::1",
+    "middlewares.py::__init__::68-68::block::1",
+    "middlewares.py::__init__::69-69::branch::1",
+    "middlewares.py::__init__::70-70::terminal::1",
+    "middlewares.py::__init__::81-81::branch::1",
+    "middlewares.py::__init__::82-82::terminal::1",
+    "models.py::get::561-561::entry::1",
+    "models.py::get::561-561::exit::1",
+    "models.py::get::562-562::block::1",
+    "models.py::get::563-563::branch::1",
+    "models.py::get::566-566::terminal::1",
+    "signals.py::extend_sqlite::10-10::branch::1",
+    "signals.py::extend_sqlite::7-7::entry::1",
+    "signals.py::extend_sqlite::7-7::exit::1",
+    "utils.py::redirect_with_query::150-150::entry::1",
+    "utils.py::redirect_with_query::150-150::exit::1",
+    "utils.py::redirect_with_query::151-151::block::1",
+    "utils.py::redirect_with_query::152-152::branch::1",
+    "utils.py::redirect_with_query::155-155::terminal::1",
+    "views/root.py::root::10-10::branch::1",
+    "views/root.py::root::11-11::block::1",
+    "views/root.py::root::13-13::branch::1",
+    "views/root.py::root::18-18::callsite::1",
+    "views/root.py::root::18-18::returnsite::1",
+    "views/root.py::root::18-18::terminal::1",
+    "views/root.py::root::7-7::entry::1",
+    "views/root.py::root::7-7::exit::1",
+    "widgets.py::__init__::12-12::entry::1",
+    "widgets.py::__init__::12-12::exit::1",
+    "widgets.py::__init__::13-13::block::1",
+    "widgets.py::__init__::14-14::branch::1",
+    "widgets.py::__init__::16-16::block::1",
+    "widgets.py::__init__::21-21::block::1",
+    "widgets.py::__init__::22-22::branch::1",
+    "widgets.py::__init__::24-24::block::1",
+    "widgets.py::__init__::29-29::block::1",
+    "widgets.py::__init__::30-30::branch::1",
+    "widgets.py::__init__::32-32::block::1",
+    "widgets.py::__init__::37-37::block::1",
+    "widgets.py::__init__::38-38::branch::1",
+    "widgets.py::__init__::40-40::block::1",
+    "widgets.py::__init__::45-46::block::1",
+    "widgets.py::__init__::65-65::block::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    2036
+   ],
+   "step_spans": [
+    [
+     0,
+     2036
+    ]
+   ],
+   "candidate_sources": [],
+   "error": null
+  },
+  {
+   "index": 2,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/login/",
+     "form": {
+      "username": "lduser",
+      "password": "ldpass"
+     }
+    }
+   ],
+   "sequence_hash": "860d6f94acf1d97a",
+   "covered_blocks": [
+    "middlewares.py::__call__::29-29::entry::1",
+    "middlewares.py::__call__::29-29::exit::1",
+    "middlewares.py::__call__::32-32::block::1",
+    "middlewares.py::__call__::35-35::block::1",
+    "middlewares.py::__call__::38-38::branch::1",
+    "middlewares.py::__call__::42-42::branch::1",
+    "middlewares.py::__call__::45-45::block::1",
+    "middlewares.py::__call__::47-47::block::1",
+    "middlewares.py::__call__::49-49::terminal::1",
+    "middlewares.py::__init__::26-26::entry::1",
+    "middlewares.py::__init__::26-26::exit::1",
+    "middlewares.py::__init__::27-27::block::1",
+    "middlewares.py::__init__::64-66::block::1",
+    "middlewares.py::__init__::67-67::branch::1",
+    "middlewares.py::__init__::68-68::block::1",
+    "middlewares.py::__init__::69-69::branch::1",
+    "middlewares.py::__init__::70-70::terminal::1",
+    "middlewares.py::__init__::81-81::branch::1",
+    "middlewares.py::__init__::82-82::terminal::1",
+    "models.py::create_user_profile::475-475::entry::1",
+    "models.py::create_user_profile::475-475::exit::1",
+    "models.py::create_user_profile::476-476::branch::1",
+    "models.py::get::561-561::entry::1",
+    "models.py::get::561-561::exit::1",
+    "models.py::get::562-562::block::1",
+    "models.py::get::563-563::branch::1",
+    "models.py::get::566-566::terminal::1",
+    "models.py::save::465-465::branch::1",
+    "models.py::save::470-470::block::1",
+    "models.py::save::471-471::block::1",
+    "models.py::save::98-98::entry::1",
+    "models.py::save::98-98::exit::1",
+    "models.py::save_user_profile::481-481::entry::1",
+    "models.py::save_user_profile::481-481::exit::1",
+    "models.py::save_user_profile::482-482::block::1",
+    "views/auth.py::get_form::13-13::entry::1",
+    "views/auth.py::get_form::13-13::exit::1",
+    "views/auth.py::get_form::14-15::block::1",
+    "views/auth.py::get_form::16-16::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": true,
+   "distance": null,
+   "score": 499.99,
+   "status": "EXPLORE",
+   "session_values": {
+    "_auth_user_id": "1",
+    "_auth_user_backend": "django.contrib.auth.backends.ModelBackend",
+    "_auth_user_hash": "834bf0aafb7d407acb6387a0e0bb365a76e669a3045b85d5a1731509de64d0d3"
+   },
+   "session_verdict": "VERIFIED_TRUE",
+   "session_witness": {
+    "values": {
+     "_auth_user_id": "1",
+     "_auth_user_backend": "django.contrib.auth.backends.ModelBackend",
+     "_auth_user_hash": "834bf0aafb7d407acb6387a0e0bb365a76e669a3045b85d5a1731509de64d0d3"
+    },
+    "conditions": [
+     {
+      "key_kind": "CONST",
+      "key_expr": "_auth_user_id",
+      "op": "EXISTS",
+      "value": null,
+      "value_kind": "NONE",
+      "direction": "true",
+      "guard_block": "views/bookmarks.py::index::43-43::entry::1",
+      "source_file": "views/bookmarks.py",
+      "source_line": 43,
+      "source_col": 0,
+      "reader_site_id": "ld-bookmarks",
+      "resolvable": true,
+      "note": ""
+     }
+    ],
+    "verdict": {
+     "verdict": "VERIFIED_TRUE",
+     "evidence": "runtime_verified",
+     "reason": "all-true",
+     "conditions": [
+      {
+       "condition": {
+        "key_kind": "CONST",
+        "key_expr": "_auth_user_id",
+        "op": "EXISTS",
+        "value": null,
+        "value_kind": "NONE",
+        "direction": "true",
+        "guard_block": "views/bookmarks.py::index::43-43::entry::1",
+        "source_file": "views/bookmarks.py",
+        "source_line": 43,
+        "source_col": 0,
+        "reader_site_id": "ld-bookmarks",
+        "resolvable": true,
+        "note": ""
+       },
+       "verdict": "VERIFIED_TRUE",
+       "evidence": "runtime_verified",
+       "reason": "observed",
+       "observation": {
+        "key": "Session._auth_user_id.exists{client-0@session}",
+        "value": true,
+        "evidence": "runtime_verified",
+        "source": "session_cookie:client-0:after_response:guard=views/bookmarks.py::index::43-43::entry::1:line=43",
+        "observed_value": "1",
+        "value_kind": "STRING"
+       }
+      }
+     ],
+     "observations": [
+      {
+       "key": "Session._auth_user_id.exists{client-0@session}",
+       "value": true,
+       "evidence": "runtime_verified",
+       "source": "session_cookie:client-0:after_response:guard=views/bookmarks.py::index::43-43::entry::1:line=43",
+       "observed_value": "1",
+       "value_kind": "STRING"
+      }
+     ]
+    }
+   },
+   "trace_span": [
+    0,
+    47
+   ],
+   "step_spans": [
+    [
+     0,
+     47
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool"
+   ],
+   "error": null
+  },
+  {
+   "index": 3,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/logout/",
+     "form": {}
+    }
+   ],
+   "sequence_hash": "0befcca94cae8ed3",
+   "covered_blocks": [
+    "middlewares.py::__call__::29-29::entry::1",
+    "middlewares.py::__call__::29-29::exit::1",
+    "middlewares.py::__call__::32-32::block::1",
+    "middlewares.py::__call__::35-35::block::1",
+    "middlewares.py::__call__::38-38::branch::1",
+    "middlewares.py::__call__::42-42::branch::1",
+    "middlewares.py::__call__::45-45::block::1",
+    "middlewares.py::__call__::47-47::block::1",
+    "middlewares.py::__call__::49-49::terminal::1",
+    "middlewares.py::__init__::26-26::entry::1",
+    "middlewares.py::__init__::26-26::exit::1",
+    "middlewares.py::__init__::27-27::block::1",
+    "middlewares.py::__init__::64-66::block::1",
+    "middlewares.py::__init__::67-67::branch::1",
+    "middlewares.py::__init__::68-68::block::1",
+    "middlewares.py::__init__::69-69::branch::1",
+    "middlewares.py::__init__::70-70::terminal::1",
+    "middlewares.py::__init__::81-81::branch::1",
+    "middlewares.py::__init__::82-82::terminal::1",
+    "models.py::get::561-561::entry::1",
+    "models.py::get::561-561::exit::1",
+    "models.py::get::562-562::block::1",
+    "models.py::get::563-563::branch::1",
+    "models.py::get::566-566::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    31
+   ],
+   "step_spans": [
+    [
+     0,
+     31
+    ]
+   ],
+   "candidate_sources": [],
+   "error": null
+  },
+  {
+   "index": 4,
+   "steps": [
+    {
+     "method": "GET",
+     "path": "/bookmarks"
+    }
+   ],
+   "sequence_hash": "90579c8fb9620ed9",
+   "covered_blocks": [
+    "middlewares.py::__call__::29-29::entry::1",
+    "middlewares.py::__call__::29-29::exit::1",
+    "middlewares.py::__call__::32-32::block::1",
+    "middlewares.py::__call__::35-35::block::1",
+    "middlewares.py::__call__::38-38::branch::1",
+    "middlewares.py::__call__::42-42::branch::1",
+    "middlewares.py::__call__::45-45::block::1",
+    "middlewares.py::__call__::47-47::block::1",
+    "middlewares.py::__call__::49-49::terminal::1",
+    "middlewares.py::__init__::26-26::entry::1",
+    "middlewares.py::__init__::26-26::exit::1",
+    "middlewares.py::__init__::27-27::block::1",
+    "middlewares.py::__init__::64-66::block::1",
+    "middlewares.py::__init__::67-67::branch::1",
+    "middlewares.py::__init__::68-68::block::1",
+    "middlewares.py::__init__::69-69::branch::1",
+    "middlewares.py::__init__::70-70::terminal::1",
+    "middlewares.py::__init__::81-81::branch::1",
+    "middlewares.py::__init__::82-82::terminal::1",
+    "models.py::get::561-561::entry::1",
+    "models.py::get::561-561::exit::1",
+    "models.py::get::562-562::block::1",
+    "models.py::get::563-563::branch::1",
+    "models.py::get::566-566::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    31
+   ],
+   "step_spans": [
+    [
+     0,
+     31
+    ]
+   ],
+   "candidate_sources": [],
+   "error": null
+  },
+  {
+   "index": 5,
+   "steps": [
+    {
+     "method": "GET",
+     "path": "/bookmarks"
+    },
+    {
+     "method": "POST",
+     "path": "/login/",
+     "form": {
+      "username": "lduser",
+      "password": "ldpass"
+     }
+    }
+   ],
+   "sequence_hash": "fe4f79686c2e1bb8",
+   "covered_blocks": [
+    "middlewares.py::__call__::29-29::entry::1",
+    "middlewares.py::__call__::29-29::exit::1",
+    "middlewares.py::__call__::32-32::block::1",
+    "middlewares.py::__call__::35-35::block::1",
+    "middlewares.py::__call__::38-38::branch::1",
+    "middlewares.py::__call__::42-42::branch::1",
+    "middlewares.py::__call__::45-45::block::1",
+    "middlewares.py::__call__::47-47::block::1",
+    "middlewares.py::__call__::49-49::terminal::1",
+    "middlewares.py::__init__::26-26::entry::1",
+    "middlewares.py::__init__::26-26::exit::1",
+    "middlewares.py::__init__::27-27::block::1",
+    "middlewares.py::__init__::64-66::block::1",
+    "middlewares.py::__init__::67-67::branch::1",
+    "middlewares.py::__init__::68-68::block::1",
+    "middlewares.py::__init__::69-69::branch::1",
+    "middlewares.py::__init__::70-70::terminal::1",
+    "middlewares.py::__init__::81-81::branch::1",
+    "middlewares.py::__init__::82-82::terminal::1",
+    "models.py::create_user_profile::475-475::entry::1",
+    "models.py::create_user_profile::475-475::exit::1",
+    "models.py::create_user_profile::476-476::branch::1",
+    "models.py::get::561-561::entry::1",
+    "models.py::get::561-561::exit::1",
+    "models.py::get::562-562::block::1",
+    "models.py::get::563-563::branch::1",
+    "models.py::get::566-566::terminal::1",
+    "models.py::save::465-465::branch::1",
+    "models.py::save::470-470::block::1",
+    "models.py::save::471-471::block::1",
+    "models.py::save::98-98::entry::1",
+    "models.py::save::98-98::exit::1",
+    "models.py::save_user_profile::481-481::entry::1",
+    "models.py::save_user_profile::481-481::exit::1",
+    "models.py::save_user_profile::482-482::block::1",
+    "views/auth.py::get_form::13-13::entry::1",
+    "views/auth.py::get_form::13-13::exit::1",
+    "views/auth.py::get_form::14-15::block::1",
+    "views/auth.py::get_form::16-16::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": true,
+   "distance": null,
+   "score": 499.98,
+   "status": "EXPLORE",
+   "session_values": {
+    "_auth_user_id": "1",
+    "_auth_user_backend": "django.contrib.auth.backends.ModelBackend",
+    "_auth_user_hash": "834bf0aafb7d407acb6387a0e0bb365a76e669a3045b85d5a1731509de64d0d3"
+   },
+   "session_verdict": "VERIFIED_TRUE",
+   "session_witness": {
+    "values": {
+     "_auth_user_id": "1",
+     "_auth_user_backend": "django.contrib.auth.backends.ModelBackend",
+     "_auth_user_hash": "834bf0aafb7d407acb6387a0e0bb365a76e669a3045b85d5a1731509de64d0d3"
+    },
+    "conditions": [
+     {
+      "key_kind": "CONST",
+      "key_expr": "_auth_user_id",
+      "op": "EXISTS",
+      "value": null,
+      "value_kind": "NONE",
+      "direction": "true",
+      "guard_block": "views/bookmarks.py::index::43-43::entry::1",
+      "source_file": "views/bookmarks.py",
+      "source_line": 43,
+      "source_col": 0,
+      "reader_site_id": "ld-bookmarks",
+      "resolvable": true,
+      "note": ""
+     }
+    ],
+    "verdict": {
+     "verdict": "VERIFIED_TRUE",
+     "evidence": "runtime_verified",
+     "reason": "all-true",
+     "conditions": [
+      {
+       "condition": {
+        "key_kind": "CONST",
+        "key_expr": "_auth_user_id",
+        "op": "EXISTS",
+        "value": null,
+        "value_kind": "NONE",
+        "direction": "true",
+        "guard_block": "views/bookmarks.py::index::43-43::entry::1",
+        "source_file": "views/bookmarks.py",
+        "source_line": 43,
+        "source_col": 0,
+        "reader_site_id": "ld-bookmarks",
+        "resolvable": true,
+        "note": ""
+       },
+       "verdict": "VERIFIED_TRUE",
+       "evidence": "runtime_verified",
+       "reason": "observed",
+       "observation": {
+        "key": "Session._auth_user_id.exists{client-0@session}",
+        "value": true,
+        "evidence": "runtime_verified",
+        "source": "session_cookie:client-0:after_response:guard=views/bookmarks.py::index::43-43::entry::1:line=43",
+        "observed_value": "1",
+        "value_kind": "STRING"
+       }
+      }
+     ],
+     "observations": [
+      {
+       "key": "Session._auth_user_id.exists{client-0@session}",
+       "value": true,
+       "evidence": "runtime_verified",
+       "source": "session_cookie:client-0:after_response:guard=views/bookmarks.py::index::43-43::entry::1:line=43",
+       "observed_value": "1",
+       "value_kind": "STRING"
+      }
+     ]
+    }
+   },
+   "trace_span": [
+    0,
+    62
+   ],
+   "step_spans": [
+    [
+     0,
+     31
+    ],
+    [
+     31,
+     62
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool"
+   ],
+   "error": null
+  },
+  {
+   "index": 6,
+   "steps": [
+    {
+     "method": "GET",
+     "path": "/"
+    },
+    {
+     "method": "POST",
+     "path": "/login/",
+     "form": {
+      "username": "lduser",
+      "password": "ldpass"
+     }
+    }
+   ],
+   "sequence_hash": "cc3c31b259d4f582",
+   "covered_blocks": [
+    "middlewares.py::__call__::29-29::entry::1",
+    "middlewares.py::__call__::29-29::exit::1",
+    "middlewares.py::__call__::32-32::block::1",
+    "middlewares.py::__call__::35-35::block::1",
+    "middlewares.py::__call__::38-38::branch::1",
+    "middlewares.py::__call__::42-42::branch::1",
+    "middlewares.py::__call__::45-45::block::1",
+    "middlewares.py::__call__::47-47::block::1",
+    "middlewares.py::__call__::49-49::terminal::1",
+    "middlewares.py::__init__::26-26::entry::1",
+    "middlewares.py::__init__::26-26::exit::1",
+    "middlewares.py::__init__::27-27::block::1",
+    "middlewares.py::__init__::64-66::block::1",
+    "middlewares.py::__init__::67-67::branch::1",
+    "middlewares.py::__init__::68-68::block::1",
+    "middlewares.py::__init__::69-69::branch::1",
+    "middlewares.py::__init__::70-70::terminal::1",
+    "middlewares.py::__init__::81-81::branch::1",
+    "middlewares.py::__init__::82-82::terminal::1",
+    "models.py::create_user_profile::475-475::entry::1",
+    "models.py::create_user_profile::475-475::exit::1",
+    "models.py::create_user_profile::476-476::branch::1",
+    "models.py::get::561-561::entry::1",
+    "models.py::get::561-561::exit::1",
+    "models.py::get::562-562::block::1",
+    "models.py::get::563-563::branch::1",
+    "models.py::get::566-566::terminal::1",
+    "models.py::save::465-465::branch::1",
+    "models.py::save::470-470::block::1",
+    "models.py::save::471-471::block::1",
+    "models.py::save::98-98::entry::1",
+    "models.py::save::98-98::exit::1",
+    "models.py::save_user_profile::481-481::entry::1",
+    "models.py::save_user_profile::481-481::exit::1",
+    "models.py::save_user_profile::482-482::block::1",
+    "utils.py::redirect_with_query::150-150::entry::1",
+    "utils.py::redirect_with_query::150-150::exit::1",
+    "utils.py::redirect_with_query::151-151::block::1",
+    "utils.py::redirect_with_query::152-152::branch::1",
+    "utils.py::redirect_with_query::155-155::terminal::1",
+    "views/auth.py::get_form::13-13::entry::1",
+    "views/auth.py::get_form::13-13::exit::1",
+    "views/auth.py::get_form::14-15::block::1",
+    "views/auth.py::get_form::16-16::terminal::1",
+    "views/root.py::root::10-10::branch::1",
+    "views/root.py::root::11-11::block::1",
+    "views/root.py::root::13-13::branch::1",
+    "views/root.py::root::18-18::callsite::1",
+    "views/root.py::root::18-18::returnsite::1",
+    "views/root.py::root::18-18::terminal::1",
+    "views/root.py::root::7-7::entry::1",
+    "views/root.py::root::7-7::exit::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": true,
+   "distance": null,
+   "score": 499.98,
+   "status": "EXPLORE",
+   "session_values": {
+    "_auth_user_id": "1",
+    "_auth_user_backend": "django.contrib.auth.backends.ModelBackend",
+    "_auth_user_hash": "834bf0aafb7d407acb6387a0e0bb365a76e669a3045b85d5a1731509de64d0d3"
+   },
+   "session_verdict": "VERIFIED_TRUE",
+   "session_witness": {
+    "values": {
+     "_auth_user_id": "1",
+     "_auth_user_backend": "django.contrib.auth.backends.ModelBackend",
+     "_auth_user_hash": "834bf0aafb7d407acb6387a0e0bb365a76e669a3045b85d5a1731509de64d0d3"
+    },
+    "conditions": [
+     {
+      "key_kind": "CONST",
+      "key_expr": "_auth_user_id",
+      "op": "EXISTS",
+      "value": null,
+      "value_kind": "NONE",
+      "direction": "true",
+      "guard_block": "views/bookmarks.py::index::43-43::entry::1",
+      "source_file": "views/bookmarks.py",
+      "source_line": 43,
+      "source_col": 0,
+      "reader_site_id": "ld-bookmarks",
+      "resolvable": true,
+      "note": ""
+     }
+    ],
+    "verdict": {
+     "verdict": "VERIFIED_TRUE",
+     "evidence": "runtime_verified",
+     "reason": "all-true",
+     "conditions": [
+      {
+       "condition": {
+        "key_kind": "CONST",
+        "key_expr": "_auth_user_id",
+        "op": "EXISTS",
+        "value": null,
+        "value_kind": "NONE",
+        "direction": "true",
+        "guard_block": "views/bookmarks.py::index::43-43::entry::1",
+        "source_file": "views/bookmarks.py",
+        "source_line": 43,
+        "source_col": 0,
+        "reader_site_id": "ld-bookmarks",
+        "resolvable": true,
+        "note": ""
+       },
+       "verdict": "VERIFIED_TRUE",
+       "evidence": "runtime_verified",
+       "reason": "observed",
+       "observation": {
+        "key": "Session._auth_user_id.exists{client-0@session}",
+        "value": true,
+        "evidence": "runtime_verified",
+        "source": "session_cookie:client-0:after_response:guard=views/bookmarks.py::index::43-43::entry::1:line=43",
+        "observed_value": "1",
+        "value_kind": "STRING"
+       }
+      }
+     ],
+     "observations": [
+      {
+       "key": "Session._auth_user_id.exists{client-0@session}",
+       "value": true,
+       "evidence": "runtime_verified",
+       "source": "session_cookie:client-0:after_response:guard=views/bookmarks.py::index::43-43::entry::1:line=43",
+       "observed_value": "1",
+       "value_kind": "STRING"
+      }
+     ]
+    }
+   },
+   "trace_span": [
+    0,
+    73
+   ],
+   "step_spans": [
+    [
+     0,
+     42
+    ],
+    [
+     42,
+     73
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool"
+   ],
+   "error": null
+  },
+  {
+   "index": 7,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/login/",
+     "form": {
+      "username": "lduser",
+      "password": ""
+     }
+    }
+   ],
+   "sequence_hash": "31f21d4acf5803d3",
+   "covered_blocks": [
+    "context_processors.py::app_version::20-20::entry::1",
+    "context_processors.py::app_version::20-20::exit::1",
+    "context_processors.py::app_version::21-21::terminal::1",
+    "context_processors.py::toasts::14-14::terminal::1",
+    "context_processors.py::toasts::5-5::entry::1",
+    "context_processors.py::toasts::5-5::exit::1",
+    "context_processors.py::toasts::6-12::block::1",
+    "middlewares.py::__call__::29-29::entry::1",
+    "middlewares.py::__call__::29-29::exit::1",
+    "middlewares.py::__call__::32-32::block::1",
+    "middlewares.py::__call__::35-35::block::1",
+    "middlewares.py::__call__::38-38::branch::1",
+    "middlewares.py::__call__::42-42::branch::1",
+    "middlewares.py::__call__::45-45::block::1",
+    "middlewares.py::__call__::47-47::block::1",
+    "middlewares.py::__call__::49-49::terminal::1",
+    "middlewares.py::__init__::26-26::entry::1",
+    "middlewares.py::__init__::26-26::exit::1",
+    "middlewares.py::__init__::27-27::block::1",
+    "middlewares.py::__init__::64-66::block::1",
+    "middlewares.py::__init__::67-67::branch::1",
+    "middlewares.py::__init__::68-68::block::1",
+    "middlewares.py::__init__::69-69::branch::1",
+    "middlewares.py::__init__::70-70::terminal::1",
+    "middlewares.py::__init__::81-81::branch::1",
+    "middlewares.py::__init__::82-82::terminal::1",
+    "models.py::get::561-561::entry::1",
+    "models.py::get::561-561::exit::1",
+    "models.py::get::562-562::block::1",
+    "models.py::get::563-563::branch::1",
+    "models.py::get::566-566::terminal::1",
+    "templatetags/shared.py::append_attr::129-129::entry::1",
+    "templatetags/shared.py::append_attr::129-129::exit::1",
+    "templatetags/shared.py::append_attr::130-130::block::1",
+    "templatetags/shared.py::append_attr::131-131::branch::1",
+    "templatetags/shared.py::append_attr::132-132::block::1",
+    "templatetags/shared.py::append_attr::134-134::block::1",
+    "templatetags/shared.py::formfield::145-145::entry::1",
+    "templatetags/shared.py::formfield::145-145::exit::1",
+    "templatetags/shared.py::formfield::146-148::block::1",
+    "templatetags/shared.py::formfield::149-149::branch::1",
+    "templatetags/shared.py::formfield::152-152::branch::1",
+    "templatetags/shared.py::formfield::155-155::block::1",
+    "templatetags/shared.py::formfield::156-156::branch::1",
+    "templatetags/shared.py::formfield::157-157::callsite::1",
+    "templatetags/shared.py::formfield::157-157::returnsite::1",
+    "templatetags/shared.py::formfield::157-158::block::1",
+    "templatetags/shared.py::formfield::158-158::callsite::2",
+    "templatetags/shared.py::formfield::158-158::returnsite::2",
+    "templatetags/shared.py::formfield::159-159::branch::1",
+    "templatetags/shared.py::formfield::160-160::block::1",
+    "templatetags/shared.py::formfield::160-160::callsite::1",
+    "templatetags/shared.py::formfield::160-160::returnsite::1",
+    "templatetags/shared.py::formfield::162-162::branch::1",
+    "templatetags/shared.py::formfield::163-163::block::1",
+    "templatetags/shared.py::formfield::164-164::branch::1",
+    "templatetags/shared.py::formfield::165-165::block::1",
+    "templatetags/shared.py::formfield::165-165::callsite::1",
+    "templatetags/shared.py::formfield::165-165::returnsite::1",
+    "templatetags/shared.py::formfield::169-169::terminal::1",
+    "templatetags/shared.py::formlabel::138-138::entry::1",
+    "templatetags/shared.py::formlabel::138-138::exit::1",
+    "templatetags/shared.py::formlabel::139-139::terminal::1",
+    "views/auth.py::form_invalid::25-25::entry::1",
+    "views/auth.py::form_invalid::25-25::exit::1",
+    "views/auth.py::form_invalid::26-32::block::1",
+    "views/auth.py::form_invalid::33-33::terminal::1",
+    "views/auth.py::get_context_data::18-18::entry::1",
+    "views/auth.py::get_context_data::18-18::exit::1",
+    "views/auth.py::get_context_data::19-22::block::1",
+    "views/auth.py::get_context_data::23-23::terminal::1",
+    "views/auth.py::get_form::13-13::entry::1",
+    "views/auth.py::get_form::13-13::exit::1",
+    "views/auth.py::get_form::14-15::block::1",
+    "views/auth.py::get_form::16-16::terminal::1"
+   ],
+   "writer_blocks": [
+    "views/auth.py::get_context_data::19-22::block::1"
+   ],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    244
+   ],
+   "step_spans": [
+    [
+     0,
+     244
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool",
+    "form:generic-boundary"
+   ],
+   "error": null
+  },
+  {
+   "index": 8,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/login/",
+     "form": {
+      "username": "lduser",
+      "password": null
+     }
+    }
+   ],
+   "sequence_hash": "f31f81da9885e7e1",
+   "covered_blocks": [],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    0
+   ],
+   "step_spans": [
+    [
+     0,
+     0
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool",
+    "form:generic-boundary"
+   ],
+   "error": "TypeError: Cannot encode None for key 'password' as POST data. Did you mean to pass an empty string or omit the value?"
+  },
+  {
+   "index": 9,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/login/",
+     "form": {
+      "username": "lduser",
+      "password": "lduser"
+     }
+    }
+   ],
+   "sequence_hash": "8bec5d7ec2061f4e",
+   "covered_blocks": [
+    "context_processors.py::app_version::20-20::entry::1",
+    "context_processors.py::app_version::20-20::exit::1",
+    "context_processors.py::app_version::21-21::terminal::1",
+    "context_processors.py::toasts::14-14::terminal::1",
+    "context_processors.py::toasts::5-5::entry::1",
+    "context_processors.py::toasts::5-5::exit::1",
+    "context_processors.py::toasts::6-12::block::1",
+    "middlewares.py::__call__::29-29::entry::1",
+    "middlewares.py::__call__::29-29::exit::1",
+    "middlewares.py::__call__::32-32::block::1",
+    "middlewares.py::__call__::35-35::block::1",
+    "middlewares.py::__call__::38-38::branch::1",
+    "middlewares.py::__call__::42-42::branch::1",
+    "middlewares.py::__call__::45-45::block::1",
+    "middlewares.py::__call__::47-47::block::1",
+    "middlewares.py::__call__::49-49::terminal::1",
+    "middlewares.py::__init__::26-26::entry::1",
+    "middlewares.py::__init__::26-26::exit::1",
+    "middlewares.py::__init__::27-27::block::1",
+    "middlewares.py::__init__::64-66::block::1",
+    "middlewares.py::__init__::67-67::branch::1",
+    "middlewares.py::__init__::68-68::block::1",
+    "middlewares.py::__init__::69-69::branch::1",
+    "middlewares.py::__init__::70-70::terminal::1",
+    "middlewares.py::__init__::81-81::branch::1",
+    "middlewares.py::__init__::82-82::terminal::1",
+    "models.py::get::561-561::entry::1",
+    "models.py::get::561-561::exit::1",
+    "models.py::get::562-562::block::1",
+    "models.py::get::563-563::branch::1",
+    "models.py::get::566-566::terminal::1",
+    "templatetags/shared.py::append_attr::129-129::entry::1",
+    "templatetags/shared.py::append_attr::129-129::exit::1",
+    "templatetags/shared.py::append_attr::130-130::block::1",
+    "templatetags/shared.py::append_attr::131-131::branch::1",
+    "templatetags/shared.py::append_attr::134-134::block::1",
+    "templatetags/shared.py::formfield::145-145::entry::1",
+    "templatetags/shared.py::formfield::145-145::exit::1",
+    "templatetags/shared.py::formfield::146-148::block::1",
+    "templatetags/shared.py::formfield::149-149::branch::1",
+    "templatetags/shared.py::formfield::152-152::branch::1",
+    "templatetags/shared.py::formfield::155-155::block::1",
+    "templatetags/shared.py::formfield::156-156::branch::1",
+    "templatetags/shared.py::formfield::159-159::branch::1",
+    "templatetags/shared.py::formfield::160-160::block::1",
+    "templatetags/shared.py::formfield::160-160::callsite::1",
+    "templatetags/shared.py::formfield::160-160::returnsite::1",
+    "templatetags/shared.py::formfield::162-162::branch::1",
+    "templatetags/shared.py::formfield::163-163::block::1",
+    "templatetags/shared.py::formfield::164-164::branch::1",
+    "templatetags/shared.py::formfield::165-165::block::1",
+    "templatetags/shared.py::formfield::165-165::callsite::1",
+    "templatetags/shared.py::formfield::165-165::returnsite::1",
+    "templatetags/shared.py::formfield::169-169::terminal::1",
+    "templatetags/shared.py::formlabel::138-138::entry::1",
+    "templatetags/shared.py::formlabel::138-138::exit::1",
+    "templatetags/shared.py::formlabel::139-139::terminal::1",
+    "views/auth.py::form_invalid::25-25::entry::1",
+    "views/auth.py::form_invalid::25-25::exit::1",
+    "views/auth.py::form_invalid::26-32::block::1",
+    "views/auth.py::form_invalid::33-33::terminal::1",
+    "views/auth.py::get_context_data::18-18::entry::1",
+    "views/auth.py::get_context_data::18-18::exit::1",
+    "views/auth.py::get_context_data::19-22::block::1",
+    "views/auth.py::get_context_data::23-23::terminal::1",
+    "views/auth.py::get_form::13-13::entry::1",
+    "views/auth.py::get_form::13-13::exit::1",
+    "views/auth.py::get_form::14-15::block::1",
+    "views/auth.py::get_form::16-16::terminal::1"
+   ],
+   "writer_blocks": [
+    "views/auth.py::get_context_data::19-22::block::1"
+   ],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    122
+   ],
+   "step_spans": [
+    [
+     0,
+     122
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool"
+   ],
+   "error": null
+  },
+  {
+   "index": 10,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/login/",
+     "form": {
+      "username": "lduser",
+      "password": 0
+     }
+    }
+   ],
+   "sequence_hash": "8680230297bb67d7",
+   "covered_blocks": [
+    "context_processors.py::app_version::20-20::entry::1",
+    "context_processors.py::app_version::20-20::exit::1",
+    "context_processors.py::app_version::21-21::terminal::1",
+    "context_processors.py::toasts::14-14::terminal::1",
+    "context_processors.py::toasts::5-5::entry::1",
+    "context_processors.py::toasts::5-5::exit::1",
+    "context_processors.py::toasts::6-12::block::1",
+    "middlewares.py::__call__::29-29::entry::1",
+    "middlewares.py::__call__::29-29::exit::1",
+    "middlewares.py::__call__::32-32::block::1",
+    "middlewares.py::__call__::35-35::block::1",
+    "middlewares.py::__call__::38-38::branch::1",
+    "middlewares.py::__call__::42-42::branch::1",
+    "middlewares.py::__call__::45-45::block::1",
+    "middlewares.py::__call__::47-47::block::1",
+    "middlewares.py::__call__::49-49::terminal::1",
+    "middlewares.py::__init__::26-26::entry::1",
+    "middlewares.py::__init__::26-26::exit::1",
+    "middlewares.py::__init__::27-27::block::1",
+    "middlewares.py::__init__::64-66::block::1",
+    "middlewares.py::__init__::67-67::branch::1",
+    "middlewares.py::__init__::68-68::block::1",
+    "middlewares.py::__init__::69-69::branch::1",
+    "middlewares.py::__init__::70-70::terminal::1",
+    "middlewares.py::__init__::81-81::branch::1",
+    "middlewares.py::__init__::82-82::terminal::1",
+    "models.py::get::561-561::entry::1",
+    "models.py::get::561-561::exit::1",
+    "models.py::get::562-562::block::1",
+    "models.py::get::563-563::branch::1",
+    "models.py::get::566-566::terminal::1",
+    "templatetags/shared.py::append_attr::129-129::entry::1",
+    "templatetags/shared.py::append_attr::129-129::exit::1",
+    "templatetags/shared.py::append_attr::130-130::block::1",
+    "templatetags/shared.py::append_attr::131-131::branch::1",
+    "templatetags/shared.py::append_attr::134-134::block::1",
+    "templatetags/shared.py::formfield::145-145::entry::1",
+    "templatetags/shared.py::formfield::145-145::exit::1",
+    "templatetags/shared.py::formfield::146-148::block::1",
+    "templatetags/shared.py::formfield::149-149::branch::1",
+    "templatetags/shared.py::formfield::152-152::branch::1",
+    "templatetags/shared.py::formfield::155-155::block::1",
+    "templatetags/shared.py::formfield::156-156::branch::1",
+    "templatetags/shared.py::formfield::159-159::branch::1",
+    "templatetags/shared.py::formfield::160-160::block::1",
+    "templatetags/shared.py::formfield::160-160::callsite::1",
+    "templatetags/shared.py::formfield::160-160::returnsite::1",
+    "templatetags/shared.py::formfield::162-162::branch::1",
+    "templatetags/shared.py::formfield::163-163::block::1",
+    "templatetags/shared.py::formfield::164-164::branch::1",
+    "templatetags/shared.py::formfield::165-165::block::1",
+    "templatetags/shared.py::formfield::165-165::callsite::1",
+    "templatetags/shared.py::formfield::165-165::returnsite::1",
+    "templatetags/shared.py::formfield::169-169::terminal::1",
+    "templatetags/shared.py::formlabel::138-138::entry::1",
+    "templatetags/shared.py::formlabel::138-138::exit::1",
+    "templatetags/shared.py::formlabel::139-139::terminal::1",
+    "views/auth.py::form_invalid::25-25::entry::1",
+    "views/auth.py::form_invalid::25-25::exit::1",
+    "views/auth.py::form_invalid::26-32::block::1",
+    "views/auth.py::form_invalid::33-33::terminal::1",
+    "views/auth.py::get_context_data::18-18::entry::1",
+    "views/auth.py::get_context_data::18-18::exit::1",
+    "views/auth.py::get_context_data::19-22::block::1",
+    "views/auth.py::get_context_data::23-23::terminal::1",
+    "views/auth.py::get_form::13-13::entry::1",
+    "views/auth.py::get_form::13-13::exit::1",
+    "views/auth.py::get_form::14-15::block::1",
+    "views/auth.py::get_form::16-16::terminal::1"
+   ],
+   "writer_blocks": [
+    "views/auth.py::get_context_data::19-22::block::1"
+   ],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    122
+   ],
+   "step_spans": [
+    [
+     0,
+     122
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool",
+    "form:generic-boundary"
+   ],
+   "error": null
+  },
+  {
+   "index": 11,
+   "steps": [
+    {
+     "method": "GET",
+     "path": "/bookmarks"
+    },
+    {
+     "method": "GET",
+     "path": "/"
+    }
+   ],
+   "sequence_hash": "7d0edf2067c0c625",
+   "covered_blocks": [
+    "middlewares.py::__call__::29-29::entry::1",
+    "middlewares.py::__call__::29-29::exit::1",
+    "middlewares.py::__call__::32-32::block::1",
+    "middlewares.py::__call__::35-35::block::1",
+    "middlewares.py::__call__::38-38::branch::1",
+    "middlewares.py::__call__::42-42::branch::1",
+    "middlewares.py::__call__::45-45::block::1",
+    "middlewares.py::__call__::47-47::block::1",
+    "middlewares.py::__call__::49-49::terminal::1",
+    "middlewares.py::__init__::26-26::entry::1",
+    "middlewares.py::__init__::26-26::exit::1",
+    "middlewares.py::__init__::27-27::block::1",
+    "middlewares.py::__init__::64-66::block::1",
+    "middlewares.py::__init__::67-67::branch::1",
+    "middlewares.py::__init__::68-68::block::1",
+    "middlewares.py::__init__::69-69::branch::1",
+    "middlewares.py::__init__::70-70::terminal::1",
+    "middlewares.py::__init__::81-81::branch::1",
+    "middlewares.py::__init__::82-82::terminal::1",
+    "models.py::get::561-561::entry::1",
+    "models.py::get::561-561::exit::1",
+    "models.py::get::562-562::block::1",
+    "models.py::get::563-563::branch::1",
+    "models.py::get::566-566::terminal::1",
+    "utils.py::redirect_with_query::150-150::entry::1",
+    "utils.py::redirect_with_query::150-150::exit::1",
+    "utils.py::redirect_with_query::151-151::block::1",
+    "utils.py::redirect_with_query::152-152::branch::1",
+    "utils.py::redirect_with_query::155-155::terminal::1",
+    "views/root.py::root::10-10::branch::1",
+    "views/root.py::root::11-11::block::1",
+    "views/root.py::root::13-13::branch::1",
+    "views/root.py::root::18-18::callsite::1",
+    "views/root.py::root::18-18::returnsite::1",
+    "views/root.py::root::18-18::terminal::1",
+    "views/root.py::root::7-7::entry::1",
+    "views/root.py::root::7-7::exit::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.02,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    57
+   ],
+   "step_spans": [
+    [
+     0,
+     31
+    ],
+    [
+     31,
+     57
+    ]
+   ],
+   "candidate_sources": [],
+   "error": null
+  },
+  {
+   "index": 12,
+   "steps": [
+    {
+     "method": "GET",
+     "path": "/bookmarks"
+    },
+    {
+     "method": "POST",
+     "path": "/logout/",
+     "form": {}
+    }
+   ],
+   "sequence_hash": "f5049b5b29a12f40",
+   "covered_blocks": [
+    "middlewares.py::__call__::29-29::entry::1",
+    "middlewares.py::__call__::29-29::exit::1",
+    "middlewares.py::__call__::32-32::block::1",
+    "middlewares.py::__call__::35-35::block::1",
+    "middlewares.py::__call__::38-38::branch::1",
+    "middlewares.py::__call__::42-42::branch::1",
+    "middlewares.py::__call__::45-45::block::1",
+    "middlewares.py::__call__::47-47::block::1",
+    "middlewares.py::__call__::49-49::terminal::1",
+    "middlewares.py::__init__::26-26::entry::1",
+    "middlewares.py::__init__::26-26::exit::1",
+    "middlewares.py::__init__::27-27::block::1",
+    "middlewares.py::__init__::64-66::block::1",
+    "middlewares.py::__init__::67-67::branch::1",
+    "middlewares.py::__init__::68-68::block::1",
+    "middlewares.py::__init__::69-69::branch::1",
+    "middlewares.py::__init__::70-70::terminal::1",
+    "middlewares.py::__init__::81-81::branch::1",
+    "middlewares.py::__init__::82-82::terminal::1",
+    "models.py::get::561-561::entry::1",
+    "models.py::get::561-561::exit::1",
+    "models.py::get::562-562::block::1",
+    "models.py::get::563-563::branch::1",
+    "models.py::get::566-566::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.02,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    46
+   ],
+   "step_spans": [
+    [
+     0,
+     31
+    ],
+    [
+     31,
+     46
+    ]
+   ],
+   "candidate_sources": [],
+   "error": null
+  },
+  {
+   "index": 13,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/login/",
+     "form": {
+      "username": 1,
+      "password": "ldpass"
+     }
+    }
+   ],
+   "sequence_hash": "e27fcf0b174c7d8b",
+   "covered_blocks": [
+    "context_processors.py::app_version::20-20::entry::1",
+    "context_processors.py::app_version::20-20::exit::1",
+    "context_processors.py::app_version::21-21::terminal::1",
+    "context_processors.py::toasts::14-14::terminal::1",
+    "context_processors.py::toasts::5-5::entry::1",
+    "context_processors.py::toasts::5-5::exit::1",
+    "context_processors.py::toasts::6-12::block::1",
+    "middlewares.py::__call__::29-29::entry::1",
+    "middlewares.py::__call__::29-29::exit::1",
+    "middlewares.py::__call__::32-32::block::1",
+    "middlewares.py::__call__::35-35::block::1",
+    "middlewares.py::__call__::38-38::branch::1",
+    "middlewares.py::__call__::42-42::branch::1",
+    "middlewares.py::__call__::45-45::block::1",
+    "middlewares.py::__call__::47-47::block::1",
+    "middlewares.py::__call__::49-49::terminal::1",
+    "middlewares.py::__init__::26-26::entry::1",
+    "middlewares.py::__init__::26-26::exit::1",
+    "middlewares.py::__init__::27-27::block::1",
+    "middlewares.py::__init__::64-66::block::1",
+    "middlewares.py::__init__::67-67::branch::1",
+    "middlewares.py::__init__::68-68::block::1",
+    "middlewares.py::__init__::69-69::branch::1",
+    "middlewares.py::__init__::70-70::terminal::1",
+    "middlewares.py::__init__::81-81::branch::1",
+    "middlewares.py::__init__::82-82::terminal::1",
+    "models.py::get::561-561::entry::1",
+    "models.py::get::561-561::exit::1",
+    "models.py::get::562-562::block::1",
+    "models.py::get::563-563::branch::1",
+    "models.py::get::566-566::terminal::1",
+    "templatetags/shared.py::append_attr::129-129::entry::1",
+    "templatetags/shared.py::append_attr::129-129::exit::1",
+    "templatetags/shared.py::append_attr::130-130::block::1",
+    "templatetags/shared.py::append_attr::131-131::branch::1",
+    "templatetags/shared.py::append_attr::134-134::block::1",
+    "templatetags/shared.py::formfield::145-145::entry::1",
+    "templatetags/shared.py::formfield::145-145::exit::1",
+    "templatetags/shared.py::formfield::146-148::block::1",
+    "templatetags/shared.py::formfield::149-149::branch::1",
+    "templatetags/shared.py::formfield::152-152::branch::1",
+    "templatetags/shared.py::formfield::155-155::block::1",
+    "templatetags/shared.py::formfield::156-156::branch::1",
+    "templatetags/shared.py::formfield::159-159::branch::1",
+    "templatetags/shared.py::formfield::160-160::block::1",
+    "templatetags/shared.py::formfield::160-160::callsite::1",
+    "templatetags/shared.py::formfield::160-160::returnsite::1",
+    "templatetags/shared.py::formfield::162-162::branch::1",
+    "templatetags/shared.py::formfield::163-163::block::1",
+    "templatetags/shared.py::formfield::164-164::branch::1",
+    "templatetags/shared.py::formfield::165-165::block::1",
+    "templatetags/shared.py::formfield::165-165::callsite::1",
+    "templatetags/shared.py::formfield::165-165::returnsite::1",
+    "templatetags/shared.py::formfield::169-169::terminal::1",
+    "templatetags/shared.py::formlabel::138-138::entry::1",
+    "templatetags/shared.py::formlabel::138-138::exit::1",
+    "templatetags/shared.py::formlabel::139-139::terminal::1",
+    "views/auth.py::form_invalid::25-25::entry::1",
+    "views/auth.py::form_invalid::25-25::exit::1",
+    "views/auth.py::form_invalid::26-32::block::1",
+    "views/auth.py::form_invalid::33-33::terminal::1",
+    "views/auth.py::get_context_data::18-18::entry::1",
+    "views/auth.py::get_context_data::18-18::exit::1",
+    "views/auth.py::get_context_data::19-22::block::1",
+    "views/auth.py::get_context_data::23-23::terminal::1",
+    "views/auth.py::get_form::13-13::entry::1",
+    "views/auth.py::get_form::13-13::exit::1",
+    "views/auth.py::get_form::14-15::block::1",
+    "views/auth.py::get_form::16-16::terminal::1"
+   ],
+   "writer_blocks": [
+    "views/auth.py::get_context_data::19-22::block::1"
+   ],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    122
+   ],
+   "step_spans": [
+    [
+     0,
+     122
+    ]
+   ],
+   "candidate_sources": [
+    "form:generic-boundary",
+    "form:single-request-pool"
+   ],
+   "error": null
+  },
+  {
+   "index": 14,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/logout/",
+     "form": {}
+    },
+    {
+     "method": "GET",
+     "path": "/"
+    }
+   ],
+   "sequence_hash": "a5b131de782751a6",
+   "covered_blocks": [
+    "middlewares.py::__call__::29-29::entry::1",
+    "middlewares.py::__call__::29-29::exit::1",
+    "middlewares.py::__call__::32-32::block::1",
+    "middlewares.py::__call__::35-35::block::1",
+    "middlewares.py::__call__::38-38::branch::1",
+    "middlewares.py::__call__::42-42::branch::1",
+    "middlewares.py::__call__::45-45::block::1",
+    "middlewares.py::__call__::47-47::block::1",
+    "middlewares.py::__call__::49-49::terminal::1",
+    "middlewares.py::__init__::26-26::entry::1",
+    "middlewares.py::__init__::26-26::exit::1",
+    "middlewares.py::__init__::27-27::block::1",
+    "middlewares.py::__init__::64-66::block::1",
+    "middlewares.py::__init__::67-67::branch::1",
+    "middlewares.py::__init__::68-68::block::1",
+    "middlewares.py::__init__::69-69::branch::1",
+    "middlewares.py::__init__::70-70::terminal::1",
+    "middlewares.py::__init__::81-81::branch::1",
+    "middlewares.py::__init__::82-82::terminal::1",
+    "models.py::get::561-561::entry::1",
+    "models.py::get::561-561::exit::1",
+    "models.py::get::562-562::block::1",
+    "models.py::get::563-563::branch::1",
+    "models.py::get::566-566::terminal::1",
+    "utils.py::redirect_with_query::150-150::entry::1",
+    "utils.py::redirect_with_query::150-150::exit::1",
+    "utils.py::redirect_with_query::151-151::block::1",
+    "utils.py::redirect_with_query::152-152::branch::1",
+    "utils.py::redirect_with_query::155-155::terminal::1",
+    "views/root.py::root::10-10::branch::1",
+    "views/root.py::root::11-11::block::1",
+    "views/root.py::root::13-13::branch::1",
+    "views/root.py::root::18-18::callsite::1",
+    "views/root.py::root::18-18::returnsite::1",
+    "views/root.py::root::18-18::terminal::1",
+    "views/root.py::root::7-7::entry::1",
+    "views/root.py::root::7-7::exit::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.02,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    57
+   ],
+   "step_spans": [
+    [
+     0,
+     31
+    ],
+    [
+     31,
+     57
+    ]
+   ],
+   "candidate_sources": [],
+   "error": null
+  },
+  {
+   "index": 15,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/login/",
+     "form": {
+      "username": 0,
+      "password": "ldpass"
+     }
+    }
+   ],
+   "sequence_hash": "a58941d63f57ff7c",
+   "covered_blocks": [
+    "context_processors.py::app_version::20-20::entry::1",
+    "context_processors.py::app_version::20-20::exit::1",
+    "context_processors.py::app_version::21-21::terminal::1",
+    "context_processors.py::toasts::14-14::terminal::1",
+    "context_processors.py::toasts::5-5::entry::1",
+    "context_processors.py::toasts::5-5::exit::1",
+    "context_processors.py::toasts::6-12::block::1",
+    "middlewares.py::__call__::29-29::entry::1",
+    "middlewares.py::__call__::29-29::exit::1",
+    "middlewares.py::__call__::32-32::block::1",
+    "middlewares.py::__call__::35-35::block::1",
+    "middlewares.py::__call__::38-38::branch::1",
+    "middlewares.py::__call__::42-42::branch::1",
+    "middlewares.py::__call__::45-45::block::1",
+    "middlewares.py::__call__::47-47::block::1",
+    "middlewares.py::__call__::49-49::terminal::1",
+    "middlewares.py::__init__::26-26::entry::1",
+    "middlewares.py::__init__::26-26::exit::1",
+    "middlewares.py::__init__::27-27::block::1",
+    "middlewares.py::__init__::64-66::block::1",
+    "middlewares.py::__init__::67-67::branch::1",
+    "middlewares.py::__init__::68-68::block::1",
+    "middlewares.py::__init__::69-69::branch::1",
+    "middlewares.py::__init__::70-70::terminal::1",
+    "middlewares.py::__init__::81-81::branch::1",
+    "middlewares.py::__init__::82-82::terminal::1",
+    "models.py::get::561-561::entry::1",
+    "models.py::get::561-561::exit::1",
+    "models.py::get::562-562::block::1",
+    "models.py::get::563-563::branch::1",
+    "models.py::get::566-566::terminal::1",
+    "templatetags/shared.py::append_attr::129-129::entry::1",
+    "templatetags/shared.py::append_attr::129-129::exit::1",
+    "templatetags/shared.py::append_attr::130-130::block::1",
+    "templatetags/shared.py::append_attr::131-131::branch::1",
+    "templatetags/shared.py::append_attr::134-134::block::1",
+    "templatetags/shared.py::formfield::145-145::entry::1",
+    "templatetags/shared.py::formfield::145-145::exit::1",
+    "templatetags/shared.py::formfield::146-148::block::1",
+    "templatetags/shared.py::formfield::149-149::branch::1",
+    "templatetags/shared.py::formfield::152-152::branch::1",
+    "templatetags/shared.py::formfield::155-155::block::1",
+    "templatetags/shared.py::formfield::156-156::branch::1",
+    "templatetags/shared.py::formfield::159-159::branch::1",
+    "templatetags/shared.py::formfield::160-160::block::1",
+    "templatetags/shared.py::formfield::160-160::callsite::1",
+    "templatetags/shared.py::formfield::160-160::returnsite::1",
+    "templatetags/shared.py::formfield::162-162::branch::1",
+    "templatetags/shared.py::formfield::163-163::block::1",
+    "templatetags/shared.py::formfield::164-164::branch::1",
+    "templatetags/shared.py::formfield::165-165::block::1",
+    "templatetags/shared.py::formfield::165-165::callsite::1",
+    "templatetags/shared.py::formfield::165-165::returnsite::1",
+    "templatetags/shared.py::formfield::169-169::terminal::1",
+    "templatetags/shared.py::formlabel::138-138::entry::1",
+    "templatetags/shared.py::formlabel::138-138::exit::1",
+    "templatetags/shared.py::formlabel::139-139::terminal::1",
+    "views/auth.py::form_invalid::25-25::entry::1",
+    "views/auth.py::form_invalid::25-25::exit::1",
+    "views/auth.py::form_invalid::26-32::block::1",
+    "views/auth.py::form_invalid::33-33::terminal::1",
+    "views/auth.py::get_context_data::18-18::entry::1",
+    "views/auth.py::get_context_data::18-18::exit::1",
+    "views/auth.py::get_context_data::19-22::block::1",
+    "views/auth.py::get_context_data::23-23::terminal::1",
+    "views/auth.py::get_form::13-13::entry::1",
+    "views/auth.py::get_form::13-13::exit::1",
+    "views/auth.py::get_form::14-15::block::1",
+    "views/auth.py::get_form::16-16::terminal::1"
+   ],
+   "writer_blocks": [
+    "views/auth.py::get_context_data::19-22::block::1"
+   ],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    122
+   ],
+   "step_spans": [
+    [
+     0,
+     122
+    ]
+   ],
+   "candidate_sources": [
+    "form:generic-boundary",
+    "form:single-request-pool"
+   ],
+   "error": null
+  },
+  {
+   "index": 16,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/login/",
+     "form": {
+      "username": true,
+      "password": "ldpass"
+     }
+    }
+   ],
+   "sequence_hash": "b0361f387f3c79f4",
+   "covered_blocks": [
+    "context_processors.py::app_version::20-20::entry::1",
+    "context_processors.py::app_version::20-20::exit::1",
+    "context_processors.py::app_version::21-21::terminal::1",
+    "context_processors.py::toasts::14-14::terminal::1",
+    "context_processors.py::toasts::5-5::entry::1",
+    "context_processors.py::toasts::5-5::exit::1",
+    "context_processors.py::toasts::6-12::block::1",
+    "middlewares.py::__call__::29-29::entry::1",
+    "middlewares.py::__call__::29-29::exit::1",
+    "middlewares.py::__call__::32-32::block::1",
+    "middlewares.py::__call__::35-35::block::1",
+    "middlewares.py::__call__::38-38::branch::1",
+    "middlewares.py::__call__::42-42::branch::1",
+    "middlewares.py::__call__::45-45::block::1",
+    "middlewares.py::__call__::47-47::block::1",
+    "middlewares.py::__call__::49-49::terminal::1",
+    "middlewares.py::__init__::26-26::entry::1",
+    "middlewares.py::__init__::26-26::exit::1",
+    "middlewares.py::__init__::27-27::block::1",
+    "middlewares.py::__init__::64-66::block::1",
+    "middlewares.py::__init__::67-67::branch::1",
+    "middlewares.py::__init__::68-68::block::1",
+    "middlewares.py::__init__::69-69::branch::1",
+    "middlewares.py::__init__::70-70::terminal::1",
+    "middlewares.py::__init__::81-81::branch::1",
+    "middlewares.py::__init__::82-82::terminal::1",
+    "models.py::get::561-561::entry::1",
+    "models.py::get::561-561::exit::1",
+    "models.py::get::562-562::block::1",
+    "models.py::get::563-563::branch::1",
+    "models.py::get::566-566::terminal::1",
+    "templatetags/shared.py::append_attr::129-129::entry::1",
+    "templatetags/shared.py::append_attr::129-129::exit::1",
+    "templatetags/shared.py::append_attr::130-130::block::1",
+    "templatetags/shared.py::append_attr::131-131::branch::1",
+    "templatetags/shared.py::append_attr::134-134::block::1",
+    "templatetags/shared.py::formfield::145-145::entry::1",
+    "templatetags/shared.py::formfield::145-145::exit::1",
+    "templatetags/shared.py::formfield::146-148::block::1",
+    "templatetags/shared.py::formfield::149-149::branch::1",
+    "templatetags/shared.py::formfield::152-152::branch::1",
+    "templatetags/shared.py::formfield::155-155::block::1",
+    "templatetags/shared.py::formfield::156-156::branch::1",
+    "templatetags/shared.py::formfield::159-159::branch::1",
+    "templatetags/shared.py::formfield::160-160::block::1",
+    "templatetags/shared.py::formfield::160-160::callsite::1",
+    "templatetags/shared.py::formfield::160-160::returnsite::1",
+    "templatetags/shared.py::formfield::162-162::branch::1",
+    "templatetags/shared.py::formfield::163-163::block::1",
+    "templatetags/shared.py::formfield::164-164::branch::1",
+    "templatetags/shared.py::formfield::165-165::block::1",
+    "templatetags/shared.py::formfield::165-165::callsite::1",
+    "templatetags/shared.py::formfield::165-165::returnsite::1",
+    "templatetags/shared.py::formfield::169-169::terminal::1",
+    "templatetags/shared.py::formlabel::138-138::entry::1",
+    "templatetags/shared.py::formlabel::138-138::exit::1",
+    "templatetags/shared.py::formlabel::139-139::terminal::1",
+    "views/auth.py::form_invalid::25-25::entry::1",
+    "views/auth.py::form_invalid::25-25::exit::1",
+    "views/auth.py::form_invalid::26-32::block::1",
+    "views/auth.py::form_invalid::33-33::terminal::1",
+    "views/auth.py::get_context_data::18-18::entry::1",
+    "views/auth.py::get_context_data::18-18::exit::1",
+    "views/auth.py::get_context_data::19-22::block::1",
+    "views/auth.py::get_context_data::23-23::terminal::1",
+    "views/auth.py::get_form::13-13::entry::1",
+    "views/auth.py::get_form::13-13::exit::1",
+    "views/auth.py::get_form::14-15::block::1",
+    "views/auth.py::get_form::16-16::terminal::1"
+   ],
+   "writer_blocks": [
+    "views/auth.py::get_context_data::19-22::block::1"
+   ],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    122
+   ],
+   "step_spans": [
+    [
+     0,
+     122
+    ]
+   ],
+   "candidate_sources": [
+    "form:generic-boundary",
+    "form:single-request-pool"
+   ],
+   "error": null
+  },
+  {
+   "index": 17,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/login/",
+     "form": {
+      "username": "lduser",
+      "password": "ldpass"
+     }
+    },
+    {
+     "method": "GET",
+     "path": "/"
+    }
+   ],
+   "sequence_hash": "9b4036322d9075a2",
+   "covered_blocks": [
+    "middlewares.py::__call__::29-29::entry::1",
+    "middlewares.py::__call__::29-29::exit::1",
+    "middlewares.py::__call__::32-32::block::1",
+    "middlewares.py::__call__::35-35::block::1",
+    "middlewares.py::__call__::38-38::branch::1",
+    "middlewares.py::__call__::39-39::block::1",
+    "middlewares.py::__call__::42-42::branch::1",
+    "middlewares.py::__call__::45-45::block::1",
+    "middlewares.py::__call__::47-47::block::1",
+    "middlewares.py::__call__::49-49::terminal::1",
+    "middlewares.py::__init__::26-26::entry::1",
+    "middlewares.py::__init__::26-26::exit::1",
+    "middlewares.py::__init__::27-27::block::1",
+    "middlewares.py::__init__::64-66::block::1",
+    "middlewares.py::__init__::67-67::branch::1",
+    "middlewares.py::__init__::68-68::block::1",
+    "middlewares.py::__init__::69-69::branch::1",
+    "middlewares.py::__init__::70-70::terminal::1",
+    "middlewares.py::__init__::81-81::branch::1",
+    "middlewares.py::__init__::82-82::terminal::1",
+    "models.py::create_user_profile::475-475::entry::1",
+    "models.py::create_user_profile::475-475::exit::1",
+    "models.py::create_user_profile::476-476::branch::1",
+    "models.py::get::561-561::entry::1",
+    "models.py::get::561-561::exit::1",
+    "models.py::get::562-562::block::1",
+    "models.py::get::563-563::branch::1",
+    "models.py::get::566-566::terminal::1",
+    "models.py::save::465-465::branch::1",
+    "models.py::save::470-470::block::1",
+    "models.py::save::471-471::block::1",
+    "models.py::save::98-98::entry::1",
+    "models.py::save::98-98::exit::1",
+    "models.py::save_user_profile::481-481::entry::1",
+    "models.py::save_user_profile::481-481::exit::1",
+    "models.py::save_user_profile::482-482::block::1",
+    "utils.py::redirect_with_query::150-150::entry::1",
+    "utils.py::redirect_with_query::150-150::exit::1",
+    "utils.py::redirect_with_query::151-151::block::1",
+    "utils.py::redirect_with_query::152-152::branch::1",
+    "utils.py::redirect_with_query::155-155::terminal::1",
+    "views/auth.py::get_form::13-13::entry::1",
+    "views/auth.py::get_form::13-13::exit::1",
+    "views/auth.py::get_form::14-15::block::1",
+    "views/auth.py::get_form::16-16::terminal::1",
+    "views/root.py::root::10-10::branch::1",
+    "views/root.py::root::18-18::callsite::1",
+    "views/root.py::root::18-18::returnsite::1",
+    "views/root.py::root::18-18::terminal::1",
+    "views/root.py::root::7-7::entry::1",
+    "views/root.py::root::7-7::exit::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": true,
+   "distance": null,
+   "score": 499.98,
+   "status": "EXPLORE",
+   "session_values": {
+    "_auth_user_id": "1",
+    "_auth_user_backend": "django.contrib.auth.backends.ModelBackend",
+    "_auth_user_hash": "834bf0aafb7d407acb6387a0e0bb365a76e669a3045b85d5a1731509de64d0d3"
+   },
+   "session_verdict": "VERIFIED_TRUE",
+   "session_witness": {
+    "values": {
+     "_auth_user_id": "1",
+     "_auth_user_backend": "django.contrib.auth.backends.ModelBackend",
+     "_auth_user_hash": "834bf0aafb7d407acb6387a0e0bb365a76e669a3045b85d5a1731509de64d0d3"
+    },
+    "conditions": [
+     {
+      "key_kind": "CONST",
+      "key_expr": "_auth_user_id",
+      "op": "EXISTS",
+      "value": null,
+      "value_kind": "NONE",
+      "direction": "true",
+      "guard_block": "views/bookmarks.py::index::43-43::entry::1",
+      "source_file": "views/bookmarks.py",
+      "source_line": 43,
+      "source_col": 0,
+      "reader_site_id": "ld-bookmarks",
+      "resolvable": true,
+      "note": ""
+     }
+    ],
+    "verdict": {
+     "verdict": "VERIFIED_TRUE",
+     "evidence": "runtime_verified",
+     "reason": "all-true",
+     "conditions": [
+      {
+       "condition": {
+        "key_kind": "CONST",
+        "key_expr": "_auth_user_id",
+        "op": "EXISTS",
+        "value": null,
+        "value_kind": "NONE",
+        "direction": "true",
+        "guard_block": "views/bookmarks.py::index::43-43::entry::1",
+        "source_file": "views/bookmarks.py",
+        "source_line": 43,
+        "source_col": 0,
+        "reader_site_id": "ld-bookmarks",
+        "resolvable": true,
+        "note": ""
+       },
+       "verdict": "VERIFIED_TRUE",
+       "evidence": "runtime_verified",
+       "reason": "observed",
+       "observation": {
+        "key": "Session._auth_user_id.exists{client-0@session}",
+        "value": true,
+        "evidence": "runtime_verified",
+        "source": "session_cookie:client-0:after_response:guard=views/bookmarks.py::index::43-43::entry::1:line=43",
+        "observed_value": "1",
+        "value_kind": "STRING"
+       }
+      }
+     ],
+     "observations": [
+      {
+       "key": "Session._auth_user_id.exists{client-0@session}",
+       "value": true,
+       "evidence": "runtime_verified",
+       "source": "session_cookie:client-0:after_response:guard=views/bookmarks.py::index::43-43::entry::1:line=43",
+       "observed_value": "1",
+       "value_kind": "STRING"
+      }
+     ]
+    }
+   },
+   "trace_span": [
+    0,
+    70
+   ],
+   "step_spans": [
+    [
+     0,
+     47
+    ],
+    [
+     47,
+     70
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool"
+   ],
+   "error": null
+  },
+  {
+   "index": 18,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/logout/",
+     "form": {}
+    },
+    {
+     "method": "GET",
+     "path": "/bookmarks"
+    }
+   ],
+   "sequence_hash": "cc977dae6c605208",
+   "covered_blocks": [
+    "middlewares.py::__call__::29-29::entry::1",
+    "middlewares.py::__call__::29-29::exit::1",
+    "middlewares.py::__call__::32-32::block::1",
+    "middlewares.py::__call__::35-35::block::1",
+    "middlewares.py::__call__::38-38::branch::1",
+    "middlewares.py::__call__::42-42::branch::1",
+    "middlewares.py::__call__::45-45::block::1",
+    "middlewares.py::__call__::47-47::block::1",
+    "middlewares.py::__call__::49-49::terminal::1",
+    "middlewares.py::__init__::26-26::entry::1",
+    "middlewares.py::__init__::26-26::exit::1",
+    "middlewares.py::__init__::27-27::block::1",
+    "middlewares.py::__init__::64-66::block::1",
+    "middlewares.py::__init__::67-67::branch::1",
+    "middlewares.py::__init__::68-68::block::1",
+    "middlewares.py::__init__::69-69::branch::1",
+    "middlewares.py::__init__::70-70::terminal::1",
+    "middlewares.py::__init__::81-81::branch::1",
+    "middlewares.py::__init__::82-82::terminal::1",
+    "models.py::get::561-561::entry::1",
+    "models.py::get::561-561::exit::1",
+    "models.py::get::562-562::block::1",
+    "models.py::get::563-563::branch::1",
+    "models.py::get::566-566::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.02,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    46
+   ],
+   "step_spans": [
+    [
+     0,
+     31
+    ],
+    [
+     31,
+     46
+    ]
+   ],
+   "candidate_sources": [],
+   "error": null
+  },
+  {
+   "index": 19,
+   "steps": [
+    {
+     "method": "GET",
+     "path": "/bookmarks"
+    },
+    {
+     "method": "GET",
+     "path": "/bookmarks"
+    }
+   ],
+   "sequence_hash": "ea887a6e1f89ccbd",
+   "covered_blocks": [
+    "middlewares.py::__call__::29-29::entry::1",
+    "middlewares.py::__call__::29-29::exit::1",
+    "middlewares.py::__call__::32-32::block::1",
+    "middlewares.py::__call__::35-35::block::1",
+    "middlewares.py::__call__::38-38::branch::1",
+    "middlewares.py::__call__::42-42::branch::1",
+    "middlewares.py::__call__::45-45::block::1",
+    "middlewares.py::__call__::47-47::block::1",
+    "middlewares.py::__call__::49-49::terminal::1",
+    "middlewares.py::__init__::26-26::entry::1",
+    "middlewares.py::__init__::26-26::exit::1",
+    "middlewares.py::__init__::27-27::block::1",
+    "middlewares.py::__init__::64-66::block::1",
+    "middlewares.py::__init__::67-67::branch::1",
+    "middlewares.py::__init__::68-68::block::1",
+    "middlewares.py::__init__::69-69::branch::1",
+    "middlewares.py::__init__::70-70::terminal::1",
+    "middlewares.py::__init__::81-81::branch::1",
+    "middlewares.py::__init__::82-82::terminal::1",
+    "models.py::get::561-561::entry::1",
+    "models.py::get::561-561::exit::1",
+    "models.py::get::562-562::block::1",
+    "models.py::get::563-563::branch::1",
+    "models.py::get::566-566::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.02,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    46
+   ],
+   "step_spans": [
+    [
+     0,
+     31
+    ],
+    [
+     31,
+     46
+    ]
+   ],
+   "candidate_sources": [],
+   "error": null
+  },
+  {
+   "index": 20,
+   "steps": [
+    {
+     "method": "GET",
+     "path": "/"
+    },
+    {
+     "method": "GET",
+     "path": "/"
+    }
+   ],
+   "sequence_hash": "fad7033160beb2a0",
+   "covered_blocks": [
+    "middlewares.py::__call__::29-29::entry::1",
+    "middlewares.py::__call__::29-29::exit::1",
+    "middlewares.py::__call__::32-32::block::1",
+    "middlewares.py::__call__::35-35::block::1",
+    "middlewares.py::__call__::38-38::branch::1",
+    "middlewares.py::__call__::42-42::branch::1",
+    "middlewares.py::__call__::45-45::block::1",
+    "middlewares.py::__call__::47-47::block::1",
+    "middlewares.py::__call__::49-49::terminal::1",
+    "middlewares.py::__init__::26-26::entry::1",
+    "middlewares.py::__init__::26-26::exit::1",
+    "middlewares.py::__init__::27-27::block::1",
+    "middlewares.py::__init__::64-66::block::1",
+    "middlewares.py::__init__::67-67::branch::1",
+    "middlewares.py::__init__::68-68::block::1",
+    "middlewares.py::__init__::69-69::branch::1",
+    "middlewares.py::__init__::70-70::terminal::1",
+    "middlewares.py::__init__::81-81::branch::1",
+    "middlewares.py::__init__::82-82::terminal::1",
+    "models.py::get::561-561::entry::1",
+    "models.py::get::561-561::exit::1",
+    "models.py::get::562-562::block::1",
+    "models.py::get::563-563::branch::1",
+    "models.py::get::566-566::terminal::1",
+    "utils.py::redirect_with_query::150-150::entry::1",
+    "utils.py::redirect_with_query::150-150::exit::1",
+    "utils.py::redirect_with_query::151-151::block::1",
+    "utils.py::redirect_with_query::152-152::branch::1",
+    "utils.py::redirect_with_query::155-155::terminal::1",
+    "views/root.py::root::10-10::branch::1",
+    "views/root.py::root::11-11::block::1",
+    "views/root.py::root::13-13::branch::1",
+    "views/root.py::root::18-18::callsite::1",
+    "views/root.py::root::18-18::returnsite::1",
+    "views/root.py::root::18-18::terminal::1",
+    "views/root.py::root::7-7::entry::1",
+    "views/root.py::root::7-7::exit::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.02,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    68
+   ],
+   "step_spans": [
+    [
+     0,
+     42
+    ],
+    [
+     42,
+     68
+    ]
+   ],
+   "candidate_sources": [],
+   "error": null
+  },
+  {
+   "index": 21,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/login/",
+     "form": {
+      "username": "lduser",
+      "password": 1
+     }
+    }
+   ],
+   "sequence_hash": "d0e82fafebe1fdda",
+   "covered_blocks": [
+    "context_processors.py::app_version::20-20::entry::1",
+    "context_processors.py::app_version::20-20::exit::1",
+    "context_processors.py::app_version::21-21::terminal::1",
+    "context_processors.py::toasts::14-14::terminal::1",
+    "context_processors.py::toasts::5-5::entry::1",
+    "context_processors.py::toasts::5-5::exit::1",
+    "context_processors.py::toasts::6-12::block::1",
+    "middlewares.py::__call__::29-29::entry::1",
+    "middlewares.py::__call__::29-29::exit::1",
+    "middlewares.py::__call__::32-32::block::1",
+    "middlewares.py::__call__::35-35::block::1",
+    "middlewares.py::__call__::38-38::branch::1",
+    "middlewares.py::__call__::42-42::branch::1",
+    "middlewares.py::__call__::45-45::block::1",
+    "middlewares.py::__call__::47-47::block::1",
+    "middlewares.py::__call__::49-49::terminal::1",
+    "middlewares.py::__init__::26-26::entry::1",
+    "middlewares.py::__init__::26-26::exit::1",
+    "middlewares.py::__init__::27-27::block::1",
+    "middlewares.py::__init__::64-66::block::1",
+    "middlewares.py::__init__::67-67::branch::1",
+    "middlewares.py::__init__::68-68::block::1",
+    "middlewares.py::__init__::69-69::branch::1",
+    "middlewares.py::__init__::70-70::terminal::1",
+    "middlewares.py::__init__::81-81::branch::1",
+    "middlewares.py::__init__::82-82::terminal::1",
+    "models.py::get::561-561::entry::1",
+    "models.py::get::561-561::exit::1",
+    "models.py::get::562-562::block::1",
+    "models.py::get::563-563::branch::1",
+    "models.py::get::566-566::terminal::1",
+    "templatetags/shared.py::append_attr::129-129::entry::1",
+    "templatetags/shared.py::append_attr::129-129::exit::1",
+    "templatetags/shared.py::append_attr::130-130::block::1",
+    "templatetags/shared.py::append_attr::131-131::branch::1",
+    "templatetags/shared.py::append_attr::134-134::block::1",
+    "templatetags/shared.py::formfield::145-145::entry::1",
+    "templatetags/shared.py::formfield::145-145::exit::1",
+    "templatetags/shared.py::formfield::146-148::block::1",
+    "templatetags/shared.py::formfield::149-149::branch::1",
+    "templatetags/shared.py::formfield::152-152::branch::1",
+    "templatetags/shared.py::formfield::155-155::block::1",
+    "templatetags/shared.py::formfield::156-156::branch::1",
+    "templatetags/shared.py::formfield::159-159::branch::1",
+    "templatetags/shared.py::formfield::160-160::block::1",
+    "templatetags/shared.py::formfield::160-160::callsite::1",
+    "templatetags/shared.py::formfield::160-160::returnsite::1",
+    "templatetags/shared.py::formfield::162-162::branch::1",
+    "templatetags/shared.py::formfield::163-163::block::1",
+    "templatetags/shared.py::formfield::164-164::branch::1",
+    "templatetags/shared.py::formfield::165-165::block::1",
+    "templatetags/shared.py::formfield::165-165::callsite::1",
+    "templatetags/shared.py::formfield::165-165::returnsite::1",
+    "templatetags/shared.py::formfield::169-169::terminal::1",
+    "templatetags/shared.py::formlabel::138-138::entry::1",
+    "templatetags/shared.py::formlabel::138-138::exit::1",
+    "templatetags/shared.py::formlabel::139-139::terminal::1",
+    "views/auth.py::form_invalid::25-25::entry::1",
+    "views/auth.py::form_invalid::25-25::exit::1",
+    "views/auth.py::form_invalid::26-32::block::1",
+    "views/auth.py::form_invalid::33-33::terminal::1",
+    "views/auth.py::get_context_data::18-18::entry::1",
+    "views/auth.py::get_context_data::18-18::exit::1",
+    "views/auth.py::get_context_data::19-22::block::1",
+    "views/auth.py::get_context_data::23-23::terminal::1",
+    "views/auth.py::get_form::13-13::entry::1",
+    "views/auth.py::get_form::13-13::exit::1",
+    "views/auth.py::get_form::14-15::block::1",
+    "views/auth.py::get_form::16-16::terminal::1"
+   ],
+   "writer_blocks": [
+    "views/auth.py::get_context_data::19-22::block::1"
+   ],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    122
+   ],
+   "step_spans": [
+    [
+     0,
+     122
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool",
+    "form:generic-boundary"
+   ],
+   "error": null
+  },
+  {
+   "index": 22,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/login/",
+     "form": {
+      "username": "lduser",
+      "password": "ldpass"
+     }
+    },
+    {
+     "method": "POST",
+     "path": "/login/",
+     "form": {
+      "username": "lduser",
+      "password": "ldpass"
+     }
+    }
+   ],
+   "sequence_hash": "17617e092756582d",
+   "covered_blocks": [
+    "middlewares.py::__call__::29-29::entry::1",
+    "middlewares.py::__call__::29-29::exit::1",
+    "middlewares.py::__call__::32-32::block::1",
+    "middlewares.py::__call__::35-35::block::1",
+    "middlewares.py::__call__::38-38::branch::1",
+    "middlewares.py::__call__::39-39::block::1",
+    "middlewares.py::__call__::42-42::branch::1",
+    "middlewares.py::__call__::45-45::block::1",
+    "middlewares.py::__call__::47-47::block::1",
+    "middlewares.py::__call__::49-49::terminal::1",
+    "middlewares.py::__init__::26-26::entry::1",
+    "middlewares.py::__init__::26-26::exit::1",
+    "middlewares.py::__init__::27-27::block::1",
+    "middlewares.py::__init__::64-66::block::1",
+    "middlewares.py::__init__::67-67::branch::1",
+    "middlewares.py::__init__::68-68::block::1",
+    "middlewares.py::__init__::69-69::branch::1",
+    "middlewares.py::__init__::70-70::terminal::1",
+    "middlewares.py::__init__::81-81::branch::1",
+    "middlewares.py::__init__::82-82::terminal::1",
+    "models.py::create_user_profile::475-475::entry::1",
+    "models.py::create_user_profile::475-475::exit::1",
+    "models.py::create_user_profile::476-476::branch::1",
+    "models.py::get::561-561::entry::1",
+    "models.py::get::561-561::exit::1",
+    "models.py::get::562-562::block::1",
+    "models.py::get::563-563::branch::1",
+    "models.py::get::566-566::terminal::1",
+    "models.py::save::465-465::branch::1",
+    "models.py::save::470-470::block::1",
+    "models.py::save::471-471::block::1",
+    "models.py::save::98-98::entry::1",
+    "models.py::save::98-98::exit::1",
+    "models.py::save_user_profile::481-481::entry::1",
+    "models.py::save_user_profile::481-481::exit::1",
+    "models.py::save_user_profile::482-482::block::1",
+    "views/auth.py::get_form::13-13::entry::1",
+    "views/auth.py::get_form::13-13::exit::1",
+    "views/auth.py::get_form::14-15::block::1",
+    "views/auth.py::get_form::16-16::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": true,
+   "distance": null,
+   "score": 499.98,
+   "status": "EXPLORE",
+   "session_values": {
+    "_auth_user_id": "1",
+    "_auth_user_backend": "django.contrib.auth.backends.ModelBackend",
+    "_auth_user_hash": "834bf0aafb7d407acb6387a0e0bb365a76e669a3045b85d5a1731509de64d0d3"
+   },
+   "session_verdict": "VERIFIED_TRUE",
+   "session_witness": {
+    "values": {
+     "_auth_user_id": "1",
+     "_auth_user_backend": "django.contrib.auth.backends.ModelBackend",
+     "_auth_user_hash": "834bf0aafb7d407acb6387a0e0bb365a76e669a3045b85d5a1731509de64d0d3"
+    },
+    "conditions": [
+     {
+      "key_kind": "CONST",
+      "key_expr": "_auth_user_id",
+      "op": "EXISTS",
+      "value": null,
+      "value_kind": "NONE",
+      "direction": "true",
+      "guard_block": "views/bookmarks.py::index::43-43::entry::1",
+      "source_file": "views/bookmarks.py",
+      "source_line": 43,
+      "source_col": 0,
+      "reader_site_id": "ld-bookmarks",
+      "resolvable": true,
+      "note": ""
+     }
+    ],
+    "verdict": {
+     "verdict": "VERIFIED_TRUE",
+     "evidence": "runtime_verified",
+     "reason": "all-true",
+     "conditions": [
+      {
+       "condition": {
+        "key_kind": "CONST",
+        "key_expr": "_auth_user_id",
+        "op": "EXISTS",
+        "value": null,
+        "value_kind": "NONE",
+        "direction": "true",
+        "guard_block": "views/bookmarks.py::index::43-43::entry::1",
+        "source_file": "views/bookmarks.py",
+        "source_line": 43,
+        "source_col": 0,
+        "reader_site_id": "ld-bookmarks",
+        "resolvable": true,
+        "note": ""
+       },
+       "verdict": "VERIFIED_TRUE",
+       "evidence": "runtime_verified",
+       "reason": "observed",
+       "observation": {
+        "key": "Session._auth_user_id.exists{client-0@session}",
+        "value": true,
+        "evidence": "runtime_verified",
+        "source": "session_cookie:client-0:after_response:guard=views/bookmarks.py::index::43-43::entry::1:line=43",
+        "observed_value": "1",
+        "value_kind": "STRING"
+       }
+      }
+     ],
+     "observations": [
+      {
+       "key": "Session._auth_user_id.exists{client-0@session}",
+       "value": true,
+       "evidence": "runtime_verified",
+       "source": "session_cookie:client-0:after_response:guard=views/bookmarks.py::index::43-43::entry::1:line=43",
+       "observed_value": "1",
+       "value_kind": "STRING"
+      }
+     ]
+    }
+   },
+   "trace_span": [
+    0,
+    61
+   ],
+   "step_spans": [
+    [
+     0,
+     47
+    ],
+    [
+     47,
+     61
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool"
+   ],
+   "error": null
+  },
+  {
+   "index": 23,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/login/",
+     "form": {
+      "username": "ldpass",
+      "password": "ldpass"
+     }
+    }
+   ],
+   "sequence_hash": "6f527b3e8b639eda",
+   "covered_blocks": [
+    "context_processors.py::app_version::20-20::entry::1",
+    "context_processors.py::app_version::20-20::exit::1",
+    "context_processors.py::app_version::21-21::terminal::1",
+    "context_processors.py::toasts::14-14::terminal::1",
+    "context_processors.py::toasts::5-5::entry::1",
+    "context_processors.py::toasts::5-5::exit::1",
+    "context_processors.py::toasts::6-12::block::1",
+    "middlewares.py::__call__::29-29::entry::1",
+    "middlewares.py::__call__::29-29::exit::1",
+    "middlewares.py::__call__::32-32::block::1",
+    "middlewares.py::__call__::35-35::block::1",
+    "middlewares.py::__call__::38-38::branch::1",
+    "middlewares.py::__call__::42-42::branch::1",
+    "middlewares.py::__call__::45-45::block::1",
+    "middlewares.py::__call__::47-47::block::1",
+    "middlewares.py::__call__::49-49::terminal::1",
+    "middlewares.py::__init__::26-26::entry::1",
+    "middlewares.py::__init__::26-26::exit::1",
+    "middlewares.py::__init__::27-27::block::1",
+    "middlewares.py::__init__::64-66::block::1",
+    "middlewares.py::__init__::67-67::branch::1",
+    "middlewares.py::__init__::68-68::block::1",
+    "middlewares.py::__init__::69-69::branch::1",
+    "middlewares.py::__init__::70-70::terminal::1",
+    "middlewares.py::__init__::81-81::branch::1",
+    "middlewares.py::__init__::82-82::terminal::1",
+    "models.py::get::561-561::entry::1",
+    "models.py::get::561-561::exit::1",
+    "models.py::get::562-562::block::1",
+    "models.py::get::563-563::branch::1",
+    "models.py::get::566-566::terminal::1",
+    "templatetags/shared.py::append_attr::129-129::entry::1",
+    "templatetags/shared.py::append_attr::129-129::exit::1",
+    "templatetags/shared.py::append_attr::130-130::block::1",
+    "templatetags/shared.py::append_attr::131-131::branch::1",
+    "templatetags/shared.py::append_attr::134-134::block::1",
+    "templatetags/shared.py::formfield::145-145::entry::1",
+    "templatetags/shared.py::formfield::145-145::exit::1",
+    "templatetags/shared.py::formfield::146-148::block::1",
+    "templatetags/shared.py::formfield::149-149::branch::1",
+    "templatetags/shared.py::formfield::152-152::branch::1",
+    "templatetags/shared.py::formfield::155-155::block::1",
+    "templatetags/shared.py::formfield::156-156::branch::1",
+    "templatetags/shared.py::formfield::159-159::branch::1",
+    "templatetags/shared.py::formfield::160-160::block::1",
+    "templatetags/shared.py::formfield::160-160::callsite::1",
+    "templatetags/shared.py::formfield::160-160::returnsite::1",
+    "templatetags/shared.py::formfield::162-162::branch::1",
+    "templatetags/shared.py::formfield::163-163::block::1",
+    "templatetags/shared.py::formfield::164-164::branch::1",
+    "templatetags/shared.py::formfield::165-165::block::1",
+    "templatetags/shared.py::formfield::165-165::callsite::1",
+    "templatetags/shared.py::formfield::165-165::returnsite::1",
+    "templatetags/shared.py::formfield::169-169::terminal::1",
+    "templatetags/shared.py::formlabel::138-138::entry::1",
+    "templatetags/shared.py::formlabel::138-138::exit::1",
+    "templatetags/shared.py::formlabel::139-139::terminal::1",
+    "views/auth.py::form_invalid::25-25::entry::1",
+    "views/auth.py::form_invalid::25-25::exit::1",
+    "views/auth.py::form_invalid::26-32::block::1",
+    "views/auth.py::form_invalid::33-33::terminal::1",
+    "views/auth.py::get_context_data::18-18::entry::1",
+    "views/auth.py::get_context_data::18-18::exit::1",
+    "views/auth.py::get_context_data::19-22::block::1",
+    "views/auth.py::get_context_data::23-23::terminal::1",
+    "views/auth.py::get_form::13-13::entry::1",
+    "views/auth.py::get_form::13-13::exit::1",
+    "views/auth.py::get_form::14-15::block::1",
+    "views/auth.py::get_form::16-16::terminal::1"
+   ],
+   "writer_blocks": [
+    "views/auth.py::get_context_data::19-22::block::1"
+   ],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    122
+   ],
+   "step_spans": [
+    [
+     0,
+     122
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool"
+   ],
+   "error": null
+  },
+  {
+   "index": 24,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/login/",
+     "form": {
+      "username": false,
+      "password": "ldpass"
+     }
+    }
+   ],
+   "sequence_hash": "fe32baca4a8e6890",
+   "covered_blocks": [
+    "context_processors.py::app_version::20-20::entry::1",
+    "context_processors.py::app_version::20-20::exit::1",
+    "context_processors.py::app_version::21-21::terminal::1",
+    "context_processors.py::toasts::14-14::terminal::1",
+    "context_processors.py::toasts::5-5::entry::1",
+    "context_processors.py::toasts::5-5::exit::1",
+    "context_processors.py::toasts::6-12::block::1",
+    "middlewares.py::__call__::29-29::entry::1",
+    "middlewares.py::__call__::29-29::exit::1",
+    "middlewares.py::__call__::32-32::block::1",
+    "middlewares.py::__call__::35-35::block::1",
+    "middlewares.py::__call__::38-38::branch::1",
+    "middlewares.py::__call__::42-42::branch::1",
+    "middlewares.py::__call__::45-45::block::1",
+    "middlewares.py::__call__::47-47::block::1",
+    "middlewares.py::__call__::49-49::terminal::1",
+    "middlewares.py::__init__::26-26::entry::1",
+    "middlewares.py::__init__::26-26::exit::1",
+    "middlewares.py::__init__::27-27::block::1",
+    "middlewares.py::__init__::64-66::block::1",
+    "middlewares.py::__init__::67-67::branch::1",
+    "middlewares.py::__init__::68-68::block::1",
+    "middlewares.py::__init__::69-69::branch::1",
+    "middlewares.py::__init__::70-70::terminal::1",
+    "middlewares.py::__init__::81-81::branch::1",
+    "middlewares.py::__init__::82-82::terminal::1",
+    "models.py::get::561-561::entry::1",
+    "models.py::get::561-561::exit::1",
+    "models.py::get::562-562::block::1",
+    "models.py::get::563-563::branch::1",
+    "models.py::get::566-566::terminal::1",
+    "templatetags/shared.py::append_attr::129-129::entry::1",
+    "templatetags/shared.py::append_attr::129-129::exit::1",
+    "templatetags/shared.py::append_attr::130-130::block::1",
+    "templatetags/shared.py::append_attr::131-131::branch::1",
+    "templatetags/shared.py::append_attr::134-134::block::1",
+    "templatetags/shared.py::formfield::145-145::entry::1",
+    "templatetags/shared.py::formfield::145-145::exit::1",
+    "templatetags/shared.py::formfield::146-148::block::1",
+    "templatetags/shared.py::formfield::149-149::branch::1",
+    "templatetags/shared.py::formfield::152-152::branch::1",
+    "templatetags/shared.py::formfield::155-155::block::1",
+    "templatetags/shared.py::formfield::156-156::branch::1",
+    "templatetags/shared.py::formfield::159-159::branch::1",
+    "templatetags/shared.py::formfield::160-160::block::1",
+    "templatetags/shared.py::formfield::160-160::callsite::1",
+    "templatetags/shared.py::formfield::160-160::returnsite::1",
+    "templatetags/shared.py::formfield::162-162::branch::1",
+    "templatetags/shared.py::formfield::163-163::block::1",
+    "templatetags/shared.py::formfield::164-164::branch::1",
+    "templatetags/shared.py::formfield::165-165::block::1",
+    "templatetags/shared.py::formfield::165-165::callsite::1",
+    "templatetags/shared.py::formfield::165-165::returnsite::1",
+    "templatetags/shared.py::formfield::169-169::terminal::1",
+    "templatetags/shared.py::formlabel::138-138::entry::1",
+    "templatetags/shared.py::formlabel::138-138::exit::1",
+    "templatetags/shared.py::formlabel::139-139::terminal::1",
+    "views/auth.py::form_invalid::25-25::entry::1",
+    "views/auth.py::form_invalid::25-25::exit::1",
+    "views/auth.py::form_invalid::26-32::block::1",
+    "views/auth.py::form_invalid::33-33::terminal::1",
+    "views/auth.py::get_context_data::18-18::entry::1",
+    "views/auth.py::get_context_data::18-18::exit::1",
+    "views/auth.py::get_context_data::19-22::block::1",
+    "views/auth.py::get_context_data::23-23::terminal::1",
+    "views/auth.py::get_form::13-13::entry::1",
+    "views/auth.py::get_form::13-13::exit::1",
+    "views/auth.py::get_form::14-15::block::1",
+    "views/auth.py::get_form::16-16::terminal::1"
+   ],
+   "writer_blocks": [
+    "views/auth.py::get_context_data::19-22::block::1"
+   ],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    122
+   ],
+   "step_spans": [
+    [
+     0,
+     122
+    ]
+   ],
+   "candidate_sources": [
+    "form:generic-boundary",
+    "form:single-request-pool"
+   ],
+   "error": null
+  },
+  {
+   "index": 25,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/login/",
+     "form": {
+      "username": "lduser",
+      "password": true
+     }
+    }
+   ],
+   "sequence_hash": "ff29935ad68bbbf2",
+   "covered_blocks": [
+    "context_processors.py::app_version::20-20::entry::1",
+    "context_processors.py::app_version::20-20::exit::1",
+    "context_processors.py::app_version::21-21::terminal::1",
+    "context_processors.py::toasts::14-14::terminal::1",
+    "context_processors.py::toasts::5-5::entry::1",
+    "context_processors.py::toasts::5-5::exit::1",
+    "context_processors.py::toasts::6-12::block::1",
+    "middlewares.py::__call__::29-29::entry::1",
+    "middlewares.py::__call__::29-29::exit::1",
+    "middlewares.py::__call__::32-32::block::1",
+    "middlewares.py::__call__::35-35::block::1",
+    "middlewares.py::__call__::38-38::branch::1",
+    "middlewares.py::__call__::42-42::branch::1",
+    "middlewares.py::__call__::45-45::block::1",
+    "middlewares.py::__call__::47-47::block::1",
+    "middlewares.py::__call__::49-49::terminal::1",
+    "middlewares.py::__init__::26-26::entry::1",
+    "middlewares.py::__init__::26-26::exit::1",
+    "middlewares.py::__init__::27-27::block::1",
+    "middlewares.py::__init__::64-66::block::1",
+    "middlewares.py::__init__::67-67::branch::1",
+    "middlewares.py::__init__::68-68::block::1",
+    "middlewares.py::__init__::69-69::branch::1",
+    "middlewares.py::__init__::70-70::terminal::1",
+    "middlewares.py::__init__::81-81::branch::1",
+    "middlewares.py::__init__::82-82::terminal::1",
+    "models.py::get::561-561::entry::1",
+    "models.py::get::561-561::exit::1",
+    "models.py::get::562-562::block::1",
+    "models.py::get::563-563::branch::1",
+    "models.py::get::566-566::terminal::1",
+    "templatetags/shared.py::append_attr::129-129::entry::1",
+    "templatetags/shared.py::append_attr::129-129::exit::1",
+    "templatetags/shared.py::append_attr::130-130::block::1",
+    "templatetags/shared.py::append_attr::131-131::branch::1",
+    "templatetags/shared.py::append_attr::134-134::block::1",
+    "templatetags/shared.py::formfield::145-145::entry::1",
+    "templatetags/shared.py::formfield::145-145::exit::1",
+    "templatetags/shared.py::formfield::146-148::block::1",
+    "templatetags/shared.py::formfield::149-149::branch::1",
+    "templatetags/shared.py::formfield::152-152::branch::1",
+    "templatetags/shared.py::formfield::155-155::block::1",
+    "templatetags/shared.py::formfield::156-156::branch::1",
+    "templatetags/shared.py::formfield::159-159::branch::1",
+    "templatetags/shared.py::formfield::160-160::block::1",
+    "templatetags/shared.py::formfield::160-160::callsite::1",
+    "templatetags/shared.py::formfield::160-160::returnsite::1",
+    "templatetags/shared.py::formfield::162-162::branch::1",
+    "templatetags/shared.py::formfield::163-163::block::1",
+    "templatetags/shared.py::formfield::164-164::branch::1",
+    "templatetags/shared.py::formfield::165-165::block::1",
+    "templatetags/shared.py::formfield::165-165::callsite::1",
+    "templatetags/shared.py::formfield::165-165::returnsite::1",
+    "templatetags/shared.py::formfield::169-169::terminal::1",
+    "templatetags/shared.py::formlabel::138-138::entry::1",
+    "templatetags/shared.py::formlabel::138-138::exit::1",
+    "templatetags/shared.py::formlabel::139-139::terminal::1",
+    "views/auth.py::form_invalid::25-25::entry::1",
+    "views/auth.py::form_invalid::25-25::exit::1",
+    "views/auth.py::form_invalid::26-32::block::1",
+    "views/auth.py::form_invalid::33-33::terminal::1",
+    "views/auth.py::get_context_data::18-18::entry::1",
+    "views/auth.py::get_context_data::18-18::exit::1",
+    "views/auth.py::get_context_data::19-22::block::1",
+    "views/auth.py::get_context_data::23-23::terminal::1",
+    "views/auth.py::get_form::13-13::entry::1",
+    "views/auth.py::get_form::13-13::exit::1",
+    "views/auth.py::get_form::14-15::block::1",
+    "views/auth.py::get_form::16-16::terminal::1"
+   ],
+   "writer_blocks": [
+    "views/auth.py::get_context_data::19-22::block::1"
+   ],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    122
+   ],
+   "step_spans": [
+    [
+     0,
+     122
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool",
+    "form:generic-boundary"
+   ],
+   "error": null
+  },
+  {
+   "index": 26,
+   "steps": [
+    {
+     "method": "GET",
+     "path": "/"
+    },
+    {
+     "method": "GET",
+     "path": "/bookmarks"
+    }
+   ],
+   "sequence_hash": "a667dd83d3aac580",
+   "covered_blocks": [
+    "middlewares.py::__call__::29-29::entry::1",
+    "middlewares.py::__call__::29-29::exit::1",
+    "middlewares.py::__call__::32-32::block::1",
+    "middlewares.py::__call__::35-35::block::1",
+    "middlewares.py::__call__::38-38::branch::1",
+    "middlewares.py::__call__::42-42::branch::1",
+    "middlewares.py::__call__::45-45::block::1",
+    "middlewares.py::__call__::47-47::block::1",
+    "middlewares.py::__call__::49-49::terminal::1",
+    "middlewares.py::__init__::26-26::entry::1",
+    "middlewares.py::__init__::26-26::exit::1",
+    "middlewares.py::__init__::27-27::block::1",
+    "middlewares.py::__init__::64-66::block::1",
+    "middlewares.py::__init__::67-67::branch::1",
+    "middlewares.py::__init__::68-68::block::1",
+    "middlewares.py::__init__::69-69::branch::1",
+    "middlewares.py::__init__::70-70::terminal::1",
+    "middlewares.py::__init__::81-81::branch::1",
+    "middlewares.py::__init__::82-82::terminal::1",
+    "models.py::get::561-561::entry::1",
+    "models.py::get::561-561::exit::1",
+    "models.py::get::562-562::block::1",
+    "models.py::get::563-563::branch::1",
+    "models.py::get::566-566::terminal::1",
+    "utils.py::redirect_with_query::150-150::entry::1",
+    "utils.py::redirect_with_query::150-150::exit::1",
+    "utils.py::redirect_with_query::151-151::block::1",
+    "utils.py::redirect_with_query::152-152::branch::1",
+    "utils.py::redirect_with_query::155-155::terminal::1",
+    "views/root.py::root::10-10::branch::1",
+    "views/root.py::root::11-11::block::1",
+    "views/root.py::root::13-13::branch::1",
+    "views/root.py::root::18-18::callsite::1",
+    "views/root.py::root::18-18::returnsite::1",
+    "views/root.py::root::18-18::terminal::1",
+    "views/root.py::root::7-7::entry::1",
+    "views/root.py::root::7-7::exit::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.02,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    57
+   ],
+   "step_spans": [
+    [
+     0,
+     42
+    ],
+    [
+     42,
+     57
+    ]
+   ],
+   "candidate_sources": [],
+   "error": null
+  },
+  {
+   "index": 27,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/logout/",
+     "form": {}
+    },
+    {
+     "method": "POST",
+     "path": "/logout/",
+     "form": {}
+    }
+   ],
+   "sequence_hash": "16e05062cdd29b13",
+   "covered_blocks": [
+    "middlewares.py::__call__::29-29::entry::1",
+    "middlewares.py::__call__::29-29::exit::1",
+    "middlewares.py::__call__::32-32::block::1",
+    "middlewares.py::__call__::35-35::block::1",
+    "middlewares.py::__call__::38-38::branch::1",
+    "middlewares.py::__call__::42-42::branch::1",
+    "middlewares.py::__call__::45-45::block::1",
+    "middlewares.py::__call__::47-47::block::1",
+    "middlewares.py::__call__::49-49::terminal::1",
+    "middlewares.py::__init__::26-26::entry::1",
+    "middlewares.py::__init__::26-26::exit::1",
+    "middlewares.py::__init__::27-27::block::1",
+    "middlewares.py::__init__::64-66::block::1",
+    "middlewares.py::__init__::67-67::branch::1",
+    "middlewares.py::__init__::68-68::block::1",
+    "middlewares.py::__init__::69-69::branch::1",
+    "middlewares.py::__init__::70-70::terminal::1",
+    "middlewares.py::__init__::81-81::branch::1",
+    "middlewares.py::__init__::82-82::terminal::1",
+    "models.py::get::561-561::entry::1",
+    "models.py::get::561-561::exit::1",
+    "models.py::get::562-562::block::1",
+    "models.py::get::563-563::branch::1",
+    "models.py::get::566-566::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.02,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    46
+   ],
+   "step_spans": [
+    [
+     0,
+     31
+    ],
+    [
+     31,
+     46
+    ]
+   ],
+   "candidate_sources": [],
+   "error": null
+  },
+  {
+   "index": 28,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/login/",
+     "form": {
+      "username": "",
+      "password": "ldpass"
+     }
+    }
+   ],
+   "sequence_hash": "93b9dc10728df567",
+   "covered_blocks": [
+    "context_processors.py::app_version::20-20::entry::1",
+    "context_processors.py::app_version::20-20::exit::1",
+    "context_processors.py::app_version::21-21::terminal::1",
+    "context_processors.py::toasts::14-14::terminal::1",
+    "context_processors.py::toasts::5-5::entry::1",
+    "context_processors.py::toasts::5-5::exit::1",
+    "context_processors.py::toasts::6-12::block::1",
+    "middlewares.py::__call__::29-29::entry::1",
+    "middlewares.py::__call__::29-29::exit::1",
+    "middlewares.py::__call__::32-32::block::1",
+    "middlewares.py::__call__::35-35::block::1",
+    "middlewares.py::__call__::38-38::branch::1",
+    "middlewares.py::__call__::42-42::branch::1",
+    "middlewares.py::__call__::45-45::block::1",
+    "middlewares.py::__call__::47-47::block::1",
+    "middlewares.py::__call__::49-49::terminal::1",
+    "middlewares.py::__init__::26-26::entry::1",
+    "middlewares.py::__init__::26-26::exit::1",
+    "middlewares.py::__init__::27-27::block::1",
+    "middlewares.py::__init__::64-66::block::1",
+    "middlewares.py::__init__::67-67::branch::1",
+    "middlewares.py::__init__::68-68::block::1",
+    "middlewares.py::__init__::69-69::branch::1",
+    "middlewares.py::__init__::70-70::terminal::1",
+    "middlewares.py::__init__::81-81::branch::1",
+    "middlewares.py::__init__::82-82::terminal::1",
+    "models.py::get::561-561::entry::1",
+    "models.py::get::561-561::exit::1",
+    "models.py::get::562-562::block::1",
+    "models.py::get::563-563::branch::1",
+    "models.py::get::566-566::terminal::1",
+    "templatetags/shared.py::append_attr::129-129::entry::1",
+    "templatetags/shared.py::append_attr::129-129::exit::1",
+    "templatetags/shared.py::append_attr::130-130::block::1",
+    "templatetags/shared.py::append_attr::131-131::branch::1",
+    "templatetags/shared.py::append_attr::132-132::block::1",
+    "templatetags/shared.py::append_attr::134-134::block::1",
+    "templatetags/shared.py::formfield::145-145::entry::1",
+    "templatetags/shared.py::formfield::145-145::exit::1",
+    "templatetags/shared.py::formfield::146-148::block::1",
+    "templatetags/shared.py::formfield::149-149::branch::1",
+    "templatetags/shared.py::formfield::152-152::branch::1",
+    "templatetags/shared.py::formfield::155-155::block::1",
+    "templatetags/shared.py::formfield::156-156::branch::1",
+    "templatetags/shared.py::formfield::157-157::callsite::1",
+    "templatetags/shared.py::formfield::157-157::returnsite::1",
+    "templatetags/shared.py::formfield::157-158::block::1",
+    "templatetags/shared.py::formfield::158-158::callsite::2",
+    "templatetags/shared.py::formfield::158-158::returnsite::2",
+    "templatetags/shared.py::formfield::159-159::branch::1",
+    "templatetags/shared.py::formfield::160-160::block::1",
+    "templatetags/shared.py::formfield::160-160::callsite::1",
+    "templatetags/shared.py::formfield::160-160::returnsite::1",
+    "templatetags/shared.py::formfield::162-162::branch::1",
+    "templatetags/shared.py::formfield::163-163::block::1",
+    "templatetags/shared.py::formfield::164-164::branch::1",
+    "templatetags/shared.py::formfield::165-165::block::1",
+    "templatetags/shared.py::formfield::165-165::callsite::1",
+    "templatetags/shared.py::formfield::165-165::returnsite::1",
+    "templatetags/shared.py::formfield::169-169::terminal::1",
+    "templatetags/shared.py::formlabel::138-138::entry::1",
+    "templatetags/shared.py::formlabel::138-138::exit::1",
+    "templatetags/shared.py::formlabel::139-139::terminal::1",
+    "views/auth.py::form_invalid::25-25::entry::1",
+    "views/auth.py::form_invalid::25-25::exit::1",
+    "views/auth.py::form_invalid::26-32::block::1",
+    "views/auth.py::form_invalid::33-33::terminal::1",
+    "views/auth.py::get_context_data::18-18::entry::1",
+    "views/auth.py::get_context_data::18-18::exit::1",
+    "views/auth.py::get_context_data::19-22::block::1",
+    "views/auth.py::get_context_data::23-23::terminal::1",
+    "views/auth.py::get_form::13-13::entry::1",
+    "views/auth.py::get_form::13-13::exit::1",
+    "views/auth.py::get_form::14-15::block::1",
+    "views/auth.py::get_form::16-16::terminal::1"
+   ],
+   "writer_blocks": [
+    "views/auth.py::get_context_data::19-22::block::1"
+   ],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    128
+   ],
+   "step_spans": [
+    [
+     0,
+     128
+    ]
+   ],
+   "candidate_sources": [
+    "form:generic-boundary",
+    "form:single-request-pool"
+   ],
+   "error": null
+  },
+  {
+   "index": 29,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/login/",
+     "form": {
+      "username": "lduser",
+      "password": "ldpass"
+     }
+    },
+    {
+     "method": "POST",
+     "path": "/logout/",
+     "form": {}
+    }
+   ],
+   "sequence_hash": "0f2d61567c3bd6a8",
+   "covered_blocks": [
+    "middlewares.py::__call__::29-29::entry::1",
+    "middlewares.py::__call__::29-29::exit::1",
+    "middlewares.py::__call__::32-32::block::1",
+    "middlewares.py::__call__::35-35::block::1",
+    "middlewares.py::__call__::38-38::branch::1",
+    "middlewares.py::__call__::39-39::block::1",
+    "middlewares.py::__call__::42-42::branch::1",
+    "middlewares.py::__call__::45-45::block::1",
+    "middlewares.py::__call__::47-47::block::1",
+    "middlewares.py::__call__::49-49::terminal::1",
+    "middlewares.py::__init__::26-26::entry::1",
+    "middlewares.py::__init__::26-26::exit::1",
+    "middlewares.py::__init__::27-27::block::1",
+    "middlewares.py::__init__::64-66::block::1",
+    "middlewares.py::__init__::67-67::branch::1",
+    "middlewares.py::__init__::68-68::block::1",
+    "middlewares.py::__init__::69-69::branch::1",
+    "middlewares.py::__init__::70-70::terminal::1",
+    "middlewares.py::__init__::81-81::branch::1",
+    "middlewares.py::__init__::82-82::terminal::1",
+    "models.py::create_user_profile::475-475::entry::1",
+    "models.py::create_user_profile::475-475::exit::1",
+    "models.py::create_user_profile::476-476::branch::1",
+    "models.py::get::561-561::entry::1",
+    "models.py::get::561-561::exit::1",
+    "models.py::get::562-562::block::1",
+    "models.py::get::563-563::branch::1",
+    "models.py::get::566-566::terminal::1",
+    "models.py::save::465-465::branch::1",
+    "models.py::save::470-470::block::1",
+    "models.py::save::471-471::block::1",
+    "models.py::save::98-98::entry::1",
+    "models.py::save::98-98::exit::1",
+    "models.py::save_user_profile::481-481::entry::1",
+    "models.py::save_user_profile::481-481::exit::1",
+    "models.py::save_user_profile::482-482::block::1",
+    "views/auth.py::get_form::13-13::entry::1",
+    "views/auth.py::get_form::13-13::exit::1",
+    "views/auth.py::get_form::14-15::block::1",
+    "views/auth.py::get_form::16-16::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.02,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    61
+   ],
+   "step_spans": [
+    [
+     0,
+     47
+    ],
+    [
+     47,
+     61
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool"
+   ],
+   "error": null
+  },
+  {
+   "index": 30,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/login/",
+     "form": {
+      "username": "lduser",
+      "password": false
+     }
+    }
+   ],
+   "sequence_hash": "fae05d8b20fa21ce",
+   "covered_blocks": [
+    "context_processors.py::app_version::20-20::entry::1",
+    "context_processors.py::app_version::20-20::exit::1",
+    "context_processors.py::app_version::21-21::terminal::1",
+    "context_processors.py::toasts::14-14::terminal::1",
+    "context_processors.py::toasts::5-5::entry::1",
+    "context_processors.py::toasts::5-5::exit::1",
+    "context_processors.py::toasts::6-12::block::1",
+    "middlewares.py::__call__::29-29::entry::1",
+    "middlewares.py::__call__::29-29::exit::1",
+    "middlewares.py::__call__::32-32::block::1",
+    "middlewares.py::__call__::35-35::block::1",
+    "middlewares.py::__call__::38-38::branch::1",
+    "middlewares.py::__call__::42-42::branch::1",
+    "middlewares.py::__call__::45-45::block::1",
+    "middlewares.py::__call__::47-47::block::1",
+    "middlewares.py::__call__::49-49::terminal::1",
+    "middlewares.py::__init__::26-26::entry::1",
+    "middlewares.py::__init__::26-26::exit::1",
+    "middlewares.py::__init__::27-27::block::1",
+    "middlewares.py::__init__::64-66::block::1",
+    "middlewares.py::__init__::67-67::branch::1",
+    "middlewares.py::__init__::68-68::block::1",
+    "middlewares.py::__init__::69-69::branch::1",
+    "middlewares.py::__init__::70-70::terminal::1",
+    "middlewares.py::__init__::81-81::branch::1",
+    "middlewares.py::__init__::82-82::terminal::1",
+    "models.py::get::561-561::entry::1",
+    "models.py::get::561-561::exit::1",
+    "models.py::get::562-562::block::1",
+    "models.py::get::563-563::branch::1",
+    "models.py::get::566-566::terminal::1",
+    "templatetags/shared.py::append_attr::129-129::entry::1",
+    "templatetags/shared.py::append_attr::129-129::exit::1",
+    "templatetags/shared.py::append_attr::130-130::block::1",
+    "templatetags/shared.py::append_attr::131-131::branch::1",
+    "templatetags/shared.py::append_attr::134-134::block::1",
+    "templatetags/shared.py::formfield::145-145::entry::1",
+    "templatetags/shared.py::formfield::145-145::exit::1",
+    "templatetags/shared.py::formfield::146-148::block::1",
+    "templatetags/shared.py::formfield::149-149::branch::1",
+    "templatetags/shared.py::formfield::152-152::branch::1",
+    "templatetags/shared.py::formfield::155-155::block::1",
+    "templatetags/shared.py::formfield::156-156::branch::1",
+    "templatetags/shared.py::formfield::159-159::branch::1",
+    "templatetags/shared.py::formfield::160-160::block::1",
+    "templatetags/shared.py::formfield::160-160::callsite::1",
+    "templatetags/shared.py::formfield::160-160::returnsite::1",
+    "templatetags/shared.py::formfield::162-162::branch::1",
+    "templatetags/shared.py::formfield::163-163::block::1",
+    "templatetags/shared.py::formfield::164-164::branch::1",
+    "templatetags/shared.py::formfield::165-165::block::1",
+    "templatetags/shared.py::formfield::165-165::callsite::1",
+    "templatetags/shared.py::formfield::165-165::returnsite::1",
+    "templatetags/shared.py::formfield::169-169::terminal::1",
+    "templatetags/shared.py::formlabel::138-138::entry::1",
+    "templatetags/shared.py::formlabel::138-138::exit::1",
+    "templatetags/shared.py::formlabel::139-139::terminal::1",
+    "views/auth.py::form_invalid::25-25::entry::1",
+    "views/auth.py::form_invalid::25-25::exit::1",
+    "views/auth.py::form_invalid::26-32::block::1",
+    "views/auth.py::form_invalid::33-33::terminal::1",
+    "views/auth.py::get_context_data::18-18::entry::1",
+    "views/auth.py::get_context_data::18-18::exit::1",
+    "views/auth.py::get_context_data::19-22::block::1",
+    "views/auth.py::get_context_data::23-23::terminal::1",
+    "views/auth.py::get_form::13-13::entry::1",
+    "views/auth.py::get_form::13-13::exit::1",
+    "views/auth.py::get_form::14-15::block::1",
+    "views/auth.py::get_form::16-16::terminal::1"
+   ],
+   "writer_blocks": [
+    "views/auth.py::get_context_data::19-22::block::1"
+   ],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    122
+   ],
+   "step_spans": [
+    [
+     0,
+     122
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool",
+    "form:generic-boundary"
+   ],
+   "error": null
+  },
+  {
+   "index": 31,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/login/",
+     "form": {
+      "username": "lduser",
+      "password": "ldpass"
+     }
+    },
+    {
+     "method": "GET",
+     "path": "/bookmarks"
+    }
+   ],
+   "sequence_hash": "c27b780056a22bd0",
+   "covered_blocks": [
+    "context_processors.py::app_version::20-20::entry::1",
+    "context_processors.py::app_version::20-20::exit::1",
+    "context_processors.py::app_version::21-21::terminal::1",
+    "context_processors.py::toasts::14-14::terminal::1",
+    "context_processors.py::toasts::5-5::entry::1",
+    "context_processors.py::toasts::5-5::exit::1",
+    "context_processors.py::toasts::6-12::block::1",
+    "forms.py::__init__::283-285::block::1",
+    "forms.py::__init__::288-288::branch::1",
+    "forms.py::__init__::293-293::branch::1",
+    "forms.py::__init__::295-295::block::1",
+    "forms.py::__init__::296-296::branch::1",
+    "forms.py::__init__::299-299::block::1",
+    "forms.py::__init__::304-304::branch::1",
+    "forms.py::__init__::57-57::entry::1",
+    "forms.py::__init__::57-57::exit::1",
+    "middlewares.py::__call__::29-29::entry::1",
+    "middlewares.py::__call__::29-29::exit::1",
+    "middlewares.py::__call__::32-32::block::1",
+    "middlewares.py::__call__::35-35::block::1",
+    "middlewares.py::__call__::38-38::branch::1",
+    "middlewares.py::__call__::39-39::block::1",
+    "middlewares.py::__call__::42-42::branch::1",
+    "middlewares.py::__call__::45-45::block::1",
+    "middlewares.py::__call__::47-47::block::1",
+    "middlewares.py::__call__::49-49::terminal::1",
+    "middlewares.py::__init__::26-26::entry::1",
+    "middlewares.py::__init__::26-26::exit::1",
+    "middlewares.py::__init__::27-27::block::1",
+    "middlewares.py::__init__::64-66::block::1",
+    "middlewares.py::__init__::67-67::branch::1",
+    "middlewares.py::__init__::68-68::block::1",
+    "middlewares.py::__init__::69-69::branch::1",
+    "middlewares.py::__init__::70-70::terminal::1",
+    "middlewares.py::__init__::81-81::branch::1",
+    "middlewares.py::__init__::82-82::terminal::1",
+    "models.py::__init__::262-262::entry::1",
+    "models.py::__init__::262-262::exit::1",
+    "models.py::__init__::275-275::branch::1",
+    "models.py::__init__::276-276::block::1",
+    "models.py::__init__::277-287::block::1",
+    "models.py::create_user_profile::475-475::entry::1",
+    "models.py::create_user_profile::475-475::exit::1",
+    "models.py::create_user_profile::476-476::branch::1",
+    "models.py::from_request::331-331::entry::1",
+    "models.py::from_request::331-331::exit::1",
+    "models.py::from_request::332-332::block::1",
+    "models.py::from_request::333-333::branch::1",
+    "models.py::from_request::334-334::block::1",
+    "models.py::from_request::335-335::branch::1",
+    "models.py::from_request::343-343::terminal::1",
+    "models.py::get::561-561::entry::1",
+    "models.py::get::561-561::exit::1",
+    "models.py::get::562-562::block::1",
+    "models.py::get::563-563::branch::1",
+    "models.py::get::566-566::terminal::1",
+    "models.py::has_modified_preferences::310-310::entry::1",
+    "models.py::has_modified_preferences::310-310::exit::1",
+    "models.py::has_modified_preferences::311-311::terminal::1",
+    "models.py::is_modified::289-289::entry::1",
+    "models.py::is_modified::289-289::exit::1",
+    "models.py::is_modified::290-290::block::1",
+    "models.py::is_modified::291-291::terminal::1",
+    "models.py::modified_params::294-294::entry::1",
+    "models.py::modified_params::294-294::exit::1",
+    "models.py::modified_params::295-295::terminal::1",
+    "models.py::modified_preferences::298-298::entry::1",
+    "models.py::modified_preferences::298-298::exit::1",
+    "models.py::modified_preferences::299-299::terminal::1",
+    "models.py::save::465-465::branch::1",
+    "models.py::save::470-470::block::1",
+    "models.py::save::471-471::block::1",
+    "models.py::save::98-98::entry::1",
+    "models.py::save::98-98::exit::1",
+    "models.py::save_user_profile::481-481::entry::1",
+    "models.py::save_user_profile::481-481::exit::1",
+    "models.py::save_user_profile::482-482::block::1",
+    "queries.py::_base_bookmarks_query::227-227::entry::1",
+    "queries.py::_base_bookmarks_query::227-227::exit::1",
+    "queries.py::_base_bookmarks_query::232-232::block::1",
+    "queries.py::_base_bookmarks_query::235-235::branch::1",
+    "queries.py::_base_bookmarks_query::236-236::block::1",
+    "queries.py::_base_bookmarks_query::239-239::branch::1",
+    "queries.py::_base_bookmarks_query::245-245::branch::1",
+    "queries.py::_base_bookmarks_query::251-251::branch::1",
+    "queries.py::_base_bookmarks_query::254-254::block::1",
+    "queries.py::_base_bookmarks_query::254-254::callsite::1",
+    "queries.py::_base_bookmarks_query::254-254::returnsite::1",
+    "queries.py::_base_bookmarks_query::257-257::branch::1",
+    "queries.py::_base_bookmarks_query::259-259::branch::1",
+    "queries.py::_base_bookmarks_query::263-263::branch::1",
+    "queries.py::_base_bookmarks_query::265-265::branch::1",
+    "queries.py::_base_bookmarks_query::269-269::branch::1",
+    "queries.py::_base_bookmarks_query::274-274::branch::1",
+    "queries.py::_base_bookmarks_query::299-299::branch::1",
+    "queries.py::_base_bookmarks_query::301-301::branch::1",
+    "queries.py::_base_bookmarks_query::303-303::branch::1",
+    "queries.py::_base_bookmarks_query::307-307::block::1",
+    "queries.py::_base_bookmarks_query::309-309::terminal::1",
+    "queries.py::_filter_search_query::122-122::entry::1",
+    "queries.py::_filter_search_query::122-122::exit::1",
+    "queries.py::_filter_search_query::128-128::block::1",
+    "queries.py::_filter_search_query::128-128::callsite::1",
+    "queries.py::_filter_search_query::128-128::returnsite::1",
+    "queries.py::_filter_search_query::129-129::branch::1",
+    "queries.py::_filter_search_query::136-136::terminal::1",
+    "queries.py::get_tags_for_query::359-359::entry::1",
+    "queries.py::get_tags_for_query::359-359::exit::1",
+    "queries.py::get_tags_for_query::360-360::block::1",
+    "queries.py::get_tags_for_query::360-360::callsite::1",
+    "queries.py::get_tags_for_query::360-360::returnsite::1",
+    "queries.py::get_tags_for_query::362-362::branch::1",
+    "queries.py::get_tags_for_query::363-363::terminal::1",
+    "queries.py::query_bookmark_tags::312-312::entry::1",
+    "queries.py::query_bookmark_tags::312-312::exit::1",
+    "queries.py::query_bookmark_tags::315-315::callsite::1",
+    "queries.py::query_bookmark_tags::315-315::returnsite::1",
+    "queries.py::query_bookmark_tags::315-317::block::1",
+    "queries.py::query_bookmark_tags::319-319::terminal::1",
+    "queries.py::query_bookmarks::33-33::entry::1",
+    "queries.py::query_bookmarks::33-33::exit::1",
+    "queries.py::query_bookmarks::38-38::callsite::1",
+    "queries.py::query_bookmarks::38-38::returnsite::1",
+    "queries.py::query_bookmarks::38-38::terminal::1",
+    "services/search_query_parser.py::extract_tag_names_from_query::545-545::entry::1",
+    "services/search_query_parser.py::extract_tag_names_from_query::545-545::exit::1",
+    "services/search_query_parser.py::extract_tag_names_from_query::549-549::block::1",
+    "services/search_query_parser.py::extract_tag_names_from_query::549-549::callsite::1",
+    "services/search_query_parser.py::extract_tag_names_from_query::549-549::returnsite::1",
+    "services/search_query_parser.py::extract_tag_names_from_query::553-553::branch::1",
+    "services/search_query_parser.py::extract_tag_names_from_query::554-554::terminal::1",
+    "services/search_query_parser.py::parse_search_query::329-329::entry::1",
+    "services/search_query_parser.py::parse_search_query::329-329::exit::1",
+    "services/search_query_parser.py::parse_search_query::330-330::branch::1",
+    "services/search_query_parser.py::parse_search_query::331-331::terminal::1",
+    "templatetags/bookmarks.py::bookmark_search::12-12::entry::1",
+    "templatetags/bookmarks.py::bookmark_search::12-12::exit::1",
+    "templatetags/bookmarks.py::bookmark_search::13-13::block::1",
+    "templatetags/bookmarks.py::bookmark_search::15-15::branch::1",
+    "templatetags/bookmarks.py::bookmark_search::18-18::block::1",
+    "templatetags/bookmarks.py::bookmark_search::21-21::terminal::1",
+    "templatetags/shared.py::__init__::85-85::entry::1",
+    "templatetags/shared.py::__init__::85-85::exit::1",
+    "templatetags/shared.py::__init__::86-86::block::1",
+    "templatetags/shared.py::append_attr::129-129::entry::1",
+    "templatetags/shared.py::append_attr::129-129::exit::1",
+    "templatetags/shared.py::append_attr::130-130::block::1",
+    "templatetags/shared.py::append_attr::131-131::branch::1",
+    "templatetags/shared.py::append_attr::132-132::block::1",
+    "templatetags/shared.py::append_attr::134-134::block::1",
+    "templatetags/shared.py::formfield::145-145::entry::1",
+    "templatetags/shared.py::formfield::145-145::exit::1",
+    "templatetags/shared.py::formfield::146-148::block::1",
+    "templatetags/shared.py::formfield::149-149::branch::1",
+    "templatetags/shared.py::formfield::152-152::branch::1",
+    "templatetags/shared.py::formfield::155-155::block::1",
+    "templatetags/shared.py::formfield::156-156::branch::1",
+    "templatetags/shared.py::formfield::159-159::branch::1",
+    "templatetags/shared.py::formfield::160-160::block::1",
+    "templatetags/shared.py::formfield::160-160::callsite::1",
+    "templatetags/shared.py::formfield::160-160::returnsite::1",
+    "templatetags/shared.py::formfield::162-162::branch::1",
+    "templatetags/shared.py::formfield::163-163::block::1",
+    "templatetags/shared.py::formfield::164-164::branch::1",
+    "templatetags/shared.py::formfield::165-165::block::1",
+    "templatetags/shared.py::formfield::165-165::callsite::1",
+    "templatetags/shared.py::formfield::165-165::returnsite::1",
+    "templatetags/shared.py::formfield::169-169::terminal::1",
+    "templatetags/shared.py::htmlmin::78-78::entry::1",
+    "templatetags/shared.py::htmlmin::78-78::exit::1",
+    "templatetags/shared.py::htmlmin::79-80::block::1",
+    "templatetags/shared.py::htmlmin::81-81::terminal::1",
+    "templatetags/shared.py::model_to_dict_filter::72-72::entry::1",
+    "templatetags/shared.py::model_to_dict_filter::72-72::exit::1",
+    "templatetags/shared.py::model_to_dict_filter::73-73::block::1",
+    "templatetags/shared.py::model_to_dict_filter::74-74::terminal::1",
+    "templatetags/shared.py::render::88-88::entry::1",
+    "templatetags/shared.py::render::88-88::exit::1",
+    "templatetags/shared.py::render::89-91::block::1",
+    "templatetags/shared.py::render::93-93::terminal::1",
+    "utils.py::unique::21-21::entry::1",
+    "utils.py::unique::21-21::exit::1",
+    "utils.py::unique::22-22::terminal::1",
+    "views/auth.py::get_form::13-13::entry::1",
+    "views/auth.py::get_form::13-13::exit::1",
+    "views/auth.py::get_form::14-15::block::1",
+    "views/auth.py::get_form::16-16::terminal::1",
+    "views/bookmarks.py::index::43-43::entry::1",
+    "views/bookmarks.py::index::43-43::exit::1",
+    "views/bookmarks.py::index::44-44::branch::1",
+    "views/bookmarks.py::index::47-53::block::1",
+    "views/bookmarks.py::index::53-53::callsite::1",
+    "views/bookmarks.py::index::53-53::returnsite::1",
+    "views/bookmarks.py::index::57-57::callsite::1",
+    "views/bookmarks.py::index::57-57::returnsite::1",
+    "views/bookmarks.py::index::57-57::terminal::1",
+    "views/bookmarks.py::render_bookmarks_view::158-158::entry::1",
+    "views/bookmarks.py::render_bookmarks_view::158-158::exit::1",
+    "views/bookmarks.py::render_bookmarks_view::159-159::branch::1",
+    "views/bookmarks.py::render_bookmarks_view::162-162::branch::1",
+    "views/bookmarks.py::render_bookmarks_view::162-162::callsite::1",
+    "views/bookmarks.py::render_bookmarks_view::162-162::returnsite::1",
+    "views/bookmarks.py::render_bookmarks_view::165-165::terminal::1",
+    "views/contexts.py::__init__::200-241::block::1",
+    "views/contexts.py::__init__::38-38::entry::1",
+    "views/contexts.py::__init__::38-38::exit::1",
+    "views/contexts.py::__init__::39-47::block::1",
+    "views/contexts.py::__init__::400-403::block::1",
+    "views/contexts.py::__init__::464-483::block::1",
+    "views/contexts.py::__init__::48-48::branch::1",
+    "views/contexts.py::__init__::484-484::branch::1",
+    "views/contexts.py::__init__::487-490::block::1",
+    "views/contexts.py::__init__::50-50::block::1",
+    "views/contexts.py::__init__::647-659::block::1",
+    "views/contexts.py::_create_tag_groups_alphabetical::421-421::entry::1",
+    "views/contexts.py::_create_tag_groups_alphabetical::421-421::exit::1",
+    "views/contexts.py::_create_tag_groups_alphabetical::423-428::block::1",
+    "views/contexts.py::_create_tag_groups_alphabetical::431-431::branch::1",
+    "views/contexts.py::_create_tag_groups_alphabetical::443-443::branch::1",
+    "views/contexts.py::_create_tag_groups_alphabetical::445-445::terminal::1",
+    "views/contexts.py::action::68-68::entry::1",
+    "views/contexts.py::action::68-68::exit::1",
+    "views/contexts.py::action::69-69::terminal::1",
+    "views/contexts.py::create_tag_groups::412-412::entry::1",
+    "views/contexts.py::create_tag_groups::412-412::exit::1",
+    "views/contexts.py::create_tag_groups::413-413::branch::1",
+    "views/contexts.py::create_tag_groups::414-414::terminal::1",
+    "views/contexts.py::get_bookmark_query_set::74-74::entry::1",
+    "views/contexts.py::get_bookmark_query_set::74-74::exit::1",
+    "views/contexts.py::get_bookmark_query_set::86-86::terminal::1",
+    "views/contexts.py::get_details_context::628-628::entry::1",
+    "views/contexts.py::get_details_context::628-628::exit::1",
+    "views/contexts.py::get_details_context::631-631::block::1",
+    "views/contexts.py::get_details_context::632-632::branch::1",
+    "views/contexts.py::get_details_context::633-633::terminal::1",
+    "views/contexts.py::get_selected_tags::492-492::entry::1",
+    "views/contexts.py::get_selected_tags::492-492::exit::1",
+    "views/contexts.py::get_selected_tags::509-509::terminal::1",
+    "views/contexts.py::get_tag_query_set::77-77::entry::1",
+    "views/contexts.py::get_tag_query_set::77-77::exit::1",
+    "views/contexts.py::get_tag_query_set::91-91::terminal::1",
+    "views/contexts.py::get_url::55-55::entry::1",
+    "views/contexts.py::get_url::55-55::exit::1",
+    "views/contexts.py::get_url::56-56::block::1",
+    "views/contexts.py::get_url::57-57::branch::1",
+    "views/contexts.py::get_url::59-59::branch::1",
+    "views/contexts.py::get_url::62-62::block::1",
+    "views/contexts.py::get_url::63-63::terminal::1",
+    "views/contexts.py::index::65-65::entry::1",
+    "views/contexts.py::index::65-65::exit::1",
+    "views/contexts.py::index::66-66::terminal::1",
+    "views/turbo.py::is_frame::12-12::entry::1",
+    "views/turbo.py::is_frame::12-12::exit::1",
+    "views/turbo.py::is_frame::13-13::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": true,
+   "session_verified": true,
+   "distance": 0,
+   "score": 1519.98,
+   "status": "VERIFIED",
+   "session_values": {
+    "_auth_user_id": "1",
+    "_auth_user_backend": "django.contrib.auth.backends.ModelBackend",
+    "_auth_user_hash": "834bf0aafb7d407acb6387a0e0bb365a76e669a3045b85d5a1731509de64d0d3"
+   },
+   "session_verdict": "VERIFIED_TRUE",
+   "session_witness": {
+    "values": {
+     "_auth_user_id": "1",
+     "_auth_user_backend": "django.contrib.auth.backends.ModelBackend",
+     "_auth_user_hash": "834bf0aafb7d407acb6387a0e0bb365a76e669a3045b85d5a1731509de64d0d3"
+    },
+    "conditions": [
+     {
+      "key_kind": "CONST",
+      "key_expr": "_auth_user_id",
+      "op": "EXISTS",
+      "value": null,
+      "value_kind": "NONE",
+      "direction": "true",
+      "guard_block": "views/bookmarks.py::index::43-43::entry::1",
+      "source_file": "views/bookmarks.py",
+      "source_line": 43,
+      "source_col": 0,
+      "reader_site_id": "ld-bookmarks",
+      "resolvable": true,
+      "note": ""
+     }
+    ],
+    "verdict": {
+     "verdict": "VERIFIED_TRUE",
+     "evidence": "runtime_verified",
+     "reason": "all-true",
+     "conditions": [
+      {
+       "condition": {
+        "key_kind": "CONST",
+        "key_expr": "_auth_user_id",
+        "op": "EXISTS",
+        "value": null,
+        "value_kind": "NONE",
+        "direction": "true",
+        "guard_block": "views/bookmarks.py::index::43-43::entry::1",
+        "source_file": "views/bookmarks.py",
+        "source_line": 43,
+        "source_col": 0,
+        "reader_site_id": "ld-bookmarks",
+        "resolvable": true,
+        "note": ""
+       },
+       "verdict": "VERIFIED_TRUE",
+       "evidence": "runtime_verified",
+       "reason": "observed",
+       "observation": {
+        "key": "Session._auth_user_id.exists{client-0@session}",
+        "value": true,
+        "evidence": "runtime_verified",
+        "source": "session_cookie:client-0:after_response:guard=views/bookmarks.py::index::43-43::entry::1:line=43",
+        "observed_value": "1",
+        "value_kind": "STRING"
+       }
+      }
+     ],
+     "observations": [
+      {
+       "key": "Session._auth_user_id.exists{client-0@session}",
+       "value": true,
+       "evidence": "runtime_verified",
+       "source": "session_cookie:client-0:after_response:guard=views/bookmarks.py::index::43-43::entry::1:line=43",
+       "observed_value": "1",
+       "value_kind": "STRING"
+      }
+     ]
+    }
+   },
+   "trace_span": [
+    0,
+    823
+   ],
+   "step_spans": [
+    [
+     0,
+     47
+    ],
+    [
+     47,
+     823
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool"
+   ],
+   "error": null
+  }
+ ]
+}

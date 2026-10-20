@@ -449,3 +449,32 @@ artifacts/session_ss07f/FREEZE_REFUSED.json
 ```
 
 这不是能力不足的占位；它防止把开发期适配冒充成盲测。
+
+## held-out seed 4 预注册盲测
+
+在跑 seed 4 之前先提交了：
+
+```text
+artifacts/session_ss07f/heldout_v1/PREREGISTRATION.json
+```
+
+其中冻结了 adapter/contract/引擎模块哈希、预算 40 和验收条件。
+seed 4 结果：
+
+```text
+C bootstrap       5/5
+D 同进程          4/5（Spirit 登录限流失败）
+D-only 新进程     5/5
+SINGLE            0/5
+SEQUENCE          2/5（CTFd、linkding）
+独立 replay       5/5
+```
+
+按预注册验收条件（D 必须 5/5）**没有通过**，因为同进程 D 是 4/5。
+D-only 是事后补充路径，不能倒过来当成预注册主路径。原始结果：
+
+```text
+artifacts/session_ss07f/heldout_v1/RESULTS.json
+```
+
+所以仍然不冻结、不宣称盲测完成。

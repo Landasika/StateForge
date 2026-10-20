@@ -1,0 +1,2 @@
+{"event": "sequence_start", "sequence_id": "healthchecks-4-seq:seq:1", "run_id": "healthchecks-4-seq", "arm": "SEQUENCE", "seed": 4, "kind": "bootstrap"}
+{"event": "sequence_end", "sequence_id": "healthchecks-4-seq:seq:1", "run_id": "healthchecks-4-seq", "arm": "SEQUENCE", "seed": 4, "status": "ok", "steps": 55}

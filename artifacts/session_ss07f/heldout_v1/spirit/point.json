@@ -1,0 +1,48 @@
+{
+ "app": "spirit",
+ "seed": 4,
+ "c": {
+  "found": true,
+  "status": "VERIFIED",
+  "executions": 6,
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/user/login/",
+    "form": {
+     "username": "spuser",
+     "password": "sppass"
+    }
+   },
+   {
+    "method": "GET",
+    "path": "/user/"
+   }
+  ],
+  "costs": {},
+  "reused_from": "/home/landasika/icassp/artifacts/session_ss07f/heldout_v1/spirit/c/session_guided/result.json"
+ },
+ "d": {
+  "status": "PREPARATION_VERIFIED",
+  "preparation_verified": true,
+  "suffix_target_covered": true,
+  "isolation": true,
+  "prefix_len": 1,
+  "checkpoint_id": "sc-6d5a1dbb25ba",
+  "validation": "PREPARATION_VERIFIED",
+  "costs": {
+   "target_http_requests": 6,
+   "sequence_attempts": 6,
+   "atheris_inputs": 0,
+   "bootstrap_http_requests": 0,
+   "checkpoint_validation_http_requests": 3,
+   "prefix_replay_http_requests": 1,
+   "suffix_http_requests": 2,
+   "observer_calls": 7,
+   "reset_calls": 16,
+   "scheduler_decisions": 0,
+   "elapsed_wall_seconds": 2.752621,
+   "analysis_wall_seconds": 0.0
+  }
+ }
+}
