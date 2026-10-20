@@ -1,0 +1,9 @@
+{
+ "run_id": "mb-single-2",
+ "arm": "",
+ "seed": 2,
+ "target_block": "",
+ "app": "stateforge/targets/real_apps/microblog",
+ "request_limit": 30,
+ "boundary": "target-callable-invocation"
+}

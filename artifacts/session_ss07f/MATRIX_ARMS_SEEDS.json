@@ -32,5 +32,92 @@
    "3": false
   }
  },
- "note": "SEQUENCE is 40 structural search executions; SINGLE seed1 only (10-input smoke)"
+ "note": "C/D: 15/15; SEQUENCE: 40 structural search executions; SINGLE: 10-input smoke, not an 80-budget Atheris arm",
+ "SINGLE": {
+  "microblog": {
+   "1": {
+    "target": false,
+    "http": 10,
+    "atheris_inputs": 10
+   },
+   "2": {
+    "target": false,
+    "http": 10,
+    "atheris_inputs": 10
+   },
+   "3": {
+    "target": false,
+    "http": 10,
+    "atheris_inputs": 10
+   }
+  },
+  "ctfd": {
+   "1": {
+    "target": false,
+    "http": 10,
+    "atheris_inputs": 10
+   },
+   "2": {
+    "target": false,
+    "http": 10,
+    "atheris_inputs": 10
+   },
+   "3": {
+    "target": false,
+    "http": 10,
+    "atheris_inputs": 10
+   }
+  },
+  "healthchecks": {
+   "1": {
+    "target": false,
+    "http": 10,
+    "atheris_inputs": 10
+   },
+   "2": {
+    "target": false,
+    "http": 10,
+    "atheris_inputs": 10
+   },
+   "3": {
+    "target": false,
+    "http": 10,
+    "atheris_inputs": 10
+   }
+  },
+  "linkding": {
+   "1": {
+    "target": false,
+    "http": 10,
+    "atheris_inputs": 10
+   },
+   "2": {
+    "target": false,
+    "http": 10,
+    "atheris_inputs": 10
+   },
+   "3": {
+    "target": false,
+    "http": 10,
+    "atheris_inputs": 10
+   }
+  },
+  "spirit": {
+   "1": {
+    "target": false,
+    "http": 10,
+    "atheris_inputs": 10
+   },
+   "2": {
+    "target": false,
+    "http": 10,
+    "atheris_inputs": 10
+   },
+   "3": {
+    "target": false,
+    "http": 10,
+    "atheris_inputs": 10
+   }
+  }
+ }
 }

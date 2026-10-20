@@ -377,3 +377,20 @@ artifacts/session_ss07f/MATRIX_ARMS_SEEDS.json
 
 结果说明 CTFd/Spirit 在这个请求池上结构搜索找不到登录序列，但
 STATE_GUIDED 可以；这正是 Session 引导的差异，不能把 SEQUENCE 失败抹掉。
+
+## SINGLE seed2/3
+
+五应用各补了 seed 2/3 的 10 输入 SINGLE smoke：
+
+```text
+SINGLE target: false  五应用 × seed 1/2/3
+```
+
+现在三 seed × 五应用 × 四臂的格子都有记录，但必须明确：
+
+- SINGLE 是 10 输入 smoke；
+- SEQUENCE 是 40 次结构搜索；
+- C/D 是 6–9 次真实 HTTP 的登录序列搜索/复用；
+
+预算并不等价，所以这不是“公平四臂冻结矩阵”。
+`blind_fuzzing_claimed=false`、`frozen=false` 保持不变。

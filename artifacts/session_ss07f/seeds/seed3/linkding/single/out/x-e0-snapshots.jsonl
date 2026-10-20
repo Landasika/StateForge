@@ -1,0 +1,3 @@
+{"group": "x", "epoch": 0, "t": 2.25, "executions": 3, "blocks": 0, "edges": 0, "exec_seconds": 0.001, "feedback_seconds": 2.182}
+{"group": "x", "epoch": 0, "t": 4.51, "executions": 6, "blocks": 0, "edges": 0, "exec_seconds": 0.001, "feedback_seconds": 4.439}
+{"group": "x", "epoch": 0, "t": 6.87, "executions": 9, "blocks": 0, "edges": 0, "exec_seconds": 0.001, "feedback_seconds": 6.791}

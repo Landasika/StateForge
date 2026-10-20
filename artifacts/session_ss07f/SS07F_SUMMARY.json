@@ -28,7 +28,7 @@
  "arms_required": 20,
  "blind_fuzzing_claimed": false,
  "frozen": false,
- "reason": "C/D 15/15; independent replay 5/5; SEQUENCE seeds 1-3 partial; SINGLE seed1 smoke only; no frozen four-arm multi-seed protocol",
+ "reason": "3-seed arm matrix recorded; SINGLE budget 10 vs search arms 40; no frozen fair multi-seed protocol",
  "ctfd": {
   "adapter": "stateforge/targets/real_apps/ctfd/inproc_target.py",
   "contract": "artifacts/session_ss07f/ctfd/contract.json",
@@ -161,5 +161,33 @@
    "2": false,
    "3": false
   }
- }
+ },
+ "single_seeds": {
+  "microblog": {
+   "1": false,
+   "2": false,
+   "3": false
+  },
+  "CTFd": {
+   "1": false,
+   "2": false,
+   "3": false
+  },
+  "healthchecks": {
+   "1": false,
+   "2": false,
+   "3": false
+  },
+  "linkding": {
+   "1": false,
+   "2": false,
+   "3": false
+  },
+  "Spirit": {
+   "1": false,
+   "2": false,
+   "3": false
+  }
+ },
+ "four_arm_seeds": "3 seeds x 5 apps x 4 arms recorded, but SINGLE is a 10-input smoke and budgets differ; not a fair frozen protocol"
 }
