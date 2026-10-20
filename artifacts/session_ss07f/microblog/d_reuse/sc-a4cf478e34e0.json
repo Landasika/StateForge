@@ -1,0 +1,127 @@
+{
+ "checkpoint_id": "sc-a4cf478e34e0",
+ "protocol_version": "session-checkpoint-v2",
+ "created_from": "session-guided",
+ "checkpoint_kind": "state_preparation",
+ "target_block": "main/routes.py::index::29-29::block::1",
+ "source_file": "external/microblog/app/main/routes.py",
+ "steps": [
+  {
+   "method": "POST",
+   "path": "/auth/login",
+   "form": {
+    "username": "fuzz",
+    "password": "fuzzpass"
+   }
+  }
+ ],
+ "prefix_len": 1,
+ "condition_groups": [
+  [
+   {
+    "key_kind": "CONST",
+    "key_expr": "_user_id",
+    "op": "EXISTS",
+    "value": null,
+    "value_kind": "NONE",
+    "direction": "true",
+    "guard_block": "main/routes.py::index::29-29::block::1",
+    "source_file": "main/routes.py",
+    "source_line": 29,
+    "source_col": 0,
+    "reader_site_id": "contract-index",
+    "resolvable": true,
+    "note": ""
+   }
+  ]
+ ],
+ "session_values": {
+  "_fresh": true,
+  "_id": "03f095a1c03fdce8fe2ea94737ef9d62c456faf66d67aac9e9d7b2f6548211aab71d5ce5c550e74c31a055e110b5ce1429cfcf4eb860fe2c460a0c6f830c7f59",
+  "_user_id": "1"
+ },
+ "writer_blocks": [
+  "auth/routes.py::login::25-26::block::1"
+ ],
+ "evidence": [
+  {
+   "key": "Session._fresh{microblog-client@session}",
+   "value": true,
+   "evidence": "runtime_verified",
+   "source": "session_cookie:microblog-client:after_response",
+   "observed_value": true,
+   "value_kind": "BOOLEAN"
+  },
+  {
+   "key": "Session._id{microblog-client@session}",
+   "value": true,
+   "evidence": "runtime_verified",
+   "source": "session_cookie:microblog-client:after_response",
+   "observed_value": "03f095a1c03fdce8fe2ea94737ef9d62c456faf66d67aac9e9d7b2f6548211aab71d5ce5c550e74c31a055e110b5ce1429cfcf4eb860fe2c460a0c6f830c7f59",
+   "value_kind": "STRING"
+  },
+  {
+   "key": "Session._user_id{microblog-client@session}",
+   "value": true,
+   "evidence": "runtime_verified",
+   "source": "session_cookie:microblog-client:after_response",
+   "observed_value": "1",
+   "value_kind": "STRING"
+  }
+ ],
+ "baseline_id": "baseline-b9393ab7919d",
+ "baseline_fingerprint": "baseline-846c7dd255a1470ecd43",
+ "app_source_hash": "9d266072ceccbf228d65e9b56096789121f93a0e9a595afae3c516a4f08de445",
+ "session_backend": "flask-cookie",
+ "fixture_id": "session-gate",
+ "initialization_seed": "",
+ "client_scope": "microblog-client",
+ "condition_group_id": "cond-88ed1cb92832",
+ "source_sequence_hash": "c4f64c99e983f892",
+ "validation_observation_point": "after_response",
+ "verified_condition_witness": {
+  "verdict": "VERIFIED_TRUE",
+  "evidence": "runtime_verified",
+  "reason": "all-true",
+  "conditions": [
+   {
+    "condition": {
+     "key_kind": "CONST",
+     "key_expr": "_user_id",
+     "op": "EXISTS",
+     "value": null,
+     "value_kind": "NONE",
+     "direction": "true",
+     "guard_block": "main/routes.py::index::29-29::block::1",
+     "source_file": "main/routes.py",
+     "source_line": 29,
+     "source_col": 0,
+     "reader_site_id": "contract-index",
+     "resolvable": true,
+     "note": ""
+    },
+    "verdict": "VERIFIED_TRUE",
+    "evidence": "runtime_verified",
+    "reason": "observed",
+    "observation": {
+     "key": "Session._user_id.exists{microblog-client@session}",
+     "value": true,
+     "evidence": "runtime_verified",
+     "source": "session_cookie:microblog-client:after_response:guard=main/routes.py::index::29-29::block::1:line=29",
+     "observed_value": "1",
+     "value_kind": "STRING"
+    }
+   }
+  ],
+  "observations": [
+   {
+    "key": "Session._user_id.exists{microblog-client@session}",
+    "value": true,
+    "evidence": "runtime_verified",
+    "source": "session_cookie:microblog-client:after_response:guard=main/routes.py::index::29-29::block::1:line=29",
+    "observed_value": "1",
+    "value_kind": "STRING"
+   }
+  ]
+ }
+}

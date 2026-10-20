@@ -1,0 +1,44 @@
+{"event": "reset", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "elapsed": 5.9e-05}
+{"event": "request", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "sequence_id": null, "step_index": 1, "phase": "checkpoint", "elapsed": 0.189041, "error": null, "status": "ok"}
+{"event": "observer", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "elapsed": 0.000441}
+{"event": "reset", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "elapsed": 5.7e-05}
+{"event": "reset", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "elapsed": 3.2e-05}
+{"event": "reset", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "elapsed": 4.8e-05}
+{"event": "request", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "sequence_id": "mb-d:seq:2", "step_index": 1, "phase": "checkpoint", "elapsed": 0.087261, "error": null, "status": "ok"}
+{"event": "observer", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "elapsed": 0.00045}
+{"event": "observer", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "elapsed": 0.000513}
+{"event": "reset", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "elapsed": 6.6e-05}
+{"event": "reset", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "elapsed": 0.000102}
+{"event": "reset", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "elapsed": 3.9e-05}
+{"event": "reset", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "elapsed": 5.5e-05}
+{"event": "request", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "sequence_id": "mb-d:seq:4", "step_index": 1, "phase": "checkpoint", "elapsed": 0.073962, "error": null, "status": "ok"}
+{"event": "observer", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "elapsed": 0.000283}
+{"event": "observer", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "elapsed": 0.000308}
+{"event": "reset", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "elapsed": 6e-05}
+{"event": "reset", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "elapsed": 8.6e-05}
+{"event": "reset", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "elapsed": 2.3e-05}
+{"event": "reset", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "elapsed": 4.3e-05}
+{"event": "request", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "sequence_id": "mb-d:seq:5", "step_index": 1, "phase": "prefix_replay", "elapsed": 0.077744, "error": null, "status": "ok"}
+{"event": "request", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "sequence_id": "mb-d:seq:5", "step_index": 2, "phase": "suffix", "elapsed": 0.151917, "error": null, "status": "ok"}
+{"event": "observer", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "elapsed": 0.000332}
+{"event": "observer", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "elapsed": 0.00036}
+{"event": "reset", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "elapsed": 4.7e-05}
+{"event": "reset", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "elapsed": 7.2e-05}
+{"event": "reset", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "elapsed": 5.9e-05}
+{"event": "reset", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "elapsed": 9.5e-05}
+{"event": "request", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "sequence_id": "mb-d:seq:7", "step_index": 1, "phase": "checkpoint", "elapsed": 0.068353, "error": null, "status": "ok"}
+{"event": "observer", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "elapsed": 0.000359}
+{"event": "observer", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "elapsed": 0.00041}
+{"event": "reset", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "elapsed": 6.4e-05}
+{"event": "reset", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "elapsed": 0.000102}
+{"event": "reset", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "elapsed": 4.1e-05}
+{"event": "reset", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "elapsed": 7.3e-05}
+{"event": "request", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "sequence_id": "mb-d:seq:8", "step_index": 1, "phase": "prefix_replay", "elapsed": 0.072957, "error": null, "status": "ok"}
+{"event": "request", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "sequence_id": "mb-d:seq:8", "step_index": 2, "phase": "suffix", "elapsed": 0.027473, "error": null, "status": "ok"}
+{"event": "observer", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "elapsed": 0.000386}
+{"event": "observer", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "elapsed": 0.000426}
+{"event": "reset", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "elapsed": 5.3e-05}
+{"event": "reset", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "elapsed": 8e-05}
+{"event": "reset", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "elapsed": 5.3e-05}
+{"event": "request", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "sequence_id": "mb-d:seq:9", "step_index": 1, "phase": "suffix", "elapsed": 0.005496, "error": null, "status": "ok"}
+{"event": "reset", "run_id": "mb-d", "arm": "STATE_REUSE", "seed": 1, "app": "external/microblog", "target_block": "main/routes.py::index::29-29::block::1", "elapsed": 4.8e-05}

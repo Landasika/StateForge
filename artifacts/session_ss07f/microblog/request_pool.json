@@ -1,0 +1,7 @@
+[
+ {"method": "POST", "path": "/auth/login", "form": {"username": "fuzz", "password": "fuzzpass"}},
+ {"method": "GET", "path": "/index"},
+ {"method": "GET", "path": "/explore"},
+ {"method": "GET", "path": "/auth/logout"},
+ {"method": "GET", "path": "/auth/login"}
+]

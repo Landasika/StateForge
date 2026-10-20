@@ -1,0 +1,32 @@
+{
+ "protocol": "ss07-five-apps-v1",
+ "microblog": {
+  "adapter": "inproc_target.py",
+  "contract": "contract.json",
+  "c_bootstrap": {
+   "found": true,
+   "status": "VERIFIED",
+   "executions": 7,
+   "steps": 2
+  },
+  "d_reuse": {
+   "prefix_len": 1,
+   "validation": "PREPARATION_VERIFIED",
+   "primary_suffix_target": true,
+   "isolation": true,
+   "target_http_requests": 9,
+   "bootstrap_http_requests": 0
+  }
+ },
+ "other_apps": {
+  "CTFd": "SMOKE_PASS",
+  "healthchecks": "SMOKE_PASS",
+  "linkding": "SMOKE_PASS",
+  "Spirit": "ENV_BLOCKED"
+ },
+ "arms_completed": 2,
+ "arms_required": 20,
+ "blind_fuzzing_claimed": false,
+ "frozen": false,
+ "reason": "only microblog C/D run; other apps lack adapters; Spirit blocked"
+}

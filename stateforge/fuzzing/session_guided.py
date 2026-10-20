@@ -610,17 +610,45 @@ def bootstrap_session_guided(target_module, target_callable, ir: ProgramIR,
                              corpus_dir: str | Path, out_dir: str | Path, *,
                              max_steps: int = 3, max_execs: int = 200,
                              seed: int = 0, guided: bool = True,
-                             session_probe=None, cost_ledger=None
+                             session_probe=None, cost_ledger=None,
+                             session_contract=None
                              ) -> SessionGuidedResult:
     """Build index/frontier, run the bounded search, and inject one seed."""
     from stateforge.state.session_access import extract_session_accesses
     from stateforge.state.session_index import (build_session_index,
-                                                query_session_frontier)
+                                                query_session_frontier,
+                                                SessionCondition,
+                                                SessionDependency,
+                                                SessionFrontier)
 
     source_dir = Path(source_dir)
-    accesses = extract_session_accesses(source_dir, ir=ir)
-    index = build_session_index(accesses)
-    frontier = query_session_frontier(ir, index, target_block, accesses)
+    trace_root = None
+    if session_contract is not None:
+        import json as _json
+        raw = (_json.loads(Path(session_contract).read_text(encoding="utf-8"))
+               if not isinstance(session_contract, dict) else session_contract)
+        groups = tuple(tuple(SessionCondition.from_dict(c)
+                             for c in g) for g in raw.get("groups", ()))
+        writers = tuple(SessionDependency(
+            writer_site_id=w.get("writer_site_id", "contract-writer"),
+            reader_site_id=w.get("reader_site_id", "contract-reader"),
+            writer_block=w.get("writer_block"),
+            reader_block=w.get("reader_block", target_block),
+            key_overlap=w.get("key_overlap", "contract"),
+        ) for w in raw.get("writers", ()))
+        frontier = SessionFrontier(
+            target_block=target_block,
+            function=raw.get("function", ""),
+            file=raw.get("file", ""),
+            path_constraint_groups=groups,
+            candidate_writers=writers,
+            evidence="CONTRACT_PREREGISTERED")
+        trace_root = raw.get("trace_root")
+        accesses = []
+    else:
+        accesses = extract_session_accesses(source_dir, ir=ir)
+        index = build_session_index(accesses)
+        frontier = query_session_frontier(ir, index, target_block, accesses)
     probe = session_probe if session_probe is not None else \
         _module_session_probe(target_module)
     reset_hook = getattr(target_module, "reset_state", None)
@@ -633,7 +661,7 @@ def bootstrap_session_guided(target_module, target_callable, ir: ProgramIR,
     result = SessionGuidedSearch(
         target_callable, ir, target_block, frontier, request_pool,
         max_execs=max_execs, max_steps=max_steps, seed=seed, guided=guided,
-        reset_hook=reset_hook, trace_root=source_dir,
+        reset_hook=reset_hook, trace_root=trace_root or source_dir,
         session_probe=probe).run()
 
     corpus = Path(corpus_dir)

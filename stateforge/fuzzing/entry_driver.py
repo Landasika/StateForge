@@ -113,6 +113,8 @@ def main() -> int:
                         help="SS-07C: 在线调度探索比例(默认 0.15)")
     parser.add_argument("--session-seed", type=int, default=None,
                         help="SS-03: 定向搜索随机种子(默认取 --seed)")
+    parser.add_argument("--session-contract", default=None,
+                        help="SS-07F: 预注册的真实应用 Session 合约 JSON")
     parser.add_argument("--max-runs", type=int, default=None,
                         help="SS-06: 可选的最大 Atheris 输入次数;默认不限制")
     parser.add_argument("--cost-ledger", action="store_true",
@@ -233,7 +235,8 @@ def main() -> int:
                 out_dir=args.out_dir, max_steps=args.session_max_steps,
                 max_execs=args.session_max_execs,
                 seed=(args.session_seed if args.session_seed is not None
-                      else args.seed))
+                      else args.seed),
+                session_contract=args.session_contract)
         online = None
         if args.session_online:
             from stateforge.state.session_access import extract_session_accesses
