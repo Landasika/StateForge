@@ -420,3 +420,32 @@ artifacts/session_ss07f/FAIR_MATRIX.json
 - SINGLE 是随机单请求，不是完整 C10 多步输入；
 - 最终 freeze 仍要求独立 replay 和完整矩阵，但没有把
   `blind_fuzzing_claimed` 或 `frozen` 置真。
+
+## 冻结校验器：明确拒绝
+
+新增 `stateforge/evaluation/real_app_freeze.py`。它检查：
+
+```text
+budget=40
+五应用
+3 seeds
+STATE_GUIDED 15/15
+STATE_REUSE 15/15
+独立 replay 5/5
+blind pre-registration
+```
+
+当前前六项通过，最后一项不通过：
+
+```text
+blind-preregistration = false
+```
+
+原因：adapter/contract 是在开发五应用过程中写的，不是在运行前独立预注册的。
+因此校验器拒绝冻结，写出：
+
+```text
+artifacts/session_ss07f/FREEZE_REFUSED.json
+```
+
+这不是能力不足的占位；它防止把开发期适配冒充成盲测。

@@ -1,0 +1,49 @@
+{
+ "ok": false,
+ "checks": {
+  "budget-40": {
+   "ok": true,
+   "detail": "budget=40"
+  },
+  "five-apps": {
+   "ok": true,
+   "detail": "['ctfd', 'healthchecks', 'linkding', 'microblog', 'spirit']"
+  },
+  "three-seeds": {
+   "ok": true,
+   "detail": "[1, 2, 3]"
+  },
+  "state_guided-15-of-15": {
+   "ok": true,
+   "detail": ""
+  },
+  "state_reuse-15-of-15": {
+   "ok": true,
+   "detail": ""
+  },
+  "independent-replay-5-of-5": {
+   "ok": true,
+   "detail": ""
+  },
+  "blind-preregistration": {
+   "ok": false,
+   "detail": "adapters/contracts were authored while developing, not pre-registered before the five-app runs; no blind claim permitted"
+  }
+ },
+ "matrix": "/home/landasika/icassp/artifacts/session_ss07f/FAIR_MATRIX.json",
+ "replay_root": "/home/landasika/icassp/artifacts/session_ss07f/independent_replay",
+ "apps": [
+  "microblog",
+  "ctfd",
+  "healthchecks",
+  "linkding",
+  "spirit"
+ ],
+ "seeds": [
+  1,
+  2,
+  3
+ ],
+ "budget": 40,
+ "validated_at": 1792503661.4633236
+}
