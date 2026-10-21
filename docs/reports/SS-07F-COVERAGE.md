@@ -109,3 +109,36 @@ Spirit        user/views.py             20/83    27/83
 CTFd 最典型:SINGLE 40 个请求在 challenges.py 只碰 2 个块(def 行),
 C 8 个请求碰 24/30。结论:Session 引导买到的是受保护代码的**可达性**,
 不是整体覆盖的铺开;总覆盖率不是这件事的正确尺子。
+
+## 追加:未覆盖块到底是什么(replay 臂)
+
+按函数级拆解,未覆盖块的主导构成是**整个函数从未被调用**,不是分支没走到:
+
+```text
+应用          未覆盖块   从未调用的函数体块(占比)   调用过但分支未走
+microblog       344      313 (91%)                  22
+CTFd           5345      4234 (79%)                317
+healthchecks   5086      4528 (89%)                 76
+linkding       3020      2474 (82%)                 94
+Spirit         3426      2128 (62%)                 70
+```
+
+"从未调用"的都是其它真实端点,例如:
+
+```text
+microblog routes.py 14 个函数只有 2 个被调用(index/before_request);
+                  follow/unfollow/edit_profile/search/messages 全没碰
+CTFd               register(93块) api/v1/challenges.py::post(104块)
+                  teams::new(88) files(81) import_ctf(167)
+healthchecks       accounts::project(103) api::ping(60) front::checks(58)
+Spirit            comment::publish(25) topic::publish(18) like::create(17)
+```
+
+结构性不可达部分:management 命令(healthchecks 468 块/linkding 84/
+Spirit 41,web 运行永不触发,0 覆盖)、Spirit 源码树内 tests 1539 块
+(占其分母 33%)、admin 后台部分。
+
+"差一点"的典型:index() 里未走的 4 块恰好是 POST 发帖分支
+(32/34/35-39/40 行,detect→建 Post→commit→redirect)——实验只
+GET 读过 /index,从未 POST 写。未覆盖主因是任务只请求了 2–3 个
+端点,不是引擎进不去。

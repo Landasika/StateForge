@@ -1,0 +1,131 @@
+{
+ "experiment": "ss07f-uncovered-block-analysis",
+ "arm": "replay",
+ "apps": {
+  "microblog": {
+   "uncovered_total": 344,
+   "never_called_functions": 75,
+   "never_called_body_blocks": 313,
+   "partial_functions": 4,
+   "partial_uncovered_blocks": 22,
+   "top_never_called": [],
+   "example_never_called": [
+    "api/auth.py::basic_auth_error",
+    "api/auth.py::token_auth_error",
+    "api/auth.py::verify_password",
+    "api/auth.py::verify_token",
+    "api/errors.py::bad_request",
+    "api/errors.py::error_response",
+    "api/errors.py::handle_exception",
+    "api/tokens.py::get_token",
+    "api/tokens.py::revoke_token",
+    "api/users.py::create_user",
+    "api/users.py::get_followers",
+    "api/users.py::get_following",
+    "api/users.py::get_user",
+    "api/users.py::get_users",
+    "api/users.py::update_user"
+   ]
+  },
+  "ctfd": {
+   "uncovered_total": 5345,
+   "never_called_functions": 526,
+   "never_called_body_blocks": 4234,
+   "partial_functions": 61,
+   "partial_uncovered_blocks": 317,
+   "top_never_called": [],
+   "example_never_called": [
+    "__init__.py::confirm_upgrade",
+    "__init__.py::run_upgrade",
+    "admin/__init__.py::config",
+    "admin/__init__.py::export_csv",
+    "admin/__init__.py::export_ctf",
+    "admin/__init__.py::import_csv",
+    "admin/__init__.py::import_ctf",
+    "admin/__init__.py::plugin",
+    "admin/__init__.py::reset",
+    "admin/__init__.py::view",
+    "admin/audiences.py::audiences_detail",
+    "admin/audiences.py::audiences_listing",
+    "admin/audiences.py::audiences_new",
+    "admin/challenges.py::challenges_detail",
+    "admin/challenges.py::challenges_listing"
+   ]
+  },
+  "healthchecks": {
+   "uncovered_total": 5086,
+   "never_called_functions": 677,
+   "never_called_body_blocks": 4528,
+   "partial_functions": 14,
+   "partial_uncovered_blocks": 76,
+   "top_never_called": [],
+   "example_never_called": [
+    "accounts/admin.py::_format_usage",
+    "accounts/admin.py::activate",
+    "accounts/admin.py::checks",
+    "accounts/admin.py::date_joined",
+    "accounts/admin.py::deactivate",
+    "accounts/admin.py::deletion",
+    "accounts/admin.py::email",
+    "accounts/admin.py::get_queryset",
+    "accounts/admin.py::last_active",
+    "accounts/admin.py::login",
+    "accounts/admin.py::lookups",
+    "accounts/admin.py::name_",
+    "accounts/admin.py::over_limit",
+    "accounts/admin.py::projects",
+    "accounts/admin.py::queryset"
+   ]
+  },
+  "linkding": {
+   "uncovered_total": 3020,
+   "never_called_functions": 497,
+   "never_called_body_blocks": 2474,
+   "partial_functions": 18,
+   "partial_uncovered_blocks": 94,
+   "top_never_called": [],
+   "example_never_called": [
+    "admin.py::__init__",
+    "admin.py::archive_selected_bookmarks",
+    "admin.py::background_task_view",
+    "admin.py::bookmarks_count",
+    "admin.py::count",
+    "admin.py::custom_display_name",
+    "admin.py::delete_selected_bookmarks",
+    "admin.py::delete_unused_tags",
+    "admin.py::enqueued_items",
+    "admin.py::get_actions",
+    "admin.py::get_app_list",
+    "admin.py::get_inline_instances",
+    "admin.py::get_queryset",
+    "admin.py::mark_as_read",
+    "admin.py::mark_as_unread"
+   ]
+  },
+  "spirit": {
+   "uncovered_total": 3426,
+   "never_called_functions": 897,
+   "never_called_body_blocks": 2128,
+   "partial_functions": 29,
+   "partial_uncovered_blocks": 70,
+   "top_never_called": [],
+   "example_never_called": [
+    "admin/tests.py::setUp",
+    "admin/tests.py::test_basic_config",
+    "admin/tests.py::test_config_basic",
+    "admin/tests.py::test_flag",
+    "admin/tests.py::test_flag_closed",
+    "admin/tests.py::test_flag_detail",
+    "admin/tests.py::test_flag_detail_paginate",
+    "admin/tests.py::test_flag_open",
+    "admin/tests.py::test_flag_open_paginate",
+    "admin/tests.py::test_flag_open_paginate2",
+    "admin/tests.py::test_index_dashboard",
+    "admin/tests.py::test_permission_denied_to_non_admin",
+    "admin/tests.py::test_topic_closed",
+    "admin/tests.py::test_topic_closed_paginate",
+    "admin/tests.py::test_topic_deleted"
+   ]
+  }
+ }
+}
