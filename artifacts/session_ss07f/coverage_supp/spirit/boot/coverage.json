@@ -1,0 +1,905 @@
+{
+ "app": "spirit",
+ "arm": "boot",
+ "seed": 5,
+ "source": "external/Spirit/spirit",
+ "definition": "ICFG basic block covered if any line in span executed",
+ "single_note": null,
+ "total_blocks": 4695,
+ "covered_blocks": 355,
+ "percent": 7.56,
+ "executed_files": 324,
+ "per_file": {
+  "admin/apps.py": {
+   "total": 6,
+   "covered": 6
+  },
+  "admin/tests.py": {
+   "total": 87,
+   "covered": 0
+  },
+  "admin/views.py": {
+   "total": 17,
+   "covered": 0
+  },
+  "category/admin/forms.py": {
+   "total": 29,
+   "covered": 0
+  },
+  "category/admin/tests.py": {
+   "total": 39,
+   "covered": 0
+  },
+  "category/admin/views.py": {
+   "total": 45,
+   "covered": 0
+  },
+  "category/managers.py": {
+   "total": 25,
+   "covered": 14
+  },
+  "category/models.py": {
+   "total": 10,
+   "covered": 4
+  },
+  "category/tests.py": {
+   "total": 66,
+   "covered": 0
+  },
+  "category/views.py": {
+   "total": 9,
+   "covered": 0
+  },
+  "comment/bookmark/forms.py": {
+   "total": 6,
+   "covered": 0
+  },
+  "comment/bookmark/models.py": {
+   "total": 30,
+   "covered": 13
+  },
+  "comment/bookmark/tests.py": {
+   "total": 39,
+   "covered": 0
+  },
+  "comment/bookmark/views.py": {
+   "total": 20,
+   "covered": 0
+  },
+  "comment/flag/admin/forms.py": {
+   "total": 7,
+   "covered": 0
+  },
+  "comment/flag/admin/views.py": {
+   "total": 30,
+   "covered": 0
+  },
+  "comment/flag/forms.py": {
+   "total": 17,
+   "covered": 0
+  },
+  "comment/flag/tests.py": {
+   "total": 12,
+   "covered": 0
+  },
+  "comment/flag/views.py": {
+   "total": 13,
+   "covered": 0
+  },
+  "comment/forms.py": {
+   "total": 76,
+   "covered": 0
+  },
+  "comment/history/models.py": {
+   "total": 12,
+   "covered": 6
+  },
+  "comment/history/tests.py": {
+   "total": 41,
+   "covered": 0
+  },
+  "comment/history/views.py": {
+   "total": 6,
+   "covered": 0
+  },
+  "comment/like/forms.py": {
+   "total": 14,
+   "covered": 0
+  },
+  "comment/like/models.py": {
+   "total": 3,
+   "covered": 2
+  },
+  "comment/like/tags.py": {
+   "total": 4,
+   "covered": 0
+  },
+  "comment/like/tests.py": {
+   "total": 39,
+   "covered": 0
+  },
+  "comment/like/views.py": {
+   "total": 39,
+   "covered": 0
+  },
+  "comment/managers.py": {
+   "total": 39,
+   "covered": 20
+  },
+  "comment/models.py": {
+   "total": 24,
+   "covered": 15
+  },
+  "comment/poll/forms.py": {
+   "total": 39,
+   "covered": 0
+  },
+  "comment/poll/managers.py": {
+   "total": 34,
+   "covered": 22
+  },
+  "comment/poll/models.py": {
+   "total": 64,
+   "covered": 36
+  },
+  "comment/poll/tests.py": {
+   "total": 189,
+   "covered": 0
+  },
+  "comment/poll/utils/render.py": {
+   "total": 33,
+   "covered": 0
+  },
+  "comment/poll/utils/render_static.py": {
+   "total": 22,
+   "covered": 0
+  },
+  "comment/poll/views.py": {
+   "total": 36,
+   "covered": 0
+  },
+  "comment/tags.py": {
+   "total": 22,
+   "covered": 0
+  },
+  "comment/tests.py": {
+   "total": 217,
+   "covered": 0
+  },
+  "comment/utils.py": {
+   "total": 24,
+   "covered": 0
+  },
+  "comment/views.py": {
+   "total": 114,
+   "covered": 0
+  },
+  "core/apps.py": {
+   "total": 8,
+   "covered": 5
+  },
+  "core/conf/settings.py": {
+   "total": 5,
+   "covered": 5
+  },
+  "core/management/commands/spiritcompilemessages.py": {
+   "total": 10,
+   "covered": 0
+  },
+  "core/management/commands/spiritinstall.py": {
+   "total": 3,
+   "covered": 0
+  },
+  "core/management/commands/spiritmakemessages.py": {
+   "total": 13,
+   "covered": 0
+  },
+  "core/management/commands/spirittxpull.py": {
+   "total": 6,
+   "covered": 0
+  },
+  "core/management/commands/spirittxpush.py": {
+   "total": 6,
+   "covered": 0
+  },
+  "core/management/commands/spiritupgrade.py": {
+   "total": 3,
+   "covered": 0
+  },
+  "core/middleware.py": {
+   "total": 18,
+   "covered": 0
+  },
+  "core/storage.py": {
+   "total": 14,
+   "covered": 6
+  },
+  "core/tags/avatar.py": {
+   "total": 4,
+   "covered": 0
+  },
+  "core/tags/messages.py": {
+   "total": 7,
+   "covered": 0
+  },
+  "core/tags/paginator.py": {
+   "total": 16,
+   "covered": 0
+  },
+  "core/tags/settings.py": {
+   "total": 4,
+   "covered": 0
+  },
+  "core/tags/social_share.py": {
+   "total": 24,
+   "covered": 0
+  },
+  "core/tags/time.py": {
+   "total": 20,
+   "covered": 0
+  },
+  "core/tags/urls.py": {
+   "total": 7,
+   "covered": 0
+  },
+  "core/tasks.py": {
+   "total": 100,
+   "covered": 0
+  },
+  "core/utils/__init__.py": {
+   "total": 64,
+   "covered": 28
+  },
+  "core/utils/db.py": {
+   "total": 6,
+   "covered": 3
+  },
+  "core/utils/decorators.py": {
+   "total": 33,
+   "covered": 0
+  },
+  "core/utils/deprecations.py": {
+   "total": 5,
+   "covered": 0
+  },
+  "core/utils/forms.py": {
+   "total": 16,
+   "covered": 0
+  },
+  "core/utils/http.py": {
+   "total": 13,
+   "covered": 0
+  },
+  "core/utils/markdown/block.py": {
+   "total": 50,
+   "covered": 0
+  },
+  "core/utils/markdown/inline.py": {
+   "total": 31,
+   "covered": 0
+  },
+  "core/utils/markdown/markdown.py": {
+   "total": 51,
+   "covered": 0
+  },
+  "core/utils/markdown/parsers/poll.py": {
+   "total": 66,
+   "covered": 0
+  },
+  "core/utils/markdown/renderer.py": {
+   "total": 101,
+   "covered": 0
+  },
+  "core/utils/markdown/utils/quote.py": {
+   "total": 9,
+   "covered": 0
+  },
+  "core/utils/models.py": {
+   "total": 22,
+   "covered": 8
+  },
+  "core/utils/paginator/__init__.py": {
+   "total": 31,
+   "covered": 11
+  },
+  "core/utils/paginator/infinite_paginator.py": {
+   "total": 10,
+   "covered": 0
+  },
+  "core/utils/paginator/yt_paginator.py": {
+   "total": 64,
+   "covered": 24
+  },
+  "core/utils/ratelimit/decorators.py": {
+   "total": 24,
+   "covered": 0
+  },
+  "core/utils/ratelimit/ratelimit.py": {
+   "total": 70,
+   "covered": 0
+  },
+  "core/utils/tasks/avatars.py": {
+   "total": 25,
+   "covered": 0
+  },
+  "core/utils/timezone.py": {
+   "total": 49,
+   "covered": 0
+  },
+  "core/utils/views.py": {
+   "total": 22,
+   "covered": 0
+  },
+  "core/utils/widgets.py": {
+   "total": 21,
+   "covered": 0
+  },
+  "extra/bin/spirit.py": {
+   "total": 22,
+   "covered": 0
+  },
+  "search/forms.py": {
+   "total": 25,
+   "covered": 0
+  },
+  "search/search_indexes.py": {
+   "total": 29,
+   "covered": 0
+  },
+  "search/signals.py": {
+   "total": 12,
+   "covered": 7
+  },
+  "search/tags.py": {
+   "total": 4,
+   "covered": 0
+  },
+  "search/tests.py": {
+   "total": 87,
+   "covered": 0
+  },
+  "search/views.py": {
+   "total": 10,
+   "covered": 0
+  },
+  "topic/admin/views.py": {
+   "total": 21,
+   "covered": 0
+  },
+  "topic/favorite/forms.py": {
+   "total": 14,
+   "covered": 0
+  },
+  "topic/favorite/tags.py": {
+   "total": 7,
+   "covered": 0
+  },
+  "topic/favorite/tests.py": {
+   "total": 27,
+   "covered": 0
+  },
+  "topic/favorite/views.py": {
+   "total": 19,
+   "covered": 0
+  },
+  "topic/forms.py": {
+   "total": 20,
+   "covered": 0
+  },
+  "topic/managers.py": {
+   "total": 45,
+   "covered": 24
+  },
+  "topic/models.py": {
+   "total": 45,
+   "covered": 23
+  },
+  "topic/moderate/tests.py": {
+   "total": 27,
+   "covered": 0
+  },
+  "topic/moderate/views.py": {
+   "total": 55,
+   "covered": 0
+  },
+  "topic/notification/forms.py": {
+   "total": 17,
+   "covered": 0
+  },
+  "topic/notification/managers.py": {
+   "total": 18,
+   "covered": 12
+  },
+  "topic/notification/models.py": {
+   "total": 47,
+   "covered": 22
+  },
+  "topic/notification/tags.py": {
+   "total": 13,
+   "covered": 0
+  },
+  "topic/notification/tests.py": {
+   "total": 97,
+   "covered": 0
+  },
+  "topic/notification/views.py": {
+   "total": 46,
+   "covered": 0
+  },
+  "topic/private/forms.py": {
+   "total": 81,
+   "covered": 0
+  },
+  "topic/private/managers.py": {
+   "total": 6,
+   "covered": 4
+  },
+  "topic/private/models.py": {
+   "total": 3,
+   "covered": 2
+  },
+  "topic/private/tags.py": {
+   "total": 4,
+   "covered": 0
+  },
+  "topic/private/tests.py": {
+   "total": 141,
+   "covered": 0
+  },
+  "topic/private/utils.py": {
+   "total": 3,
+   "covered": 0
+  },
+  "topic/private/views.py": {
+   "total": 86,
+   "covered": 0
+  },
+  "topic/tests.py": {
+   "total": 152,
+   "covered": 0
+  },
+  "topic/unread/models.py": {
+   "total": 11,
+   "covered": 6
+  },
+  "topic/unread/tests.py": {
+   "total": 30,
+   "covered": 0
+  },
+  "topic/unread/views.py": {
+   "total": 4,
+   "covered": 0
+  },
+  "topic/utils.py": {
+   "total": 3,
+   "covered": 0
+  },
+  "topic/views.py": {
+   "total": 53,
+   "covered": 0
+  },
+  "user/admin/views.py": {
+   "total": 41,
+   "covered": 0
+  },
+  "user/apps.py": {
+   "total": 6,
+   "covered": 6
+  },
+  "user/auth/backends.py": {
+   "total": 23,
+   "covered": 0
+  },
+  "user/auth/forms.py": {
+   "total": 71,
+   "covered": 0
+  },
+  "user/auth/views.py": {
+   "total": 65,
+   "covered": 0
+  },
+  "user/forms.py": {
+   "total": 51,
+   "covered": 0
+  },
+  "user/middleware.py": {
+   "total": 30,
+   "covered": 0
+  },
+  "user/models.py": {
+   "total": 31,
+   "covered": 15
+  },
+  "user/signals.py": {
+   "total": 18,
+   "covered": 6
+  },
+  "user/tests.py": {
+   "total": 288,
+   "covered": 0
+  },
+  "user/utils/email.py": {
+   "total": 17,
+   "covered": 0
+  },
+  "user/utils/tokens.py": {
+   "total": 38,
+   "covered": 0
+  },
+  "user/views.py": {
+   "total": 83,
+   "covered": 0
+  }
+ },
+ "covered_block_ids": [
+  "admin/apps.py::register_config::12-12::entry::1",
+  "admin/apps.py::register_config::13-17::block::1",
+  "admin/apps.py::register_config::12-12::exit::1",
+  "admin/apps.py::ready::9-9::entry::1",
+  "admin/apps.py::ready::10-10::block::1",
+  "admin/apps.py::ready::9-9::exit::1",
+  "category/managers.py::ordered::31-31::entry::1",
+  "category/managers.py::ordered::31-31::exit::1",
+  "category/managers.py::children::25-25::entry::1",
+  "category/managers.py::children::25-25::exit::1",
+  "category/managers.py::parents::22-22::entry::1",
+  "category/managers.py::parents::22-22::exit::1",
+  "category/managers.py::opened::19-19::entry::1",
+  "category/managers.py::opened::19-19::exit::1",
+  "category/managers.py::visible::16-16::entry::1",
+  "category/managers.py::visible::16-16::exit::1",
+  "category/managers.py::public::13-13::entry::1",
+  "category/managers.py::public::13-13::exit::1",
+  "category/managers.py::unremoved::8-8::entry::1",
+  "category/managers.py::unremoved::8-8::exit::1",
+  "category/models.py::is_subcategory::68-68::entry::1",
+  "category/models.py::is_subcategory::68-68::exit::1",
+  "category/models.py::get_absolute_url::59-59::entry::1",
+  "category/models.py::get_absolute_url::59-59::exit::1",
+  "comment/bookmark/models.py::increase_or_create::65-65::entry::1",
+  "comment/bookmark/models.py::increase_or_create::65-65::exit::1",
+  "comment/bookmark/models.py::increase_to::51-51::entry::1",
+  "comment/bookmark/models.py::increase_to::51-51::exit::1",
+  "comment/bookmark/models.py::page_to_comment_number::42-42::entry::1",
+  "comment/bookmark/models.py::page_to_comment_number::42-42::try::1",
+  "comment/bookmark/models.py::page_to_comment_number::42-42::exit::1",
+  "comment/bookmark/models.py::get_new_comment_url::37-37::entry::1",
+  "comment/bookmark/models.py::get_new_comment_url::37-37::exit::1",
+  "comment/bookmark/models.py::get_absolute_url::34-34::entry::1",
+  "comment/bookmark/models.py::get_absolute_url::34-34::exit::1",
+  "comment/bookmark/models.py::_get_url::25-25::entry::1",
+  "comment/bookmark/models.py::_get_url::25-25::exit::1",
+  "comment/history/models.py::create_maybe::34-34::entry::1",
+  "comment/history/models.py::create_maybe::34-34::exit::1",
+  "comment/history/models.py::create::26-26::entry::1",
+  "comment/history/models.py::create::26-26::exit::1",
+  "comment/history/models.py::get_absolute_url::22-22::entry::1",
+  "comment/history/models.py::get_absolute_url::22-22::exit::1",
+  "comment/like/models.py::get_delete_url::27-27::entry::1",
+  "comment/like/models.py::get_delete_url::27-27::exit::1",
+  "comment/managers.py::for_update_or_404::72-72::entry::1",
+  "comment/managers.py::for_update_or_404::72-72::exit::1",
+  "comment/managers.py::for_access::69-69::entry::1",
+  "comment/managers.py::for_access::69-69::exit::1",
+  "comment/managers.py::with_polls::46-46::entry::1",
+  "comment/managers.py::with_polls::46-46::exit::1",
+  "comment/managers.py::with_likes::38-38::entry::1",
+  "comment/managers.py::with_likes::38-38::exit::1",
+  "comment/managers.py::_access::33-33::entry::1",
+  "comment/managers.py::_access::33-33::exit::1",
+  "comment/managers.py::for_topic::30-30::entry::1",
+  "comment/managers.py::for_topic::30-30::exit::1",
+  "comment/managers.py::visible::27-27::entry::1",
+  "comment/managers.py::visible::27-27::exit::1",
+  "comment/managers.py::public::24-24::entry::1",
+  "comment/managers.py::public::24-24::exit::1",
+  "comment/managers.py::unremoved::13-13::entry::1",
+  "comment/managers.py::unremoved::13-13::exit::1",
+  "comment/managers.py::filter::10-10::entry::1",
+  "comment/managers.py::filter::10-10::exit::1",
+  "comment/models.py::get_last_for_topic::82-82::entry::1",
+  "comment/models.py::get_last_for_topic::82-82::exit::1",
+  "comment/models.py::create_moderation_action::71-71::entry::1",
+  "comment/models.py::create_moderation_action::71-71::exit::1",
+  "comment/models.py::decrease_likes_count::65-65::entry::1",
+  "comment/models.py::decrease_likes_count::65-65::exit::1",
+  "comment/models.py::increase_likes_count::62-62::entry::1",
+  "comment/models.py::increase_likes_count::62-62::exit::1",
+  "comment/models.py::increase_modified_count::57-57::entry::1",
+  "comment/models.py::increase_modified_count::57-57::exit::1",
+  "comment/models.py::like::49-49::entry::1",
+  "comment/models.py::like::49-49::try::1",
+  "comment/models.py::like::49-49::exit::1",
+  "comment/models.py::get_absolute_url::45-45::entry::1",
+  "comment/models.py::get_absolute_url::45-45::exit::1",
+  "comment/poll/managers.py::for_choice::47-47::entry::1",
+  "comment/poll/managers.py::for_choice::47-47::exit::1",
+  "comment/poll/managers.py::for_voter::44-44::entry::1",
+  "comment/poll/managers.py::for_voter::44-44::exit::1",
+  "comment/poll/managers.py::unremoved::41-41::entry::1",
+  "comment/poll/managers.py::unremoved::41-41::exit::1",
+  "comment/poll/managers.py::for_vote::36-36::entry::1",
+  "comment/poll/managers.py::for_vote::36-36::exit::1",
+  "comment/poll/managers.py::for_voter::33-33::entry::1",
+  "comment/poll/managers.py::for_voter::33-33::exit::1",
+  "comment/poll/managers.py::for_poll::30-30::entry::1",
+  "comment/poll/managers.py::for_poll::30-30::exit::1",
+  "comment/poll/managers.py::for_comment::27-27::entry::1",
+  "comment/poll/managers.py::for_comment::27-27::exit::1",
+  "comment/poll/managers.py::unremoved::24-24::entry::1",
+  "comment/poll/managers.py::unremoved::24-24::exit::1",
+  "comment/poll/managers.py::with_choices::13-13::entry::1",
+  "comment/poll/managers.py::with_choices::13-13::exit::1",
+  "comment/poll/managers.py::for_comment::10-10::entry::1",
+  "comment/poll/managers.py::for_comment::10-10::exit::1",
+  "comment/poll/managers.py::unremoved::7-7::entry::1",
+  "comment/poll/managers.py::unremoved::7-7::exit::1",
+  "comment/poll/models.py::update_or_create_many::162-162::entry::1",
+  "comment/poll/models.py::update_or_create_many::162-162::exit::1",
+  "comment/poll/models.py::decrease_vote_count::156-156::entry::1",
+  "comment/poll/models.py::decrease_vote_count::156-156::exit::1",
+  "comment/poll/models.py::increase_vote_count::150-150::entry::1",
+  "comment/poll/models.py::increase_vote_count::150-150::exit::1",
+  "comment/poll/models.py::votes_percentage::143-143::entry::1",
+  "comment/poll/models.py::votes_percentage::143-143::try::1",
+  "comment/poll/models.py::votes_percentage::143-143::exit::1",
+  "comment/poll/models.py::vote::134-134::entry::1",
+  "comment/poll/models.py::vote::134-134::try::1",
+  "comment/poll/models.py::vote::134-134::exit::1",
+  "comment/poll/models.py::update_or_create_many::95-95::entry::1",
+  "comment/poll/models.py::update_or_create_many::95-95::exit::1",
+  "comment/poll/models.py::total_votes::87-87::entry::1",
+  "comment/poll/models.py::total_votes::87-87::try::1",
+  "comment/poll/models.py::total_votes::87-87::exit::1",
+  "comment/poll/models.py::has_user_voted::79-79::entry::1",
+  "comment/poll/models.py::has_user_voted::79-79::try::1",
+  "comment/poll/models.py::has_user_voted::79-79::exit::1",
+  "comment/poll/models.py::mode_txt::75-75::entry::1",
+  "comment/poll/models.py::mode_txt::75-75::exit::1",
+  "comment/poll/models.py::can_show_results::71-71::entry::1",
+  "comment/poll/models.py::can_show_results::71-71::exit::1",
+  "comment/poll/models.py::is_secret::67-67::entry::1",
+  "comment/poll/models.py::is_secret::67-67::exit::1",
+  "comment/poll/models.py::is_closed::63-63::entry::1",
+  "comment/poll/models.py::is_closed::63-63::exit::1",
+  "comment/poll/models.py::has_choice_min::59-59::entry::1",
+  "comment/poll/models.py::has_choice_min::59-59::exit::1",
+  "comment/poll/models.py::is_multiple_choice::55-55::entry::1",
+  "comment/poll/models.py::is_multiple_choice::55-55::exit::1",
+  "comment/poll/models.py::get_rel_url::49-49::entry::1",
+  "comment/poll/models.py::get_rel_url::49-49::exit::1",
+  "comment/poll/models.py::get_absolute_url::46-46::entry::1",
+  "comment/poll/models.py::get_absolute_url::46-46::exit::1",
+  "core/apps.py::ready::12-12::entry::1",
+  "core/apps.py::ready::13-13::branch::1",
+  "core/apps.py::ready::15-15::branch::1",
+  "core/apps.py::ready::19-19::branch::1",
+  "core/apps.py::ready::12-12::exit::1",
+  "core/conf/settings.py::__getattr__::14-14::entry::1",
+  "core/conf/settings.py::__getattr__::14-14::try::1",
+  "core/conf/settings.py::__getattr__::16-16::terminal::1",
+  "core/conf/settings.py::__getattr__::18-18::terminal::1",
+  "core/conf/settings.py::__getattr__::14-14::exit::1",
+  "core/storage.py::select_storage::14-14::entry::1",
+  "core/storage.py::select_storage::16-16::branch::1",
+  "core/storage.py::select_storage::17-17::terminal::1",
+  "core/storage.py::select_storage::14-14::exit::1",
+  "core/storage.py::get_available_name::9-9::entry::1",
+  "core/storage.py::get_available_name::9-9::exit::1",
+  "core/utils/__init__.py::site_url::122-122::entry::1",
+  "core/utils/__init__.py::site_url::122-122::exit::1",
+  "core/utils/__init__.py::generate_filename::116-116::entry::1",
+  "core/utils/__init__.py::generate_filename::116-116::exit::1",
+  "core/utils/__init__.py::unique_filename::97-97::entry::1",
+  "core/utils/__init__.py::unique_filename::97-97::try::1",
+  "core/utils/__init__.py::unique_filename::97-97::exit::1",
+  "core/utils/__init__.py::safe_uuid::92-92::entry::1",
+  "core/utils/__init__.py::safe_uuid::92-92::exit::1",
+  "core/utils/__init__.py::hashed_filename::83-83::entry::1",
+  "core/utils/__init__.py::hashed_filename::83-83::exit::1",
+  "core/utils/__init__.py::get_query_string::70-70::entry::1",
+  "core/utils/__init__.py::get_query_string::70-70::loop_exit::1",
+  "core/utils/__init__.py::get_query_string::70-70::exit::1",
+  "core/utils/__init__.py::pushd::52-52::entry::1",
+  "core/utils/__init__.py::pushd::52-52::exit::1",
+  "core/utils/__init__.py::get_file_hash::47-47::entry::1",
+  "core/utils/__init__.py::get_file_hash::47-47::exit::1",
+  "core/utils/__init__.py::get_hash::35-35::entry::1",
+  "core/utils/__init__.py::get_hash::35-35::loop_exit::1",
+  "core/utils/__init__.py::get_hash::35-35::exit::1",
+  "core/utils/__init__.py::mkdir_p::27-27::entry::1",
+  "core/utils/__init__.py::mkdir_p::27-27::try::1",
+  "core/utils/__init__.py::mkdir_p::27-27::exit::1",
+  "core/utils/__init__.py::json_response::19-19::entry::1",
+  "core/utils/__init__.py::json_response::19-19::exit::1",
+  "core/utils/__init__.py::render_form_errors::15-15::entry::1",
+  "core/utils/__init__.py::render_form_errors::15-15::exit::1",
+  "core/utils/db.py::create_or_none::4-4::entry::1",
+  "core/utils/db.py::create_or_none::4-4::try::1",
+  "core/utils/db.py::create_or_none::4-4::exit::1",
+  "core/utils/models.py::deconstruct::45-45::entry::1",
+  "core/utils/models.py::deconstruct::45-45::exit::1",
+  "core/utils/models.py::pre_save::24-24::entry::1",
+  "core/utils/models.py::pre_save::24-24::loop_exit::1",
+  "core/utils/models.py::pre_save::24-24::exit::1",
+  "core/utils/models.py::__init__::19-19::entry::1",
+  "core/utils/models.py::__init__::20-22::block::1",
+  "core/utils/models.py::__init__::19-19::exit::1",
+  "core/utils/paginator/__init__.py::yt_paginate::41-41::entry::1",
+  "core/utils/paginator/__init__.py::yt_paginate::41-41::exit::1",
+  "core/utils/paginator/__init__.py::paginate::37-37::entry::1",
+  "core/utils/paginator/__init__.py::paginate::37-37::exit::1",
+  "core/utils/paginator/__init__.py::_paginate::27-27::entry::1",
+  "core/utils/paginator/__init__.py::_paginate::27-27::try::1",
+  "core/utils/paginator/__init__.py::_paginate::27-27::exit::1",
+  "core/utils/paginator/__init__.py::get_url::17-17::entry::1",
+  "core/utils/paginator/__init__.py::get_url::17-17::exit::1",
+  "core/utils/paginator/__init__.py::get_page_number::8-8::entry::1",
+  "core/utils/paginator/__init__.py::get_page_number::8-8::exit::1",
+  "core/utils/paginator/yt_paginator.py::previous_page_number::117-117::entry::1",
+  "core/utils/paginator/yt_paginator.py::previous_page_number::117-117::exit::1",
+  "core/utils/paginator/yt_paginator.py::next_page_number::114-114::entry::1",
+  "core/utils/paginator/yt_paginator.py::next_page_number::114-114::exit::1",
+  "core/utils/paginator/yt_paginator.py::page_range::94-94::entry::1",
+  "core/utils/paginator/yt_paginator.py::page_range::94-94::exit::1",
+  "core/utils/paginator/yt_paginator.py::num_pages::67-67::entry::1",
+  "core/utils/paginator/yt_paginator.py::num_pages::67-67::try::1",
+  "core/utils/paginator/yt_paginator.py::num_pages::67-67::exit::1",
+  "core/utils/paginator/yt_paginator.py::__getitem__::60-60::entry::1",
+  "core/utils/paginator/yt_paginator.py::__getitem__::60-60::exit::1",
+  "core/utils/paginator/yt_paginator.py::__len__::57-57::entry::1",
+  "core/utils/paginator/yt_paginator.py::__len__::57-57::exit::1",
+  "core/utils/paginator/yt_paginator.py::__repr__::54-54::entry::1",
+  "core/utils/paginator/yt_paginator.py::__repr__::54-54::exit::1",
+  "core/utils/paginator/yt_paginator.py::__init__::47-47::entry::1",
+  "core/utils/paginator/yt_paginator.py::__init__::47-47::exit::1",
+  "core/utils/paginator/yt_paginator.py::page::28-28::entry::1",
+  "core/utils/paginator/yt_paginator.py::page::28-28::exit::1",
+  "core/utils/paginator/yt_paginator.py::validate_number::16-16::entry::1",
+  "core/utils/paginator/yt_paginator.py::validate_number::16-16::try::1",
+  "core/utils/paginator/yt_paginator.py::validate_number::16-16::exit::1",
+  "core/utils/paginator/yt_paginator.py::__init__::11-11::entry::1",
+  "core/utils/paginator/yt_paginator.py::__init__::11-11::exit::1",
+  "search/signals.py::teardown::18-18::entry::1",
+  "search/signals.py::teardown::18-18::exit::1",
+  "search/signals.py::setup::15-15::entry::1",
+  "search/signals.py::setup::16-16::block::1",
+  "search/signals.py::setup::15-15::exit::1",
+  "search/signals.py::handle_save::9-9::entry::1",
+  "search/signals.py::handle_save::9-9::exit::1",
+  "topic/managers.py::for_update_or_404::65-65::entry::1",
+  "topic/managers.py::for_update_or_404::65-65::exit::1",
+  "topic/managers.py::get_public_or_404::55-55::entry::1",
+  "topic/managers.py::get_public_or_404::55-55::exit::1",
+  "topic/managers.py::with_bookmarks::43-43::entry::1",
+  "topic/managers.py::with_bookmarks::43-43::exit::1",
+  "topic/managers.py::for_unread::40-40::entry::1",
+  "topic/managers.py::for_unread::40-40::exit::1",
+  "topic/managers.py::for_access::37-37::entry::1",
+  "topic/managers.py::for_access::37-37::exit::1",
+  "topic/managers.py::_access::34-34::entry::1",
+  "topic/managers.py::_access::34-34::exit::1",
+  "topic/managers.py::for_category::28-28::entry::1",
+  "topic/managers.py::for_category::28-28::exit::1",
+  "topic/managers.py::global_::25-25::entry::1",
+  "topic/managers.py::global_::25-25::exit::1",
+  "topic/managers.py::opened::22-22::entry::1",
+  "topic/managers.py::opened::22-22::exit::1",
+  "topic/managers.py::visible::19-19::entry::1",
+  "topic/managers.py::visible::19-19::exit::1",
+  "topic/managers.py::public::16-16::entry::1",
+  "topic/managers.py::public::16-16::exit::1",
+  "topic/managers.py::unremoved::9-9::entry::1",
+  "topic/managers.py::unremoved::9-9::exit::1",
+  "topic/models.py::get_all_comments_html::116-116::entry::1",
+  "topic/models.py::get_all_comments_html::116-116::exit::1",
+  "topic/models.py::decrease_comment_count::112-112::entry::1",
+  "topic/models.py::decrease_comment_count::112-112::exit::1",
+  "topic/models.py::increase_comment_count::107-107::entry::1",
+  "topic/models.py::increase_comment_count::107-107::exit::1",
+  "topic/models.py::increase_view_count::104-104::entry::1",
+  "topic/models.py::increase_view_count::104-104::exit::1",
+  "topic/models.py::is_visited::101-101::entry::1",
+  "topic/models.py::is_visited::101-101::exit::1",
+  "topic/models.py::has_new_comments::97-97::entry::1",
+  "topic/models.py::has_new_comments::97-97::exit::1",
+  "topic/models.py::new_comments_count::86-86::entry::1",
+  "topic/models.py::new_comments_count::86-86::exit::1",
+  "topic/models.py::bookmark::77-77::entry::1",
+  "topic/models.py::bookmark::77-77::try::1",
+  "topic/models.py::bookmark::77-77::exit::1",
+  "topic/models.py::main_category::73-73::entry::1",
+  "topic/models.py::main_category::73-73::exit::1",
+  "topic/models.py::get_bookmark_url::63-63::entry::1",
+  "topic/models.py::get_bookmark_url::63-63::exit::1",
+  "topic/models.py::get_absolute_url::53-53::entry::1",
+  "topic/models.py::get_absolute_url::53-53::exit::1",
+  "topic/notification/managers.py::with_related_data::30-30::entry::1",
+  "topic/notification/managers.py::with_related_data::30-30::exit::1",
+  "topic/notification/managers.py::read::26-26::entry::1",
+  "topic/notification/managers.py::read::26-26::exit::1",
+  "topic/notification/managers.py::for_access::23-23::entry::1",
+  "topic/notification/managers.py::for_access::23-23::exit::1",
+  "topic/notification/managers.py::_access::17-17::entry::1",
+  "topic/notification/managers.py::_access::17-17::exit::1",
+  "topic/notification/managers.py::unread::14-14::entry::1",
+  "topic/notification/managers.py::unread::14-14::exit::1",
+  "topic/notification/managers.py::unremoved::6-6::entry::1",
+  "topic/notification/managers.py::unremoved::6-6::exit::1",
+  "topic/notification/models.py::sync::131-131::entry::1",
+  "topic/notification/models.py::sync::131-131::exit::1",
+  "topic/notification/models.py::bulk_create::114-114::entry::1",
+  "topic/notification/models.py::bulk_create::114-114::exit::1",
+  "topic/notification/models.py::notify_new_mentions::89-89::entry::1",
+  "topic/notification/models.py::notify_new_mentions::89-89::loop_exit::1",
+  "topic/notification/models.py::notify_new_mentions::89-89::try::1",
+  "topic/notification/models.py::notify_new_mentions::89-89::exit::1",
+  "topic/notification/models.py::notify_new_comment::79-79::entry::1",
+  "topic/notification/models.py::notify_new_comment::79-79::exit::1",
+  "topic/notification/models.py::create_maybe::65-65::entry::1",
+  "topic/notification/models.py::create_maybe::65-65::exit::1",
+  "topic/notification/models.py::mark_as_read::58-58::entry::1",
+  "topic/notification/models.py::mark_as_read::58-58::exit::1",
+  "topic/notification/models.py::is_comment::54-54::entry::1",
+  "topic/notification/models.py::is_comment::54-54::exit::1",
+  "topic/notification/models.py::is_mention::50-50::entry::1",
+  "topic/notification/models.py::is_mention::50-50::exit::1",
+  "topic/notification/models.py::text_action::46-46::entry::1",
+  "topic/notification/models.py::text_action::46-46::exit::1",
+  "topic/notification/models.py::get_absolute_url::39-39::entry::1",
+  "topic/notification/models.py::get_absolute_url::39-39::exit::1",
+  "topic/private/managers.py::for_create_or_404::11-11::entry::1",
+  "topic/private/managers.py::for_create_or_404::11-11::exit::1",
+  "topic/private/managers.py::for_delete_or_404::7-7::entry::1",
+  "topic/private/managers.py::for_delete_or_404::7-7::exit::1",
+  "topic/private/models.py::get_absolute_url::29-29::entry::1",
+  "topic/private/models.py::get_absolute_url::29-29::exit::1",
+  "topic/unread/models.py::unread_new_comment::38-38::entry::1",
+  "topic/unread/models.py::unread_new_comment::38-38::exit::1",
+  "topic/unread/models.py::create_or_mark_as_read::29-29::entry::1",
+  "topic/unread/models.py::create_or_mark_as_read::29-29::exit::1",
+  "topic/unread/models.py::get_absolute_url::25-25::entry::1",
+  "topic/unread/models.py::get_absolute_url::25-25::exit::1",
+  "user/apps.py::register_signals::13-13::entry::1",
+  "user/apps.py::register_signals::14-14::block::1",
+  "user/apps.py::register_signals::13-13::exit::1",
+  "user/apps.py::ready::10-10::entry::1",
+  "user/apps.py::ready::11-11::block::1",
+  "user/apps.py::ready::10-10::exit::1",
+  "user/models.py::small_avatar_url::113-113::entry::1",
+  "user/models.py::small_avatar_url::113-113::exit::1",
+  "user/models.py::small_avatar_name::108-108::entry::1",
+  "user/models.py::small_avatar_name::108-108::exit::1",
+  "user/models.py::update_post_hash::95-95::entry::1",
+  "user/models.py::update_post_hash::95-95::exit::1",
+  "user/models.py::notify_when::89-89::entry::1",
+  "user/models.py::notify_when::89-89::loop_exit::1",
+  "user/models.py::notify_when::89-89::exit::1",
+  "user/models.py::get_absolute_url::83-83::entry::1",
+  "user/models.py::get_absolute_url::83-83::exit::1",
+  "user/models.py::save::74-74::entry::1",
+  "user/models.py::save::74-74::exit::1",
+  "user/models.py::avatar_path::14-14::entry::1",
+  "user/models.py::avatar_path::14-14::exit::1",
+  "user/signals.py::post_save_receivers::36-36::entry::1",
+  "user/signals.py::post_save_receivers::36-36::exit::1",
+  "user/signals.py::lower_username::29-29::entry::1",
+  "user/signals.py::lower_username::29-29::exit::1",
+  "user/signals.py::update_or_create_user_profile::17-17::entry::1",
+  "user/signals.py::update_or_create_user_profile::17-17::exit::1"
+ ],
+ "costs": {
+  "target_http_requests": 0,
+  "sequence_attempts": 0,
+  "atheris_inputs": 0,
+  "bootstrap_http_requests": 0,
+  "checkpoint_validation_http_requests": 0,
+  "prefix_replay_http_requests": 0,
+  "suffix_http_requests": 0,
+  "observer_calls": 0,
+  "reset_calls": 1,
+  "scheduler_decisions": 0,
+  "elapsed_wall_seconds": 0.0,
+  "analysis_wall_seconds": 0.0
+ }
+}

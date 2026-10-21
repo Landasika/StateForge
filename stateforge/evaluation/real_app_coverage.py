@@ -74,6 +74,19 @@ def _run_arm(arm: str, cfg: dict, out: Path, seed: int, adapter, ir):
     pool = load_request_pool(ROOT / cfg["pool"])
     requests = 0
 
+    if arm == "boot":
+        # Import the app and reset once; no requests at all.  This is the
+        # coverage floor contributed purely by application startup.
+        reset = adapter.reset_state
+        reset()
+        return {"target_http_requests": 0, "sequence_attempts": 0,
+                "atheris_inputs": 0, "bootstrap_http_requests": 0,
+                "checkpoint_validation_http_requests": 0,
+                "prefix_replay_http_requests": 0, "suffix_http_requests": 0,
+                "observer_calls": 0, "reset_calls": 1,
+                "scheduler_decisions": 0, "elapsed_wall_seconds": 0.0,
+                "analysis_wall_seconds": 0.0}
+
     if arm == "single":
         ledger = ExecutionCostLedger(
             out_dir=out, run_id=f"{cfg['app']}-{seed}-single",
@@ -195,7 +208,7 @@ def main(argv=None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("app", choices=sorted(APPS))
     parser.add_argument("arm",
-                        choices=["single", "sequence", "c", "d", "replay"])
+                        choices=["boot", "single", "sequence", "c", "d", "replay"])
     parser.add_argument("--seed", type=int, default=5)
     parser.add_argument("--out-root", default=str(
         ROOT / "artifacts/session_ss07f/coverage_supp"))

@@ -1,0 +1,732 @@
+{
+ "app": "linkding",
+ "arm": "boot",
+ "seed": 5,
+ "source": "external/linkding/bookmarks",
+ "definition": "ICFG basic block covered if any line in span executed",
+ "single_note": null,
+ "total_blocks": 4277,
+ "covered_blocks": 402,
+ "percent": 9.4,
+ "executed_files": 137,
+ "per_file": {
+  "admin.py": {
+   "total": 84,
+   "covered": 40
+  },
+  "api/auth.py": {
+   "total": 16,
+   "covered": 0
+  },
+  "api/routes.py": {
+   "total": 105,
+   "covered": 0
+  },
+  "api/serializers.py": {
+   "total": 52,
+   "covered": 0
+  },
+  "apps.py": {
+   "total": 3,
+   "covered": 3
+  },
+  "context_processors.py": {
+   "total": 7,
+   "covered": 0
+  },
+  "feeds.py": {
+   "total": 71,
+   "covered": 0
+  },
+  "forms.py": {
+   "total": 100,
+   "covered": 0
+  },
+  "management/commands/backup.py": {
+   "total": 9,
+   "covered": 0
+  },
+  "management/commands/create_initial_superuser.py": {
+   "total": 15,
+   "covered": 0
+  },
+  "management/commands/enable_wal.py": {
+   "total": 5,
+   "covered": 0
+  },
+  "management/commands/ensure_superuser.py": {
+   "total": 8,
+   "covered": 0
+  },
+  "management/commands/full_backup.py": {
+   "total": 12,
+   "covered": 0
+  },
+  "management/commands/generate_secret_key.py": {
+   "total": 7,
+   "covered": 0
+  },
+  "management/commands/import_netscape.py": {
+   "total": 6,
+   "covered": 0
+  },
+  "management/commands/migrate_tasks.py": {
+   "total": 22,
+   "covered": 0
+  },
+  "middlewares.py": {
+   "total": 54,
+   "covered": 0
+  },
+  "models.py": {
+   "total": 176,
+   "covered": 77
+  },
+  "queries.py": {
+   "total": 235,
+   "covered": 0
+  },
+  "services/assets.py": {
+   "total": 99,
+   "covered": 22
+  },
+  "services/auto_tagging.py": {
+   "total": 59,
+   "covered": 14
+  },
+  "services/bookmarks.py": {
+   "total": 157,
+   "covered": 44
+  },
+  "services/bundles.py": {
+   "total": 25,
+   "covered": 0
+  },
+  "services/exporter.py": {
+   "total": 32,
+   "covered": 0
+  },
+  "services/favicon_loader.py": {
+   "total": 46,
+   "covered": 15
+  },
+  "services/http_client.py": {
+   "total": 117,
+   "covered": 36
+  },
+  "services/importer.py": {
+   "total": 134,
+   "covered": 0
+  },
+  "services/monolith.py": {
+   "total": 8,
+   "covered": 0
+  },
+  "services/parser.py": {
+   "total": 47,
+   "covered": 0
+  },
+  "services/preview_image_loader.py": {
+   "total": 26,
+   "covered": 9
+  },
+  "services/search_query_parser.py": {
+   "total": 349,
+   "covered": 0
+  },
+  "services/singlefile.py": {
+   "total": 13,
+   "covered": 4
+  },
+  "services/tags.py": {
+   "total": 18,
+   "covered": 5
+  },
+  "services/tasks.py": {
+   "total": 259,
+   "covered": 87
+  },
+  "services/wayback.py": {
+   "total": 8,
+   "covered": 0
+  },
+  "services/website_loader.py": {
+   "total": 72,
+   "covered": 19
+  },
+  "signals.py": {
+   "total": 4,
+   "covered": 2
+  },
+  "templatetags/bookmarks.py": {
+   "total": 7,
+   "covered": 0
+  },
+  "templatetags/pagination.py": {
+   "total": 30,
+   "covered": 0
+  },
+  "templatetags/shared.py": {
+   "total": 130,
+   "covered": 0
+  },
+  "tests_e2e/e2e_test_a11y_navigation_focus.py": {
+   "total": 9,
+   "covered": 0
+  },
+  "tests_e2e/e2e_test_bookmark_details_modal.py": {
+   "total": 24,
+   "covered": 0
+  },
+  "tests_e2e/e2e_test_bookmark_item.py": {
+   "total": 3,
+   "covered": 0
+  },
+  "tests_e2e/e2e_test_bookmark_page_bulk_edit.py": {
+   "total": 51,
+   "covered": 0
+  },
+  "tests_e2e/e2e_test_bookmark_page_partial_updates.py": {
+   "total": 63,
+   "covered": 0
+  },
+  "tests_e2e/e2e_test_bundle_preview.py": {
+   "total": 9,
+   "covered": 0
+  },
+  "tests_e2e/e2e_test_collapse_side_panel.py": {
+   "total": 15,
+   "covered": 0
+  },
+  "tests_e2e/e2e_test_dropdown.py": {
+   "total": 27,
+   "covered": 0
+  },
+  "tests_e2e/e2e_test_edit_bookmark_form.py": {
+   "total": 18,
+   "covered": 0
+  },
+  "tests_e2e/e2e_test_filter_drawer.py": {
+   "total": 6,
+   "covered": 0
+  },
+  "tests_e2e/e2e_test_global_shortcuts.py": {
+   "total": 6,
+   "covered": 0
+  },
+  "tests_e2e/e2e_test_new_bookmark_form.py": {
+   "total": 42,
+   "covered": 0
+  },
+  "tests_e2e/e2e_test_settings_general.py": {
+   "total": 12,
+   "covered": 0
+  },
+  "tests_e2e/e2e_test_settings_integrations.py": {
+   "total": 6,
+   "covered": 0
+  },
+  "tests_e2e/e2e_test_tag_management.py": {
+   "total": 50,
+   "covered": 0
+  },
+  "tests_e2e/helpers.py": {
+   "total": 96,
+   "covered": 0
+  },
+  "utils.py": {
+   "total": 101,
+   "covered": 23
+  },
+  "validators.py": {
+   "total": 5,
+   "covered": 2
+  },
+  "views/access.py": {
+   "total": 62,
+   "covered": 0
+  },
+  "views/assets.py": {
+   "total": 27,
+   "covered": 0
+  },
+  "views/auth.py": {
+   "total": 20,
+   "covered": 0
+  },
+  "views/bookmarks.py": {
+   "total": 331,
+   "covered": 0
+  },
+  "views/bundles.py": {
+   "total": 85,
+   "covered": 0
+  },
+  "views/contexts.py": {
+   "total": 226,
+   "covered": 0
+  },
+  "views/custom_css.py": {
+   "total": 4,
+   "covered": 0
+  },
+  "views/health.py": {
+   "total": 7,
+   "covered": 0
+  },
+  "views/manifest.py": {
+   "total": 4,
+   "covered": 0
+  },
+  "views/opensearch.py": {
+   "total": 4,
+   "covered": 0
+  },
+  "views/reload.py": {
+   "total": 27,
+   "covered": 0
+  },
+  "views/root.py": {
+   "total": 11,
+   "covered": 0
+  },
+  "views/settings.py": {
+   "total": 150,
+   "covered": 0
+  },
+  "views/tags.py": {
+   "total": 67,
+   "covered": 0
+  },
+  "views/toasts.py": {
+   "total": 8,
+   "covered": 0
+  },
+  "views/turbo.py": {
+   "total": 31,
+   "covered": 0
+  },
+  "widgets.py": {
+   "total": 43,
+   "covered": 0
+  }
+ },
+ "covered_block_ids": [
+  "admin.py::get_inline_instances::304-304::entry::1",
+  "admin.py::get_inline_instances::304-304::exit::1",
+  "admin.py::delete_unused_tags::249-249::entry::1",
+  "admin.py::delete_unused_tags::249-249::loop_exit::1",
+  "admin.py::delete_unused_tags::249-249::exit::1",
+  "admin.py::bookmarks_count::244-244::entry::1",
+  "admin.py::bookmarks_count::244-244::exit::1",
+  "admin.py::get_queryset::239-239::entry::1",
+  "admin.py::get_queryset::239-239::exit::1",
+  "admin.py::custom_display_name::221-221::entry::1",
+  "admin.py::custom_display_name::221-221::exit::1",
+  "admin.py::mark_as_unread::204-204::entry::1",
+  "admin.py::mark_as_unread::204-204::exit::1",
+  "admin.py::mark_as_read::190-190::entry::1",
+  "admin.py::mark_as_read::190-190::exit::1",
+  "admin.py::unarchive_selected_bookmarks::175-175::entry::1",
+  "admin.py::unarchive_selected_bookmarks::175-175::loop_exit::1",
+  "admin.py::unarchive_selected_bookmarks::175-175::exit::1",
+  "admin.py::archive_selected_bookmarks::160-160::entry::1",
+  "admin.py::archive_selected_bookmarks::160-160::loop_exit::1",
+  "admin.py::archive_selected_bookmarks::160-160::exit::1",
+  "admin.py::delete_selected_bookmarks::145-145::entry::1",
+  "admin.py::delete_selected_bookmarks::145-145::loop_exit::1",
+  "admin.py::delete_selected_bookmarks::145-145::exit::1",
+  "admin.py::get_actions::137-137::entry::1",
+  "admin.py::get_actions::137-137::exit::1",
+  "admin.py::get_app_list::92-92::entry::1",
+  "admin.py::get_app_list::92-92::exit::1",
+  "admin.py::get_urls::81-81::entry::1",
+  "admin.py::get_urls::81-81::exit::1",
+  "admin.py::background_task_view::62-62::entry::1",
+  "admin.py::background_task_view::62-62::exit::1",
+  "admin.py::enqueued_items::48-48::entry::1",
+  "admin.py::enqueued_items::48-48::exit::1",
+  "admin.py::page::38-38::entry::1",
+  "admin.py::page::38-38::exit::1",
+  "admin.py::count::35-35::entry::1",
+  "admin.py::count::35-35::exit::1",
+  "admin.py::__init__::30-30::entry::1",
+  "admin.py::__init__::30-30::exit::1",
+  "apps.py::ready::7-7::entry::1",
+  "apps.py::ready::10-10::block::1",
+  "apps.py::ready::7-7::exit::1",
+  "models.py::save::568-568::entry::1",
+  "models.py::save::568-568::exit::1",
+  "models.py::get::561-561::entry::1",
+  "models.py::get::561-561::exit::1",
+  "models.py::__str__::537-537::entry::1",
+  "models.py::__str__::537-537::exit::1",
+  "models.py::generate_key::534-534::entry::1",
+  "models.py::generate_key::534-534::exit::1",
+  "models.py::save::528-528::entry::1",
+  "models.py::save::528-528::exit::1",
+  "models.py::__str__::514-514::entry::1",
+  "models.py::__str__::514-514::exit::1",
+  "models.py::generate_key::511-511::entry::1",
+  "models.py::generate_key::511-511::exit::1",
+  "models.py::save::505-505::entry::1",
+  "models.py::save::505-505::exit::1",
+  "models.py::save_user_profile::481-481::entry::1",
+  "models.py::save_user_profile::481-481::exit::1",
+  "models.py::create_user_profile::475-475::entry::1",
+  "models.py::create_user_profile::475-475::exit::1",
+  "models.py::save::464-464::entry::1",
+  "models.py::save::464-464::exit::1",
+  "models.py::from_request::331-331::entry::1",
+  "models.py::from_request::331-331::loop_exit::1",
+  "models.py::from_request::331-331::exit::1",
+  "models.py::preferences_dict::325-325::entry::1",
+  "models.py::preferences_dict::325-325::exit::1",
+  "models.py::query_params::314-314::entry::1",
+  "models.py::query_params::314-314::loop_exit::1",
+  "models.py::query_params::314-314::exit::1",
+  "models.py::has_modified_preferences::310-310::entry::1",
+  "models.py::has_modified_preferences::310-310::exit::1",
+  "models.py::has_modifications::306-306::entry::1",
+  "models.py::has_modifications::306-306::exit::1",
+  "models.py::modified_preferences::298-298::entry::1",
+  "models.py::modified_preferences::298-298::exit::1",
+  "models.py::modified_params::294-294::entry::1",
+  "models.py::modified_params::294-294::exit::1",
+  "models.py::is_modified::289-289::entry::1",
+  "models.py::is_modified::289-289::exit::1",
+  "models.py::__init__::262-262::entry::1",
+  "models.py::__init__::262-262::exit::1",
+  "models.py::__str__::220-220::entry::1",
+  "models.py::__str__::220-220::exit::1",
+  "models.py::bookmark_asset_deleted::173-173::entry::1",
+  "models.py::bookmark_asset_deleted::173-173::try::1",
+  "models.py::bookmark_asset_deleted::173-173::exit::1",
+  "models.py::__str__::168-168::entry::1",
+  "models.py::__str__::168-168::exit::1",
+  "models.py::save::158-158::entry::1",
+  "models.py::save::158-158::try::1",
+  "models.py::save::158-158::exit::1",
+  "models.py::download_name::151-151::entry::1",
+  "models.py::download_name::151-151::exit::1",
+  "models.py::bookmark_deleted::117-117::entry::1",
+  "models.py::bookmark_deleted::117-117::try::1",
+  "models.py::bookmark_deleted::117-117::exit::1",
+  "models.py::query_existing::106-106::entry::1",
+  "models.py::query_existing::106-106::exit::1",
+  "models.py::__str__::102-102::entry::1",
+  "models.py::__str__::102-102::exit::1",
+  "models.py::save::98-98::entry::1",
+  "models.py::save::98-98::exit::1",
+  "models.py::tag_names::94-94::entry::1",
+  "models.py::tag_names::94-94::exit::1",
+  "models.py::resolved_description::90-90::entry::1",
+  "models.py::resolved_description::90-90::exit::1",
+  "models.py::resolved_title::83-83::entry::1",
+  "models.py::resolved_title::83-83::exit::1",
+  "models.py::build_tag_string::49-49::entry::1",
+  "models.py::build_tag_string::49-49::exit::1",
+  "models.py::parse_tag_string::36-36::entry::1",
+  "models.py::parse_tag_string::36-36::exit::1",
+  "models.py::sanitize_tag_name::30-30::entry::1",
+  "models.py::sanitize_tag_name::30-30::exit::1",
+  "models.py::__str__::26-26::entry::1",
+  "models.py::__str__::26-26::exit::1",
+  "services/assets.py::_generate_asset_filename::288-288::entry::1",
+  "services/assets.py::_generate_asset_filename::288-288::exit::1",
+  "services/assets.py::remove_asset::266-266::entry::1",
+  "services/assets.py::remove_asset::266-266::exit::1",
+  "services/assets.py::stream_asset_file::246-246::entry::1",
+  "services/assets.py::stream_asset_file::246-246::exit::1",
+  "services/assets.py::open_asset_file::231-231::entry::1",
+  "services/assets.py::open_asset_file::231-231::exit::1",
+  "services/assets.py::upload_asset::176-176::entry::1",
+  "services/assets.py::upload_asset::176-176::try::1",
+  "services/assets.py::upload_asset::176-176::exit::1",
+  "services/assets.py::upload_snapshot::151-151::entry::1",
+  "services/assets.py::upload_snapshot::151-151::exit::1",
+  "services/assets.py::_create_pdf_snapshot::92-92::entry::1",
+  "services/assets.py::_create_pdf_snapshot::92-92::exit::1",
+  "services/assets.py::_create_html_snapshot::59-59::entry::1",
+  "services/assets.py::_create_html_snapshot::59-59::exit::1",
+  "services/assets.py::create_snapshot::42-42::entry::1",
+  "services/assets.py::create_snapshot::42-42::try::1",
+  "services/assets.py::create_snapshot::42-42::exit::1",
+  "services/assets.py::create_snapshot_asset::30-30::entry::1",
+  "services/assets.py::create_snapshot_asset::30-30::exit::1",
+  "services/auto_tagging.py::_fragment_matches::84-84::entry::1",
+  "services/auto_tagging.py::_fragment_matches::84-84::exit::1",
+  "services/auto_tagging.py::_qs_matches::70-70::entry::1",
+  "services/auto_tagging.py::_qs_matches::70-70::loop_exit::1",
+  "services/auto_tagging.py::_qs_matches::70-70::loop_exit::2",
+  "services/auto_tagging.py::_qs_matches::70-70::exit::1",
+  "services/auto_tagging.py::_domains_matches::63-63::entry::1",
+  "services/auto_tagging.py::_domains_matches::63-63::exit::1",
+  "services/auto_tagging.py::_path_matches::59-59::entry::1",
+  "services/auto_tagging.py::_path_matches::59-59::exit::1",
+  "services/auto_tagging.py::get_tags::7-7::entry::1",
+  "services/auto_tagging.py::get_tags::7-7::loop_exit::1",
+  "services/auto_tagging.py::get_tags::7-7::loop_exit::2",
+  "services/auto_tagging.py::get_tags::7-7::exit::1",
+  "services/bookmarks.py::_sanitize_id_list::247-247::entry::1",
+  "services/bookmarks.py::_sanitize_id_list::247-247::exit::1",
+  "services/bookmarks.py::_update_bookmark_tags::226-226::entry::1",
+  "services/bookmarks.py::_update_bookmark_tags::226-226::try::1",
+  "services/bookmarks.py::_update_bookmark_tags::226-226::loop_exit::1",
+  "services/bookmarks.py::_update_bookmark_tags::226-226::exit::1",
+  "services/bookmarks.py::_merge_bookmark_data::218-218::entry::1",
+  "services/bookmarks.py::_merge_bookmark_data::218-218::exit::1",
+  "services/bookmarks.py::create_html_snapshots::209-209::entry::1",
+  "services/bookmarks.py::create_html_snapshots::209-209::exit::1",
+  "services/bookmarks.py::refresh_bookmarks_metadata::198-198::entry::1",
+  "services/bookmarks.py::refresh_bookmarks_metadata::198-198::loop_exit::1",
+  "services/bookmarks.py::refresh_bookmarks_metadata::198-198::exit::1",
+  "services/bookmarks.py::unshare_bookmarks::190-190::entry::1",
+  "services/bookmarks.py::unshare_bookmarks::190-190::exit::1",
+  "services/bookmarks.py::share_bookmarks::182-182::entry::1",
+  "services/bookmarks.py::share_bookmarks::182-182::exit::1",
+  "services/bookmarks.py::mark_bookmarks_as_unread::174-174::entry::1",
+  "services/bookmarks.py::mark_bookmarks_as_unread::174-174::exit::1",
+  "services/bookmarks.py::mark_bookmarks_as_read::166-166::entry::1",
+  "services/bookmarks.py::mark_bookmarks_as_read::166-166::exit::1",
+  "services/bookmarks.py::untag_bookmarks::146-146::entry::1",
+  "services/bookmarks.py::untag_bookmarks::146-146::loop_exit::1",
+  "services/bookmarks.py::untag_bookmarks::146-146::exit::1",
+  "services/bookmarks.py::tag_bookmarks::123-123::entry::1",
+  "services/bookmarks.py::tag_bookmarks::123-123::loop_exit::1",
+  "services/bookmarks.py::tag_bookmarks::123-123::loop_exit::2",
+  "services/bookmarks.py::tag_bookmarks::123-123::exit::1",
+  "services/bookmarks.py::delete_bookmarks::117-117::entry::1",
+  "services/bookmarks.py::delete_bookmarks::117-117::exit::1",
+  "services/bookmarks.py::unarchive_bookmarks::109-109::entry::1",
+  "services/bookmarks.py::unarchive_bookmarks::109-109::exit::1",
+  "services/bookmarks.py::unarchive_bookmark::102-102::entry::1",
+  "services/bookmarks.py::unarchive_bookmark::102-102::exit::1",
+  "services/bookmarks.py::archive_bookmarks::94-94::entry::1",
+  "services/bookmarks.py::archive_bookmarks::94-94::exit::1",
+  "services/bookmarks.py::archive_bookmark::87-87::entry::1",
+  "services/bookmarks.py::archive_bookmark::87-87::exit::1",
+  "services/bookmarks.py::enhance_with_website_metadata::76-76::entry::1",
+  "services/bookmarks.py::enhance_with_website_metadata::76-76::exit::1",
+  "services/bookmarks.py::update_bookmark::55-55::entry::1",
+  "services/bookmarks.py::update_bookmark::55-55::exit::1",
+  "services/bookmarks.py::create_bookmark::12-12::entry::1",
+  "services/bookmarks.py::create_bookmark::12-12::exit::1",
+  "services/favicon_loader.py::load_favicon::60-60::entry::1",
+  "services/favicon_loader.py::load_favicon::60-60::exit::1",
+  "services/favicon_loader.py::_is_stale::54-54::entry::1",
+  "services/favicon_loader.py::_is_stale::54-54::exit::1",
+  "services/favicon_loader.py::_check_existing_favicon::43-43::entry::1",
+  "services/favicon_loader.py::_check_existing_favicon::43-43::loop_exit::1",
+  "services/favicon_loader.py::_check_existing_favicon::43-43::exit::1",
+  "services/favicon_loader.py::_get_favicon_path::39-39::entry::1",
+  "services/favicon_loader.py::_get_favicon_path::39-39::exit::1",
+  "services/favicon_loader.py::_get_url_parameters::29-29::entry::1",
+  "services/favicon_loader.py::_get_url_parameters::29-29::exit::1",
+  "services/favicon_loader.py::_url_to_filename::25-25::entry::1",
+  "services/favicon_loader.py::_url_to_filename::25-25::exit::1",
+  "services/favicon_loader.py::_ensure_favicon_folder::21-21::entry::1",
+  "services/favicon_loader.py::_ensure_favicon_folder::21-21::exit::1",
+  "services/http_client.py::head::309-309::entry::1",
+  "services/http_client.py::head::309-309::exit::1",
+  "services/http_client.py::get::305-305::entry::1",
+  "services/http_client.py::get::305-305::exit::1",
+  "services/http_client.py::request::286-286::entry::1",
+  "services/http_client.py::request::286-286::try::1",
+  "services/http_client.py::request::286-286::exit::1",
+  "services/http_client.py::init_poolmanager::277-277::entry::1",
+  "services/http_client.py::init_poolmanager::277-277::exit::1",
+  "services/http_client.py::_new_conn::233-233::entry::1",
+  "services/http_client.py::_new_conn::233-233::try::1",
+  "services/http_client.py::_new_conn::233-233::exit::1",
+  "services/http_client.py::create_guarded_connection::184-184::entry::1",
+  "services/http_client.py::create_guarded_connection::184-184::loop_exit::1",
+  "services/http_client.py::create_guarded_connection::184-184::loop_exit::2",
+  "services/http_client.py::create_guarded_connection::184-184::try::1",
+  "services/http_client.py::create_guarded_connection::184-184::exit::1",
+  "services/http_client.py::_parse_resolved_address::179-179::entry::1",
+  "services/http_client.py::_parse_resolved_address::179-179::exit::1",
+  "services/http_client.py::get_allowlist::172-172::entry::1",
+  "services/http_client.py::get_allowlist::172-172::exit::1",
+  "services/http_client.py::matches_address::165-165::entry::1",
+  "services/http_client.py::matches_address::165-165::exit::1",
+  "services/http_client.py::matches_host::154-154::entry::1",
+  "services/http_client.py::matches_host::154-154::loop_exit::1",
+  "services/http_client.py::matches_host::154-154::exit::1",
+  "services/http_client.py::parse::130-130::entry::1",
+  "services/http_client.py::parse::130-130::loop_exit::1",
+  "services/http_client.py::parse::130-130::try::1",
+  "services/http_client.py::parse::130-130::exit::1",
+  "services/http_client.py::is_public_address::108-108::entry::1",
+  "services/http_client.py::is_public_address::108-108::exit::1",
+  "services/http_client.py::__init__::102-102::entry::1",
+  "services/http_client.py::__init__::102-102::exit::1",
+  "services/http_client.py::__init__::85-85::entry::1",
+  "services/http_client.py::__init__::85-85::exit::1",
+  "services/preview_image_loader.py::load_preview_image::26-26::entry::1",
+  "services/preview_image_loader.py::load_preview_image::26-26::try::1",
+  "services/preview_image_loader.py::load_preview_image::26-26::exit::1",
+  "services/preview_image_loader.py::_get_image_path::22-22::entry::1",
+  "services/preview_image_loader.py::_get_image_path::22-22::exit::1",
+  "services/preview_image_loader.py::_url_to_filename::18-18::entry::1",
+  "services/preview_image_loader.py::_url_to_filename::18-18::exit::1",
+  "services/preview_image_loader.py::_ensure_preview_folder::14-14::entry::1",
+  "services/preview_image_loader.py::_ensure_preview_folder::14-14::exit::1",
+  "services/singlefile.py::create_snapshot::17-17::entry::1",
+  "services/singlefile.py::create_snapshot::17-17::try::1",
+  "services/singlefile.py::create_snapshot::17-17::try::2",
+  "services/singlefile.py::create_snapshot::17-17::exit::1",
+  "services/tags.py::get_or_create_tag::18-18::entry::1",
+  "services/tags.py::get_or_create_tag::18-18::try::1",
+  "services/tags.py::get_or_create_tag::18-18::exit::1",
+  "services/tags.py::get_or_create_tags::13-13::entry::1",
+  "services/tags.py::get_or_create_tags::13-13::exit::1",
+  "services/tasks.py::create_missing_html_snapshots::366-366::entry::1",
+  "services/tasks.py::create_missing_html_snapshots::366-366::exit::1",
+  "services/tasks.py::_create_html_snapshot_task::360-360::entry::1",
+  "services/tasks.py::_create_html_snapshot_task::360-360::exit::1",
+  "services/tasks.py::_schedule_html_snapshots_task::353-353::entry::1",
+  "services/tasks.py::_schedule_html_snapshots_task::353-353::exit::1",
+  "services/tasks.py::_create_html_snapshot::336-336::entry::1",
+  "services/tasks.py::_create_html_snapshot::336-336::try::1",
+  "services/tasks.py::_create_html_snapshot::336-336::exit::1",
+  "services/tasks.py::_process_html_snapshots_on_startup::328-328::entry::1",
+  "services/tasks.py::_process_html_snapshots_on_startup::328-328::exit::1",
+  "services/tasks.py::_process_html_snapshots_task::304-304::entry::1",
+  "services/tasks.py::_process_html_snapshots_task::304-304::try::1",
+  "services/tasks.py::_process_html_snapshots_task::304-304::exit::1",
+  "services/tasks.py::_get_next_pending_asset::292-292::entry::1",
+  "services/tasks.py::_get_next_pending_asset::292-292::exit::1",
+  "services/tasks.py::_trigger_html_snapshot_processing::281-281::entry::1",
+  "services/tasks.py::_trigger_html_snapshot_processing::281-281::exit::1",
+  "services/tasks.py::create_html_snapshots::260-260::entry::1",
+  "services/tasks.py::create_html_snapshots::260-260::loop_exit::1",
+  "services/tasks.py::create_html_snapshots::260-260::exit::1",
+  "services/tasks.py::create_html_snapshot::250-250::entry::1",
+  "services/tasks.py::create_html_snapshot::250-250::exit::1",
+  "services/tasks.py::is_html_snapshot_feature_active::246-246::entry::1",
+  "services/tasks.py::is_html_snapshot_feature_active::246-246::exit::1",
+  "services/tasks.py::_refresh_metadata_task::227-227::entry::1",
+  "services/tasks.py::_refresh_metadata_task::227-227::try::1",
+  "services/tasks.py::_refresh_metadata_task::227-227::exit::1",
+  "services/tasks.py::refresh_metadata::221-221::entry::1",
+  "services/tasks.py::refresh_metadata::221-221::exit::1",
+  "services/tasks.py::_schedule_bookmarks_without_previews_task::206-206::entry::1",
+  "services/tasks.py::_schedule_bookmarks_without_previews_task::206-206::loop_exit::1",
+  "services/tasks.py::_schedule_bookmarks_without_previews_task::206-206::try::1",
+  "services/tasks.py::_schedule_bookmarks_without_previews_task::206-206::exit::1",
+  "services/tasks.py::schedule_bookmarks_without_previews::200-200::entry::1",
+  "services/tasks.py::schedule_bookmarks_without_previews::200-200::exit::1",
+  "services/tasks.py::_load_preview_image_task::182-182::entry::1",
+  "services/tasks.py::_load_preview_image_task::182-182::try::1",
+  "services/tasks.py::_load_preview_image_task::182-182::exit::1",
+  "services/tasks.py::load_preview_image::176-176::entry::1",
+  "services/tasks.py::load_preview_image::176-176::exit::1",
+  "services/tasks.py::_schedule_refresh_favicons_task::167-167::entry::1",
+  "services/tasks.py::_schedule_refresh_favicons_task::167-167::loop_exit::1",
+  "services/tasks.py::_schedule_refresh_favicons_task::167-167::exit::1",
+  "services/tasks.py::schedule_refresh_favicons::161-161::entry::1",
+  "services/tasks.py::schedule_refresh_favicons::161-161::exit::1",
+  "services/tasks.py::_schedule_bookmarks_without_favicons_task::151-151::entry::1",
+  "services/tasks.py::_schedule_bookmarks_without_favicons_task::151-151::loop_exit::1",
+  "services/tasks.py::_schedule_bookmarks_without_favicons_task::151-151::exit::1",
+  "services/tasks.py::schedule_bookmarks_without_favicons::145-145::entry::1",
+  "services/tasks.py::schedule_bookmarks_without_favicons::145-145::exit::1",
+  "services/tasks.py::_load_favicon_task::127-127::entry::1",
+  "services/tasks.py::_load_favicon_task::127-127::try::1",
+  "services/tasks.py::_load_favicon_task::127-127::exit::1",
+  "services/tasks.py::load_favicon::121-121::entry::1",
+  "services/tasks.py::load_favicon::121-121::exit::1",
+  "services/tasks.py::is_preview_feature_active::115-115::entry::1",
+  "services/tasks.py::is_preview_feature_active::115-115::exit::1",
+  "services/tasks.py::is_favicon_feature_active::109-109::entry::1",
+  "services/tasks.py::is_favicon_feature_active::109-109::exit::1",
+  "services/tasks.py::_schedule_bookmarks_without_snapshots_task::103-103::entry::1",
+  "services/tasks.py::_schedule_bookmarks_without_snapshots_task::103-103::exit::1",
+  "services/tasks.py::_load_web_archive_snapshot_task::96-96::entry::1",
+  "services/tasks.py::_load_web_archive_snapshot_task::96-96::exit::1",
+  "services/tasks.py::_create_web_archive_snapshot_task::70-70::entry::1",
+  "services/tasks.py::_create_web_archive_snapshot_task::70-70::try::1",
+  "services/tasks.py::_create_web_archive_snapshot_task::70-70::try::2",
+  "services/tasks.py::_create_web_archive_snapshot_task::70-70::exit::1",
+  "services/tasks.py::_create_snapshot::58-58::entry::1",
+  "services/tasks.py::_create_snapshot::58-58::exit::1",
+  "services/tasks.py::create_web_archive_snapshot::53-53::entry::1",
+  "services/tasks.py::create_web_archive_snapshot::53-53::exit::1",
+  "services/tasks.py::is_web_archive_integration_active::43-43::entry::1",
+  "services/tasks.py::is_web_archive_integration_active::43-43::exit::1",
+  "services/tasks.py::task::27-27::entry::1",
+  "services/tasks.py::task::28-28::block::1",
+  "services/tasks.py::task::40-40::terminal::1",
+  "services/tasks.py::task::27-27::exit::1",
+  "services/tasks.py::deco::28-28::entry::1",
+  "services/tasks.py::deco::30-30::block::1",
+  "services/tasks.py::deco::38-38::terminal::1",
+  "services/tasks.py::deco::28-28::exit::1",
+  "services/tasks.py::inner::30-30::entry::1",
+  "services/tasks.py::inner::30-30::try::1",
+  "services/tasks.py::inner::30-30::exit::1",
+  "services/tasks.py::deco::38-38::callsite::1",
+  "services/tasks.py::deco::38-38::returnsite::1",
+  "services/website_loader.py::is_pdf_content_type::187-187::entry::1",
+  "services/website_loader.py::is_pdf_content_type::187-187::exit::1",
+  "services/website_loader.py::detect_content_type::145-145::entry::1",
+  "services/website_loader.py::detect_content_type::145-145::try::1",
+  "services/website_loader.py::detect_content_type::145-145::try::2",
+  "services/website_loader.py::detect_content_type::145-145::exit::1",
+  "services/website_loader.py::fake_request_headers::135-135::entry::1",
+  "services/website_loader.py::fake_request_headers::135-135::exit::1",
+  "services/website_loader.py::load_page::97-97::entry::1",
+  "services/website_loader.py::load_page::97-97::exit::1",
+  "services/website_loader.py::_load_website_metadata::44-44::entry::1",
+  "services/website_loader.py::_load_website_metadata::44-44::try::1",
+  "services/website_loader.py::_load_website_metadata::44-44::exit::1",
+  "services/website_loader.py::_load_website_metadata_cached::40-40::entry::1",
+  "services/website_loader.py::_load_website_metadata_cached::40-40::exit::1",
+  "services/website_loader.py::load_website_metadata::31-31::entry::1",
+  "services/website_loader.py::load_website_metadata::31-31::exit::1",
+  "services/website_loader.py::to_dict::22-22::entry::1",
+  "services/website_loader.py::to_dict::22-22::exit::1",
+  "signals.py::extend_sqlite::7-7::entry::1",
+  "signals.py::extend_sqlite::7-7::exit::1",
+  "utils.py::normalize_url::170-170::entry::1",
+  "utils.py::normalize_url::170-170::try::1",
+  "utils.py::normalize_url::170-170::exit::1",
+  "utils.py::generate_username::158-158::entry::1",
+  "utils.py::generate_username::158-158::exit::1",
+  "utils.py::redirect_with_query::150-150::entry::1",
+  "utils.py::redirect_with_query::150-150::exit::1",
+  "utils.py::get_safe_return_url::143-143::entry::1",
+  "utils.py::get_safe_return_url::143-143::exit::1",
+  "utils.py::parse_timestamp::106-106::entry::1",
+  "utils.py::parse_timestamp::106-106::try::1",
+  "utils.py::parse_timestamp::106-106::try::2",
+  "utils.py::parse_timestamp::106-106::try::3",
+  "utils.py::parse_timestamp::106-106::try::4",
+  "utils.py::parse_timestamp::106-106::exit::1",
+  "utils.py::humanize_relative_date::83-83::entry::1",
+  "utils.py::humanize_relative_date::83-83::exit::1",
+  "utils.py::humanize_absolute_date::63-63::entry::1",
+  "utils.py::humanize_absolute_date::63-63::exit::1",
+  "utils.py::_calculate_date_delta::43-43::entry::1",
+  "utils.py::_calculate_date_delta::43-43::exit::1",
+  "utils.py::unique::21-21::entry::1",
+  "utils.py::unique::21-21::exit::1",
+  "validators.py::__call__::11-11::entry::1",
+  "validators.py::__call__::11-11::exit::1"
+ ],
+ "costs": {
+  "target_http_requests": 0,
+  "sequence_attempts": 0,
+  "atheris_inputs": 0,
+  "bootstrap_http_requests": 0,
+  "checkpoint_validation_http_requests": 0,
+  "prefix_replay_http_requests": 0,
+  "suffix_http_requests": 0,
+  "observer_calls": 0,
+  "reset_calls": 1,
+  "scheduler_decisions": 0,
+  "elapsed_wall_seconds": 0.0,
+  "analysis_wall_seconds": 0.0
+ }
+}

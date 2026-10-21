@@ -45,7 +45,36 @@
      "target_body_covered": true
     }
    },
-   "target_def_line": 28
+   "target_def_line": 28,
+   "target_file": {
+    "file": "main/routes.py",
+    "per_arm": {
+     "boot": {
+      "total": 104,
+      "covered": 29
+     },
+     "single": {
+      "total": 104,
+      "covered": 33
+     },
+     "sequence": {
+      "total": 104,
+      "covered": 38
+     },
+     "c": {
+      "total": 104,
+      "covered": 38
+     },
+     "d": {
+      "total": 104,
+      "covered": 38
+     },
+     "replay": {
+      "total": 104,
+      "covered": 38
+     }
+    }
+   }
   },
   "ctfd": {
    "total_blocks": 7784,
@@ -87,7 +116,36 @@
      "target_body_covered": true
     }
    },
-   "target_def_line": 24
+   "target_def_line": 24,
+   "target_file": {
+    "file": "challenges.py",
+    "per_arm": {
+     "boot": {
+      "total": 30,
+      "covered": 2
+     },
+     "single": {
+      "total": 30,
+      "covered": 2
+     },
+     "sequence": {
+      "total": 30,
+      "covered": 24
+     },
+     "c": {
+      "total": 30,
+      "covered": 24
+     },
+     "d": {
+      "total": 30,
+      "covered": 24
+     },
+     "replay": {
+      "total": 30,
+      "covered": 24
+     }
+    }
+   }
   },
   "healthchecks": {
    "total_blocks": 6637,
@@ -129,7 +187,36 @@
      "target_body_covered": true
     }
    },
-   "target_def_line": 288
+   "target_def_line": 288,
+   "target_file": {
+    "file": "accounts/views.py",
+    "per_arm": {
+     "boot": {
+      "total": 541,
+      "covered": 0
+     },
+     "single": {
+      "total": 541,
+      "covered": 98
+     },
+     "sequence": {
+      "total": 541,
+      "covered": 103
+     },
+     "c": {
+      "total": 541,
+      "covered": 106
+     },
+     "d": {
+      "total": 541,
+      "covered": 104
+     },
+     "replay": {
+      "total": 541,
+      "covered": 104
+     }
+    }
+   }
   },
   "linkding": {
    "total_blocks": 4277,
@@ -171,7 +258,36 @@
      "target_body_covered": true
     }
    },
-   "target_def_line": 43
+   "target_def_line": 43,
+   "target_file": {
+    "file": "views/bookmarks.py",
+    "per_arm": {
+     "boot": {
+      "total": 331,
+      "covered": 0
+     },
+     "single": {
+      "total": 331,
+      "covered": 52
+     },
+     "sequence": {
+      "total": 331,
+      "covered": 64
+     },
+     "c": {
+      "total": 331,
+      "covered": 64
+     },
+     "d": {
+      "total": 331,
+      "covered": 64
+     },
+     "replay": {
+      "total": 331,
+      "covered": 64
+     }
+    }
+   }
   },
   "spirit": {
    "total_blocks": 4695,
@@ -213,8 +329,64 @@
      "target_body_covered": true
     }
    },
-   "target_def_line": 24
+   "target_def_line": 24,
+   "target_file": {
+    "file": "user/views.py",
+    "per_arm": {
+     "boot": {
+      "total": 83,
+      "covered": 0
+     },
+     "single": {
+      "total": 83,
+      "covered": 20
+     },
+     "sequence": {
+      "total": 83,
+      "covered": 20
+     },
+     "c": {
+      "total": 83,
+      "covered": 27
+     },
+     "d": {
+      "total": 83,
+      "covered": 27
+     },
+     "replay": {
+      "total": 83,
+      "covered": 27
+     }
+    }
+   }
   }
  },
- "reproduction_all_match": true
+ "reproduction_all_match": true,
+ "boot_floor": {
+  "microblog": {
+   "percent": 34.02,
+   "covered": 197,
+   "http": 0
+  },
+  "ctfd": {
+   "percent": 26.34,
+   "covered": 2050,
+   "http": 0
+  },
+  "healthchecks": {
+   "percent": 10.89,
+   "covered": 723,
+   "http": 0
+  },
+  "linkding": {
+   "percent": 9.4,
+   "covered": 402,
+   "http": 0
+  },
+  "spirit": {
+   "percent": 7.56,
+   "covered": 355,
+   "http": 0
+  }
+ }
 }

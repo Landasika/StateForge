@@ -1,0 +1,1289 @@
+{
+ "app": "healthchecks",
+ "arm": "boot",
+ "seed": 5,
+ "source": "external/healthchecks/hc",
+ "definition": "ICFG basic block covered if any line in span executed",
+ "single_note": null,
+ "total_blocks": 6637,
+ "covered_blocks": 723,
+ "percent": 10.89,
+ "executed_files": 651,
+ "per_file": {
+  "accounts/admin.py": {
+   "total": 139,
+   "covered": 64
+  },
+  "accounts/backends.py": {
+   "total": 33,
+   "covered": 0
+  },
+  "accounts/decorators.py": {
+   "total": 37,
+   "covered": 0
+  },
+  "accounts/forms.py": {
+   "total": 70,
+   "covered": 0
+  },
+  "accounts/management/commands/createsuperuser.py": {
+   "total": 44,
+   "covered": 0
+  },
+  "accounts/management/commands/pruneusers.py": {
+   "total": 7,
+   "covered": 0
+  },
+  "accounts/management/commands/senddeletionscheduled.py": {
+   "total": 34,
+   "covered": 0
+  },
+  "accounts/management/commands/sendflappingnotices.py": {
+   "total": 12,
+   "covered": 0
+  },
+  "accounts/management/commands/sendinactivitynotices.py": {
+   "total": 21,
+   "covered": 0
+  },
+  "accounts/middleware.py": {
+   "total": 29,
+   "covered": 0
+  },
+  "accounts/models.py": {
+   "total": 287,
+   "covered": 107
+  },
+  "accounts/views.py": {
+   "total": 541,
+   "covered": 0
+  },
+  "api/admin.py": {
+   "total": 132,
+   "covered": 57
+  },
+  "api/apps.py": {
+   "total": 25,
+   "covered": 4
+  },
+  "api/decorators.py": {
+   "total": 82,
+   "covered": 0
+  },
+  "api/forms.py": {
+   "total": 10,
+   "covered": 0
+  },
+  "api/management/commands/pruneobjects.py": {
+   "total": 22,
+   "covered": 0
+  },
+  "api/management/commands/prunepingsslow.py": {
+   "total": 12,
+   "covered": 0
+  },
+  "api/management/commands/prunetokenbucket.py": {
+   "total": 4,
+   "covered": 0
+  },
+  "api/management/commands/sendalerts.py": {
+   "total": 90,
+   "covered": 0
+  },
+  "api/management/commands/sendreports.py": {
+   "total": 59,
+   "covered": 0
+  },
+  "api/management/commands/settelegramwebhook.py": {
+   "total": 8,
+   "covered": 0
+  },
+  "api/management/commands/smtpd.py": {
+   "total": 97,
+   "covered": 0
+  },
+  "api/management/commands/submitchallenge.py": {
+   "total": 14,
+   "covered": 0
+  },
+  "api/models.py": {
+   "total": 599,
+   "covered": 216
+  },
+  "api/transports.py": {
+   "total": 84,
+   "covered": 34
+  },
+  "api/urls.py": {
+   "total": 12,
+   "covered": 0
+  },
+  "api/views.py": {
+   "total": 566,
+   "covered": 0
+  },
+  "front/context_processors.py": {
+   "total": 3,
+   "covered": 0
+  },
+  "front/decorators.py": {
+   "total": 13,
+   "covered": 0
+  },
+  "front/forms.py": {
+   "total": 71,
+   "covered": 0
+  },
+  "front/management/commands/populate_searchdb.py": {
+   "total": 9,
+   "covered": 0
+  },
+  "front/management/commands/pygmentize.py": {
+   "total": 15,
+   "covered": 0
+  },
+  "front/management/commands/render_docs.py": {
+   "total": 13,
+   "covered": 0
+  },
+  "front/templatetags/asciitable.py": {
+   "total": 50,
+   "covered": 0
+  },
+  "front/templatetags/hc_extras.py": {
+   "total": 192,
+   "covered": 77
+  },
+  "front/templatetags/linemode.py": {
+   "total": 17,
+   "covered": 0
+  },
+  "front/validators.py": {
+   "total": 31,
+   "covered": 0
+  },
+  "front/views.py": {
+   "total": 794,
+   "covered": 0
+  },
+  "integrations/apprise/apps.py": {
+   "total": 9,
+   "covered": 3
+  },
+  "integrations/apprise/transport.py": {
+   "total": 7,
+   "covered": 0
+  },
+  "integrations/apprise/views.py": {
+   "total": 15,
+   "covered": 0
+  },
+  "integrations/call/transport.py": {
+   "total": 22,
+   "covered": 0
+  },
+  "integrations/call/views.py": {
+   "total": 15,
+   "covered": 0
+  },
+  "integrations/discord/transport.py": {
+   "total": 10,
+   "covered": 0
+  },
+  "integrations/discord/views.py": {
+   "total": 37,
+   "covered": 0
+  },
+  "integrations/email/forms.py": {
+   "total": 8,
+   "covered": 0
+  },
+  "integrations/email/transport.py": {
+   "total": 30,
+   "covered": 0
+  },
+  "integrations/email/views.py": {
+   "total": 59,
+   "covered": 0
+  },
+  "integrations/github/client.py": {
+   "total": 42,
+   "covered": 0
+  },
+  "integrations/github/forms.py": {
+   "total": 9,
+   "covered": 0
+  },
+  "integrations/github/transport.py": {
+   "total": 20,
+   "covered": 0
+  },
+  "integrations/github/views.py": {
+   "total": 64,
+   "covered": 0
+  },
+  "integrations/googlechat/transport.py": {
+   "total": 18,
+   "covered": 0
+  },
+  "integrations/googlechat/views.py": {
+   "total": 18,
+   "covered": 0
+  },
+  "integrations/gotify/forms.py": {
+   "total": 3,
+   "covered": 0
+  },
+  "integrations/gotify/transport.py": {
+   "total": 16,
+   "covered": 0
+  },
+  "integrations/gotify/views.py": {
+   "total": 30,
+   "covered": 0
+  },
+  "integrations/group/forms.py": {
+   "total": 6,
+   "covered": 0
+  },
+  "integrations/group/transport.py": {
+   "total": 10,
+   "covered": 0
+  },
+  "integrations/group/views.py": {
+   "total": 25,
+   "covered": 0
+  },
+  "integrations/matrix/client.py": {
+   "total": 14,
+   "covered": 0
+  },
+  "integrations/matrix/forms.py": {
+   "total": 7,
+   "covered": 0
+  },
+  "integrations/matrix/transport.py": {
+   "total": 7,
+   "covered": 0
+  },
+  "integrations/matrix/views.py": {
+   "total": 18,
+   "covered": 0
+  },
+  "integrations/mattermost/transport.py": {
+   "total": 5,
+   "covered": 0
+  },
+  "integrations/mattermost/views.py": {
+   "total": 18,
+   "covered": 0
+  },
+  "integrations/msteamsw/transport.py": {
+   "total": 28,
+   "covered": 0
+  },
+  "integrations/msteamsw/views.py": {
+   "total": 15,
+   "covered": 0
+  },
+  "integrations/ntfy/forms.py": {
+   "total": 3,
+   "covered": 0
+  },
+  "integrations/ntfy/transport.py": {
+   "total": 19,
+   "covered": 0
+  },
+  "integrations/ntfy/views.py": {
+   "total": 25,
+   "covered": 0
+  },
+  "integrations/opsgenie/transport.py": {
+   "total": 28,
+   "covered": 0
+  },
+  "integrations/opsgenie/views.py": {
+   "total": 15,
+   "covered": 0
+  },
+  "integrations/pagertree/transport.py": {
+   "total": 5,
+   "covered": 0
+  },
+  "integrations/pagertree/views.py": {
+   "total": 15,
+   "covered": 0
+  },
+  "integrations/pd/transport.py": {
+   "total": 17,
+   "covered": 0
+  },
+  "integrations/pd/views.py": {
+   "total": 43,
+   "covered": 0
+  },
+  "integrations/po/forms.py": {
+   "total": 4,
+   "covered": 0
+  },
+  "integrations/po/transport.py": {
+   "total": 33,
+   "covered": 0
+  },
+  "integrations/po/views.py": {
+   "total": 38,
+   "covered": 0
+  },
+  "integrations/prometheus/views.py": {
+   "total": 72,
+   "covered": 0
+  },
+  "integrations/pushbullet/transport.py": {
+   "total": 3,
+   "covered": 0
+  },
+  "integrations/pushbullet/views.py": {
+   "total": 32,
+   "covered": 0
+  },
+  "integrations/rocketchat/transport.py": {
+   "total": 27,
+   "covered": 0
+  },
+  "integrations/rocketchat/views.py": {
+   "total": 18,
+   "covered": 0
+  },
+  "integrations/shell/forms.py": {
+   "total": 3,
+   "covered": 0
+  },
+  "integrations/shell/transport.py": {
+   "total": 25,
+   "covered": 0
+  },
+  "integrations/shell/views.py": {
+   "total": 15,
+   "covered": 0
+  },
+  "integrations/signal/forms.py": {
+   "total": 17,
+   "covered": 0
+  },
+  "integrations/signal/transport.py": {
+   "total": 66,
+   "covered": 0
+  },
+  "integrations/signal/views.py": {
+   "total": 90,
+   "covered": 0
+  },
+  "integrations/slack/transport.py": {
+   "total": 53,
+   "covered": 0
+  },
+  "integrations/slack/views.py": {
+   "total": 56,
+   "covered": 0
+  },
+  "integrations/sms/transport.py": {
+   "total": 28,
+   "covered": 0
+  },
+  "integrations/sms/views.py": {
+   "total": 25,
+   "covered": 0
+  },
+  "integrations/spike/transport.py": {
+   "total": 5,
+   "covered": 0
+  },
+  "integrations/spike/views.py": {
+   "total": 15,
+   "covered": 0
+  },
+  "integrations/telegram/transport.py": {
+   "total": 26,
+   "covered": 0
+  },
+  "integrations/telegram/views.py": {
+   "total": 44,
+   "covered": 0
+  },
+  "integrations/trello/forms.py": {
+   "total": 3,
+   "covered": 0
+  },
+  "integrations/trello/transport.py": {
+   "total": 8,
+   "covered": 0
+  },
+  "integrations/trello/views.py": {
+   "total": 29,
+   "covered": 0
+  },
+  "integrations/victorops/transport.py": {
+   "total": 9,
+   "covered": 0
+  },
+  "integrations/victorops/views.py": {
+   "total": 15,
+   "covered": 0
+  },
+  "integrations/webhook/forms.py": {
+   "total": 40,
+   "covered": 0
+  },
+  "integrations/webhook/transport.py": {
+   "total": 41,
+   "covered": 0
+  },
+  "integrations/webhook/views.py": {
+   "total": 34,
+   "covered": 0
+  },
+  "integrations/whatsapp/apps.py": {
+   "total": 10,
+   "covered": 3
+  },
+  "integrations/whatsapp/transport.py": {
+   "total": 30,
+   "covered": 0
+  },
+  "integrations/whatsapp/views.py": {
+   "total": 25,
+   "covered": 0
+  },
+  "integrations/zulip/forms.py": {
+   "total": 3,
+   "covered": 0
+  },
+  "integrations/zulip/transport.py": {
+   "total": 15,
+   "covered": 0
+  },
+  "integrations/zulip/views.py": {
+   "total": 15,
+   "covered": 0
+  },
+  "lib/badges.py": {
+   "total": 33,
+   "covered": 0
+  },
+  "lib/curl.py": {
+   "total": 85,
+   "covered": 19
+  },
+  "lib/date.py": {
+   "total": 82,
+   "covered": 23
+  },
+  "lib/emails.py": {
+   "total": 129,
+   "covered": 36
+  },
+  "lib/html.py": {
+   "total": 41,
+   "covered": 0
+  },
+  "lib/s3.py": {
+   "total": 57,
+   "covered": 15
+  },
+  "lib/signing.py": {
+   "total": 26,
+   "covered": 12
+  },
+  "lib/statsd.py": {
+   "total": 18,
+   "covered": 10
+  },
+  "lib/string.py": {
+   "total": 28,
+   "covered": 0
+  },
+  "lib/urls.py": {
+   "total": 10,
+   "covered": 4
+  },
+  "lib/webauthn.py": {
+   "total": 24,
+   "covered": 0
+  },
+  "logs/__init__.py": {
+   "total": 8,
+   "covered": 3
+  },
+  "logs/admin.py": {
+   "total": 18,
+   "covered": 10
+  },
+  "logs/management/commands/sendlogs.py": {
+   "total": 7,
+   "covered": 0
+  },
+  "logs/models.py": {
+   "total": 5,
+   "covered": 2
+  },
+  "payments/context_processors.py": {
+   "total": 3,
+   "covered": 0
+  },
+  "payments/models.py": {
+   "total": 3,
+   "covered": 2
+  },
+  "payments/views.py": {
+   "total": 6,
+   "covered": 0
+  },
+  "settings.py": {
+   "total": 31,
+   "covered": 22
+  },
+  "test.py": {
+   "total": 18,
+   "covered": 0
+  }
+ },
+ "covered_block_ids": [
+  "accounts/admin.py::email::353-353::entry::1",
+  "accounts/admin.py::email::353-353::exit::1",
+  "accounts/admin.py::deactivate::337-337::entry::1",
+  "accounts/admin.py::deactivate::337-337::loop_exit::1",
+  "accounts/admin.py::deactivate::337-337::exit::1",
+  "accounts/admin.py::activate::330-330::entry::1",
+  "accounts/admin.py::activate::330-330::loop_exit::1",
+  "accounts/admin.py::activate::330-330::exit::1",
+  "accounts/admin.py::usage::327-327::entry::1",
+  "accounts/admin.py::usage::327-327::exit::1",
+  "accounts/admin.py::last_active::322-322::entry::1",
+  "accounts/admin.py::last_active::322-322::exit::1",
+  "accounts/admin.py::get_queryset::314-314::entry::1",
+  "accounts/admin.py::get_queryset::314-314::exit::1",
+  "accounts/admin.py::switch::283-283::entry::1",
+  "accounts/admin.py::switch::283-283::exit::1",
+  "accounts/admin.py::usage::280-280::entry::1",
+  "accounts/admin.py::usage::280-280::exit::1",
+  "accounts/admin.py::users::274-274::entry::1",
+  "accounts/admin.py::users::274-274::exit::1",
+  "accounts/admin.py::name_::268-268::entry::1",
+  "accounts/admin.py::name_::268-268::exit::1",
+  "accounts/admin.py::get_queryset::261-261::entry::1",
+  "accounts/admin.py::get_queryset::261-261::exit::1",
+  "accounts/admin.py::unschedule_for_deletion::240-240::entry::1",
+  "accounts/admin.py::unschedule_for_deletion::240-240::exit::1",
+  "accounts/admin.py::schedule_for_deletion::235-235::entry::1",
+  "accounts/admin.py::schedule_for_deletion::235-235::loop_exit::1",
+  "accounts/admin.py::schedule_for_deletion::235-235::exit::1",
+  "accounts/admin.py::remove_totp::227-227::entry::1",
+  "accounts/admin.py::remove_totp::227-227::loop_exit::1",
+  "accounts/admin.py::remove_totp::227-227::exit::1",
+  "accounts/admin.py::send_nag::220-220::entry::1",
+  "accounts/admin.py::send_nag::220-220::loop_exit::1",
+  "accounts/admin.py::send_nag::220-220::exit::1",
+  "accounts/admin.py::send_report::214-214::entry::1",
+  "accounts/admin.py::send_report::214-214::loop_exit::1",
+  "accounts/admin.py::send_report::214-214::exit::1",
+  "accounts/admin.py::login::209-209::entry::1",
+  "accounts/admin.py::login::209-209::exit::1",
+  "accounts/admin.py::sms::206-206::entry::1",
+  "accounts/admin.py::sms::206-206::exit::1",
+  "accounts/admin.py::checks::200-200::entry::1",
+  "accounts/admin.py::checks::200-200::exit::1",
+  "accounts/admin.py::projects::197-197::entry::1",
+  "accounts/admin.py::projects::197-197::exit::1",
+  "accounts/admin.py::deletion::192-192::entry::1",
+  "accounts/admin.py::deletion::192-192::exit::1",
+  "accounts/admin.py::over_limit::186-186::entry::1",
+  "accounts/admin.py::over_limit::186-186::exit::1",
+  "accounts/admin.py::last_active::180-180::entry::1",
+  "accounts/admin.py::last_active::180-180::exit::1",
+  "accounts/admin.py::date_joined::176-176::entry::1",
+  "accounts/admin.py::date_joined::176-176::exit::1",
+  "accounts/admin.py::email::169-169::entry::1",
+  "accounts/admin.py::email::169-169::exit::1",
+  "accounts/admin.py::get_queryset::148-148::entry::1",
+  "accounts/admin.py::get_queryset::148-148::exit::1",
+  "accounts/admin.py::queryset::61-61::entry::1",
+  "accounts/admin.py::queryset::61-61::exit::1",
+  "accounts/admin.py::lookups::51-51::entry::1",
+  "accounts/admin.py::lookups::51-51::exit::1",
+  "accounts/admin.py::_format_usage::26-26::entry::1",
+  "accounts/admin.py::_format_usage::26-26::exit::1",
+  "accounts/models.py::is_rw::623-623::entry::1",
+  "accounts/models.py::is_rw::623-623::exit::1",
+  "accounts/models.py::can_accept::619-619::entry::1",
+  "accounts/models.py::can_accept::619-619::exit::1",
+  "accounts/models.py::team_emails::595-595::entry::1",
+  "accounts/models.py::team_emails::595-595::exit::1",
+  "accounts/models.py::compare_api_key::581-581::entry::1",
+  "accounts/models.py::compare_api_key::581-581::exit::1",
+  "accounts/models.py::set_ping_key::568-568::entry::1",
+  "accounts/models.py::set_ping_key::568-568::loop_exit::1",
+  "accounts/models.py::set_ping_key::568-568::exit::1",
+  "accounts/models.py::set_api_key_readonly::563-563::entry::1",
+  "accounts/models.py::set_api_key_readonly::563-563::exit::1",
+  "accounts/models.py::set_api_key::558-558::entry::1",
+  "accounts/models.py::set_api_key::558-558::exit::1",
+  "accounts/models.py::_make_api_key::538-538::entry::1",
+  "accounts/models.py::_make_api_key::538-538::loop_exit::1",
+  "accounts/models.py::_make_api_key::538-538::exit::1",
+  "accounts/models.py::get_absolute_url::535-535::entry::1",
+  "accounts/models.py::get_absolute_url::535-535::exit::1",
+  "accounts/models.py::auth_metrics_url::532-532::entry::1",
+  "accounts/models.py::auth_metrics_url::532-532::exit::1",
+  "accounts/models.py::checks_url::529-529::entry::1",
+  "accounts/models.py::checks_url::529-529::exit::1",
+  "accounts/models.py::dashboard_url::522-522::entry::1",
+  "accounts/models.py::dashboard_url::522-522::exit::1",
+  "accounts/models.py::transfer_request::519-519::entry::1",
+  "accounts/models.py::transfer_request::519-519::exit::1",
+  "accounts/models.py::have_channel_issues::509-509::entry::1",
+  "accounts/models.py::have_channel_issues::509-509::exit::1",
+  "accounts/models.py::get_n_down::501-501::entry::1",
+  "accounts/models.py::get_n_down::501-501::loop_exit::1",
+  "accounts/models.py::get_n_down::501-501::exit::1",
+  "accounts/models.py::update_next_nag_dates::488-488::entry::1",
+  "accounts/models.py::update_next_nag_dates::488-488::loop_exit::1",
+  "accounts/models.py::update_next_nag_dates::488-488::exit::1",
+  "accounts/models.py::invite::473-473::entry::1",
+  "accounts/models.py::invite::473-473::exit::1",
+  "accounts/models.py::invite_suggestions::468-468::entry::1",
+  "accounts/models.py::invite_suggestions::468-468::exit::1",
+  "accounts/models.py::num_checks_available::465-465::entry::1",
+  "accounts/models.py::num_checks_available::465-465::exit::1",
+  "accounts/models.py::owner_profile::462-462::entry::1",
+  "accounts/models.py::owner_profile::462-462::exit::1",
+  "accounts/models.py::__str__::458-458::entry::1",
+  "accounts/models.py::__str__::458-458::exit::1",
+  "accounts/models.py::for_api_key::398-398::entry::1",
+  "accounts/models.py::for_api_key::398-398::loop_exit::1",
+  "accounts/models.py::for_api_key::398-398::loop_exit::2",
+  "accounts/models.py::for_api_key::398-398::try::1",
+  "accounts/models.py::for_api_key::398-398::try::2",
+  "accounts/models.py::for_api_key::398-398::try::3",
+  "accounts/models.py::for_api_key::398-398::exit::1",
+  "accounts/models.py::schedule_for_deletion::392-392::entry::1",
+  "accounts/models.py::schedule_for_deletion::392-392::exit::1",
+  "accounts/models.py::is_past_over_limit_grace::385-385::entry::1",
+  "accounts/models.py::is_past_over_limit_grace::385-385::exit::1",
+  "accounts/models.py::choose_next_report_date::359-359::entry::1",
+  "accounts/models.py::choose_next_report_date::359-359::loop_exit::1",
+  "accounts/models.py::choose_next_report_date::359-359::exit::1",
+  "accounts/models.py::update_next_nag_date::350-350::entry::1",
+  "accounts/models.py::update_next_nag_date::350-350::exit::1",
+  "accounts/models.py::can_accept::347-347::entry::1",
+  "accounts/models.py::can_accept::347-347::exit::1",
+  "accounts/models.py::num_checks_available::344-344::entry::1",
+  "accounts/models.py::num_checks_available::344-344::exit::1",
+  "accounts/models.py::num_checks_used::339-339::entry::1",
+  "accounts/models.py::num_checks_used::339-339::exit::1",
+  "accounts/models.py::authorize_call::327-327::entry::1",
+  "accounts/models.py::authorize_call::327-327::exit::1",
+  "accounts/models.py::calls_sent_this_month::316-316::entry::1",
+  "accounts/models.py::calls_sent_this_month::316-316::exit::1",
+  "accounts/models.py::authorize_sms::304-304::entry::1",
+  "accounts/models.py::authorize_sms::304-304::exit::1",
+  "accounts/models.py::sms_sent_this_month::293-293::entry::1",
+  "accounts/models.py::sms_sent_this_month::293-293::exit::1",
+  "accounts/models.py::send_report::208-208::entry::1",
+  "accounts/models.py::send_report::208-208::loop_exit::1",
+  "accounts/models.py::send_report::208-208::exit::1",
+  "accounts/models.py::checks_from_all_projects::201-201::entry::1",
+  "accounts/models.py::checks_from_all_projects::201-201::exit::1",
+  "accounts/models.py::projects::197-197::entry::1",
+  "accounts/models.py::projects::197-197::exit::1",
+  "accounts/models.py::project_ids::185-185::entry::1",
+  "accounts/models.py::project_ids::185-185::exit::1",
+  "accounts/models.py::send_transfer_request::169-169::entry::1",
+  "accounts/models.py::send_transfer_request::169-169::exit::1",
+  "accounts/models.py::send_change_email_link::154-154::entry::1",
+  "accounts/models.py::send_change_email_link::154-154::exit::1",
+  "accounts/models.py::send_instant_login_link::138-138::entry::1",
+  "accounts/models.py::send_instant_login_link::138-138::exit::1",
+  "accounts/models.py::check_token::130-130::entry::1",
+  "accounts/models.py::check_token::130-130::try::1",
+  "accounts/models.py::check_token::130-130::exit::1",
+  "accounts/models.py::prepare_token::122-122::entry::1",
+  "accounts/models.py::prepare_token::122-122::exit::1",
+  "accounts/models.py::reports_unsub_url::117-117::entry::1",
+  "accounts/models.py::reports_unsub_url::117-117::exit::1",
+  "accounts/models.py::notifications_url::114-114::entry::1",
+  "accounts/models.py::notifications_url::114-114::exit::1",
+  "accounts/models.py::__str__::111-111::entry::1",
+  "accounts/models.py::__str__::111-111::exit::1",
+  "accounts/models.py::for_user::62-62::entry::1",
+  "accounts/models.py::for_user::62-62::try::1",
+  "accounts/models.py::for_user::62-62::exit::1",
+  "accounts/models.py::month::56-56::entry::1",
+  "accounts/models.py::month::56-56::exit::1",
+  "api/admin.py::project::317-317::entry::1",
+  "api/admin.py::project::317-317::exit::1",
+  "api/admin.py::channel_value::314-314::entry::1",
+  "api/admin.py::channel_value::314-314::exit::1",
+  "api/admin.py::queryset::282-282::entry::1",
+  "api/admin.py::queryset::282-282::exit::1",
+  "api/admin.py::lookups::276-276::entry::1",
+  "api/admin.py::lookups::276-276::exit::1",
+  "api/admin.py::disable::267-267::entry::1",
+  "api/admin.py::disable::267-267::exit::1",
+  "api/admin.py::status::258-258::entry::1",
+  "api/admin.py::status::258-258::exit::1",
+  "api/admin.py::last::254-254::entry::1",
+  "api/admin.py::last::254-254::exit::1",
+  "api/admin.py::chopped_value::248-248::entry::1",
+  "api/admin.py::chopped_value::248-248::exit::1",
+  "api/admin.py::transport::240-240::entry::1",
+  "api/admin.py::transport::240-240::exit::1",
+  "api/admin.py::view_on_site::236-236::entry::1",
+  "api/admin.py::view_on_site::236-236::exit::1",
+  "api/admin.py::get_queryset::229-229::entry::1",
+  "api/admin.py::get_queryset::229-229::exit::1",
+  "api/admin.py::time::224-224::entry::1",
+  "api/admin.py::time::224-224::exit::1",
+  "api/admin.py::project_::218-218::entry::1",
+  "api/admin.py::project_::218-218::exit::1",
+  "api/admin.py::created_::215-215::entry::1",
+  "api/admin.py::created_::215-215::exit::1",
+  "api/admin.py::queryset::177-177::entry::1",
+  "api/admin.py::queryset::177-177::exit::1",
+  "api/admin.py::lookups::171-171::entry::1",
+  "api/admin.py::lookups::171-171::exit::1",
+  "api/admin.py::queryset::157-157::entry::1",
+  "api/admin.py::queryset::157-157::exit::1",
+  "api/admin.py::lookups::150-150::entry::1",
+  "api/admin.py::lookups::150-150::exit::1",
+  "api/admin.py::queryset::122-122::entry::1",
+  "api/admin.py::queryset::122-122::exit::1",
+  "api/admin.py::lookups::119-119::entry::1",
+  "api/admin.py::lookups::119-119::exit::1",
+  "api/admin.py::queryset::108-108::entry::1",
+  "api/admin.py::queryset::108-108::exit::1",
+  "api/admin.py::lookups::105-105::entry::1",
+  "api/admin.py::lookups::105-105::exit::1",
+  "api/admin.py::queryset::92-92::entry::1",
+  "api/admin.py::queryset::92-92::exit::1",
+  "api/admin.py::lookups::89-89::entry::1",
+  "api/admin.py::lookups::89-89::exit::1",
+  "api/admin.py::timeout_schedule::74-74::entry::1",
+  "api/admin.py::timeout_schedule::74-74::exit::1",
+  "api/admin.py::name_tags::63-63::entry::1",
+  "api/admin.py::name_tags::63-63::loop_exit::1",
+  "api/admin.py::name_tags::63-63::exit::1",
+  "api/admin.py::project_::56-56::entry::1",
+  "api/admin.py::project_::56-56::exit::1",
+  "api/admin.py::get_queryset::51-51::entry::1",
+  "api/admin.py::get_queryset::51-51::exit::1",
+  "api/apps.py::mariadb_uuid_check::86-86::entry::1",
+  "api/apps.py::mariadb_uuid_check::86-86::exit::1",
+  "api/apps.py::settings_check::18-18::entry::1",
+  "api/apps.py::settings_check::18-18::exit::1",
+  "api/models.py::record_s3_get_object_error::1583-1583::entry::1",
+  "api/models.py::record_s3_get_object_error::1583-1583::exit::1",
+  "api/models.py::s3_is_healthy::1570-1570::entry::1",
+  "api/models.py::s3_is_healthy::1570-1570::try::1",
+  "api/models.py::s3_is_healthy::1570-1570::exit::1",
+  "api/models.py::authorize_totp_code::1561-1561::entry::1",
+  "api/models.py::authorize_totp_code::1561-1561::exit::1",
+  "api/models.py::authorize_totp_attempt::1553-1553::entry::1",
+  "api/models.py::authorize_totp_attempt::1553-1553::exit::1",
+  "api/models.py::authorize_sudo_code::1546-1546::entry::1",
+  "api/models.py::authorize_sudo_code::1546-1546::exit::1",
+  "api/models.py::authorize_ntfy::1538-1538::entry::1",
+  "api/models.py::authorize_ntfy::1538-1538::exit::1",
+  "api/models.py::authorize_pushover::1530-1530::entry::1",
+  "api/models.py::authorize_pushover::1530-1530::exit::1",
+  "api/models.py::authorize_signal_verification::1523-1523::entry::1",
+  "api/models.py::authorize_signal_verification::1523-1523::exit::1",
+  "api/models.py::authorize_signal::1515-1515::entry::1",
+  "api/models.py::authorize_signal::1515-1515::exit::1",
+  "api/models.py::authorize_telegram::1510-1510::entry::1",
+  "api/models.py::authorize_telegram::1510-1510::exit::1",
+  "api/models.py::authorize_login_password::1502-1502::entry::1",
+  "api/models.py::authorize_login_password::1502-1502::exit::1",
+  "api/models.py::authorize_invite::1495-1495::entry::1",
+  "api/models.py::authorize_invite::1495-1495::exit::1",
+  "api/models.py::authorize_login_email::1481-1481::entry::1",
+  "api/models.py::authorize_login_email::1481-1481::exit::1",
+  "api/models.py::authorize_auth_ip::1467-1467::entry::1",
+  "api/models.py::authorize_auth_ip::1467-1467::exit::1",
+  "api/models.py::authorize::1442-1442::entry::1",
+  "api/models.py::authorize::1442-1442::exit::1",
+  "api/models.py::down_duration::1418-1418::entry::1",
+  "api/models.py::down_duration::1418-1418::exit::1",
+  "api/models.py::reason_long::1410-1410::entry::1",
+  "api/models.py::reason_long::1410-1410::exit::1",
+  "api/models.py::select_channels::1390-1390::entry::1",
+  "api/models.py::select_channels::1390-1390::exit::1",
+  "api/models.py::to_dict::1384-1384::entry::1",
+  "api/models.py::to_dict::1384-1384::exit::1",
+  "api/models.py::status_url::1351-1351::entry::1",
+  "api/models.py::status_url::1351-1351::exit::1",
+  "api/models.py::ntfy::1333-1333::entry::1",
+  "api/models.py::ntfy::1333-1333::exit::1",
+  "api/models.py::group_channels::1326-1326::entry::1",
+  "api/models.py::group_channels::1326-1326::exit::1",
+  "api/models.py::gotify::1321-1321::entry::1",
+  "api/models.py::gotify::1321-1321::exit::1",
+  "api/models.py::github::1317-1317::entry::1",
+  "api/models.py::github::1317-1317::exit::1",
+  "api/models.py::zulip::1313-1313::entry::1",
+  "api/models.py::zulip::1313-1313::exit::1",
+  "api/models.py::opsgenie::1309-1309::entry::1",
+  "api/models.py::opsgenie::1309-1309::exit::1",
+  "api/models.py::email::1305-1305::entry::1",
+  "api/models.py::email::1305-1305::exit::1",
+  "api/models.py::trello::1300-1300::entry::1",
+  "api/models.py::trello::1300-1300::exit::1",
+  "api/models.py::phone::1295-1295::entry::1",
+  "api/models.py::phone::1295-1295::exit::1",
+  "api/models.py::pd::1290-1290::entry::1",
+  "api/models.py::pd::1290-1290::exit::1",
+  "api/models.py::update_telegram_id::1283-1283::entry::1",
+  "api/models.py::update_telegram_id::1283-1283::exit::1",
+  "api/models.py::telegram::1279-1279::entry::1",
+  "api/models.py::telegram::1279-1279::exit::1",
+  "api/models.py::discord_webhook_url::1267-1267::entry::1",
+  "api/models.py::discord_webhook_url::1267-1267::exit::1",
+  "api/models.py::slack_webhook_url::1256-1256::entry::1",
+  "api/models.py::slack_webhook_url::1256-1256::exit::1",
+  "api/models.py::slack_channel::1245-1245::entry::1",
+  "api/models.py::slack_channel::1245-1245::exit::1",
+  "api/models.py::slack_team::1228-1228::entry::1",
+  "api/models.py::slack_team::1228-1228::exit::1",
+  "api/models.py::shell::1223-1223::entry::1",
+  "api/models.py::shell::1223-1223::exit::1",
+  "api/models.py::up_webhook_spec::1219-1219::entry::1",
+  "api/models.py::up_webhook_spec::1219-1219::exit::1",
+  "api/models.py::down_webhook_spec::1215-1215::entry::1",
+  "api/models.py::down_webhook_spec::1215-1215::exit::1",
+  "api/models.py::webhook_spec::1202-1202::entry::1",
+  "api/models.py::webhook_spec::1202-1202::exit::1",
+  "api/models.py::po_priority::1196-1196::entry::1",
+  "api/models.py::po_priority::1196-1196::exit::1",
+  "api/models.py::json::1192-1192::entry::1",
+  "api/models.py::json::1192-1192::exit::1",
+  "api/models.py::icon_path::1188-1188::entry::1",
+  "api/models.py::icon_path::1188-1188::exit::1",
+  "api/models.py::notify::1151-1151::entry::1",
+  "api/models.py::notify::1151-1151::try::1",
+  "api/models.py::notify::1151-1151::try::2",
+  "api/models.py::notify::1151-1151::exit::1",
+  "api/models.py::transport::1138-1138::entry::1",
+  "api/models.py::transport::1138-1138::exit::1",
+  "api/models.py::send_sms_limit_notice::1126-1126::entry::1",
+  "api/models.py::send_sms_limit_notice::1126-1126::exit::1",
+  "api/models.py::send_call_limit_notice::1115-1115::entry::1",
+  "api/models.py::send_call_limit_notice::1115-1115::exit::1",
+  "api/models.py::send_signal_rate_limited_notice::1105-1105::entry::1",
+  "api/models.py::send_signal_rate_limited_notice::1105-1105::exit::1",
+  "api/models.py::send_signal_captcha_alert::1087-1087::entry::1",
+  "api/models.py::send_signal_captcha_alert::1087-1087::exit::1",
+  "api/models.py::get_unsub_link::1081-1081::entry::1",
+  "api/models.py::get_unsub_link::1081-1081::exit::1",
+  "api/models.py::send_verify_link::1076-1076::entry::1",
+  "api/models.py::send_verify_link::1076-1076::exit::1",
+  "api/models.py::make_token::1070-1070::entry::1",
+  "api/models.py::make_token::1070-1070::exit::1",
+  "api/models.py::assign_all_checks::1066-1066::entry::1",
+  "api/models.py::assign_all_checks::1066-1066::exit::1",
+  "api/models.py::is_editable::1054-1054::entry::1",
+  "api/models.py::is_editable::1054-1054::exit::1",
+  "api/models.py::to_dict::1051-1051::entry::1",
+  "api/models.py::to_dict::1051-1051::exit::1",
+  "api/models.py::__str__::1032-1032::entry::1",
+  "api/models.py::__str__::1032-1032::exit::1",
+  "api/models.py::priority_display::1006-1006::entry::1",
+  "api/models.py::priority_display::1006-1006::exit::1",
+  "api/models.py::priority_display::974-974::entry::1",
+  "api/models.py::priority_display::974-974::exit::1",
+  "api/models.py::formatted_to::958-958::entry::1",
+  "api/models.py::formatted_to::958-958::exit::1",
+  "api/models.py::model_post_init::951-951::entry::1",
+  "api/models.py::model_post_init::951-951::exit::1",
+  "api/models.py::load::930-930::entry::1",
+  "api/models.py::load::930-930::exit::1",
+  "api/models.py::load::910-910::entry::1",
+  "api/models.py::load::910-910::exit::1",
+  "api/models.py::prepare_durations::835-835::entry::1",
+  "api/models.py::prepare_durations::835-835::loop_exit::1",
+  "api/models.py::prepare_durations::835-835::loop_exit::2",
+  "api/models.py::prepare_durations::835-835::exit::1",
+  "api/models.py::formatted_kind_created::828-828::entry::1",
+  "api/models.py::formatted_kind_created::828-828::exit::1",
+  "api/models.py::duration::809-809::entry::1",
+  "api/models.py::duration::809-809::loop_exit::1",
+  "api/models.py::duration::809-809::exit::1",
+  "api/models.py::get_kind_display::790-790::entry::1",
+  "api/models.py::get_kind_display::790-790::exit::1",
+  "api/models.py::get_body_size::783-783::entry::1",
+  "api/models.py::get_body_size::783-783::exit::1",
+  "api/models.py::get_body::772-772::entry::1",
+  "api/models.py::get_body::772-772::try::1",
+  "api/models.py::get_body::772-772::exit::1",
+  "api/models.py::get_body_bytes::750-750::entry::1",
+  "api/models.py::get_body_bytes::750-750::try::1",
+  "api/models.py::get_body_bytes::750-750::exit::1",
+  "api/models.py::has_body::737-737::entry::1",
+  "api/models.py::has_body::737-737::exit::1",
+  "api/models.py::to_dict::706-706::entry::1",
+  "api/models.py::to_dict::706-706::exit::1",
+  "api/models.py::create_flip::652-652::entry::1",
+  "api/models.py::create_flip::652-652::exit::1",
+  "api/models.py::downtimes::648-648::entry::1",
+  "api/models.py::downtimes::648-648::exit::1",
+  "api/models.py::downtimes_by_boundary::612-612::entry::1",
+  "api/models.py::downtimes_by_boundary::612-612::loop_exit::1",
+  "api/models.py::downtimes_by_boundary::612-612::exit::1",
+  "api/models.py::visible_pings::608-608::entry::1",
+  "api/models.py::visible_pings::608-608::exit::1",
+  "api/models.py::prune::575-575::entry::1",
+  "api/models.py::prune::575-575::try::1",
+  "api/models.py::prune::575-575::exit::1",
+  "api/models.py::ping::493-493::entry::1",
+  "api/models.py::ping::493-493::exit::1",
+  "api/models.py::to_dict::439-439::entry::1",
+  "api/models.py::to_dict::439-439::exit::1",
+  "api/models.py::filter_any::436-436::entry::1",
+  "api/models.py::filter_any::436-436::exit::1",
+  "api/models.py::unique_key::432-432::entry::1",
+  "api/models.py::unique_key::432-432::exit::1",
+  "api/models.py::channels_str::419-419::entry::1",
+  "api/models.py::channels_str::419-419::exit::1",
+  "api/models.py::matches_tag_set::416-416::entry::1",
+  "api/models.py::matches_tag_set::416-416::exit::1",
+  "api/models.py::tags_list::413-413::entry::1",
+  "api/models.py::tags_list::413-413::exit::1",
+  "api/models.py::assign_all_channels::409-409::entry::1",
+  "api/models.py::assign_all_channels::409-409::exit::1",
+  "api/models.py::rename_and_delete::382-382::entry::1",
+  "api/models.py::rename_and_delete::382-382::try::1",
+  "api/models.py::rename_and_delete::382-382::exit::1",
+  "api/models.py::get_status::355-355::entry::1",
+  "api/models.py::get_status::355-355::exit::1",
+  "api/models.py::cached_status::352-352::entry::1",
+  "api/models.py::cached_status::352-352::exit::1",
+  "api/models.py::going_down_after::339-339::entry::1",
+  "api/models.py::going_down_after::339-339::exit::1",
+  "api/models.py::get_grace_start::300-300::entry::1",
+  "api/models.py::get_grace_start::300-300::try::1",
+  "api/models.py::get_grace_start::300-300::exit::1",
+  "api/models.py::clamped_last_duration::295-295::entry::1",
+  "api/models.py::clamped_last_duration::295-295::exit::1",
+  "api/models.py::email::278-278::entry::1",
+  "api/models.py::email::278-278::exit::1",
+  "api/models.py::cloaked_url::275-275::entry::1",
+  "api/models.py::cloaked_url::275-275::exit::1",
+  "api/models.py::get_absolute_url::272-272::entry::1",
+  "api/models.py::get_absolute_url::272-272::exit::1",
+  "api/models.py::details_url::267-267::entry::1",
+  "api/models.py::details_url::267-267::exit::1",
+  "api/models.py::url::249-249::entry::1",
+  "api/models.py::url::249-249::exit::1",
+  "api/models.py::name_then_code::243-243::entry::1",
+  "api/models.py::name_then_code::243-243::exit::1",
+  "api/models.py::__str__::240-240::entry::1",
+  "api/models.py::__str__::240-240::exit::1",
+  "api/models.py::add::184-184::entry::1",
+  "api/models.py::add::184-184::loop_exit::1",
+  "api/models.py::add::184-184::exit::1",
+  "api/models.py::__init__::170-170::entry::1",
+  "api/models.py::__init__::170-170::loop_exit::1",
+  "api/models.py::__init__::170-170::exit::1",
+  "api/models.py::monthly_uptime::161-161::entry::1",
+  "api/models.py::monthly_uptime::161-161::exit::1",
+  "api/models.py::isostring::112-112::entry::1",
+  "api/models.py::isostring::112-112::exit::1",
+  "api/transports.py::put::224-224::entry::1",
+  "api/transports.py::put::224-224::exit::1",
+  "api/transports.py::post::200-200::entry::1",
+  "api/transports.py::post::200-200::exit::1",
+  "api/transports.py::request::167-167::entry::1",
+  "api/transports.py::request::167-167::loop_exit::1",
+  "api/transports.py::request::167-167::try::1",
+  "api/transports.py::request::167-167::exit::1",
+  "api/transports.py::_request::139-139::entry::1",
+  "api/transports.py::_request::139-139::try::1",
+  "api/transports.py::_request::139-139::exit::1",
+  "api/transports.py::raise_for_response::134-134::entry::1",
+  "api/transports.py::raise_for_response::134-134::exit::1",
+  "api/transports.py::is_noop::128-128::entry::1",
+  "api/transports.py::is_noop::128-128::exit::1",
+  "api/transports.py::tmpl::119-119::entry::1",
+  "api/transports.py::tmpl::119-119::exit::1",
+  "api/transports.py::last_ping::105-105::entry::1",
+  "api/transports.py::last_ping::105-105::exit::1",
+  "api/transports.py::down_checks::87-87::entry::1",
+  "api/transports.py::down_checks::87-87::exit::1",
+  "api/transports.py::is_noop::76-76::entry::1",
+  "api/transports.py::is_noop::76-76::exit::1",
+  "api/transports.py::notify::66-66::entry::1",
+  "api/transports.py::notify::66-66::exit::1",
+  "api/transports.py::__init__::63-63::entry::1",
+  "api/transports.py::__init__::63-63::exit::1",
+  "api/transports.py::__init__::57-57::entry::1",
+  "api/transports.py::__init__::57-57::exit::1",
+  "api/transports.py::get_ping_body::45-45::entry::1",
+  "api/transports.py::get_ping_body::45-45::exit::1",
+  "api/transports.py::get_ping_body_bytes::19-19::entry::1",
+  "api/transports.py::get_ping_body_bytes::19-19::try::1",
+  "api/transports.py::get_ping_body_bytes::19-19::exit::1",
+  "front/templatetags/hc_extras.py::uppercase_if_down::333-333::entry::1",
+  "front/templatetags/hc_extras.py::uppercase_if_down::333-333::exit::1",
+  "front/templatetags/hc_extras.py::decode::328-328::entry::1",
+  "front/templatetags/hc_extras.py::decode::328-328::exit::1",
+  "front/templatetags/hc_extras.py::pct::323-323::entry::1",
+  "front/templatetags/hc_extras.py::pct::323-323::exit::1",
+  "front/templatetags/hc_extras.py::sort_url::313-313::entry::1",
+  "front/templatetags/hc_extras.py::sort_url::313-313::exit::1",
+  "front/templatetags/hc_extras.py::mask_phone::305-305::entry::1",
+  "front/templatetags/hc_extras.py::mask_phone::305-305::exit::1",
+  "front/templatetags/hc_extras.py::add6days::300-300::entry::1",
+  "front/templatetags/hc_extras.py::add6days::300-300::exit::1",
+  "front/templatetags/hc_extras.py::first5::295-295::entry::1",
+  "front/templatetags/hc_extras.py::first5::295-295::exit::1",
+  "front/templatetags/hc_extras.py::underline::290-290::entry::1",
+  "front/templatetags/hc_extras.py::underline::290-290::exit::1",
+  "front/templatetags/hc_extras.py::mask_ro_key::285-285::entry::1",
+  "front/templatetags/hc_extras.py::mask_ro_key::285-285::exit::1",
+  "front/templatetags/hc_extras.py::mask_rw_key::280-280::entry::1",
+  "front/templatetags/hc_extras.py::mask_rw_key::280-280::exit::1",
+  "front/templatetags/hc_extras.py::mask_key::275-275::entry::1",
+  "front/templatetags/hc_extras.py::mask_key::275-275::exit::1",
+  "front/templatetags/hc_extras.py::format_ping_endpoint::266-266::entry::1",
+  "front/templatetags/hc_extras.py::format_ping_endpoint::266-266::exit::1",
+  "front/templatetags/hc_extras.py::guess_schedule::229-229::entry::1",
+  "front/templatetags/hc_extras.py::guess_schedule::229-229::exit::1",
+  "front/templatetags/hc_extras.py::timestamp::224-224::entry::1",
+  "front/templatetags/hc_extras.py::timestamp::224-224::exit::1",
+  "front/templatetags/hc_extras.py::now_isoformat::219-219::entry::1",
+  "front/templatetags/hc_extras.py::now_isoformat::219-219::exit::1",
+  "front/templatetags/hc_extras.py::format_headers::214-214::entry::1",
+  "front/templatetags/hc_extras.py::format_headers::214-214::exit::1",
+  "front/templatetags/hc_extras.py::break_underscore::204-204::entry::1",
+  "front/templatetags/hc_extras.py::break_underscore::204-204::exit::1",
+  "front/templatetags/hc_extras.py::down_title::188-188::entry::1",
+  "front/templatetags/hc_extras.py::down_title::188-188::exit::1",
+  "front/templatetags/hc_extras.py::num_down_title::180-180::entry::1",
+  "front/templatetags/hc_extras.py::num_down_title::180-180::exit::1",
+  "front/templatetags/hc_extras.py::sortbydowntime::171-171::entry::1",
+  "front/templatetags/hc_extras.py::sortbydowntime::171-171::exit::1",
+  "front/templatetags/hc_extras.py::downtime_key::165-165::entry::1",
+  "front/templatetags/hc_extras.py::downtime_key::165-165::exit::1",
+  "front/templatetags/hc_extras.py::sortchecks::148-148::entry::1",
+  "front/templatetags/hc_extras.py::sortchecks::148-148::exit::1",
+  "front/templatetags/hc_extras.py::not_down_key::143-143::entry::1",
+  "front/templatetags/hc_extras.py::not_down_key::143-143::exit::1",
+  "front/templatetags/hc_extras.py::last_ping_key::139-139::entry::1",
+  "front/templatetags/hc_extras.py::last_ping_key::139-139::exit::1",
+  "front/templatetags/hc_extras.py::natural_name_key::134-134::entry::1",
+  "front/templatetags/hc_extras.py::natural_name_key::134-134::exit::1",
+  "front/templatetags/hc_extras.py::naturalize_int_match::129-129::entry::1",
+  "front/templatetags/hc_extras.py::naturalize_int_match::129-129::exit::1",
+  "front/templatetags/hc_extras.py::debug_warning::107-107::entry::1",
+  "front/templatetags/hc_extras.py::debug_warning::107-107::exit::1",
+  "front/templatetags/hc_extras.py::site_version::102-102::entry::1",
+  "front/templatetags/hc_extras.py::site_version::102-102::exit::1",
+  "front/templatetags/hc_extras.py::site_hostname::97-97::entry::1",
+  "front/templatetags/hc_extras.py::site_hostname::97-97::exit::1",
+  "front/templatetags/hc_extras.py::site_root::92-92::entry::1",
+  "front/templatetags/hc_extras.py::site_root::92-92::exit::1",
+  "front/templatetags/hc_extras.py::mangle_link::80-80::entry::1",
+  "front/templatetags/hc_extras.py::mangle_link::80-80::loop_exit::1",
+  "front/templatetags/hc_extras.py::mangle_link::80-80::exit::1",
+  "front/templatetags/hc_extras.py::absolute_site_logo_url::66-66::entry::1",
+  "front/templatetags/hc_extras.py::absolute_site_logo_url::66-66::exit::1",
+  "front/templatetags/hc_extras.py::support_email::61-61::entry::1",
+  "front/templatetags/hc_extras.py::support_email::61-61::exit::1",
+  "front/templatetags/hc_extras.py::site_name::56-56::entry::1",
+  "front/templatetags/hc_extras.py::site_name::56-56::exit::1",
+  "front/templatetags/hc_extras.py::hms::48-48::entry::1",
+  "front/templatetags/hc_extras.py::hms::48-48::exit::1",
+  "front/templatetags/hc_extras.py::hc_duration_for_sentence::43-43::entry::1",
+  "front/templatetags/hc_extras.py::hc_duration_for_sentence::43-43::exit::1",
+  "front/templatetags/hc_extras.py::hc_approx_duration::38-38::entry::1",
+  "front/templatetags/hc_extras.py::hc_approx_duration::38-38::exit::1",
+  "front/templatetags/hc_extras.py::hc_duration::33-33::entry::1",
+  "front/templatetags/hc_extras.py::hc_duration::33-33::exit::1",
+  "integrations/apprise/apps.py::apprise_installed_check::16-16::entry::1",
+  "integrations/apprise/apps.py::apprise_installed_check::16-16::try::1",
+  "integrations/apprise/apps.py::apprise_installed_check::16-16::exit::1",
+  "integrations/whatsapp/apps.py::whatsapp_settings_check::16-16::entry::1",
+  "integrations/whatsapp/apps.py::whatsapp_settings_check::16-16::loop_exit::1",
+  "integrations/whatsapp/apps.py::whatsapp_settings_check::16-16::exit::1",
+  "lib/curl.py::post::224-224::entry::1",
+  "lib/curl.py::post::224-224::exit::1",
+  "lib/curl.py::get::210-210::entry::1",
+  "lib/curl.py::get::210-210::exit::1",
+  "lib/curl.py::request::55-55::entry::1",
+  "lib/curl.py::request::55-55::try::1",
+  "lib/curl.py::request::55-55::exit::1",
+  "lib/curl.py::_is_private::51-51::entry::1",
+  "lib/curl.py::_is_private::51-51::exit::1",
+  "lib/curl.py::_makeheader::45-45::entry::1",
+  "lib/curl.py::_makeheader::45-45::exit::1",
+  "lib/curl.py::text::41-41::entry::1",
+  "lib/curl.py::text::41-41::exit::1",
+  "lib/curl.py::json::37-37::entry::1",
+  "lib/curl.py::json::37-37::exit::1",
+  "lib/curl.py::__init__::33-33::entry::1",
+  "lib/curl.py::__init__::33-33::exit::1",
+  "lib/curl.py::__init__::28-28::entry::1",
+  "lib/curl.py::__init__::28-28::exit::1",
+  "lib/date.py::seconds_in_month::148-148::entry::1",
+  "lib/date.py::seconds_in_month::148-148::exit::1",
+  "lib/date.py::day_boundaries::135-135::entry::1",
+  "lib/date.py::day_boundaries::135-135::loop_exit::1",
+  "lib/date.py::day_boundaries::135-135::exit::1",
+  "lib/date.py::week_boundaries::121-121::entry::1",
+  "lib/date.py::week_boundaries::121-121::loop_exit::1",
+  "lib/date.py::week_boundaries::121-121::exit::1",
+  "lib/date.py::month_boundaries::103-103::entry::1",
+  "lib/date.py::month_boundaries::103-103::loop_exit::1",
+  "lib/date.py::month_boundaries::103-103::exit::1",
+  "lib/date.py::format_duration_for_sentence::84-84::entry::1",
+  "lib/date.py::format_duration_for_sentence::84-84::exit::1",
+  "lib/date.py::format_approx_duration::65-65::entry::1",
+  "lib/date.py::format_approx_duration::65-65::exit::1",
+  "lib/date.py::format_hms::43-43::entry::1",
+  "lib/date.py::format_hms::43-43::exit::1",
+  "lib/date.py::format_duration::24-24::entry::1",
+  "lib/date.py::format_duration::24-24::loop_exit::1",
+  "lib/date.py::format_duration::24-24::exit::1",
+  "lib/date.py::__init__::11-11::entry::1",
+  "lib/date.py::__init__::12-14::block::1",
+  "lib/date.py::__init__::11-11::exit::1",
+  "lib/emails.py::signal_rate_limited::149-149::entry::1",
+  "lib/emails.py::signal_rate_limited::149-149::exit::1",
+  "lib/emails.py::sudo_code::145-145::entry::1",
+  "lib/emails.py::sudo_code::145-145::exit::1",
+  "lib/emails.py::call_limit::141-141::entry::1",
+  "lib/emails.py::call_limit::141-141::exit::1",
+  "lib/emails.py::sms_limit::137-137::entry::1",
+  "lib/emails.py::sms_limit::137-137::exit::1",
+  "lib/emails.py::deletion_scheduled::132-132::entry::1",
+  "lib/emails.py::deletion_scheduled::132-132::exit::1",
+  "lib/emails.py::deletion_notice::127-127::entry::1",
+  "lib/emails.py::deletion_notice::127-127::exit::1",
+  "lib/emails.py::flapping_notice::122-122::entry::1",
+  "lib/emails.py::flapping_notice::122-122::exit::1",
+  "lib/emails.py::nag::117-117::entry::1",
+  "lib/emails.py::nag::117-117::exit::1",
+  "lib/emails.py::report::112-112::entry::1",
+  "lib/emails.py::report::112-112::exit::1",
+  "lib/emails.py::verify_email::108-108::entry::1",
+  "lib/emails.py::verify_email::108-108::exit::1",
+  "lib/emails.py::alert::96-96::entry::1",
+  "lib/emails.py::alert::96-96::exit::1",
+  "lib/emails.py::transfer_request::92-92::entry::1",
+  "lib/emails.py::transfer_request::92-92::exit::1",
+  "lib/emails.py::login::88-88::entry::1",
+  "lib/emails.py::login::88-88::exit::1",
+  "lib/emails.py::send::71-71::entry::1",
+  "lib/emails.py::send::71-71::exit::1",
+  "lib/emails.py::make_message::38-38::entry::1",
+  "lib/emails.py::make_message::38-38::exit::1",
+  "lib/emails.py::run::22-22::entry::1",
+  "lib/emails.py::run::22-22::loop_exit::1",
+  "lib/emails.py::run::22-22::try::1",
+  "lib/emails.py::run::22-22::exit::1",
+  "lib/emails.py::__init__::18-18::entry::1",
+  "lib/emails.py::__init__::18-18::exit::1",
+  "lib/s3.py::remove_objects::149-149::entry::1",
+  "lib/s3.py::remove_objects::149-149::exit::1",
+  "lib/s3.py::_remove_objects::120-120::entry::1",
+  "lib/s3.py::_remove_objects::120-120::try::1",
+  "lib/s3.py::_remove_objects::120-120::exit::1",
+  "lib/s3.py::put_object::103-103::entry::1",
+  "lib/s3.py::put_object::103-103::loop_exit::1",
+  "lib/s3.py::put_object::103-103::try::1",
+  "lib/s3.py::put_object::103-103::exit::1",
+  "lib/s3.py::get_object::78-78::entry::1",
+  "lib/s3.py::get_object::78-78::exit::1",
+  "lib/s3.py::enc::54-54::entry::1",
+  "lib/s3.py::enc::54-54::exit::1",
+  "lib/s3.py::client::30-30::entry::1",
+  "lib/s3.py::client::30-30::exit::1",
+  "lib/signing.py::unsign_bounce_id::46-46::entry::1",
+  "lib/signing.py::unsign_bounce_id::46-46::exit::1",
+  "lib/signing.py::sign_bounce_id::42-42::entry::1",
+  "lib/signing.py::sign_bounce_id::42-42::exit::1",
+  "lib/signing.py::unsign::31-31::entry::1",
+  "lib/signing.py::unsign::31-31::exit::1",
+  "lib/signing.py::sign::26-26::entry::1",
+  "lib/signing.py::sign::26-26::exit::1",
+  "lib/signing.py::signature::16-16::entry::1",
+  "lib/signing.py::signature::16-16::exit::1",
+  "lib/signing.py::hex_hmac::9-9::entry::1",
+  "lib/signing.py::hex_hmac::9-9::exit::1",
+  "lib/statsd.py::get_client::23-23::entry::1",
+  "lib/statsd.py::get_client::34-34::branch::1",
+  "lib/statsd.py::get_client::41-41::terminal::1",
+  "lib/statsd.py::get_client::23-23::exit::1",
+  "lib/statsd.py::pipeline::19-19::entry::1",
+  "lib/statsd.py::pipeline::19-19::exit::1",
+  "lib/statsd.py::close::16-16::entry::1",
+  "lib/statsd.py::close::16-16::exit::1",
+  "lib/statsd.py::_send::13-13::entry::1",
+  "lib/statsd.py::_send::13-13::exit::1",
+  "lib/urls.py::absolute_reverse::15-15::entry::1",
+  "lib/urls.py::absolute_reverse::15-15::exit::1",
+  "lib/urls.py::absolute_url::10-10::entry::1",
+  "lib/urls.py::absolute_url::10-10::exit::1",
+  "logs/__init__.py::emit::12-12::entry::1",
+  "logs/__init__.py::emit::12-12::try::1",
+  "logs/__init__.py::emit::12-12::exit::1",
+  "logs/admin.py::has_change_permission::57-57::entry::1",
+  "logs/admin.py::has_change_permission::57-57::exit::1",
+  "logs/admin.py::has_add_permission::54-54::entry::1",
+  "logs/admin.py::has_add_permission::54-54::exit::1",
+  "logs/admin.py::message_traceback::41-41::entry::1",
+  "logs/admin.py::message_traceback::41-41::exit::1",
+  "logs/admin.py::logger::30-30::entry::1",
+  "logs/admin.py::logger::30-30::exit::1",
+  "logs/admin.py::when::27-27::entry::1",
+  "logs/admin.py::when::27-27::exit::1",
+  "logs/models.py::__str__::26-26::entry::1",
+  "logs/models.py::__str__::26-26::exit::1",
+  "payments/models.py::cancel::21-21::entry::1",
+  "payments/models.py::cancel::21-21::exit::1",
+  "settings.py::immutable_file_test::309-309::entry::1",
+  "settings.py::immutable_file_test::309-309::exit::1",
+  "settings.py::envsecret::49-49::entry::1",
+  "settings.py::envsecret::57-57::branch::1",
+  "settings.py::envsecret::66-66::terminal::1",
+  "settings.py::envsecret::49-49::exit::1",
+  "settings.py::envsecret::46-46::entry::1",
+  "settings.py::envsecret::46-46::block::1",
+  "settings.py::envsecret::46-46::exit::1",
+  "settings.py::envsecret::42-42::entry::1",
+  "settings.py::envsecret::42-42::block::1",
+  "settings.py::envsecret::42-42::exit::1",
+  "settings.py::envint::33-33::entry::1",
+  "settings.py::envint::34-34::block::1",
+  "settings.py::envint::35-35::branch::1",
+  "settings.py::envint::38-38::terminal::1",
+  "settings.py::envint::33-33::exit::1",
+  "settings.py::envbool::25-25::entry::1",
+  "settings.py::envbool::26-26::block::1",
+  "settings.py::envbool::27-27::branch::1",
+  "settings.py::envbool::30-30::terminal::1",
+  "settings.py::envbool::25-25::exit::1"
+ ],
+ "costs": {
+  "target_http_requests": 0,
+  "sequence_attempts": 0,
+  "atheris_inputs": 0,
+  "bootstrap_http_requests": 0,
+  "checkpoint_validation_http_requests": 0,
+  "prefix_replay_http_requests": 0,
+  "suffix_http_requests": 0,
+  "observer_calls": 0,
+  "reset_calls": 1,
+  "scheduler_decisions": 0,
+  "elapsed_wall_seconds": 0.0,
+  "analysis_wall_seconds": 0.0
+ }
+}

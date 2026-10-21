@@ -77,3 +77,35 @@ stateforge/evaluation/real_app_coverage.py
 artifacts/session_ss07f/coverage_supp/<app>/<arm>/coverage.json
 artifacts/session_ss07f/coverage_supp/COVERAGE_SUMMARY.json
 ```
+
+## 追加:启动地板与目标文件分解
+
+"为什么总覆盖率只涨几个点"的答案在分母结构:
+
+```text
+应用          boot地板(0请求)   SINGLE增量     C增量
+microblog        34.02%        +3.11pp      +7.26pp
+CTFd             26.34%        +4.71pp      +5.70pp
+healthchecks     10.89%       +12.21pp     +12.54pp
+linkding          9.40%       +15.38pp     +20.20pp
+Spirit            7.56%       +20.19pp     +21.02pp
+```
+
+光 import 应用就执行了 9%–34% 的块(microblog 197/579)。任务只做
+"登录一次+访问一个受保护页",新增执行代码注定只有几十个块,总百分比
+被启动代码稀释。
+
+目标文件(受 Session 保护的 views 层)内部:
+
+```text
+应用          目标文件                 SINGLE    C
+microblog     main/routes.py            33/104   38/104
+CTFd          challenges.py              2/30    24/30
+healthchecks  accounts/views.py         98/541  106/541
+linkding      views/bookmarks.py        52/331   64/331
+Spirit        user/views.py             20/83    27/83
+```
+
+CTFd 最典型:SINGLE 40 个请求在 challenges.py 只碰 2 个块(def 行),
+C 8 个请求碰 24/30。结论:Session 引导买到的是受保护代码的**可达性**,
+不是整体覆盖的铺开;总覆盖率不是这件事的正确尺子。
