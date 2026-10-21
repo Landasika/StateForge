@@ -1,0 +1,9 @@
+{
+ "run_id": "replay-spirit",
+ "arm": "REPLAY",
+ "seed": 0,
+ "target_block": "user/views.py::update::24-24::entry::1",
+ "app": "external/Spirit/spirit",
+ "request_limit": 20,
+ "boundary": "target-callable-invocation"
+}

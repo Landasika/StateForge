@@ -204,5 +204,19 @@
  "full_suite": {
   "command": "pytest -q --ignore=exp",
   "result": "783 passed, 1 skipped, 26 deselected, 1 warning in 631.53s"
+ },
+ "coverage_supplementary": {
+  "report": "docs/reports/SS-07F-COVERAGE.md",
+  "summary": "artifacts/session_ss07f/coverage_supp/COVERAGE_SUMMARY.json",
+  "core": "sysmon",
+  "reproduction_all_match": true,
+  "target_body_hits": {
+   "SINGLE": 0,
+   "SEQUENCE": 3,
+   "C": 5,
+   "D": 5,
+   "replay": 5
+  },
+  "note": "outside frozen protocol; corroborates hit/miss evidence with an external tool"
  }
 }

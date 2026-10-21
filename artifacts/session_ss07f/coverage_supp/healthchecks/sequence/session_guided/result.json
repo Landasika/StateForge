@@ -1,0 +1,3898 @@
+{
+ "target_block": "accounts/views.py::profile::288-288::entry::1",
+ "guided": false,
+ "found": false,
+ "status": "NOT_FOUND",
+ "checkpoint_eligible": false,
+ "steps": [
+  {
+   "method": "POST",
+   "path": "/accounts/login/",
+   "form": {
+    "action": "login",
+    "email": "hc@example.com",
+    "password": "hcpass"
+   }
+  }
+ ],
+ "seed_sha256": null,
+ "writer_blocks": [
+  "accounts/views.py::_check_2fa::144-144::block::1"
+ ],
+ "session_witness": null,
+ "executions": 40,
+ "dedup_skips": 13,
+ "stop_reason": "budget",
+ "seed_value": 5,
+ "max_steps": 3,
+ "max_execs": 40,
+ "isolated": true,
+ "attempts": [
+  {
+   "index": 1,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/accounts/login/",
+     "form": {
+      "action": "login",
+      "email": "hc@example.com",
+      "password": "hcpass"
+     }
+    }
+   ],
+   "sequence_hash": "a7004317356c43cd",
+   "covered_blocks": [
+    "accounts/backends.py::authenticate::23-23::entry::1",
+    "accounts/backends.py::authenticate::23-23::exit::1",
+    "accounts/backends.py::authenticate::51-51::branch::1",
+    "accounts/backends.py::authenticate::55-55::block::1",
+    "accounts/backends.py::authenticate::59-59::branch::1",
+    "accounts/backends.py::authenticate::62-62::terminal::1",
+    "accounts/decorators.py::require_sudo_mode::26-26::entry::1",
+    "accounts/decorators.py::require_sudo_mode::26-26::exit::1",
+    "accounts/decorators.py::require_sudo_mode::28-28::block::1",
+    "accounts/decorators.py::require_sudo_mode::57-57::terminal::1",
+    "accounts/forms.py::__init__::32-32::entry::1",
+    "accounts/forms.py::__init__::32-32::exit::1",
+    "accounts/forms.py::__init__::72-73::block::1",
+    "accounts/forms.py::clean::100-101::block::1",
+    "accounts/forms.py::clean::103-103::branch::1",
+    "accounts/forms.py::clean::104-104::branch::1",
+    "accounts/forms.py::clean::107-107::block::1",
+    "accounts/forms.py::clean::108-108::branch::1",
+    "accounts/forms.py::clean::111-111::terminal::1",
+    "accounts/forms.py::clean::19-19::entry::1",
+    "accounts/forms.py::clean::19-19::exit::1",
+    "accounts/forms.py::clean::20-20::block::1",
+    "accounts/forms.py::clean::21-21::terminal::1",
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1",
+    "accounts/models.py::for_user::62-62::entry::1",
+    "accounts/models.py::for_user::62-62::exit::1",
+    "accounts/models.py::for_user::64-64::terminal::1",
+    "accounts/views.py::_check_2fa::125-125::entry::1",
+    "accounts/views.py::_check_2fa::125-125::exit::1",
+    "accounts/views.py::_check_2fa::126-127::block::1",
+    "accounts/views.py::_check_2fa::128-128::branch::1",
+    "accounts/views.py::_check_2fa::144-144::block::1",
+    "accounts/views.py::_check_2fa::145-145::callsite::1",
+    "accounts/views.py::_check_2fa::145-145::returnsite::1",
+    "accounts/views.py::_check_2fa::145-145::terminal::1",
+    "accounts/views.py::_redirect_after_login::110-110::entry::1",
+    "accounts/views.py::_redirect_after_login::110-110::exit::1",
+    "accounts/views.py::_redirect_after_login::111-113::block::1",
+    "accounts/views.py::_redirect_after_login::114-114::branch::1",
+    "accounts/views.py::_redirect_after_login::117-117::block::1",
+    "accounts/views.py::_redirect_after_login::118-118::branch::1",
+    "accounts/views.py::_redirect_after_login::122-122::terminal::1",
+    "accounts/views.py::login::162-162::entry::1",
+    "accounts/views.py::login::162-162::exit::1",
+    "accounts/views.py::login::163-164::block::1",
+    "accounts/views.py::login::165-165::branch::1",
+    "accounts/views.py::login::166-166::branch::1",
+    "accounts/views.py::login::167-167::block::1",
+    "accounts/views.py::login::168-168::branch::1",
+    "accounts/views.py::login::169-169::block::1",
+    "accounts/views.py::login::170-170::callsite::1",
+    "accounts/views.py::login::170-170::returnsite::1",
+    "accounts/views.py::login::170-170::terminal::1",
+    "api/decorators.py::authorize::33-33::entry::1",
+    "api/decorators.py::authorize::33-33::exit::1",
+    "api/decorators.py::authorize::35-35::block::1",
+    "api/decorators.py::authorize::68-68::terminal::1",
+    "api/decorators.py::authorize_read::71-71::entry::1",
+    "api/decorators.py::authorize_read::71-71::exit::1",
+    "api/decorators.py::authorize_read::73-73::block::1",
+    "api/decorators.py::authorize_read::93-93::terminal::1",
+    "api/decorators.py::cors::120-120::terminal::1",
+    "api/decorators.py::cors::96-96::entry::1",
+    "api/decorators.py::cors::96-96::exit::1",
+    "api/decorators.py::cors::97-101::block::1",
+    "api/decorators.py::decorator::101-101::entry::1",
+    "api/decorators.py::decorator::101-101::exit::1",
+    "api/decorators.py::decorator::103-103::block::1",
+    "api/decorators.py::decorator::118-118::terminal::1",
+    "api/models.py::authorize::1442-1442::entry::1",
+    "api/models.py::authorize::1442-1442::exit::1",
+    "api/models.py::authorize::1445-1446::block::1",
+    "api/models.py::authorize::1448-1448::branch::1",
+    "api/models.py::authorize::1453-1453::block::1",
+    "api/models.py::authorize::1454-1454::branch::1",
+    "api/models.py::authorize::1461-1462::block::1",
+    "api/models.py::authorize::1464-1464::terminal::1",
+    "api/models.py::authorize_login_password::1502-1502::entry::1",
+    "api/models.py::authorize_login_password::1502-1502::exit::1",
+    "api/models.py::authorize_login_password::1503-1504::block::1",
+    "api/models.py::authorize_login_password::1507-1507::terminal::1",
+    "front/decorators.py::decorator::14-14::entry::1",
+    "front/decorators.py::decorator::14-14::exit::1",
+    "front/decorators.py::decorator::16-16::block::1",
+    "front/decorators.py::decorator::22-22::terminal::1",
+    "front/decorators.py::require_setting::13-13::entry::1",
+    "front/decorators.py::require_setting::13-13::exit::1",
+    "front/decorators.py::require_setting::14-14::block::1",
+    "front/decorators.py::require_setting::24-24::terminal::1",
+    "front/forms.py::_choices::18-18::entry::1",
+    "front/forms.py::_choices::18-18::exit::1",
+    "front/forms.py::_choices::19-19::terminal::1"
+   ],
+   "writer_blocks": [
+    "accounts/views.py::_check_2fa::144-144::block::1"
+   ],
+   "target_covered": false,
+   "session_verified": true,
+   "distance": null,
+   "score": 499.99,
+   "status": "EXPLORE",
+   "session_values": {
+    "_auth_user_id": "2",
+    "_auth_user_backend": "hc.accounts.backends.EmailBackend",
+    "_auth_user_hash": "00fedf71c2ecd083598e173513f604a7cb1a826067cefbf6567fae2fd89199dc"
+   },
+   "session_verdict": "VERIFIED_TRUE",
+   "session_witness": {
+    "values": {
+     "_auth_user_id": "2",
+     "_auth_user_backend": "hc.accounts.backends.EmailBackend",
+     "_auth_user_hash": "00fedf71c2ecd083598e173513f604a7cb1a826067cefbf6567fae2fd89199dc"
+    },
+    "conditions": [
+     {
+      "key_kind": "CONST",
+      "key_expr": "_auth_user_id",
+      "op": "EXISTS",
+      "value": null,
+      "value_kind": "NONE",
+      "direction": "true",
+      "guard_block": "accounts/views.py::profile::288-288::entry::1",
+      "source_file": "accounts/views.py",
+      "source_line": 288,
+      "source_col": 0,
+      "reader_site_id": "hc-profile",
+      "resolvable": true,
+      "note": ""
+     }
+    ],
+    "verdict": {
+     "verdict": "VERIFIED_TRUE",
+     "evidence": "runtime_verified",
+     "reason": "all-true",
+     "conditions": [
+      {
+       "condition": {
+        "key_kind": "CONST",
+        "key_expr": "_auth_user_id",
+        "op": "EXISTS",
+        "value": null,
+        "value_kind": "NONE",
+        "direction": "true",
+        "guard_block": "accounts/views.py::profile::288-288::entry::1",
+        "source_file": "accounts/views.py",
+        "source_line": 288,
+        "source_col": 0,
+        "reader_site_id": "hc-profile",
+        "resolvable": true,
+        "note": ""
+       },
+       "verdict": "VERIFIED_TRUE",
+       "evidence": "runtime_verified",
+       "reason": "observed",
+       "observation": {
+        "key": "Session._auth_user_id.exists{client-0@session}",
+        "value": true,
+        "evidence": "runtime_verified",
+        "source": "session_cookie:client-0:after_response:guard=accounts/views.py::profile::288-288::entry::1:line=288",
+        "observed_value": "2",
+        "value_kind": "STRING"
+       }
+      }
+     ],
+     "observations": [
+      {
+       "key": "Session._auth_user_id.exists{client-0@session}",
+       "value": true,
+       "evidence": "runtime_verified",
+       "source": "session_cookie:client-0:after_response:guard=accounts/views.py::profile::288-288::entry::1:line=288",
+       "observed_value": "2",
+       "value_kind": "STRING"
+      }
+     ]
+    }
+   },
+   "trace_span": [
+    0,
+    4389
+   ],
+   "step_spans": [
+    [
+     0,
+     4389
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool"
+   ],
+   "error": null
+  },
+  {
+   "index": 2,
+   "steps": [
+    {
+     "method": "GET",
+     "path": "/accounts/profile/"
+    }
+   ],
+   "sequence_hash": "578fab540ea6ebff",
+   "covered_blocks": [
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    12
+   ],
+   "step_spans": [
+    [
+     0,
+     12
+    ]
+   ],
+   "candidate_sources": [],
+   "error": null
+  },
+  {
+   "index": 3,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/accounts/logout/",
+     "form": {}
+    }
+   ],
+   "sequence_hash": "e6b07e319e22a00b",
+   "covered_blocks": [
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1",
+    "accounts/views.py::logout::205-205::entry::1",
+    "accounts/views.py::logout::205-205::exit::1",
+    "accounts/views.py::logout::206-206::block::1",
+    "accounts/views.py::logout::207-207::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    16
+   ],
+   "step_spans": [
+    [
+     0,
+     16
+    ]
+   ],
+   "candidate_sources": [],
+   "error": null
+  },
+  {
+   "index": 4,
+   "steps": [
+    {
+     "method": "GET",
+     "path": "/"
+    }
+   ],
+   "sequence_hash": "dba4bd17c776d088",
+   "covered_blocks": [
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1",
+    "front/views.py::index::385-385::entry::1",
+    "front/views.py::index::385-385::exit::1",
+    "front/views.py::index::386-386::branch::1",
+    "front/views.py::index::387-387::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    16
+   ],
+   "step_spans": [
+    [
+     0,
+     16
+    ]
+   ],
+   "candidate_sources": [],
+   "error": null
+  },
+  {
+   "index": 5,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/accounts/logout/",
+     "form": {}
+    },
+    {
+     "method": "POST",
+     "path": "/accounts/logout/",
+     "form": {}
+    }
+   ],
+   "sequence_hash": "40470fe323674263",
+   "covered_blocks": [
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1",
+    "accounts/views.py::logout::205-205::entry::1",
+    "accounts/views.py::logout::205-205::exit::1",
+    "accounts/views.py::logout::206-206::block::1",
+    "accounts/views.py::logout::207-207::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.02,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    24
+   ],
+   "step_spans": [
+    [
+     0,
+     16
+    ],
+    [
+     16,
+     24
+    ]
+   ],
+   "candidate_sources": [],
+   "error": null
+  },
+  {
+   "index": 6,
+   "steps": [
+    {
+     "method": "GET",
+     "path": "/accounts/profile/"
+    },
+    {
+     "method": "POST",
+     "path": "/accounts/logout/",
+     "form": {}
+    }
+   ],
+   "sequence_hash": "15c7666de181707b",
+   "covered_blocks": [
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1",
+    "accounts/views.py::logout::205-205::entry::1",
+    "accounts/views.py::logout::205-205::exit::1",
+    "accounts/views.py::logout::206-206::block::1",
+    "accounts/views.py::logout::207-207::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.02,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    20
+   ],
+   "step_spans": [
+    [
+     0,
+     12
+    ],
+    [
+     12,
+     20
+    ]
+   ],
+   "candidate_sources": [],
+   "error": null
+  },
+  {
+   "index": 7,
+   "steps": [
+    {
+     "method": "GET",
+     "path": "/"
+    },
+    {
+     "method": "GET",
+     "path": "/accounts/profile/"
+    }
+   ],
+   "sequence_hash": "61a867891f1e9098",
+   "covered_blocks": [
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1",
+    "front/views.py::index::385-385::entry::1",
+    "front/views.py::index::385-385::exit::1",
+    "front/views.py::index::386-386::branch::1",
+    "front/views.py::index::387-387::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.02,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    20
+   ],
+   "step_spans": [
+    [
+     0,
+     16
+    ],
+    [
+     16,
+     20
+    ]
+   ],
+   "candidate_sources": [],
+   "error": null
+  },
+  {
+   "index": 8,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/accounts/login/",
+     "form": {
+      "action": "hc@example.com",
+      "email": "hc@example.com",
+      "password": "hcpass"
+     }
+    }
+   ],
+   "sequence_hash": "5a830ccba28aea57",
+   "covered_blocks": [
+    "accounts/forms.py::__init__::32-32::entry::1",
+    "accounts/forms.py::__init__::32-32::exit::1",
+    "accounts/forms.py::__init__::72-73::block::1",
+    "accounts/forms.py::clean::19-19::entry::1",
+    "accounts/forms.py::clean::19-19::exit::1",
+    "accounts/forms.py::clean::20-20::block::1",
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1",
+    "accounts/views.py::login::162-162::entry::1",
+    "accounts/views.py::login::162-162::exit::1",
+    "accounts/views.py::login::163-164::block::1",
+    "accounts/views.py::login::165-165::branch::1",
+    "accounts/views.py::login::166-166::branch::1",
+    "accounts/views.py::login::173-173::block::1",
+    "accounts/views.py::login::174-174::branch::1",
+    "accounts/views.py::login::187-187::branch::1",
+    "accounts/views.py::login::190-191::block::1",
+    "accounts/views.py::login::201-201::terminal::1",
+    "front/context_processors.py::branding::7-7::entry::1",
+    "front/context_processors.py::branding::7-7::exit::1",
+    "front/context_processors.py::branding::8-8::terminal::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::entry::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::exit::1",
+    "front/templatetags/hc_extras.py::debug_warning::108-108::branch::1",
+    "front/templatetags/hc_extras.py::debug_warning::109-109::terminal::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::entry::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::exit::1",
+    "front/templatetags/hc_extras.py::site_root::93-93::terminal::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::entry::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::exit::1",
+    "front/templatetags/hc_extras.py::site_version::103-103::terminal::1",
+    "payments/context_processors.py::payments::7-7::entry::1",
+    "payments/context_processors.py::payments::7-7::exit::1",
+    "payments/context_processors.py::payments::8-8::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    76
+   ],
+   "step_spans": [
+    [
+     0,
+     76
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool"
+   ],
+   "error": null
+  },
+  {
+   "index": 9,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/accounts/login/",
+     "form": {
+      "action": "hcpass",
+      "email": "hc@example.com",
+      "password": "hcpass"
+     }
+    }
+   ],
+   "sequence_hash": "87ef50b7e868b220",
+   "covered_blocks": [
+    "accounts/forms.py::__init__::32-32::entry::1",
+    "accounts/forms.py::__init__::32-32::exit::1",
+    "accounts/forms.py::__init__::72-73::block::1",
+    "accounts/forms.py::clean::19-19::entry::1",
+    "accounts/forms.py::clean::19-19::exit::1",
+    "accounts/forms.py::clean::20-20::block::1",
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1",
+    "accounts/views.py::login::162-162::entry::1",
+    "accounts/views.py::login::162-162::exit::1",
+    "accounts/views.py::login::163-164::block::1",
+    "accounts/views.py::login::165-165::branch::1",
+    "accounts/views.py::login::166-166::branch::1",
+    "accounts/views.py::login::173-173::block::1",
+    "accounts/views.py::login::174-174::branch::1",
+    "accounts/views.py::login::187-187::branch::1",
+    "accounts/views.py::login::190-191::block::1",
+    "accounts/views.py::login::201-201::terminal::1",
+    "front/context_processors.py::branding::7-7::entry::1",
+    "front/context_processors.py::branding::7-7::exit::1",
+    "front/context_processors.py::branding::8-8::terminal::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::entry::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::exit::1",
+    "front/templatetags/hc_extras.py::debug_warning::108-108::branch::1",
+    "front/templatetags/hc_extras.py::debug_warning::109-109::terminal::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::entry::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::exit::1",
+    "front/templatetags/hc_extras.py::site_root::93-93::terminal::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::entry::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::exit::1",
+    "front/templatetags/hc_extras.py::site_version::103-103::terminal::1",
+    "payments/context_processors.py::payments::7-7::entry::1",
+    "payments/context_processors.py::payments::7-7::exit::1",
+    "payments/context_processors.py::payments::8-8::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    64
+   ],
+   "step_spans": [
+    [
+     0,
+     64
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool"
+   ],
+   "error": null
+  },
+  {
+   "index": 10,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/accounts/login/",
+     "form": {
+      "action": "login",
+      "email": "hc@example.com",
+      "password": "hc@example.com"
+     }
+    }
+   ],
+   "sequence_hash": "92d663695d36495b",
+   "covered_blocks": [
+    "accounts/backends.py::authenticate::23-23::entry::1",
+    "accounts/backends.py::authenticate::23-23::exit::1",
+    "accounts/backends.py::authenticate::51-51::branch::1",
+    "accounts/backends.py::authenticate::55-55::block::1",
+    "accounts/backends.py::authenticate::59-59::branch::1",
+    "accounts/backends.py::authenticate::60-60::terminal::1",
+    "accounts/forms.py::__init__::32-32::entry::1",
+    "accounts/forms.py::__init__::32-32::exit::1",
+    "accounts/forms.py::__init__::72-73::block::1",
+    "accounts/forms.py::clean::100-101::block::1",
+    "accounts/forms.py::clean::103-103::branch::1",
+    "accounts/forms.py::clean::104-104::branch::1",
+    "accounts/forms.py::clean::107-107::block::1",
+    "accounts/forms.py::clean::108-108::branch::1",
+    "accounts/forms.py::clean::109-109::terminal::1",
+    "accounts/forms.py::clean::19-19::entry::1",
+    "accounts/forms.py::clean::19-19::exit::1",
+    "accounts/forms.py::clean::20-20::block::1",
+    "accounts/forms.py::clean::21-21::terminal::1",
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1",
+    "accounts/views.py::login::162-162::entry::1",
+    "accounts/views.py::login::162-162::exit::1",
+    "accounts/views.py::login::163-164::block::1",
+    "accounts/views.py::login::165-165::branch::1",
+    "accounts/views.py::login::166-166::branch::1",
+    "accounts/views.py::login::167-167::block::1",
+    "accounts/views.py::login::168-168::branch::1",
+    "accounts/views.py::login::187-187::branch::1",
+    "accounts/views.py::login::190-191::block::1",
+    "accounts/views.py::login::201-201::terminal::1",
+    "api/models.py::authorize::1442-1442::entry::1",
+    "api/models.py::authorize::1442-1442::exit::1",
+    "api/models.py::authorize::1445-1446::block::1",
+    "api/models.py::authorize::1448-1448::branch::1",
+    "api/models.py::authorize::1450-1451::block::1",
+    "api/models.py::authorize::1453-1453::block::1",
+    "api/models.py::authorize::1454-1454::branch::1",
+    "api/models.py::authorize::1461-1462::block::1",
+    "api/models.py::authorize::1464-1464::terminal::1",
+    "api/models.py::authorize_login_password::1502-1502::entry::1",
+    "api/models.py::authorize_login_password::1502-1502::exit::1",
+    "api/models.py::authorize_login_password::1503-1504::block::1",
+    "api/models.py::authorize_login_password::1507-1507::terminal::1",
+    "front/context_processors.py::branding::7-7::entry::1",
+    "front/context_processors.py::branding::7-7::exit::1",
+    "front/context_processors.py::branding::8-8::terminal::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::entry::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::exit::1",
+    "front/templatetags/hc_extras.py::debug_warning::108-108::branch::1",
+    "front/templatetags/hc_extras.py::debug_warning::109-109::terminal::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::entry::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::exit::1",
+    "front/templatetags/hc_extras.py::site_root::93-93::terminal::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::entry::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::exit::1",
+    "front/templatetags/hc_extras.py::site_version::103-103::terminal::1",
+    "payments/context_processors.py::payments::7-7::entry::1",
+    "payments/context_processors.py::payments::7-7::exit::1",
+    "payments/context_processors.py::payments::8-8::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    94
+   ],
+   "step_spans": [
+    [
+     0,
+     94
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool"
+   ],
+   "error": null
+  },
+  {
+   "index": 11,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/accounts/login/",
+     "form": {
+      "action": "login",
+      "email": "hc@example.com",
+      "password": ""
+     }
+    }
+   ],
+   "sequence_hash": "1a10f096fdd45c95",
+   "covered_blocks": [
+    "accounts/forms.py::__init__::32-32::entry::1",
+    "accounts/forms.py::__init__::32-32::exit::1",
+    "accounts/forms.py::__init__::72-73::block::1",
+    "accounts/forms.py::clean::100-101::block::1",
+    "accounts/forms.py::clean::103-103::branch::1",
+    "accounts/forms.py::clean::111-111::terminal::1",
+    "accounts/forms.py::clean::19-19::entry::1",
+    "accounts/forms.py::clean::19-19::exit::1",
+    "accounts/forms.py::clean::20-20::block::1",
+    "accounts/forms.py::clean::21-21::terminal::1",
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1",
+    "accounts/views.py::login::162-162::entry::1",
+    "accounts/views.py::login::162-162::exit::1",
+    "accounts/views.py::login::163-164::block::1",
+    "accounts/views.py::login::165-165::branch::1",
+    "accounts/views.py::login::166-166::branch::1",
+    "accounts/views.py::login::167-167::block::1",
+    "accounts/views.py::login::168-168::branch::1",
+    "accounts/views.py::login::187-187::branch::1",
+    "accounts/views.py::login::190-191::block::1",
+    "accounts/views.py::login::201-201::terminal::1",
+    "front/context_processors.py::branding::7-7::entry::1",
+    "front/context_processors.py::branding::7-7::exit::1",
+    "front/context_processors.py::branding::8-8::terminal::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::entry::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::exit::1",
+    "front/templatetags/hc_extras.py::debug_warning::108-108::branch::1",
+    "front/templatetags/hc_extras.py::debug_warning::109-109::terminal::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::entry::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::exit::1",
+    "front/templatetags/hc_extras.py::site_root::93-93::terminal::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::entry::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::exit::1",
+    "front/templatetags/hc_extras.py::site_version::103-103::terminal::1",
+    "payments/context_processors.py::payments::7-7::entry::1",
+    "payments/context_processors.py::payments::7-7::exit::1",
+    "payments/context_processors.py::payments::8-8::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    66
+   ],
+   "step_spans": [
+    [
+     0,
+     66
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool",
+    "form:generic-boundary"
+   ],
+   "error": null
+  },
+  {
+   "index": 12,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/accounts/login/",
+     "form": {
+      "action": true,
+      "email": "hc@example.com",
+      "password": "hcpass"
+     }
+    }
+   ],
+   "sequence_hash": "7f71f78e4c1a6af6",
+   "covered_blocks": [
+    "accounts/forms.py::__init__::32-32::entry::1",
+    "accounts/forms.py::__init__::32-32::exit::1",
+    "accounts/forms.py::__init__::72-73::block::1",
+    "accounts/forms.py::clean::19-19::entry::1",
+    "accounts/forms.py::clean::19-19::exit::1",
+    "accounts/forms.py::clean::20-20::block::1",
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1",
+    "accounts/views.py::login::162-162::entry::1",
+    "accounts/views.py::login::162-162::exit::1",
+    "accounts/views.py::login::163-164::block::1",
+    "accounts/views.py::login::165-165::branch::1",
+    "accounts/views.py::login::166-166::branch::1",
+    "accounts/views.py::login::173-173::block::1",
+    "accounts/views.py::login::174-174::branch::1",
+    "accounts/views.py::login::187-187::branch::1",
+    "accounts/views.py::login::190-191::block::1",
+    "accounts/views.py::login::201-201::terminal::1",
+    "front/context_processors.py::branding::7-7::entry::1",
+    "front/context_processors.py::branding::7-7::exit::1",
+    "front/context_processors.py::branding::8-8::terminal::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::entry::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::exit::1",
+    "front/templatetags/hc_extras.py::debug_warning::108-108::branch::1",
+    "front/templatetags/hc_extras.py::debug_warning::109-109::terminal::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::entry::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::exit::1",
+    "front/templatetags/hc_extras.py::site_root::93-93::terminal::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::entry::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::exit::1",
+    "front/templatetags/hc_extras.py::site_version::103-103::terminal::1",
+    "payments/context_processors.py::payments::7-7::entry::1",
+    "payments/context_processors.py::payments::7-7::exit::1",
+    "payments/context_processors.py::payments::8-8::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    64
+   ],
+   "step_spans": [
+    [
+     0,
+     64
+    ]
+   ],
+   "candidate_sources": [
+    "form:generic-boundary",
+    "form:single-request-pool"
+   ],
+   "error": null
+  },
+  {
+   "index": 13,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/accounts/logout/",
+     "form": {}
+    },
+    {
+     "method": "GET",
+     "path": "/"
+    }
+   ],
+   "sequence_hash": "fbd3106b6d74abd0",
+   "covered_blocks": [
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1",
+    "accounts/views.py::logout::205-205::entry::1",
+    "accounts/views.py::logout::205-205::exit::1",
+    "accounts/views.py::logout::206-206::block::1",
+    "accounts/views.py::logout::207-207::terminal::1",
+    "front/views.py::index::385-385::entry::1",
+    "front/views.py::index::385-385::exit::1",
+    "front/views.py::index::386-386::branch::1",
+    "front/views.py::index::387-387::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.02,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    24
+   ],
+   "step_spans": [
+    [
+     0,
+     16
+    ],
+    [
+     16,
+     24
+    ]
+   ],
+   "candidate_sources": [],
+   "error": null
+  },
+  {
+   "index": 14,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/accounts/login/",
+     "form": {
+      "action": "login",
+      "email": false,
+      "password": "hcpass"
+     }
+    }
+   ],
+   "sequence_hash": "319de282e8066adf",
+   "covered_blocks": [
+    "accounts/forms.py::__init__::32-32::entry::1",
+    "accounts/forms.py::__init__::32-32::exit::1",
+    "accounts/forms.py::__init__::72-73::block::1",
+    "accounts/forms.py::clean::100-101::block::1",
+    "accounts/forms.py::clean::103-103::branch::1",
+    "accounts/forms.py::clean::111-111::terminal::1",
+    "accounts/forms.py::clean::19-19::entry::1",
+    "accounts/forms.py::clean::19-19::exit::1",
+    "accounts/forms.py::clean::20-20::block::1",
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1",
+    "accounts/views.py::login::162-162::entry::1",
+    "accounts/views.py::login::162-162::exit::1",
+    "accounts/views.py::login::163-164::block::1",
+    "accounts/views.py::login::165-165::branch::1",
+    "accounts/views.py::login::166-166::branch::1",
+    "accounts/views.py::login::167-167::block::1",
+    "accounts/views.py::login::168-168::branch::1",
+    "accounts/views.py::login::187-187::branch::1",
+    "accounts/views.py::login::190-191::block::1",
+    "accounts/views.py::login::201-201::terminal::1",
+    "front/context_processors.py::branding::7-7::entry::1",
+    "front/context_processors.py::branding::7-7::exit::1",
+    "front/context_processors.py::branding::8-8::terminal::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::entry::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::exit::1",
+    "front/templatetags/hc_extras.py::debug_warning::108-108::branch::1",
+    "front/templatetags/hc_extras.py::debug_warning::109-109::terminal::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::entry::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::exit::1",
+    "front/templatetags/hc_extras.py::site_root::93-93::terminal::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::entry::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::exit::1",
+    "front/templatetags/hc_extras.py::site_version::103-103::terminal::1",
+    "payments/context_processors.py::payments::7-7::entry::1",
+    "payments/context_processors.py::payments::7-7::exit::1",
+    "payments/context_processors.py::payments::8-8::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    66
+   ],
+   "step_spans": [
+    [
+     0,
+     66
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool",
+    "form:generic-boundary"
+   ],
+   "error": null
+  },
+  {
+   "index": 15,
+   "steps": [
+    {
+     "method": "GET",
+     "path": "/accounts/profile/"
+    },
+    {
+     "method": "POST",
+     "path": "/accounts/login/",
+     "form": {
+      "action": "login",
+      "email": "hc@example.com",
+      "password": "hcpass"
+     }
+    }
+   ],
+   "sequence_hash": "4b665b41ececb2ea",
+   "covered_blocks": [
+    "accounts/backends.py::authenticate::23-23::entry::1",
+    "accounts/backends.py::authenticate::23-23::exit::1",
+    "accounts/backends.py::authenticate::51-51::branch::1",
+    "accounts/backends.py::authenticate::55-55::block::1",
+    "accounts/backends.py::authenticate::59-59::branch::1",
+    "accounts/backends.py::authenticate::62-62::terminal::1",
+    "accounts/forms.py::__init__::32-32::entry::1",
+    "accounts/forms.py::__init__::32-32::exit::1",
+    "accounts/forms.py::__init__::72-73::block::1",
+    "accounts/forms.py::clean::100-101::block::1",
+    "accounts/forms.py::clean::103-103::branch::1",
+    "accounts/forms.py::clean::104-104::branch::1",
+    "accounts/forms.py::clean::107-107::block::1",
+    "accounts/forms.py::clean::108-108::branch::1",
+    "accounts/forms.py::clean::111-111::terminal::1",
+    "accounts/forms.py::clean::19-19::entry::1",
+    "accounts/forms.py::clean::19-19::exit::1",
+    "accounts/forms.py::clean::20-20::block::1",
+    "accounts/forms.py::clean::21-21::terminal::1",
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1",
+    "accounts/models.py::for_user::62-62::entry::1",
+    "accounts/models.py::for_user::62-62::exit::1",
+    "accounts/models.py::for_user::64-64::terminal::1",
+    "accounts/views.py::_check_2fa::125-125::entry::1",
+    "accounts/views.py::_check_2fa::125-125::exit::1",
+    "accounts/views.py::_check_2fa::126-127::block::1",
+    "accounts/views.py::_check_2fa::128-128::branch::1",
+    "accounts/views.py::_check_2fa::144-144::block::1",
+    "accounts/views.py::_check_2fa::145-145::callsite::1",
+    "accounts/views.py::_check_2fa::145-145::returnsite::1",
+    "accounts/views.py::_check_2fa::145-145::terminal::1",
+    "accounts/views.py::_redirect_after_login::110-110::entry::1",
+    "accounts/views.py::_redirect_after_login::110-110::exit::1",
+    "accounts/views.py::_redirect_after_login::111-113::block::1",
+    "accounts/views.py::_redirect_after_login::114-114::branch::1",
+    "accounts/views.py::_redirect_after_login::117-117::block::1",
+    "accounts/views.py::_redirect_after_login::118-118::branch::1",
+    "accounts/views.py::_redirect_after_login::122-122::terminal::1",
+    "accounts/views.py::login::162-162::entry::1",
+    "accounts/views.py::login::162-162::exit::1",
+    "accounts/views.py::login::163-164::block::1",
+    "accounts/views.py::login::165-165::branch::1",
+    "accounts/views.py::login::166-166::branch::1",
+    "accounts/views.py::login::167-167::block::1",
+    "accounts/views.py::login::168-168::branch::1",
+    "accounts/views.py::login::169-169::block::1",
+    "accounts/views.py::login::170-170::callsite::1",
+    "accounts/views.py::login::170-170::returnsite::1",
+    "accounts/views.py::login::170-170::terminal::1",
+    "api/models.py::authorize::1442-1442::entry::1",
+    "api/models.py::authorize::1442-1442::exit::1",
+    "api/models.py::authorize::1445-1446::block::1",
+    "api/models.py::authorize::1448-1448::branch::1",
+    "api/models.py::authorize::1450-1451::block::1",
+    "api/models.py::authorize::1453-1453::block::1",
+    "api/models.py::authorize::1454-1454::branch::1",
+    "api/models.py::authorize::1461-1462::block::1",
+    "api/models.py::authorize::1464-1464::terminal::1",
+    "api/models.py::authorize_login_password::1502-1502::entry::1",
+    "api/models.py::authorize_login_password::1502-1502::exit::1",
+    "api/models.py::authorize_login_password::1503-1504::block::1",
+    "api/models.py::authorize_login_password::1507-1507::terminal::1"
+   ],
+   "writer_blocks": [
+    "accounts/views.py::_check_2fa::144-144::block::1"
+   ],
+   "target_covered": false,
+   "session_verified": true,
+   "distance": null,
+   "score": 499.98,
+   "status": "EXPLORE",
+   "session_values": {
+    "_auth_user_id": "2",
+    "_auth_user_backend": "hc.accounts.backends.EmailBackend",
+    "_auth_user_hash": "00fedf71c2ecd083598e173513f604a7cb1a826067cefbf6567fae2fd89199dc"
+   },
+   "session_verdict": "VERIFIED_TRUE",
+   "session_witness": {
+    "values": {
+     "_auth_user_id": "2",
+     "_auth_user_backend": "hc.accounts.backends.EmailBackend",
+     "_auth_user_hash": "00fedf71c2ecd083598e173513f604a7cb1a826067cefbf6567fae2fd89199dc"
+    },
+    "conditions": [
+     {
+      "key_kind": "CONST",
+      "key_expr": "_auth_user_id",
+      "op": "EXISTS",
+      "value": null,
+      "value_kind": "NONE",
+      "direction": "true",
+      "guard_block": "accounts/views.py::profile::288-288::entry::1",
+      "source_file": "accounts/views.py",
+      "source_line": 288,
+      "source_col": 0,
+      "reader_site_id": "hc-profile",
+      "resolvable": true,
+      "note": ""
+     }
+    ],
+    "verdict": {
+     "verdict": "VERIFIED_TRUE",
+     "evidence": "runtime_verified",
+     "reason": "all-true",
+     "conditions": [
+      {
+       "condition": {
+        "key_kind": "CONST",
+        "key_expr": "_auth_user_id",
+        "op": "EXISTS",
+        "value": null,
+        "value_kind": "NONE",
+        "direction": "true",
+        "guard_block": "accounts/views.py::profile::288-288::entry::1",
+        "source_file": "accounts/views.py",
+        "source_line": 288,
+        "source_col": 0,
+        "reader_site_id": "hc-profile",
+        "resolvable": true,
+        "note": ""
+       },
+       "verdict": "VERIFIED_TRUE",
+       "evidence": "runtime_verified",
+       "reason": "observed",
+       "observation": {
+        "key": "Session._auth_user_id.exists{client-0@session}",
+        "value": true,
+        "evidence": "runtime_verified",
+        "source": "session_cookie:client-0:after_response:guard=accounts/views.py::profile::288-288::entry::1:line=288",
+        "observed_value": "2",
+        "value_kind": "STRING"
+       }
+      }
+     ],
+     "observations": [
+      {
+       "key": "Session._auth_user_id.exists{client-0@session}",
+       "value": true,
+       "evidence": "runtime_verified",
+       "source": "session_cookie:client-0:after_response:guard=accounts/views.py::profile::288-288::entry::1:line=288",
+       "observed_value": "2",
+       "value_kind": "STRING"
+      }
+     ]
+    }
+   },
+   "trace_span": [
+    0,
+    85
+   ],
+   "step_spans": [
+    [
+     0,
+     12
+    ],
+    [
+     12,
+     85
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool"
+   ],
+   "error": null
+  },
+  {
+   "index": 16,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/accounts/login/",
+     "form": {
+      "action": "login",
+      "email": "login",
+      "password": "hcpass"
+     }
+    }
+   ],
+   "sequence_hash": "e91bb10ac56b9de6",
+   "covered_blocks": [
+    "accounts/forms.py::__init__::32-32::entry::1",
+    "accounts/forms.py::__init__::32-32::exit::1",
+    "accounts/forms.py::__init__::72-73::block::1",
+    "accounts/forms.py::clean::100-101::block::1",
+    "accounts/forms.py::clean::103-103::branch::1",
+    "accounts/forms.py::clean::111-111::terminal::1",
+    "accounts/forms.py::clean::19-19::entry::1",
+    "accounts/forms.py::clean::19-19::exit::1",
+    "accounts/forms.py::clean::20-20::block::1",
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1",
+    "accounts/views.py::login::162-162::entry::1",
+    "accounts/views.py::login::162-162::exit::1",
+    "accounts/views.py::login::163-164::block::1",
+    "accounts/views.py::login::165-165::branch::1",
+    "accounts/views.py::login::166-166::branch::1",
+    "accounts/views.py::login::167-167::block::1",
+    "accounts/views.py::login::168-168::branch::1",
+    "accounts/views.py::login::187-187::branch::1",
+    "accounts/views.py::login::190-191::block::1",
+    "accounts/views.py::login::201-201::terminal::1",
+    "front/context_processors.py::branding::7-7::entry::1",
+    "front/context_processors.py::branding::7-7::exit::1",
+    "front/context_processors.py::branding::8-8::terminal::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::entry::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::exit::1",
+    "front/templatetags/hc_extras.py::debug_warning::108-108::branch::1",
+    "front/templatetags/hc_extras.py::debug_warning::109-109::terminal::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::entry::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::exit::1",
+    "front/templatetags/hc_extras.py::site_root::93-93::terminal::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::entry::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::exit::1",
+    "front/templatetags/hc_extras.py::site_version::103-103::terminal::1",
+    "payments/context_processors.py::payments::7-7::entry::1",
+    "payments/context_processors.py::payments::7-7::exit::1",
+    "payments/context_processors.py::payments::8-8::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    66
+   ],
+   "step_spans": [
+    [
+     0,
+     66
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool"
+   ],
+   "error": null
+  },
+  {
+   "index": 17,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/accounts/login/",
+     "form": {
+      "action": "login",
+      "email": null,
+      "password": "hcpass"
+     }
+    }
+   ],
+   "sequence_hash": "51623bea01b4c7ee",
+   "covered_blocks": [],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    0
+   ],
+   "step_spans": [
+    [
+     0,
+     0
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool",
+    "form:generic-boundary"
+   ],
+   "error": "TypeError: Cannot encode None for key 'email' as POST data. Did you mean to pass an empty string or omit the value?"
+  },
+  {
+   "index": 18,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/accounts/login/",
+     "form": {
+      "action": "login",
+      "email": 1,
+      "password": "hcpass"
+     }
+    }
+   ],
+   "sequence_hash": "25666af5760551ad",
+   "covered_blocks": [
+    "accounts/forms.py::__init__::32-32::entry::1",
+    "accounts/forms.py::__init__::32-32::exit::1",
+    "accounts/forms.py::__init__::72-73::block::1",
+    "accounts/forms.py::clean::100-101::block::1",
+    "accounts/forms.py::clean::103-103::branch::1",
+    "accounts/forms.py::clean::111-111::terminal::1",
+    "accounts/forms.py::clean::19-19::entry::1",
+    "accounts/forms.py::clean::19-19::exit::1",
+    "accounts/forms.py::clean::20-20::block::1",
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1",
+    "accounts/views.py::login::162-162::entry::1",
+    "accounts/views.py::login::162-162::exit::1",
+    "accounts/views.py::login::163-164::block::1",
+    "accounts/views.py::login::165-165::branch::1",
+    "accounts/views.py::login::166-166::branch::1",
+    "accounts/views.py::login::167-167::block::1",
+    "accounts/views.py::login::168-168::branch::1",
+    "accounts/views.py::login::187-187::branch::1",
+    "accounts/views.py::login::190-191::block::1",
+    "accounts/views.py::login::201-201::terminal::1",
+    "front/context_processors.py::branding::7-7::entry::1",
+    "front/context_processors.py::branding::7-7::exit::1",
+    "front/context_processors.py::branding::8-8::terminal::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::entry::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::exit::1",
+    "front/templatetags/hc_extras.py::debug_warning::108-108::branch::1",
+    "front/templatetags/hc_extras.py::debug_warning::109-109::terminal::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::entry::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::exit::1",
+    "front/templatetags/hc_extras.py::site_root::93-93::terminal::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::entry::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::exit::1",
+    "front/templatetags/hc_extras.py::site_version::103-103::terminal::1",
+    "payments/context_processors.py::payments::7-7::entry::1",
+    "payments/context_processors.py::payments::7-7::exit::1",
+    "payments/context_processors.py::payments::8-8::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    66
+   ],
+   "step_spans": [
+    [
+     0,
+     66
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool",
+    "form:generic-boundary"
+   ],
+   "error": null
+  },
+  {
+   "index": 19,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/accounts/login/",
+     "form": {
+      "action": 1,
+      "email": "hc@example.com",
+      "password": "hcpass"
+     }
+    }
+   ],
+   "sequence_hash": "9ebeab4857369fee",
+   "covered_blocks": [
+    "accounts/forms.py::__init__::32-32::entry::1",
+    "accounts/forms.py::__init__::32-32::exit::1",
+    "accounts/forms.py::__init__::72-73::block::1",
+    "accounts/forms.py::clean::19-19::entry::1",
+    "accounts/forms.py::clean::19-19::exit::1",
+    "accounts/forms.py::clean::20-20::block::1",
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1",
+    "accounts/views.py::login::162-162::entry::1",
+    "accounts/views.py::login::162-162::exit::1",
+    "accounts/views.py::login::163-164::block::1",
+    "accounts/views.py::login::165-165::branch::1",
+    "accounts/views.py::login::166-166::branch::1",
+    "accounts/views.py::login::173-173::block::1",
+    "accounts/views.py::login::174-174::branch::1",
+    "accounts/views.py::login::187-187::branch::1",
+    "accounts/views.py::login::190-191::block::1",
+    "accounts/views.py::login::201-201::terminal::1",
+    "front/context_processors.py::branding::7-7::entry::1",
+    "front/context_processors.py::branding::7-7::exit::1",
+    "front/context_processors.py::branding::8-8::terminal::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::entry::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::exit::1",
+    "front/templatetags/hc_extras.py::debug_warning::108-108::branch::1",
+    "front/templatetags/hc_extras.py::debug_warning::109-109::terminal::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::entry::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::exit::1",
+    "front/templatetags/hc_extras.py::site_root::93-93::terminal::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::entry::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::exit::1",
+    "front/templatetags/hc_extras.py::site_version::103-103::terminal::1",
+    "payments/context_processors.py::payments::7-7::entry::1",
+    "payments/context_processors.py::payments::7-7::exit::1",
+    "payments/context_processors.py::payments::8-8::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    64
+   ],
+   "step_spans": [
+    [
+     0,
+     64
+    ]
+   ],
+   "candidate_sources": [
+    "form:generic-boundary",
+    "form:single-request-pool"
+   ],
+   "error": null
+  },
+  {
+   "index": 20,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/accounts/login/",
+     "form": {
+      "action": "login",
+      "email": 0,
+      "password": "hcpass"
+     }
+    }
+   ],
+   "sequence_hash": "ebe25ce213f736e4",
+   "covered_blocks": [
+    "accounts/forms.py::__init__::32-32::entry::1",
+    "accounts/forms.py::__init__::32-32::exit::1",
+    "accounts/forms.py::__init__::72-73::block::1",
+    "accounts/forms.py::clean::100-101::block::1",
+    "accounts/forms.py::clean::103-103::branch::1",
+    "accounts/forms.py::clean::111-111::terminal::1",
+    "accounts/forms.py::clean::19-19::entry::1",
+    "accounts/forms.py::clean::19-19::exit::1",
+    "accounts/forms.py::clean::20-20::block::1",
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1",
+    "accounts/views.py::login::162-162::entry::1",
+    "accounts/views.py::login::162-162::exit::1",
+    "accounts/views.py::login::163-164::block::1",
+    "accounts/views.py::login::165-165::branch::1",
+    "accounts/views.py::login::166-166::branch::1",
+    "accounts/views.py::login::167-167::block::1",
+    "accounts/views.py::login::168-168::branch::1",
+    "accounts/views.py::login::187-187::branch::1",
+    "accounts/views.py::login::190-191::block::1",
+    "accounts/views.py::login::201-201::terminal::1",
+    "front/context_processors.py::branding::7-7::entry::1",
+    "front/context_processors.py::branding::7-7::exit::1",
+    "front/context_processors.py::branding::8-8::terminal::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::entry::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::exit::1",
+    "front/templatetags/hc_extras.py::debug_warning::108-108::branch::1",
+    "front/templatetags/hc_extras.py::debug_warning::109-109::terminal::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::entry::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::exit::1",
+    "front/templatetags/hc_extras.py::site_root::93-93::terminal::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::entry::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::exit::1",
+    "front/templatetags/hc_extras.py::site_version::103-103::terminal::1",
+    "payments/context_processors.py::payments::7-7::entry::1",
+    "payments/context_processors.py::payments::7-7::exit::1",
+    "payments/context_processors.py::payments::8-8::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    66
+   ],
+   "step_spans": [
+    [
+     0,
+     66
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool",
+    "form:generic-boundary"
+   ],
+   "error": null
+  },
+  {
+   "index": 21,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/accounts/login/",
+     "form": {
+      "action": "login",
+      "email": true,
+      "password": "hcpass"
+     }
+    }
+   ],
+   "sequence_hash": "01779c7cdf6911e7",
+   "covered_blocks": [
+    "accounts/forms.py::__init__::32-32::entry::1",
+    "accounts/forms.py::__init__::32-32::exit::1",
+    "accounts/forms.py::__init__::72-73::block::1",
+    "accounts/forms.py::clean::100-101::block::1",
+    "accounts/forms.py::clean::103-103::branch::1",
+    "accounts/forms.py::clean::111-111::terminal::1",
+    "accounts/forms.py::clean::19-19::entry::1",
+    "accounts/forms.py::clean::19-19::exit::1",
+    "accounts/forms.py::clean::20-20::block::1",
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1",
+    "accounts/views.py::login::162-162::entry::1",
+    "accounts/views.py::login::162-162::exit::1",
+    "accounts/views.py::login::163-164::block::1",
+    "accounts/views.py::login::165-165::branch::1",
+    "accounts/views.py::login::166-166::branch::1",
+    "accounts/views.py::login::167-167::block::1",
+    "accounts/views.py::login::168-168::branch::1",
+    "accounts/views.py::login::187-187::branch::1",
+    "accounts/views.py::login::190-191::block::1",
+    "accounts/views.py::login::201-201::terminal::1",
+    "front/context_processors.py::branding::7-7::entry::1",
+    "front/context_processors.py::branding::7-7::exit::1",
+    "front/context_processors.py::branding::8-8::terminal::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::entry::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::exit::1",
+    "front/templatetags/hc_extras.py::debug_warning::108-108::branch::1",
+    "front/templatetags/hc_extras.py::debug_warning::109-109::terminal::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::entry::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::exit::1",
+    "front/templatetags/hc_extras.py::site_root::93-93::terminal::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::entry::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::exit::1",
+    "front/templatetags/hc_extras.py::site_version::103-103::terminal::1",
+    "payments/context_processors.py::payments::7-7::entry::1",
+    "payments/context_processors.py::payments::7-7::exit::1",
+    "payments/context_processors.py::payments::8-8::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    66
+   ],
+   "step_spans": [
+    [
+     0,
+     66
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool",
+    "form:generic-boundary"
+   ],
+   "error": null
+  },
+  {
+   "index": 22,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/accounts/login/",
+     "form": {
+      "action": "login",
+      "email": "hc@example.com",
+      "password": "hcpass"
+     }
+    },
+    {
+     "method": "GET",
+     "path": "/"
+    }
+   ],
+   "sequence_hash": "50f2d1868abb0b46",
+   "covered_blocks": [
+    "accounts/backends.py::authenticate::23-23::entry::1",
+    "accounts/backends.py::authenticate::23-23::exit::1",
+    "accounts/backends.py::authenticate::51-51::branch::1",
+    "accounts/backends.py::authenticate::55-55::block::1",
+    "accounts/backends.py::authenticate::59-59::branch::1",
+    "accounts/backends.py::authenticate::62-62::terminal::1",
+    "accounts/backends.py::get_user::12-12::entry::1",
+    "accounts/backends.py::get_user::12-12::exit::1",
+    "accounts/backends.py::get_user::14-14::block::1",
+    "accounts/backends.py::get_user::16-16::terminal::1",
+    "accounts/forms.py::__init__::32-32::entry::1",
+    "accounts/forms.py::__init__::32-32::exit::1",
+    "accounts/forms.py::__init__::72-73::block::1",
+    "accounts/forms.py::clean::100-101::block::1",
+    "accounts/forms.py::clean::103-103::branch::1",
+    "accounts/forms.py::clean::104-104::branch::1",
+    "accounts/forms.py::clean::107-107::block::1",
+    "accounts/forms.py::clean::108-108::branch::1",
+    "accounts/forms.py::clean::111-111::terminal::1",
+    "accounts/forms.py::clean::19-19::entry::1",
+    "accounts/forms.py::clean::19-19::exit::1",
+    "accounts/forms.py::clean::20-20::block::1",
+    "accounts/forms.py::clean::21-21::terminal::1",
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__call__::25-26::block::1",
+    "accounts/middleware.py::__call__::27-27::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1",
+    "accounts/models.py::checks_from_all_projects::201-201::entry::1",
+    "accounts/models.py::checks_from_all_projects::201-201::exit::1",
+    "accounts/models.py::checks_from_all_projects::202-204::block::1",
+    "accounts/models.py::checks_from_all_projects::206-206::terminal::1",
+    "accounts/models.py::for_user::62-62::entry::1",
+    "accounts/models.py::for_user::62-62::exit::1",
+    "accounts/models.py::for_user::64-64::terminal::1",
+    "accounts/models.py::project_ids::185-185::entry::1",
+    "accounts/models.py::project_ids::185-185::exit::1",
+    "accounts/models.py::project_ids::186-192::block::1",
+    "accounts/models.py::project_ids::195-195::terminal::1",
+    "accounts/models.py::projects::197-197::entry::1",
+    "accounts/models.py::projects::197-197::exit::1",
+    "accounts/models.py::projects::199-199::terminal::1",
+    "accounts/views.py::_check_2fa::125-125::entry::1",
+    "accounts/views.py::_check_2fa::125-125::exit::1",
+    "accounts/views.py::_check_2fa::126-127::block::1",
+    "accounts/views.py::_check_2fa::128-128::branch::1",
+    "accounts/views.py::_check_2fa::144-144::block::1",
+    "accounts/views.py::_check_2fa::145-145::callsite::1",
+    "accounts/views.py::_check_2fa::145-145::returnsite::1",
+    "accounts/views.py::_check_2fa::145-145::terminal::1",
+    "accounts/views.py::_redirect_after_login::110-110::entry::1",
+    "accounts/views.py::_redirect_after_login::110-110::exit::1",
+    "accounts/views.py::_redirect_after_login::111-113::block::1",
+    "accounts/views.py::_redirect_after_login::114-114::branch::1",
+    "accounts/views.py::_redirect_after_login::117-117::block::1",
+    "accounts/views.py::_redirect_after_login::118-118::branch::1",
+    "accounts/views.py::_redirect_after_login::122-122::terminal::1",
+    "accounts/views.py::login::162-162::entry::1",
+    "accounts/views.py::login::162-162::exit::1",
+    "accounts/views.py::login::163-164::block::1",
+    "accounts/views.py::login::165-165::branch::1",
+    "accounts/views.py::login::166-166::branch::1",
+    "accounts/views.py::login::167-167::block::1",
+    "accounts/views.py::login::168-168::branch::1",
+    "accounts/views.py::login::169-169::block::1",
+    "accounts/views.py::login::170-170::callsite::1",
+    "accounts/views.py::login::170-170::returnsite::1",
+    "accounts/views.py::login::170-170::terminal::1",
+    "api/models.py::authorize::1442-1442::entry::1",
+    "api/models.py::authorize::1442-1442::exit::1",
+    "api/models.py::authorize::1445-1446::block::1",
+    "api/models.py::authorize::1448-1448::branch::1",
+    "api/models.py::authorize::1450-1451::block::1",
+    "api/models.py::authorize::1453-1453::block::1",
+    "api/models.py::authorize::1454-1454::branch::1",
+    "api/models.py::authorize::1461-1462::block::1",
+    "api/models.py::authorize::1464-1464::terminal::1",
+    "api/models.py::authorize_login_password::1502-1502::entry::1",
+    "api/models.py::authorize_login_password::1502-1502::exit::1",
+    "api/models.py::authorize_login_password::1503-1504::block::1",
+    "api/models.py::authorize_login_password::1507-1507::terminal::1",
+    "front/context_processors.py::branding::7-7::entry::1",
+    "front/context_processors.py::branding::7-7::exit::1",
+    "front/context_processors.py::branding::8-8::terminal::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::entry::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::exit::1",
+    "front/templatetags/hc_extras.py::debug_warning::108-108::branch::1",
+    "front/templatetags/hc_extras.py::debug_warning::109-109::terminal::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::entry::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::exit::1",
+    "front/templatetags/hc_extras.py::site_version::103-103::terminal::1",
+    "front/views.py::_get_project_summary::366-366::entry::1",
+    "front/views.py::_get_project_summary::366-366::exit::1",
+    "front/views.py::_get_project_summary::367-371::block::1",
+    "front/views.py::_get_project_summary::372-372::branch::1",
+    "front/views.py::_get_project_summary::382-382::terminal::1",
+    "front/views.py::_refresh_last_active_date::196-196::entry::1",
+    "front/views.py::_refresh_last_active_date::196-196::exit::1",
+    "front/views.py::_refresh_last_active_date::197-199::block::1",
+    "front/views.py::_refresh_last_active_date::200-200::branch::1",
+    "front/views.py::index::385-385::entry::1",
+    "front/views.py::index::385-385::exit::1",
+    "front/views.py::index::386-386::branch::1",
+    "front/views.py::index::390-392::block::1",
+    "front/views.py::index::391-391::callsite::1",
+    "front/views.py::index::391-391::returnsite::1",
+    "front/views.py::index::392-392::callsite::2",
+    "front/views.py::index::392-392::returnsite::2",
+    "front/views.py::index::393-393::branch::1",
+    "front/views.py::index::396-401::block::1",
+    "front/views.py::index::402-402::branch::1",
+    "front/views.py::index::411-412::block::1",
+    "front/views.py::index::419-419::terminal::1",
+    "payments/context_processors.py::payments::7-7::entry::1",
+    "payments/context_processors.py::payments::7-7::exit::1",
+    "payments/context_processors.py::payments::8-8::terminal::1"
+   ],
+   "writer_blocks": [
+    "accounts/views.py::_check_2fa::144-144::block::1"
+   ],
+   "target_covered": false,
+   "session_verified": true,
+   "distance": null,
+   "score": 499.98,
+   "status": "EXPLORE",
+   "session_values": {
+    "_auth_user_id": "2",
+    "_auth_user_backend": "hc.accounts.backends.EmailBackend",
+    "_auth_user_hash": "00fedf71c2ecd083598e173513f604a7cb1a826067cefbf6567fae2fd89199dc"
+   },
+   "session_verdict": "VERIFIED_TRUE",
+   "session_witness": {
+    "values": {
+     "_auth_user_id": "2",
+     "_auth_user_backend": "hc.accounts.backends.EmailBackend",
+     "_auth_user_hash": "00fedf71c2ecd083598e173513f604a7cb1a826067cefbf6567fae2fd89199dc"
+    },
+    "conditions": [
+     {
+      "key_kind": "CONST",
+      "key_expr": "_auth_user_id",
+      "op": "EXISTS",
+      "value": null,
+      "value_kind": "NONE",
+      "direction": "true",
+      "guard_block": "accounts/views.py::profile::288-288::entry::1",
+      "source_file": "accounts/views.py",
+      "source_line": 288,
+      "source_col": 0,
+      "reader_site_id": "hc-profile",
+      "resolvable": true,
+      "note": ""
+     }
+    ],
+    "verdict": {
+     "verdict": "VERIFIED_TRUE",
+     "evidence": "runtime_verified",
+     "reason": "all-true",
+     "conditions": [
+      {
+       "condition": {
+        "key_kind": "CONST",
+        "key_expr": "_auth_user_id",
+        "op": "EXISTS",
+        "value": null,
+        "value_kind": "NONE",
+        "direction": "true",
+        "guard_block": "accounts/views.py::profile::288-288::entry::1",
+        "source_file": "accounts/views.py",
+        "source_line": 288,
+        "source_col": 0,
+        "reader_site_id": "hc-profile",
+        "resolvable": true,
+        "note": ""
+       },
+       "verdict": "VERIFIED_TRUE",
+       "evidence": "runtime_verified",
+       "reason": "observed",
+       "observation": {
+        "key": "Session._auth_user_id.exists{client-0@session}",
+        "value": true,
+        "evidence": "runtime_verified",
+        "source": "session_cookie:client-0:after_response:guard=accounts/views.py::profile::288-288::entry::1:line=288",
+        "observed_value": "2",
+        "value_kind": "STRING"
+       }
+      }
+     ],
+     "observations": [
+      {
+       "key": "Session._auth_user_id.exists{client-0@session}",
+       "value": true,
+       "evidence": "runtime_verified",
+       "source": "session_cookie:client-0:after_response:guard=accounts/views.py::profile::288-288::entry::1:line=288",
+       "observed_value": "2",
+       "value_kind": "STRING"
+      }
+     ]
+    }
+   },
+   "trace_span": [
+    0,
+    168
+   ],
+   "step_spans": [
+    [
+     0,
+     81
+    ],
+    [
+     81,
+     168
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool"
+   ],
+   "error": null
+  },
+  {
+   "index": 23,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/accounts/login/",
+     "form": {
+      "action": "login",
+      "email": "hc@example.com",
+      "password": false
+     }
+    }
+   ],
+   "sequence_hash": "d3efd75d4cb559e4",
+   "covered_blocks": [
+    "accounts/backends.py::authenticate::23-23::entry::1",
+    "accounts/backends.py::authenticate::23-23::exit::1",
+    "accounts/backends.py::authenticate::51-51::branch::1",
+    "accounts/backends.py::authenticate::55-55::block::1",
+    "accounts/backends.py::authenticate::59-59::branch::1",
+    "accounts/backends.py::authenticate::60-60::terminal::1",
+    "accounts/forms.py::__init__::32-32::entry::1",
+    "accounts/forms.py::__init__::32-32::exit::1",
+    "accounts/forms.py::__init__::72-73::block::1",
+    "accounts/forms.py::clean::100-101::block::1",
+    "accounts/forms.py::clean::103-103::branch::1",
+    "accounts/forms.py::clean::104-104::branch::1",
+    "accounts/forms.py::clean::107-107::block::1",
+    "accounts/forms.py::clean::108-108::branch::1",
+    "accounts/forms.py::clean::109-109::terminal::1",
+    "accounts/forms.py::clean::19-19::entry::1",
+    "accounts/forms.py::clean::19-19::exit::1",
+    "accounts/forms.py::clean::20-20::block::1",
+    "accounts/forms.py::clean::21-21::terminal::1",
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1",
+    "accounts/views.py::login::162-162::entry::1",
+    "accounts/views.py::login::162-162::exit::1",
+    "accounts/views.py::login::163-164::block::1",
+    "accounts/views.py::login::165-165::branch::1",
+    "accounts/views.py::login::166-166::branch::1",
+    "accounts/views.py::login::167-167::block::1",
+    "accounts/views.py::login::168-168::branch::1",
+    "accounts/views.py::login::187-187::branch::1",
+    "accounts/views.py::login::190-191::block::1",
+    "accounts/views.py::login::201-201::terminal::1",
+    "api/models.py::authorize::1442-1442::entry::1",
+    "api/models.py::authorize::1442-1442::exit::1",
+    "api/models.py::authorize::1445-1446::block::1",
+    "api/models.py::authorize::1448-1448::branch::1",
+    "api/models.py::authorize::1450-1451::block::1",
+    "api/models.py::authorize::1453-1453::block::1",
+    "api/models.py::authorize::1454-1454::branch::1",
+    "api/models.py::authorize::1461-1462::block::1",
+    "api/models.py::authorize::1464-1464::terminal::1",
+    "api/models.py::authorize_login_password::1502-1502::entry::1",
+    "api/models.py::authorize_login_password::1502-1502::exit::1",
+    "api/models.py::authorize_login_password::1503-1504::block::1",
+    "api/models.py::authorize_login_password::1507-1507::terminal::1",
+    "front/context_processors.py::branding::7-7::entry::1",
+    "front/context_processors.py::branding::7-7::exit::1",
+    "front/context_processors.py::branding::8-8::terminal::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::entry::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::exit::1",
+    "front/templatetags/hc_extras.py::debug_warning::108-108::branch::1",
+    "front/templatetags/hc_extras.py::debug_warning::109-109::terminal::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::entry::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::exit::1",
+    "front/templatetags/hc_extras.py::site_root::93-93::terminal::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::entry::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::exit::1",
+    "front/templatetags/hc_extras.py::site_version::103-103::terminal::1",
+    "payments/context_processors.py::payments::7-7::entry::1",
+    "payments/context_processors.py::payments::7-7::exit::1",
+    "payments/context_processors.py::payments::8-8::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    94
+   ],
+   "step_spans": [
+    [
+     0,
+     94
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool",
+    "form:generic-boundary"
+   ],
+   "error": null
+  },
+  {
+   "index": 24,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/accounts/login/",
+     "form": {
+      "action": false,
+      "email": "hc@example.com",
+      "password": "hcpass"
+     }
+    }
+   ],
+   "sequence_hash": "1365e8593b5d2d79",
+   "covered_blocks": [
+    "accounts/forms.py::__init__::32-32::entry::1",
+    "accounts/forms.py::__init__::32-32::exit::1",
+    "accounts/forms.py::__init__::72-73::block::1",
+    "accounts/forms.py::clean::19-19::entry::1",
+    "accounts/forms.py::clean::19-19::exit::1",
+    "accounts/forms.py::clean::20-20::block::1",
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1",
+    "accounts/views.py::login::162-162::entry::1",
+    "accounts/views.py::login::162-162::exit::1",
+    "accounts/views.py::login::163-164::block::1",
+    "accounts/views.py::login::165-165::branch::1",
+    "accounts/views.py::login::166-166::branch::1",
+    "accounts/views.py::login::173-173::block::1",
+    "accounts/views.py::login::174-174::branch::1",
+    "accounts/views.py::login::187-187::branch::1",
+    "accounts/views.py::login::190-191::block::1",
+    "accounts/views.py::login::201-201::terminal::1",
+    "front/context_processors.py::branding::7-7::entry::1",
+    "front/context_processors.py::branding::7-7::exit::1",
+    "front/context_processors.py::branding::8-8::terminal::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::entry::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::exit::1",
+    "front/templatetags/hc_extras.py::debug_warning::108-108::branch::1",
+    "front/templatetags/hc_extras.py::debug_warning::109-109::terminal::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::entry::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::exit::1",
+    "front/templatetags/hc_extras.py::site_root::93-93::terminal::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::entry::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::exit::1",
+    "front/templatetags/hc_extras.py::site_version::103-103::terminal::1",
+    "payments/context_processors.py::payments::7-7::entry::1",
+    "payments/context_processors.py::payments::7-7::exit::1",
+    "payments/context_processors.py::payments::8-8::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    64
+   ],
+   "step_spans": [
+    [
+     0,
+     64
+    ]
+   ],
+   "candidate_sources": [
+    "form:generic-boundary",
+    "form:single-request-pool"
+   ],
+   "error": null
+  },
+  {
+   "index": 25,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/accounts/login/",
+     "form": {
+      "action": "login",
+      "email": "hc@example.com",
+      "password": true
+     }
+    }
+   ],
+   "sequence_hash": "28f8fb2def23bff7",
+   "covered_blocks": [
+    "accounts/backends.py::authenticate::23-23::entry::1",
+    "accounts/backends.py::authenticate::23-23::exit::1",
+    "accounts/backends.py::authenticate::51-51::branch::1",
+    "accounts/backends.py::authenticate::55-55::block::1",
+    "accounts/backends.py::authenticate::59-59::branch::1",
+    "accounts/backends.py::authenticate::60-60::terminal::1",
+    "accounts/forms.py::__init__::32-32::entry::1",
+    "accounts/forms.py::__init__::32-32::exit::1",
+    "accounts/forms.py::__init__::72-73::block::1",
+    "accounts/forms.py::clean::100-101::block::1",
+    "accounts/forms.py::clean::103-103::branch::1",
+    "accounts/forms.py::clean::104-104::branch::1",
+    "accounts/forms.py::clean::107-107::block::1",
+    "accounts/forms.py::clean::108-108::branch::1",
+    "accounts/forms.py::clean::109-109::terminal::1",
+    "accounts/forms.py::clean::19-19::entry::1",
+    "accounts/forms.py::clean::19-19::exit::1",
+    "accounts/forms.py::clean::20-20::block::1",
+    "accounts/forms.py::clean::21-21::terminal::1",
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1",
+    "accounts/views.py::login::162-162::entry::1",
+    "accounts/views.py::login::162-162::exit::1",
+    "accounts/views.py::login::163-164::block::1",
+    "accounts/views.py::login::165-165::branch::1",
+    "accounts/views.py::login::166-166::branch::1",
+    "accounts/views.py::login::167-167::block::1",
+    "accounts/views.py::login::168-168::branch::1",
+    "accounts/views.py::login::187-187::branch::1",
+    "accounts/views.py::login::190-191::block::1",
+    "accounts/views.py::login::201-201::terminal::1",
+    "api/models.py::authorize::1442-1442::entry::1",
+    "api/models.py::authorize::1442-1442::exit::1",
+    "api/models.py::authorize::1445-1446::block::1",
+    "api/models.py::authorize::1448-1448::branch::1",
+    "api/models.py::authorize::1450-1451::block::1",
+    "api/models.py::authorize::1453-1453::block::1",
+    "api/models.py::authorize::1454-1454::branch::1",
+    "api/models.py::authorize::1461-1462::block::1",
+    "api/models.py::authorize::1464-1464::terminal::1",
+    "api/models.py::authorize_login_password::1502-1502::entry::1",
+    "api/models.py::authorize_login_password::1502-1502::exit::1",
+    "api/models.py::authorize_login_password::1503-1504::block::1",
+    "api/models.py::authorize_login_password::1507-1507::terminal::1",
+    "front/context_processors.py::branding::7-7::entry::1",
+    "front/context_processors.py::branding::7-7::exit::1",
+    "front/context_processors.py::branding::8-8::terminal::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::entry::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::exit::1",
+    "front/templatetags/hc_extras.py::debug_warning::108-108::branch::1",
+    "front/templatetags/hc_extras.py::debug_warning::109-109::terminal::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::entry::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::exit::1",
+    "front/templatetags/hc_extras.py::site_root::93-93::terminal::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::entry::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::exit::1",
+    "front/templatetags/hc_extras.py::site_version::103-103::terminal::1",
+    "payments/context_processors.py::payments::7-7::entry::1",
+    "payments/context_processors.py::payments::7-7::exit::1",
+    "payments/context_processors.py::payments::8-8::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    94
+   ],
+   "step_spans": [
+    [
+     0,
+     94
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool",
+    "form:generic-boundary"
+   ],
+   "error": null
+  },
+  {
+   "index": 26,
+   "steps": [
+    {
+     "method": "GET",
+     "path": "/"
+    },
+    {
+     "method": "POST",
+     "path": "/accounts/login/",
+     "form": {
+      "action": "login",
+      "email": "hc@example.com",
+      "password": "hcpass"
+     }
+    }
+   ],
+   "sequence_hash": "6d95ef2052d7d99c",
+   "covered_blocks": [
+    "accounts/backends.py::authenticate::23-23::entry::1",
+    "accounts/backends.py::authenticate::23-23::exit::1",
+    "accounts/backends.py::authenticate::51-51::branch::1",
+    "accounts/backends.py::authenticate::55-55::block::1",
+    "accounts/backends.py::authenticate::59-59::branch::1",
+    "accounts/backends.py::authenticate::62-62::terminal::1",
+    "accounts/forms.py::__init__::32-32::entry::1",
+    "accounts/forms.py::__init__::32-32::exit::1",
+    "accounts/forms.py::__init__::72-73::block::1",
+    "accounts/forms.py::clean::100-101::block::1",
+    "accounts/forms.py::clean::103-103::branch::1",
+    "accounts/forms.py::clean::104-104::branch::1",
+    "accounts/forms.py::clean::107-107::block::1",
+    "accounts/forms.py::clean::108-108::branch::1",
+    "accounts/forms.py::clean::111-111::terminal::1",
+    "accounts/forms.py::clean::19-19::entry::1",
+    "accounts/forms.py::clean::19-19::exit::1",
+    "accounts/forms.py::clean::20-20::block::1",
+    "accounts/forms.py::clean::21-21::terminal::1",
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1",
+    "accounts/models.py::for_user::62-62::entry::1",
+    "accounts/models.py::for_user::62-62::exit::1",
+    "accounts/models.py::for_user::64-64::terminal::1",
+    "accounts/views.py::_check_2fa::125-125::entry::1",
+    "accounts/views.py::_check_2fa::125-125::exit::1",
+    "accounts/views.py::_check_2fa::126-127::block::1",
+    "accounts/views.py::_check_2fa::128-128::branch::1",
+    "accounts/views.py::_check_2fa::144-144::block::1",
+    "accounts/views.py::_check_2fa::145-145::callsite::1",
+    "accounts/views.py::_check_2fa::145-145::returnsite::1",
+    "accounts/views.py::_check_2fa::145-145::terminal::1",
+    "accounts/views.py::_redirect_after_login::110-110::entry::1",
+    "accounts/views.py::_redirect_after_login::110-110::exit::1",
+    "accounts/views.py::_redirect_after_login::111-113::block::1",
+    "accounts/views.py::_redirect_after_login::114-114::branch::1",
+    "accounts/views.py::_redirect_after_login::117-117::block::1",
+    "accounts/views.py::_redirect_after_login::118-118::branch::1",
+    "accounts/views.py::_redirect_after_login::122-122::terminal::1",
+    "accounts/views.py::login::162-162::entry::1",
+    "accounts/views.py::login::162-162::exit::1",
+    "accounts/views.py::login::163-164::block::1",
+    "accounts/views.py::login::165-165::branch::1",
+    "accounts/views.py::login::166-166::branch::1",
+    "accounts/views.py::login::167-167::block::1",
+    "accounts/views.py::login::168-168::branch::1",
+    "accounts/views.py::login::169-169::block::1",
+    "accounts/views.py::login::170-170::callsite::1",
+    "accounts/views.py::login::170-170::returnsite::1",
+    "accounts/views.py::login::170-170::terminal::1",
+    "api/models.py::authorize::1442-1442::entry::1",
+    "api/models.py::authorize::1442-1442::exit::1",
+    "api/models.py::authorize::1445-1446::block::1",
+    "api/models.py::authorize::1448-1448::branch::1",
+    "api/models.py::authorize::1450-1451::block::1",
+    "api/models.py::authorize::1453-1453::block::1",
+    "api/models.py::authorize::1454-1454::branch::1",
+    "api/models.py::authorize::1461-1462::block::1",
+    "api/models.py::authorize::1464-1464::terminal::1",
+    "api/models.py::authorize_login_password::1502-1502::entry::1",
+    "api/models.py::authorize_login_password::1502-1502::exit::1",
+    "api/models.py::authorize_login_password::1503-1504::block::1",
+    "api/models.py::authorize_login_password::1507-1507::terminal::1",
+    "front/views.py::index::385-385::entry::1",
+    "front/views.py::index::385-385::exit::1",
+    "front/views.py::index::386-386::branch::1",
+    "front/views.py::index::387-387::terminal::1"
+   ],
+   "writer_blocks": [
+    "accounts/views.py::_check_2fa::144-144::block::1"
+   ],
+   "target_covered": false,
+   "session_verified": true,
+   "distance": null,
+   "score": 499.98,
+   "status": "EXPLORE",
+   "session_values": {
+    "_auth_user_id": "2",
+    "_auth_user_backend": "hc.accounts.backends.EmailBackend",
+    "_auth_user_hash": "00fedf71c2ecd083598e173513f604a7cb1a826067cefbf6567fae2fd89199dc"
+   },
+   "session_verdict": "VERIFIED_TRUE",
+   "session_witness": {
+    "values": {
+     "_auth_user_id": "2",
+     "_auth_user_backend": "hc.accounts.backends.EmailBackend",
+     "_auth_user_hash": "00fedf71c2ecd083598e173513f604a7cb1a826067cefbf6567fae2fd89199dc"
+    },
+    "conditions": [
+     {
+      "key_kind": "CONST",
+      "key_expr": "_auth_user_id",
+      "op": "EXISTS",
+      "value": null,
+      "value_kind": "NONE",
+      "direction": "true",
+      "guard_block": "accounts/views.py::profile::288-288::entry::1",
+      "source_file": "accounts/views.py",
+      "source_line": 288,
+      "source_col": 0,
+      "reader_site_id": "hc-profile",
+      "resolvable": true,
+      "note": ""
+     }
+    ],
+    "verdict": {
+     "verdict": "VERIFIED_TRUE",
+     "evidence": "runtime_verified",
+     "reason": "all-true",
+     "conditions": [
+      {
+       "condition": {
+        "key_kind": "CONST",
+        "key_expr": "_auth_user_id",
+        "op": "EXISTS",
+        "value": null,
+        "value_kind": "NONE",
+        "direction": "true",
+        "guard_block": "accounts/views.py::profile::288-288::entry::1",
+        "source_file": "accounts/views.py",
+        "source_line": 288,
+        "source_col": 0,
+        "reader_site_id": "hc-profile",
+        "resolvable": true,
+        "note": ""
+       },
+       "verdict": "VERIFIED_TRUE",
+       "evidence": "runtime_verified",
+       "reason": "observed",
+       "observation": {
+        "key": "Session._auth_user_id.exists{client-0@session}",
+        "value": true,
+        "evidence": "runtime_verified",
+        "source": "session_cookie:client-0:after_response:guard=accounts/views.py::profile::288-288::entry::1:line=288",
+        "observed_value": "2",
+        "value_kind": "STRING"
+       }
+      }
+     ],
+     "observations": [
+      {
+       "key": "Session._auth_user_id.exists{client-0@session}",
+       "value": true,
+       "evidence": "runtime_verified",
+       "source": "session_cookie:client-0:after_response:guard=accounts/views.py::profile::288-288::entry::1:line=288",
+       "observed_value": "2",
+       "value_kind": "STRING"
+      }
+     ]
+    }
+   },
+   "trace_span": [
+    0,
+    89
+   ],
+   "step_spans": [
+    [
+     0,
+     16
+    ],
+    [
+     16,
+     89
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool"
+   ],
+   "error": null
+  },
+  {
+   "index": 27,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/accounts/login/",
+     "form": {
+      "action": "login",
+      "email": "hcpass",
+      "password": "hcpass"
+     }
+    }
+   ],
+   "sequence_hash": "8ac75723bc968f3d",
+   "covered_blocks": [
+    "accounts/forms.py::__init__::32-32::entry::1",
+    "accounts/forms.py::__init__::32-32::exit::1",
+    "accounts/forms.py::__init__::72-73::block::1",
+    "accounts/forms.py::clean::100-101::block::1",
+    "accounts/forms.py::clean::103-103::branch::1",
+    "accounts/forms.py::clean::111-111::terminal::1",
+    "accounts/forms.py::clean::19-19::entry::1",
+    "accounts/forms.py::clean::19-19::exit::1",
+    "accounts/forms.py::clean::20-20::block::1",
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1",
+    "accounts/views.py::login::162-162::entry::1",
+    "accounts/views.py::login::162-162::exit::1",
+    "accounts/views.py::login::163-164::block::1",
+    "accounts/views.py::login::165-165::branch::1",
+    "accounts/views.py::login::166-166::branch::1",
+    "accounts/views.py::login::167-167::block::1",
+    "accounts/views.py::login::168-168::branch::1",
+    "accounts/views.py::login::187-187::branch::1",
+    "accounts/views.py::login::190-191::block::1",
+    "accounts/views.py::login::201-201::terminal::1",
+    "front/context_processors.py::branding::7-7::entry::1",
+    "front/context_processors.py::branding::7-7::exit::1",
+    "front/context_processors.py::branding::8-8::terminal::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::entry::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::exit::1",
+    "front/templatetags/hc_extras.py::debug_warning::108-108::branch::1",
+    "front/templatetags/hc_extras.py::debug_warning::109-109::terminal::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::entry::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::exit::1",
+    "front/templatetags/hc_extras.py::site_root::93-93::terminal::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::entry::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::exit::1",
+    "front/templatetags/hc_extras.py::site_version::103-103::terminal::1",
+    "payments/context_processors.py::payments::7-7::entry::1",
+    "payments/context_processors.py::payments::7-7::exit::1",
+    "payments/context_processors.py::payments::8-8::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    66
+   ],
+   "step_spans": [
+    [
+     0,
+     66
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool"
+   ],
+   "error": null
+  },
+  {
+   "index": 28,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/accounts/login/",
+     "form": {
+      "action": "login",
+      "email": "hc@example.com",
+      "password": null
+     }
+    }
+   ],
+   "sequence_hash": "16710360b8f3a227",
+   "covered_blocks": [],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    0
+   ],
+   "step_spans": [
+    [
+     0,
+     0
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool",
+    "form:generic-boundary"
+   ],
+   "error": "TypeError: Cannot encode None for key 'password' as POST data. Did you mean to pass an empty string or omit the value?"
+  },
+  {
+   "index": 29,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/accounts/login/",
+     "form": {
+      "action": 0,
+      "email": "hc@example.com",
+      "password": "hcpass"
+     }
+    }
+   ],
+   "sequence_hash": "3b43aee18f8aea90",
+   "covered_blocks": [
+    "accounts/forms.py::__init__::32-32::entry::1",
+    "accounts/forms.py::__init__::32-32::exit::1",
+    "accounts/forms.py::__init__::72-73::block::1",
+    "accounts/forms.py::clean::19-19::entry::1",
+    "accounts/forms.py::clean::19-19::exit::1",
+    "accounts/forms.py::clean::20-20::block::1",
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1",
+    "accounts/views.py::login::162-162::entry::1",
+    "accounts/views.py::login::162-162::exit::1",
+    "accounts/views.py::login::163-164::block::1",
+    "accounts/views.py::login::165-165::branch::1",
+    "accounts/views.py::login::166-166::branch::1",
+    "accounts/views.py::login::173-173::block::1",
+    "accounts/views.py::login::174-174::branch::1",
+    "accounts/views.py::login::187-187::branch::1",
+    "accounts/views.py::login::190-191::block::1",
+    "accounts/views.py::login::201-201::terminal::1",
+    "front/context_processors.py::branding::7-7::entry::1",
+    "front/context_processors.py::branding::7-7::exit::1",
+    "front/context_processors.py::branding::8-8::terminal::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::entry::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::exit::1",
+    "front/templatetags/hc_extras.py::debug_warning::108-108::branch::1",
+    "front/templatetags/hc_extras.py::debug_warning::109-109::terminal::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::entry::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::exit::1",
+    "front/templatetags/hc_extras.py::site_root::93-93::terminal::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::entry::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::exit::1",
+    "front/templatetags/hc_extras.py::site_version::103-103::terminal::1",
+    "payments/context_processors.py::payments::7-7::entry::1",
+    "payments/context_processors.py::payments::7-7::exit::1",
+    "payments/context_processors.py::payments::8-8::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    64
+   ],
+   "step_spans": [
+    [
+     0,
+     64
+    ]
+   ],
+   "candidate_sources": [
+    "form:generic-boundary",
+    "form:single-request-pool"
+   ],
+   "error": null
+  },
+  {
+   "index": 30,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/accounts/login/",
+     "form": {
+      "action": "login",
+      "email": "hc@example.com",
+      "password": "hcpass"
+     }
+    },
+    {
+     "method": "POST",
+     "path": "/accounts/login/",
+     "form": {
+      "action": "login",
+      "email": "hc@example.com",
+      "password": "hcpass"
+     }
+    }
+   ],
+   "sequence_hash": "4bd50f99e0615fde",
+   "covered_blocks": [
+    "accounts/backends.py::authenticate::23-23::entry::1",
+    "accounts/backends.py::authenticate::23-23::exit::1",
+    "accounts/backends.py::authenticate::51-51::branch::1",
+    "accounts/backends.py::authenticate::55-55::block::1",
+    "accounts/backends.py::authenticate::59-59::branch::1",
+    "accounts/backends.py::authenticate::62-62::terminal::1",
+    "accounts/backends.py::get_user::12-12::entry::1",
+    "accounts/backends.py::get_user::12-12::exit::1",
+    "accounts/backends.py::get_user::14-14::block::1",
+    "accounts/backends.py::get_user::16-16::terminal::1",
+    "accounts/forms.py::__init__::32-32::entry::1",
+    "accounts/forms.py::__init__::32-32::exit::1",
+    "accounts/forms.py::__init__::72-73::block::1",
+    "accounts/forms.py::clean::100-101::block::1",
+    "accounts/forms.py::clean::103-103::branch::1",
+    "accounts/forms.py::clean::104-104::branch::1",
+    "accounts/forms.py::clean::107-107::block::1",
+    "accounts/forms.py::clean::108-108::branch::1",
+    "accounts/forms.py::clean::111-111::terminal::1",
+    "accounts/forms.py::clean::19-19::entry::1",
+    "accounts/forms.py::clean::19-19::exit::1",
+    "accounts/forms.py::clean::20-20::block::1",
+    "accounts/forms.py::clean::21-21::terminal::1",
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__call__::25-26::block::1",
+    "accounts/middleware.py::__call__::27-27::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1",
+    "accounts/models.py::for_user::62-62::entry::1",
+    "accounts/models.py::for_user::62-62::exit::1",
+    "accounts/models.py::for_user::64-64::terminal::1",
+    "accounts/views.py::_check_2fa::125-125::entry::1",
+    "accounts/views.py::_check_2fa::125-125::exit::1",
+    "accounts/views.py::_check_2fa::126-127::block::1",
+    "accounts/views.py::_check_2fa::128-128::branch::1",
+    "accounts/views.py::_check_2fa::144-144::block::1",
+    "accounts/views.py::_check_2fa::145-145::callsite::1",
+    "accounts/views.py::_check_2fa::145-145::returnsite::1",
+    "accounts/views.py::_check_2fa::145-145::terminal::1",
+    "accounts/views.py::_redirect_after_login::110-110::entry::1",
+    "accounts/views.py::_redirect_after_login::110-110::exit::1",
+    "accounts/views.py::_redirect_after_login::111-113::block::1",
+    "accounts/views.py::_redirect_after_login::114-114::branch::1",
+    "accounts/views.py::_redirect_after_login::117-117::block::1",
+    "accounts/views.py::_redirect_after_login::118-118::branch::1",
+    "accounts/views.py::_redirect_after_login::122-122::terminal::1",
+    "accounts/views.py::login::162-162::entry::1",
+    "accounts/views.py::login::162-162::exit::1",
+    "accounts/views.py::login::163-164::block::1",
+    "accounts/views.py::login::165-165::branch::1",
+    "accounts/views.py::login::166-166::branch::1",
+    "accounts/views.py::login::167-167::block::1",
+    "accounts/views.py::login::168-168::branch::1",
+    "accounts/views.py::login::169-169::block::1",
+    "accounts/views.py::login::170-170::callsite::1",
+    "accounts/views.py::login::170-170::returnsite::1",
+    "accounts/views.py::login::170-170::terminal::1",
+    "api/models.py::authorize::1442-1442::entry::1",
+    "api/models.py::authorize::1442-1442::exit::1",
+    "api/models.py::authorize::1445-1446::block::1",
+    "api/models.py::authorize::1448-1448::branch::1",
+    "api/models.py::authorize::1450-1451::block::1",
+    "api/models.py::authorize::1453-1453::block::1",
+    "api/models.py::authorize::1454-1454::branch::1",
+    "api/models.py::authorize::1461-1462::block::1",
+    "api/models.py::authorize::1464-1464::terminal::1",
+    "api/models.py::authorize_login_password::1502-1502::entry::1",
+    "api/models.py::authorize_login_password::1502-1502::exit::1",
+    "api/models.py::authorize_login_password::1503-1504::block::1",
+    "api/models.py::authorize_login_password::1507-1507::terminal::1"
+   ],
+   "writer_blocks": [
+    "accounts/views.py::_check_2fa::144-144::block::1"
+   ],
+   "target_covered": false,
+   "session_verified": true,
+   "distance": null,
+   "score": 499.98,
+   "status": "EXPLORE",
+   "session_values": {
+    "_auth_user_id": "2",
+    "_auth_user_backend": "hc.accounts.backends.EmailBackend",
+    "_auth_user_hash": "00fedf71c2ecd083598e173513f604a7cb1a826067cefbf6567fae2fd89199dc"
+   },
+   "session_verdict": "VERIFIED_TRUE",
+   "session_witness": {
+    "values": {
+     "_auth_user_id": "2",
+     "_auth_user_backend": "hc.accounts.backends.EmailBackend",
+     "_auth_user_hash": "00fedf71c2ecd083598e173513f604a7cb1a826067cefbf6567fae2fd89199dc"
+    },
+    "conditions": [
+     {
+      "key_kind": "CONST",
+      "key_expr": "_auth_user_id",
+      "op": "EXISTS",
+      "value": null,
+      "value_kind": "NONE",
+      "direction": "true",
+      "guard_block": "accounts/views.py::profile::288-288::entry::1",
+      "source_file": "accounts/views.py",
+      "source_line": 288,
+      "source_col": 0,
+      "reader_site_id": "hc-profile",
+      "resolvable": true,
+      "note": ""
+     }
+    ],
+    "verdict": {
+     "verdict": "VERIFIED_TRUE",
+     "evidence": "runtime_verified",
+     "reason": "all-true",
+     "conditions": [
+      {
+       "condition": {
+        "key_kind": "CONST",
+        "key_expr": "_auth_user_id",
+        "op": "EXISTS",
+        "value": null,
+        "value_kind": "NONE",
+        "direction": "true",
+        "guard_block": "accounts/views.py::profile::288-288::entry::1",
+        "source_file": "accounts/views.py",
+        "source_line": 288,
+        "source_col": 0,
+        "reader_site_id": "hc-profile",
+        "resolvable": true,
+        "note": ""
+       },
+       "verdict": "VERIFIED_TRUE",
+       "evidence": "runtime_verified",
+       "reason": "observed",
+       "observation": {
+        "key": "Session._auth_user_id.exists{client-0@session}",
+        "value": true,
+        "evidence": "runtime_verified",
+        "source": "session_cookie:client-0:after_response:guard=accounts/views.py::profile::288-288::entry::1:line=288",
+        "observed_value": "2",
+        "value_kind": "STRING"
+       }
+      }
+     ],
+     "observations": [
+      {
+       "key": "Session._auth_user_id.exists{client-0@session}",
+       "value": true,
+       "evidence": "runtime_verified",
+       "source": "session_cookie:client-0:after_response:guard=accounts/views.py::profile::288-288::entry::1:line=288",
+       "observed_value": "2",
+       "value_kind": "STRING"
+      }
+     ]
+    }
+   },
+   "trace_span": [
+    0,
+    165
+   ],
+   "step_spans": [
+    [
+     0,
+     81
+    ],
+    [
+     81,
+     165
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool"
+   ],
+   "error": null
+  },
+  {
+   "index": 31,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/accounts/logout/",
+     "form": {}
+    },
+    {
+     "method": "POST",
+     "path": "/accounts/login/",
+     "form": {
+      "action": "login",
+      "email": "hc@example.com",
+      "password": "hcpass"
+     }
+    }
+   ],
+   "sequence_hash": "5ddc02c24e11dd93",
+   "covered_blocks": [
+    "accounts/backends.py::authenticate::23-23::entry::1",
+    "accounts/backends.py::authenticate::23-23::exit::1",
+    "accounts/backends.py::authenticate::51-51::branch::1",
+    "accounts/backends.py::authenticate::55-55::block::1",
+    "accounts/backends.py::authenticate::59-59::branch::1",
+    "accounts/backends.py::authenticate::62-62::terminal::1",
+    "accounts/forms.py::__init__::32-32::entry::1",
+    "accounts/forms.py::__init__::32-32::exit::1",
+    "accounts/forms.py::__init__::72-73::block::1",
+    "accounts/forms.py::clean::100-101::block::1",
+    "accounts/forms.py::clean::103-103::branch::1",
+    "accounts/forms.py::clean::104-104::branch::1",
+    "accounts/forms.py::clean::107-107::block::1",
+    "accounts/forms.py::clean::108-108::branch::1",
+    "accounts/forms.py::clean::111-111::terminal::1",
+    "accounts/forms.py::clean::19-19::entry::1",
+    "accounts/forms.py::clean::19-19::exit::1",
+    "accounts/forms.py::clean::20-20::block::1",
+    "accounts/forms.py::clean::21-21::terminal::1",
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1",
+    "accounts/models.py::for_user::62-62::entry::1",
+    "accounts/models.py::for_user::62-62::exit::1",
+    "accounts/models.py::for_user::64-64::terminal::1",
+    "accounts/views.py::_check_2fa::125-125::entry::1",
+    "accounts/views.py::_check_2fa::125-125::exit::1",
+    "accounts/views.py::_check_2fa::126-127::block::1",
+    "accounts/views.py::_check_2fa::128-128::branch::1",
+    "accounts/views.py::_check_2fa::144-144::block::1",
+    "accounts/views.py::_check_2fa::145-145::callsite::1",
+    "accounts/views.py::_check_2fa::145-145::returnsite::1",
+    "accounts/views.py::_check_2fa::145-145::terminal::1",
+    "accounts/views.py::_redirect_after_login::110-110::entry::1",
+    "accounts/views.py::_redirect_after_login::110-110::exit::1",
+    "accounts/views.py::_redirect_after_login::111-113::block::1",
+    "accounts/views.py::_redirect_after_login::114-114::branch::1",
+    "accounts/views.py::_redirect_after_login::117-117::block::1",
+    "accounts/views.py::_redirect_after_login::118-118::branch::1",
+    "accounts/views.py::_redirect_after_login::122-122::terminal::1",
+    "accounts/views.py::login::162-162::entry::1",
+    "accounts/views.py::login::162-162::exit::1",
+    "accounts/views.py::login::163-164::block::1",
+    "accounts/views.py::login::165-165::branch::1",
+    "accounts/views.py::login::166-166::branch::1",
+    "accounts/views.py::login::167-167::block::1",
+    "accounts/views.py::login::168-168::branch::1",
+    "accounts/views.py::login::169-169::block::1",
+    "accounts/views.py::login::170-170::callsite::1",
+    "accounts/views.py::login::170-170::returnsite::1",
+    "accounts/views.py::login::170-170::terminal::1",
+    "accounts/views.py::logout::205-205::entry::1",
+    "accounts/views.py::logout::205-205::exit::1",
+    "accounts/views.py::logout::206-206::block::1",
+    "accounts/views.py::logout::207-207::terminal::1",
+    "api/models.py::authorize::1442-1442::entry::1",
+    "api/models.py::authorize::1442-1442::exit::1",
+    "api/models.py::authorize::1445-1446::block::1",
+    "api/models.py::authorize::1448-1448::branch::1",
+    "api/models.py::authorize::1450-1451::block::1",
+    "api/models.py::authorize::1453-1453::block::1",
+    "api/models.py::authorize::1454-1454::branch::1",
+    "api/models.py::authorize::1461-1462::block::1",
+    "api/models.py::authorize::1464-1464::terminal::1",
+    "api/models.py::authorize_login_password::1502-1502::entry::1",
+    "api/models.py::authorize_login_password::1502-1502::exit::1",
+    "api/models.py::authorize_login_password::1503-1504::block::1",
+    "api/models.py::authorize_login_password::1507-1507::terminal::1"
+   ],
+   "writer_blocks": [
+    "accounts/views.py::_check_2fa::144-144::block::1"
+   ],
+   "target_covered": false,
+   "session_verified": true,
+   "distance": null,
+   "score": 499.98,
+   "status": "EXPLORE",
+   "session_values": {
+    "_auth_user_id": "2",
+    "_auth_user_backend": "hc.accounts.backends.EmailBackend",
+    "_auth_user_hash": "00fedf71c2ecd083598e173513f604a7cb1a826067cefbf6567fae2fd89199dc"
+   },
+   "session_verdict": "VERIFIED_TRUE",
+   "session_witness": {
+    "values": {
+     "_auth_user_id": "2",
+     "_auth_user_backend": "hc.accounts.backends.EmailBackend",
+     "_auth_user_hash": "00fedf71c2ecd083598e173513f604a7cb1a826067cefbf6567fae2fd89199dc"
+    },
+    "conditions": [
+     {
+      "key_kind": "CONST",
+      "key_expr": "_auth_user_id",
+      "op": "EXISTS",
+      "value": null,
+      "value_kind": "NONE",
+      "direction": "true",
+      "guard_block": "accounts/views.py::profile::288-288::entry::1",
+      "source_file": "accounts/views.py",
+      "source_line": 288,
+      "source_col": 0,
+      "reader_site_id": "hc-profile",
+      "resolvable": true,
+      "note": ""
+     }
+    ],
+    "verdict": {
+     "verdict": "VERIFIED_TRUE",
+     "evidence": "runtime_verified",
+     "reason": "all-true",
+     "conditions": [
+      {
+       "condition": {
+        "key_kind": "CONST",
+        "key_expr": "_auth_user_id",
+        "op": "EXISTS",
+        "value": null,
+        "value_kind": "NONE",
+        "direction": "true",
+        "guard_block": "accounts/views.py::profile::288-288::entry::1",
+        "source_file": "accounts/views.py",
+        "source_line": 288,
+        "source_col": 0,
+        "reader_site_id": "hc-profile",
+        "resolvable": true,
+        "note": ""
+       },
+       "verdict": "VERIFIED_TRUE",
+       "evidence": "runtime_verified",
+       "reason": "observed",
+       "observation": {
+        "key": "Session._auth_user_id.exists{client-0@session}",
+        "value": true,
+        "evidence": "runtime_verified",
+        "source": "session_cookie:client-0:after_response:guard=accounts/views.py::profile::288-288::entry::1:line=288",
+        "observed_value": "2",
+        "value_kind": "STRING"
+       }
+      }
+     ],
+     "observations": [
+      {
+       "key": "Session._auth_user_id.exists{client-0@session}",
+       "value": true,
+       "evidence": "runtime_verified",
+       "source": "session_cookie:client-0:after_response:guard=accounts/views.py::profile::288-288::entry::1:line=288",
+       "observed_value": "2",
+       "value_kind": "STRING"
+      }
+     ]
+    }
+   },
+   "trace_span": [
+    0,
+    89
+   ],
+   "step_spans": [
+    [
+     0,
+     16
+    ],
+    [
+     16,
+     89
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool"
+   ],
+   "error": null
+  },
+  {
+   "index": 32,
+   "steps": [
+    {
+     "method": "GET",
+     "path": "/accounts/profile/"
+    },
+    {
+     "method": "GET",
+     "path": "/"
+    }
+   ],
+   "sequence_hash": "23e3efe9d115c0fc",
+   "covered_blocks": [
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1",
+    "front/views.py::index::385-385::entry::1",
+    "front/views.py::index::385-385::exit::1",
+    "front/views.py::index::386-386::branch::1",
+    "front/views.py::index::387-387::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.02,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    20
+   ],
+   "step_spans": [
+    [
+     0,
+     12
+    ],
+    [
+     12,
+     20
+    ]
+   ],
+   "candidate_sources": [],
+   "error": null
+  },
+  {
+   "index": 33,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/accounts/login/",
+     "form": {
+      "action": "login",
+      "email": "hc@example.com",
+      "password": "login"
+     }
+    }
+   ],
+   "sequence_hash": "ecc0772c8f77bff1",
+   "covered_blocks": [
+    "accounts/backends.py::authenticate::23-23::entry::1",
+    "accounts/backends.py::authenticate::23-23::exit::1",
+    "accounts/backends.py::authenticate::51-51::branch::1",
+    "accounts/backends.py::authenticate::55-55::block::1",
+    "accounts/backends.py::authenticate::59-59::branch::1",
+    "accounts/backends.py::authenticate::60-60::terminal::1",
+    "accounts/forms.py::__init__::32-32::entry::1",
+    "accounts/forms.py::__init__::32-32::exit::1",
+    "accounts/forms.py::__init__::72-73::block::1",
+    "accounts/forms.py::clean::100-101::block::1",
+    "accounts/forms.py::clean::103-103::branch::1",
+    "accounts/forms.py::clean::104-104::branch::1",
+    "accounts/forms.py::clean::107-107::block::1",
+    "accounts/forms.py::clean::108-108::branch::1",
+    "accounts/forms.py::clean::109-109::terminal::1",
+    "accounts/forms.py::clean::19-19::entry::1",
+    "accounts/forms.py::clean::19-19::exit::1",
+    "accounts/forms.py::clean::20-20::block::1",
+    "accounts/forms.py::clean::21-21::terminal::1",
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1",
+    "accounts/views.py::login::162-162::entry::1",
+    "accounts/views.py::login::162-162::exit::1",
+    "accounts/views.py::login::163-164::block::1",
+    "accounts/views.py::login::165-165::branch::1",
+    "accounts/views.py::login::166-166::branch::1",
+    "accounts/views.py::login::167-167::block::1",
+    "accounts/views.py::login::168-168::branch::1",
+    "accounts/views.py::login::187-187::branch::1",
+    "accounts/views.py::login::190-191::block::1",
+    "accounts/views.py::login::201-201::terminal::1",
+    "api/models.py::authorize::1442-1442::entry::1",
+    "api/models.py::authorize::1442-1442::exit::1",
+    "api/models.py::authorize::1445-1446::block::1",
+    "api/models.py::authorize::1448-1448::branch::1",
+    "api/models.py::authorize::1450-1451::block::1",
+    "api/models.py::authorize::1453-1453::block::1",
+    "api/models.py::authorize::1454-1454::branch::1",
+    "api/models.py::authorize::1461-1462::block::1",
+    "api/models.py::authorize::1464-1464::terminal::1",
+    "api/models.py::authorize_login_password::1502-1502::entry::1",
+    "api/models.py::authorize_login_password::1502-1502::exit::1",
+    "api/models.py::authorize_login_password::1503-1504::block::1",
+    "api/models.py::authorize_login_password::1507-1507::terminal::1",
+    "front/context_processors.py::branding::7-7::entry::1",
+    "front/context_processors.py::branding::7-7::exit::1",
+    "front/context_processors.py::branding::8-8::terminal::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::entry::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::exit::1",
+    "front/templatetags/hc_extras.py::debug_warning::108-108::branch::1",
+    "front/templatetags/hc_extras.py::debug_warning::109-109::terminal::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::entry::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::exit::1",
+    "front/templatetags/hc_extras.py::site_root::93-93::terminal::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::entry::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::exit::1",
+    "front/templatetags/hc_extras.py::site_version::103-103::terminal::1",
+    "payments/context_processors.py::payments::7-7::entry::1",
+    "payments/context_processors.py::payments::7-7::exit::1",
+    "payments/context_processors.py::payments::8-8::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    94
+   ],
+   "step_spans": [
+    [
+     0,
+     94
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool"
+   ],
+   "error": null
+  },
+  {
+   "index": 34,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/accounts/login/",
+     "form": {
+      "action": "login",
+      "email": "hc@example.com",
+      "password": 1
+     }
+    }
+   ],
+   "sequence_hash": "7f35e2bf7a258430",
+   "covered_blocks": [
+    "accounts/backends.py::authenticate::23-23::entry::1",
+    "accounts/backends.py::authenticate::23-23::exit::1",
+    "accounts/backends.py::authenticate::51-51::branch::1",
+    "accounts/backends.py::authenticate::55-55::block::1",
+    "accounts/backends.py::authenticate::59-59::branch::1",
+    "accounts/backends.py::authenticate::60-60::terminal::1",
+    "accounts/forms.py::__init__::32-32::entry::1",
+    "accounts/forms.py::__init__::32-32::exit::1",
+    "accounts/forms.py::__init__::72-73::block::1",
+    "accounts/forms.py::clean::100-101::block::1",
+    "accounts/forms.py::clean::103-103::branch::1",
+    "accounts/forms.py::clean::104-104::branch::1",
+    "accounts/forms.py::clean::107-107::block::1",
+    "accounts/forms.py::clean::108-108::branch::1",
+    "accounts/forms.py::clean::109-109::terminal::1",
+    "accounts/forms.py::clean::19-19::entry::1",
+    "accounts/forms.py::clean::19-19::exit::1",
+    "accounts/forms.py::clean::20-20::block::1",
+    "accounts/forms.py::clean::21-21::terminal::1",
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1",
+    "accounts/views.py::login::162-162::entry::1",
+    "accounts/views.py::login::162-162::exit::1",
+    "accounts/views.py::login::163-164::block::1",
+    "accounts/views.py::login::165-165::branch::1",
+    "accounts/views.py::login::166-166::branch::1",
+    "accounts/views.py::login::167-167::block::1",
+    "accounts/views.py::login::168-168::branch::1",
+    "accounts/views.py::login::187-187::branch::1",
+    "accounts/views.py::login::190-191::block::1",
+    "accounts/views.py::login::201-201::terminal::1",
+    "api/models.py::authorize::1442-1442::entry::1",
+    "api/models.py::authorize::1442-1442::exit::1",
+    "api/models.py::authorize::1445-1446::block::1",
+    "api/models.py::authorize::1448-1448::branch::1",
+    "api/models.py::authorize::1450-1451::block::1",
+    "api/models.py::authorize::1453-1453::block::1",
+    "api/models.py::authorize::1454-1454::branch::1",
+    "api/models.py::authorize::1461-1462::block::1",
+    "api/models.py::authorize::1464-1464::terminal::1",
+    "api/models.py::authorize_login_password::1502-1502::entry::1",
+    "api/models.py::authorize_login_password::1502-1502::exit::1",
+    "api/models.py::authorize_login_password::1503-1504::block::1",
+    "api/models.py::authorize_login_password::1507-1507::terminal::1",
+    "front/context_processors.py::branding::7-7::entry::1",
+    "front/context_processors.py::branding::7-7::exit::1",
+    "front/context_processors.py::branding::8-8::terminal::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::entry::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::exit::1",
+    "front/templatetags/hc_extras.py::debug_warning::108-108::branch::1",
+    "front/templatetags/hc_extras.py::debug_warning::109-109::terminal::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::entry::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::exit::1",
+    "front/templatetags/hc_extras.py::site_root::93-93::terminal::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::entry::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::exit::1",
+    "front/templatetags/hc_extras.py::site_version::103-103::terminal::1",
+    "payments/context_processors.py::payments::7-7::entry::1",
+    "payments/context_processors.py::payments::7-7::exit::1",
+    "payments/context_processors.py::payments::8-8::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    94
+   ],
+   "step_spans": [
+    [
+     0,
+     94
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool",
+    "form:generic-boundary"
+   ],
+   "error": null
+  },
+  {
+   "index": 35,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/accounts/login/",
+     "form": {
+      "action": "login",
+      "email": "",
+      "password": "hcpass"
+     }
+    }
+   ],
+   "sequence_hash": "647d8b1b71c608c7",
+   "covered_blocks": [
+    "accounts/forms.py::__init__::32-32::entry::1",
+    "accounts/forms.py::__init__::32-32::exit::1",
+    "accounts/forms.py::__init__::72-73::block::1",
+    "accounts/forms.py::clean::100-101::block::1",
+    "accounts/forms.py::clean::103-103::branch::1",
+    "accounts/forms.py::clean::111-111::terminal::1",
+    "accounts/forms.py::clean::19-19::entry::1",
+    "accounts/forms.py::clean::19-19::exit::1",
+    "accounts/forms.py::clean::20-20::block::1",
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1",
+    "accounts/views.py::login::162-162::entry::1",
+    "accounts/views.py::login::162-162::exit::1",
+    "accounts/views.py::login::163-164::block::1",
+    "accounts/views.py::login::165-165::branch::1",
+    "accounts/views.py::login::166-166::branch::1",
+    "accounts/views.py::login::167-167::block::1",
+    "accounts/views.py::login::168-168::branch::1",
+    "accounts/views.py::login::187-187::branch::1",
+    "accounts/views.py::login::190-191::block::1",
+    "accounts/views.py::login::201-201::terminal::1",
+    "front/context_processors.py::branding::7-7::entry::1",
+    "front/context_processors.py::branding::7-7::exit::1",
+    "front/context_processors.py::branding::8-8::terminal::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::entry::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::exit::1",
+    "front/templatetags/hc_extras.py::debug_warning::108-108::branch::1",
+    "front/templatetags/hc_extras.py::debug_warning::109-109::terminal::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::entry::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::exit::1",
+    "front/templatetags/hc_extras.py::site_root::93-93::terminal::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::entry::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::exit::1",
+    "front/templatetags/hc_extras.py::site_version::103-103::terminal::1",
+    "payments/context_processors.py::payments::7-7::entry::1",
+    "payments/context_processors.py::payments::7-7::exit::1",
+    "payments/context_processors.py::payments::8-8::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    66
+   ],
+   "step_spans": [
+    [
+     0,
+     66
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool",
+    "form:generic-boundary"
+   ],
+   "error": null
+  },
+  {
+   "index": 36,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/accounts/login/",
+     "form": {
+      "action": null,
+      "email": "hc@example.com",
+      "password": "hcpass"
+     }
+    }
+   ],
+   "sequence_hash": "6fc63ac2c5087f8e",
+   "covered_blocks": [],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    0
+   ],
+   "step_spans": [
+    [
+     0,
+     0
+    ]
+   ],
+   "candidate_sources": [
+    "form:generic-boundary",
+    "form:single-request-pool"
+   ],
+   "error": "TypeError: Cannot encode None for key 'action' as POST data. Did you mean to pass an empty string or omit the value?"
+  },
+  {
+   "index": 37,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/accounts/login/",
+     "form": {
+      "action": "login",
+      "email": "hc@example.com",
+      "password": "hcpass"
+     }
+    },
+    {
+     "method": "POST",
+     "path": "/accounts/logout/",
+     "form": {}
+    }
+   ],
+   "sequence_hash": "0feddfd9d4108c54",
+   "covered_blocks": [
+    "accounts/backends.py::authenticate::23-23::entry::1",
+    "accounts/backends.py::authenticate::23-23::exit::1",
+    "accounts/backends.py::authenticate::51-51::branch::1",
+    "accounts/backends.py::authenticate::55-55::block::1",
+    "accounts/backends.py::authenticate::59-59::branch::1",
+    "accounts/backends.py::authenticate::62-62::terminal::1",
+    "accounts/backends.py::get_user::12-12::entry::1",
+    "accounts/backends.py::get_user::12-12::exit::1",
+    "accounts/backends.py::get_user::14-14::block::1",
+    "accounts/backends.py::get_user::16-16::terminal::1",
+    "accounts/forms.py::__init__::32-32::entry::1",
+    "accounts/forms.py::__init__::32-32::exit::1",
+    "accounts/forms.py::__init__::72-73::block::1",
+    "accounts/forms.py::clean::100-101::block::1",
+    "accounts/forms.py::clean::103-103::branch::1",
+    "accounts/forms.py::clean::104-104::branch::1",
+    "accounts/forms.py::clean::107-107::block::1",
+    "accounts/forms.py::clean::108-108::branch::1",
+    "accounts/forms.py::clean::111-111::terminal::1",
+    "accounts/forms.py::clean::19-19::entry::1",
+    "accounts/forms.py::clean::19-19::exit::1",
+    "accounts/forms.py::clean::20-20::block::1",
+    "accounts/forms.py::clean::21-21::terminal::1",
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__call__::25-26::block::1",
+    "accounts/middleware.py::__call__::27-27::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1",
+    "accounts/models.py::for_user::62-62::entry::1",
+    "accounts/models.py::for_user::62-62::exit::1",
+    "accounts/models.py::for_user::64-64::terminal::1",
+    "accounts/views.py::_check_2fa::125-125::entry::1",
+    "accounts/views.py::_check_2fa::125-125::exit::1",
+    "accounts/views.py::_check_2fa::126-127::block::1",
+    "accounts/views.py::_check_2fa::128-128::branch::1",
+    "accounts/views.py::_check_2fa::144-144::block::1",
+    "accounts/views.py::_check_2fa::145-145::callsite::1",
+    "accounts/views.py::_check_2fa::145-145::returnsite::1",
+    "accounts/views.py::_check_2fa::145-145::terminal::1",
+    "accounts/views.py::_redirect_after_login::110-110::entry::1",
+    "accounts/views.py::_redirect_after_login::110-110::exit::1",
+    "accounts/views.py::_redirect_after_login::111-113::block::1",
+    "accounts/views.py::_redirect_after_login::114-114::branch::1",
+    "accounts/views.py::_redirect_after_login::117-117::block::1",
+    "accounts/views.py::_redirect_after_login::118-118::branch::1",
+    "accounts/views.py::_redirect_after_login::122-122::terminal::1",
+    "accounts/views.py::login::162-162::entry::1",
+    "accounts/views.py::login::162-162::exit::1",
+    "accounts/views.py::login::163-164::block::1",
+    "accounts/views.py::login::165-165::branch::1",
+    "accounts/views.py::login::166-166::branch::1",
+    "accounts/views.py::login::167-167::block::1",
+    "accounts/views.py::login::168-168::branch::1",
+    "accounts/views.py::login::169-169::block::1",
+    "accounts/views.py::login::170-170::callsite::1",
+    "accounts/views.py::login::170-170::returnsite::1",
+    "accounts/views.py::login::170-170::terminal::1",
+    "accounts/views.py::logout::205-205::entry::1",
+    "accounts/views.py::logout::205-205::exit::1",
+    "accounts/views.py::logout::206-206::block::1",
+    "accounts/views.py::logout::207-207::terminal::1",
+    "api/models.py::authorize::1442-1442::entry::1",
+    "api/models.py::authorize::1442-1442::exit::1",
+    "api/models.py::authorize::1445-1446::block::1",
+    "api/models.py::authorize::1448-1448::branch::1",
+    "api/models.py::authorize::1450-1451::block::1",
+    "api/models.py::authorize::1453-1453::block::1",
+    "api/models.py::authorize::1454-1454::branch::1",
+    "api/models.py::authorize::1461-1462::block::1",
+    "api/models.py::authorize::1464-1464::terminal::1",
+    "api/models.py::authorize_login_password::1502-1502::entry::1",
+    "api/models.py::authorize_login_password::1502-1502::exit::1",
+    "api/models.py::authorize_login_password::1503-1504::block::1",
+    "api/models.py::authorize_login_password::1507-1507::terminal::1"
+   ],
+   "writer_blocks": [
+    "accounts/views.py::_check_2fa::144-144::block::1"
+   ],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.02,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    100
+   ],
+   "step_spans": [
+    [
+     0,
+     81
+    ],
+    [
+     81,
+     100
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool"
+   ],
+   "error": null
+  },
+  {
+   "index": 38,
+   "steps": [
+    {
+     "method": "GET",
+     "path": "/"
+    },
+    {
+     "method": "POST",
+     "path": "/accounts/logout/",
+     "form": {}
+    }
+   ],
+   "sequence_hash": "0adc391824284154",
+   "covered_blocks": [
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1",
+    "accounts/views.py::logout::205-205::entry::1",
+    "accounts/views.py::logout::205-205::exit::1",
+    "accounts/views.py::logout::206-206::block::1",
+    "accounts/views.py::logout::207-207::terminal::1",
+    "front/views.py::index::385-385::entry::1",
+    "front/views.py::index::385-385::exit::1",
+    "front/views.py::index::386-386::branch::1",
+    "front/views.py::index::387-387::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.02,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    24
+   ],
+   "step_spans": [
+    [
+     0,
+     16
+    ],
+    [
+     16,
+     24
+    ]
+   ],
+   "candidate_sources": [],
+   "error": null
+  },
+  {
+   "index": 39,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/accounts/login/",
+     "form": {
+      "action": "",
+      "email": "hc@example.com",
+      "password": "hcpass"
+     }
+    }
+   ],
+   "sequence_hash": "4b218563948c8706",
+   "covered_blocks": [
+    "accounts/forms.py::__init__::32-32::entry::1",
+    "accounts/forms.py::__init__::32-32::exit::1",
+    "accounts/forms.py::__init__::72-73::block::1",
+    "accounts/forms.py::clean::19-19::entry::1",
+    "accounts/forms.py::clean::19-19::exit::1",
+    "accounts/forms.py::clean::20-20::block::1",
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1",
+    "accounts/views.py::login::162-162::entry::1",
+    "accounts/views.py::login::162-162::exit::1",
+    "accounts/views.py::login::163-164::block::1",
+    "accounts/views.py::login::165-165::branch::1",
+    "accounts/views.py::login::166-166::branch::1",
+    "accounts/views.py::login::173-173::block::1",
+    "accounts/views.py::login::174-174::branch::1",
+    "accounts/views.py::login::187-187::branch::1",
+    "accounts/views.py::login::190-191::block::1",
+    "accounts/views.py::login::201-201::terminal::1",
+    "front/context_processors.py::branding::7-7::entry::1",
+    "front/context_processors.py::branding::7-7::exit::1",
+    "front/context_processors.py::branding::8-8::terminal::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::entry::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::exit::1",
+    "front/templatetags/hc_extras.py::debug_warning::108-108::branch::1",
+    "front/templatetags/hc_extras.py::debug_warning::109-109::terminal::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::entry::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::exit::1",
+    "front/templatetags/hc_extras.py::site_root::93-93::terminal::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::entry::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::exit::1",
+    "front/templatetags/hc_extras.py::site_version::103-103::terminal::1",
+    "payments/context_processors.py::payments::7-7::entry::1",
+    "payments/context_processors.py::payments::7-7::exit::1",
+    "payments/context_processors.py::payments::8-8::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    64
+   ],
+   "step_spans": [
+    [
+     0,
+     64
+    ]
+   ],
+   "candidate_sources": [
+    "form:generic-boundary",
+    "form:single-request-pool"
+   ],
+   "error": null
+  },
+  {
+   "index": 40,
+   "steps": [
+    {
+     "method": "POST",
+     "path": "/accounts/login/",
+     "form": {
+      "action": "login",
+      "email": "hc@example.com",
+      "password": 0
+     }
+    }
+   ],
+   "sequence_hash": "95b07fbc5d5ba537",
+   "covered_blocks": [
+    "accounts/backends.py::authenticate::23-23::entry::1",
+    "accounts/backends.py::authenticate::23-23::exit::1",
+    "accounts/backends.py::authenticate::51-51::branch::1",
+    "accounts/backends.py::authenticate::55-55::block::1",
+    "accounts/backends.py::authenticate::59-59::branch::1",
+    "accounts/backends.py::authenticate::60-60::terminal::1",
+    "accounts/forms.py::__init__::32-32::entry::1",
+    "accounts/forms.py::__init__::32-32::exit::1",
+    "accounts/forms.py::__init__::72-73::block::1",
+    "accounts/forms.py::clean::100-101::block::1",
+    "accounts/forms.py::clean::103-103::branch::1",
+    "accounts/forms.py::clean::104-104::branch::1",
+    "accounts/forms.py::clean::107-107::block::1",
+    "accounts/forms.py::clean::108-108::branch::1",
+    "accounts/forms.py::clean::109-109::terminal::1",
+    "accounts/forms.py::clean::19-19::entry::1",
+    "accounts/forms.py::clean::19-19::exit::1",
+    "accounts/forms.py::clean::20-20::block::1",
+    "accounts/forms.py::clean::21-21::terminal::1",
+    "accounts/middleware.py::__call__::21-21::entry::1",
+    "accounts/middleware.py::__call__::21-21::exit::1",
+    "accounts/middleware.py::__call__::22-22::branch::1",
+    "accounts/middleware.py::__call__::23-23::terminal::1",
+    "accounts/middleware.py::__init__::18-18::entry::1",
+    "accounts/middleware.py::__init__::18-18::exit::1",
+    "accounts/middleware.py::__init__::19-19::block::1",
+    "accounts/middleware.py::__init__::41-41::branch::1",
+    "accounts/middleware.py::__init__::42-42::terminal::1",
+    "accounts/views.py::login::162-162::entry::1",
+    "accounts/views.py::login::162-162::exit::1",
+    "accounts/views.py::login::163-164::block::1",
+    "accounts/views.py::login::165-165::branch::1",
+    "accounts/views.py::login::166-166::branch::1",
+    "accounts/views.py::login::167-167::block::1",
+    "accounts/views.py::login::168-168::branch::1",
+    "accounts/views.py::login::187-187::branch::1",
+    "accounts/views.py::login::190-191::block::1",
+    "accounts/views.py::login::201-201::terminal::1",
+    "api/models.py::authorize::1442-1442::entry::1",
+    "api/models.py::authorize::1442-1442::exit::1",
+    "api/models.py::authorize::1445-1446::block::1",
+    "api/models.py::authorize::1448-1448::branch::1",
+    "api/models.py::authorize::1450-1451::block::1",
+    "api/models.py::authorize::1453-1453::block::1",
+    "api/models.py::authorize::1454-1454::branch::1",
+    "api/models.py::authorize::1461-1462::block::1",
+    "api/models.py::authorize::1464-1464::terminal::1",
+    "api/models.py::authorize_login_password::1502-1502::entry::1",
+    "api/models.py::authorize_login_password::1502-1502::exit::1",
+    "api/models.py::authorize_login_password::1503-1504::block::1",
+    "api/models.py::authorize_login_password::1507-1507::terminal::1",
+    "front/context_processors.py::branding::7-7::entry::1",
+    "front/context_processors.py::branding::7-7::exit::1",
+    "front/context_processors.py::branding::8-8::terminal::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::entry::1",
+    "front/templatetags/hc_extras.py::debug_warning::107-107::exit::1",
+    "front/templatetags/hc_extras.py::debug_warning::108-108::branch::1",
+    "front/templatetags/hc_extras.py::debug_warning::109-109::terminal::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::entry::1",
+    "front/templatetags/hc_extras.py::site_root::92-92::exit::1",
+    "front/templatetags/hc_extras.py::site_root::93-93::terminal::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::entry::1",
+    "front/templatetags/hc_extras.py::site_version::102-102::exit::1",
+    "front/templatetags/hc_extras.py::site_version::103-103::terminal::1",
+    "payments/context_processors.py::payments::7-7::entry::1",
+    "payments/context_processors.py::payments::7-7::exit::1",
+    "payments/context_processors.py::payments::8-8::terminal::1"
+   ],
+   "writer_blocks": [],
+   "target_covered": false,
+   "session_verified": false,
+   "distance": null,
+   "score": -0.01,
+   "status": "EXPLORE",
+   "session_values": {},
+   "session_verdict": "VERIFIED_FALSE",
+   "session_witness": null,
+   "trace_span": [
+    0,
+    94
+   ],
+   "step_spans": [
+    [
+     0,
+     94
+    ]
+   ],
+   "candidate_sources": [
+    "form:single-request-pool",
+    "form:generic-boundary"
+   ],
+   "error": null
+  }
+ ]
+}

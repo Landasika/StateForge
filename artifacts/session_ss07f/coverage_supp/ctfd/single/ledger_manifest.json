@@ -1,0 +1,9 @@
+{
+ "run_id": "ctfd-5-single",
+ "arm": "SINGLE",
+ "seed": 5,
+ "target_block": "challenges.py::listing::24-24::entry::1",
+ "app": "external/CTFd/CTFd",
+ "request_limit": 60,
+ "boundary": "target-callable-invocation"
+}

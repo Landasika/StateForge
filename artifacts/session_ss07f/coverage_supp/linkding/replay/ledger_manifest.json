@@ -1,0 +1,9 @@
+{
+ "run_id": "replay-linkding",
+ "arm": "REPLAY",
+ "seed": 0,
+ "target_block": "views/bookmarks.py::index::43-43::entry::1",
+ "app": "external/linkding/bookmarks",
+ "request_limit": 20,
+ "boundary": "target-callable-invocation"
+}

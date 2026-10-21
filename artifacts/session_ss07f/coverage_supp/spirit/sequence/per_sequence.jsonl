@@ -1,0 +1,2 @@
+{"event": "sequence_start", "sequence_id": "spirit-5-seq:seq:1", "run_id": "spirit-5-seq", "arm": "SEQUENCE", "seed": 5, "kind": "bootstrap"}
+{"event": "sequence_end", "sequence_id": "spirit-5-seq:seq:1", "run_id": "spirit-5-seq", "arm": "SEQUENCE", "seed": 5, "status": "ok", "steps": 64}

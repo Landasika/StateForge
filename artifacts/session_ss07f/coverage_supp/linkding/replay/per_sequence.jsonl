@@ -1,0 +1,6 @@
+{"event": "sequence_start", "sequence_id": "replay-linkding:seq:1", "run_id": "replay-linkding", "arm": "REPLAY", "seed": 0, "kind": "replay"}
+{"event": "sequence_end", "sequence_id": "replay-linkding:seq:1", "run_id": "replay-linkding", "arm": "REPLAY", "seed": 0, "status": "ok", "steps": 0}
+{"event": "sequence_start", "sequence_id": "replay-linkding:seq:2", "run_id": "replay-linkding", "arm": "REPLAY", "seed": 0, "kind": "checkpoint-validation"}
+{"event": "sequence_end", "sequence_id": "replay-linkding:seq:2", "run_id": "replay-linkding", "arm": "REPLAY", "seed": 0, "status": "ok", "steps": 1}
+{"event": "sequence_start", "sequence_id": "replay-linkding:seq:3", "run_id": "replay-linkding", "arm": "REPLAY", "seed": 0, "kind": "prefix-suffix-replay"}
+{"event": "sequence_end", "sequence_id": "replay-linkding:seq:3", "run_id": "replay-linkding", "arm": "REPLAY", "seed": 0, "status": "ok", "steps": 2}

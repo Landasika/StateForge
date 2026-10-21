@@ -1,0 +1,9 @@
+{
+ "run_id": "replay-healthchecks",
+ "arm": "REPLAY",
+ "seed": 0,
+ "target_block": "accounts/views.py::profile::288-288::entry::1",
+ "app": "external/healthchecks/hc",
+ "request_limit": 20,
+ "boundary": "target-callable-invocation"
+}

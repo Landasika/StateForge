@@ -1,0 +1,19 @@
+{
+ "target_http_requests": 6,
+ "sequence_attempts": 6,
+ "atheris_inputs": 0,
+ "bootstrap_http_requests": 0,
+ "checkpoint_validation_http_requests": 3,
+ "prefix_replay_http_requests": 1,
+ "suffix_http_requests": 2,
+ "observer_calls": 7,
+ "reset_calls": 16,
+ "scheduler_decisions": 0,
+ "elapsed_wall_seconds": 0.528737,
+ "analysis_wall_seconds": 0.0,
+ "run_id": "microblog-5-d",
+ "arm": "STATE_REUSE",
+ "seed": 5,
+ "target_block": "main/routes.py::index::29-29::block::1",
+ "app": "external/microblog/app"
+}

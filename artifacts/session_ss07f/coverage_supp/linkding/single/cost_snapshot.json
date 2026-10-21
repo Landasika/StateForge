@@ -1,0 +1,19 @@
+{
+ "target_http_requests": 40,
+ "sequence_attempts": 40,
+ "atheris_inputs": 0,
+ "bootstrap_http_requests": 0,
+ "checkpoint_validation_http_requests": 0,
+ "prefix_replay_http_requests": 0,
+ "suffix_http_requests": 0,
+ "observer_calls": 0,
+ "reset_calls": 40,
+ "scheduler_decisions": 0,
+ "elapsed_wall_seconds": 5.425534,
+ "analysis_wall_seconds": 0.0,
+ "run_id": "linkding-5-single",
+ "arm": "SINGLE",
+ "seed": 5,
+ "target_block": "views/bookmarks.py::index::43-43::entry::1",
+ "app": "external/linkding/bookmarks"
+}
