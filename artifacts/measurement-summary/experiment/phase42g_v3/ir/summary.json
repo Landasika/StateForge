@@ -1,0 +1,14 @@
+{
+  "target": "/home/landasika/icassp/stateforge/targets/microplus",
+  "functions": 57,
+  "blocks": 356,
+  "edges": 393,
+  "unresolved_calls": 45,
+  "edge_kinds": {
+    "call": 43,
+    "false": 49,
+    "flow": 209,
+    "return": 43,
+    "true": 49
+  }
+}

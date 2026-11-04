@@ -1,0 +1,14 @@
+{
+  "target": "/home/landasika/icassp/stateforge/targets/stateful",
+  "functions": 19,
+  "blocks": 163,
+  "edges": 191,
+  "unresolved_calls": 66,
+  "edge_kinds": {
+    "call": 17,
+    "false": 27,
+    "flow": 103,
+    "return": 17,
+    "true": 27
+  }
+}

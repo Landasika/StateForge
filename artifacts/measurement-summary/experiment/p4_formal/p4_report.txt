@@ -1,0 +1,58 @@
+P4 formal analysis — results/experiment/p4_formal
+schema p4_analysis/1 | campaign dirs 3 | ablation dirs 3
+
+== t_state_chain ==
+[campaign] runs=10
+  arm  final_blocks   auc_blocks_norm  atoms(mean)  inj(mean)
+  D1   17±0           0.0973±0         -            -
+  E    37.2±2.8983    0.1574±0.0035    1 (n=10)     1 (n=10)
+  E−D1 state_gain: blocks mean=+20.2 median=+22 stdev=2.8983 n=10  wins/ties/losses=10/0/0
+           auc_norm: mean=+0.0601 median=+0.0622 n=10  wins/ties/losses=10/0/0
+  E state atoms: mean=1 (n=10) | union=1: Session.uid=True
+  D1 coverage-proxy: n/a — campaign summary 不携带 D1 状态字段(非 state 臂);coverage-proxy 需 IR+靶重算,本脚本对 results/ 只读不重算
+[ablation] runs=10 mode=frontier
+  arm       blocks±stdev    atoms_union  injections
+  E         37.2±2.8983     1            10
+  E-always  36.6±3.0984     1            10
+  E-rand    34.8±2.8983     1            30
+  E−E-rand (planner contribution): blocks mean=+2.4 median=+0 stdev=3.0984 n=10 wins/ties/losses=4/6/0 | atoms mean=+0 n=10 wins=0
+  E−E-always (trigger value): blocks mean=+0.6 median=+0 stdev=3.4059 n=10 wins/ties/losses=2/7/1 | atoms mean=+0 n=10 wins=0
+
+== t_state_gate ==
+[campaign] runs=10
+  arm  final_blocks   auc_blocks_norm  atoms(mean)  inj(mean)
+  D1   17±0           0.0973±0         -            -
+  E    39±0           0.1687±0.0049    1 (n=10)     1 (n=10)
+  E−D1 state_gain: blocks mean=+22 median=+22 stdev=0 n=10  wins/ties/losses=10/0/0
+           auc_norm: mean=+0.0714 median=+0.0728 n=10  wins/ties/losses=10/0/0
+  E state atoms: mean=1 (n=10) | union=1: Session.role=admin
+  D1 coverage-proxy: n/a — campaign summary 不携带 D1 状态字段(非 state 臂);coverage-proxy 需 IR+靶重算,本脚本对 results/ 只读不重算
+[ablation] runs=10 mode=frontier
+  arm       blocks±stdev    atoms_union  injections
+  E         39±0            1            10
+  E-always  39±0            1            10
+  E-rand    33.5±1.5811     0            45
+  E−E-rand (planner contribution): blocks mean=+5.5 median=+6 stdev=1.5811 n=10 wins/ties/losses=10/0/0 | atoms mean=+1 n=10 wins=10
+  E−E-always (trigger value): blocks mean=+0 median=+0 stdev=0 n=10 wins/ties/losses=0/10/0 | atoms mean=+0 n=10 wins=0
+  NULL [TRIGGER_NET_ZERO] trigger_value: blocks Δ=0 (n=10) — R2-(b) bypass engaged (10 boundaries, 10 seeds written) yet E matched it on all 10 paired runs — trigger discipline net-zero on this target
+
+== vulnshop ==
+[campaign] runs=10
+  arm  final_blocks   auc_blocks_norm  atoms(mean)  inj(mean)
+  D1   113±0          0.1871±0.0015    -            -
+  E    212.9±5.5066   0.2838±0.0036    3.2 (n=10)   3 (n=10)
+  E−D1 state_gain: blocks mean=+99.9 median=+98 stdev=5.5066 n=10  wins/ties/losses=10/0/0
+           auc_norm: mean=+0.0967 median=+0.0956 n=10  wins/ties/losses=10/0/0
+  E state atoms: mean=3.2 (n=10) | union=4: Coupon.used=True, Order.status=PAID, Session.authed_as=<authed>, User.role=admin
+  D1 coverage-proxy: n/a — campaign summary 不携带 D1 状态字段(非 state 臂);coverage-proxy 需 IR+靶重算,本脚本对 results/ 只读不重算
+[ablation] runs=10 mode=frontier
+  arm       blocks±stdev    atoms_union  injections
+  E         213±4.4969      -            30
+  E-always  214.1±5.8395    -            30
+  E-rand    147.4±5.379     -            48
+  atoms n/a — 状态原子三指标仅微靶路径可测;本靶无微模型(synthesize_micro_model=None,AppModel 路径),atoms 为未测(null),非测得零
+  E−E-rand (planner contribution): blocks mean=+65.6 median=+64 stdev=5.8916 n=10 wins/ties/losses=10/0/0 | atoms n/a(未测:无微模型)
+  E−E-always (trigger value): blocks mean=-1.1 median=-2 stdev=4.0401 n=10 wins/ties/losses=3/2/5 | atoms n/a(未测:无微模型)
+
+nulls: 1
+  [t_state_gate] trigger_value → TRIGGER_NET_ZERO: R2-(b) bypass engaged (10 boundaries, 10 seeds written) yet E matched it on all 10 paired runs — trigger discipline net-zero on this target

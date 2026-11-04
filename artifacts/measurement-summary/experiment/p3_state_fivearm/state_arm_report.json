@@ -1,0 +1,277 @@
+{
+ "run_dir": "results/experiment/p3_state_fivearm",
+ "targets": {
+  "t_state_chain": {
+   "runs": 2,
+   "mean": {
+    "A": {
+     "blocks": 0,
+     "edges": 0
+    },
+    "B": {
+     "blocks": 17,
+     "edges": 16
+    },
+    "C": {
+     "blocks": 17,
+     "edges": 16
+    },
+    "D": {
+     "blocks": 17,
+     "edges": 16
+    },
+    "E": {
+     "blocks": 33,
+     "edges": 35
+    }
+   },
+   "pairwise": {
+    "E_minus_D": 16,
+    "D_minus_C": 0,
+    "D_minus_B": 0
+   },
+   "state": {
+    "E": {
+     "atoms_reached": 1,
+     "atoms": [
+      "Session.uid=True"
+     ],
+     "transitions_observed": 2,
+     "transitions": [
+      [
+       "POST login",
+       "Session.uid=True",
+       "set"
+      ],
+      [
+       "Session.uid=True",
+       "POST profile",
+       "truthy"
+      ]
+     ],
+     "deep_state_blocks": 6,
+     "deep_block_ids": [
+      "t_state_chain.py::_handle::69-70::block::1",
+      "t_state_chain.py::_handle::70-70::callsite::1",
+      "t_state_chain.py::_handle::70-70::returnsite::1",
+      "t_state_chain.py::deep_state_profile::33-33::entry::1",
+      "t_state_chain.py::deep_state_profile::33-33::exit::1",
+      "t_state_chain.py::deep_state_profile::34-34::terminal::1"
+     ],
+     "deep_functions": [
+      "deep_state_profile"
+     ]
+    },
+    "E_runs": [
+     {
+      "run": "run00",
+      "atoms_reached": 1,
+      "atoms": [
+       "Session.uid=True"
+      ],
+      "transitions_observed": 2,
+      "transitions": [
+       [
+        "POST login",
+        "Session.uid=True",
+        "set"
+       ],
+       [
+        "Session.uid=True",
+        "POST profile",
+        "truthy"
+       ]
+      ],
+      "deep_state_blocks": 6,
+      "deep_block_ids": [
+       "t_state_chain.py::_handle::69-70::block::1",
+       "t_state_chain.py::_handle::70-70::callsite::1",
+       "t_state_chain.py::_handle::70-70::returnsite::1",
+       "t_state_chain.py::deep_state_profile::33-33::entry::1",
+       "t_state_chain.py::deep_state_profile::33-33::exit::1",
+       "t_state_chain.py::deep_state_profile::34-34::terminal::1"
+      ],
+      "deep_functions": [
+       "deep_state_profile"
+      ]
+     },
+     {
+      "run": "run01",
+      "atoms_reached": 1,
+      "atoms": [
+       "Session.uid=True"
+      ],
+      "transitions_observed": 2,
+      "transitions": [
+       [
+        "POST login",
+        "Session.uid=True",
+        "set"
+       ],
+       [
+        "Session.uid=True",
+        "POST profile",
+        "truthy"
+       ]
+      ],
+      "deep_state_blocks": 6,
+      "deep_block_ids": [
+       "t_state_chain.py::_handle::69-70::block::1",
+       "t_state_chain.py::_handle::70-70::callsite::1",
+       "t_state_chain.py::_handle::70-70::returnsite::1",
+       "t_state_chain.py::deep_state_profile::33-33::entry::1",
+       "t_state_chain.py::deep_state_profile::33-33::exit::1",
+       "t_state_chain.py::deep_state_profile::34-34::terminal::1"
+      ],
+      "deep_functions": [
+       "deep_state_profile"
+      ]
+     }
+    ],
+    "D_coverage_proxy": {
+     "atoms_reached": 0,
+     "per_run": {
+      "run00": 0,
+      "run01": 0
+     }
+    }
+   }
+  },
+  "t_state_gate": {
+   "runs": 2,
+   "mean": {
+    "A": {
+     "blocks": 0,
+     "edges": 0
+    },
+    "B": {
+     "blocks": 17,
+     "edges": 16
+    },
+    "C": {
+     "blocks": 17,
+     "edges": 16
+    },
+    "D": {
+     "blocks": 17,
+     "edges": 16
+    },
+    "E": {
+     "blocks": 36,
+     "edges": 38.5
+    }
+   },
+   "pairwise": {
+    "E_minus_D": 19,
+    "D_minus_C": 0,
+    "D_minus_B": 0
+   },
+   "state": {
+    "E": {
+     "atoms_reached": 1,
+     "atoms": [
+      "Session.role=admin"
+     ],
+     "transitions_observed": 2,
+     "transitions": [
+      [
+       "POST login",
+       "Session.role=admin",
+       "set"
+      ],
+      [
+       "Session.role=admin",
+       "POST admin_panel",
+       "eq"
+      ]
+     ],
+     "deep_state_blocks": 6,
+     "deep_block_ids": [
+      "t_state_gate.py::_handle::69-70::block::1",
+      "t_state_gate.py::_handle::70-70::callsite::1",
+      "t_state_gate.py::_handle::70-70::returnsite::1",
+      "t_state_gate.py::gate_granted::33-33::entry::1",
+      "t_state_gate.py::gate_granted::33-33::exit::1",
+      "t_state_gate.py::gate_granted::34-34::terminal::1"
+     ],
+     "deep_functions": [
+      "gate_granted"
+     ]
+    },
+    "E_runs": [
+     {
+      "run": "run00",
+      "atoms_reached": 1,
+      "atoms": [
+       "Session.role=admin"
+      ],
+      "transitions_observed": 2,
+      "transitions": [
+       [
+        "POST login",
+        "Session.role=admin",
+        "set"
+       ],
+       [
+        "Session.role=admin",
+        "POST admin_panel",
+        "eq"
+       ]
+      ],
+      "deep_state_blocks": 6,
+      "deep_block_ids": [
+       "t_state_gate.py::_handle::69-70::block::1",
+       "t_state_gate.py::_handle::70-70::callsite::1",
+       "t_state_gate.py::_handle::70-70::returnsite::1",
+       "t_state_gate.py::gate_granted::33-33::entry::1",
+       "t_state_gate.py::gate_granted::33-33::exit::1",
+       "t_state_gate.py::gate_granted::34-34::terminal::1"
+      ],
+      "deep_functions": [
+       "gate_granted"
+      ]
+     },
+     {
+      "run": "run01",
+      "atoms_reached": 1,
+      "atoms": [
+       "Session.role=admin"
+      ],
+      "transitions_observed": 2,
+      "transitions": [
+       [
+        "POST login",
+        "Session.role=admin",
+        "set"
+       ],
+       [
+        "Session.role=admin",
+        "POST admin_panel",
+        "eq"
+       ]
+      ],
+      "deep_state_blocks": 6,
+      "deep_block_ids": [
+       "t_state_gate.py::_handle::69-70::block::1",
+       "t_state_gate.py::_handle::70-70::callsite::1",
+       "t_state_gate.py::_handle::70-70::returnsite::1",
+       "t_state_gate.py::gate_granted::33-33::entry::1",
+       "t_state_gate.py::gate_granted::33-33::exit::1",
+       "t_state_gate.py::gate_granted::34-34::terminal::1"
+      ],
+      "deep_functions": [
+       "gate_granted"
+      ]
+     }
+    ],
+    "D_coverage_proxy": {
+     "atoms_reached": 0,
+     "per_run": {
+      "run00": 0,
+      "run01": 0
+     }
+    }
+   }
+  }
+ }
+}

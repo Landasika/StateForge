@@ -1,0 +1,7 @@
+state ablation — stateforge/targets/stateful/t_state_chain.py (runs=10 epochs=3 seconds=10.0)
+arm       mean_blocks  mean_edges  atoms  transitions  deep_blocks  injections
+E         37.2        39.9       1      2            6            10
+E-rand    34.8        37.1       1      2            6            30
+E-always  36.6        39.2       1      2            6            10
+E_minus_E-rand: blocks=+2.4 atoms=+0.0  (planner contribution)
+E_minus_E-always: blocks=+0.6 atoms=+0.0  (R2 trigger value)
