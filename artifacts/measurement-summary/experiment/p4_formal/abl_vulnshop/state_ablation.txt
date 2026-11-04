@@ -1,7 +1,0 @@
-state ablation — stateforge/targets/vulnshop/fuzz_target.py (runs=10 epochs=3 seconds=10.0)
-arm       mean_blocks  mean_edges  atoms  transitions  deep_blocks  injections
-E         213         201.5      0      0            0            30
-E-rand    147.4       134.9      0      0            0            48
-E-always  214.1       202.3      0      0            0            30
-E_minus_E-rand: blocks=+65.6 atoms=+0.0  (planner contribution)
-E_minus_E-always: blocks=-1.1 atoms=+0.0  (R2 trigger value)
