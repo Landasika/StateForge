@@ -23,6 +23,11 @@ class MappedTrace:
     # P1-4:request 维度——块/边被哪些请求命中
     block_requests: dict[str, set[int]] = field(default_factory=dict)
     edge_requests: dict[tuple[str, str], set[int]] = field(default_factory=dict)
+    # 定向灰盒(M1)诊断:把"运行时相邻"与"静态合法"分开记账。``edges`` 保持
+    # 相邻序列口径不变(旧调用方不受影响),下列两表在其上补一次静态校验,
+    # 使下游能区分"真的走通一条 ICFG 边"与"只是先后执行了两块"。
+    observed_valid_edges: list[tuple[str, str]] = field(default_factory=list)
+    unmatched_transitions: list[tuple[str, str]] = field(default_factory=list)
 
 
 def map_trace(events: list[TraceEvent], ir: ProgramIR) -> MappedTrace:
@@ -57,6 +62,9 @@ def map_trace(events: list[TraceEvent], ir: ProgramIR) -> MappedTrace:
     call_stack: list[str] = []
     chain_hits: dict[tuple[str, str, int, str], int] = {}
     last_line: tuple[str, str, int] | None = None
+    valid_pairs = {(edge.src, edge.dst) for edge in ir.edges}
+    valid_seen: set[tuple[str, str]] = set()
+    unmatched_seen: set[tuple[str, str]] = set()
 
     def append_block(hit: str) -> None:
         nonlocal previous
@@ -71,10 +79,17 @@ def map_trace(events: list[TraceEvent], ir: ProgramIR) -> MappedTrace:
             out.edges.append(pair)
             out.edge_hits[pair] += 1
             out.edge_requests.setdefault(pair, set()).add(rid_now)
-            kinds = {edge.kind for edge in ir.edges
-                     if edge.src == previous and edge.dst == hit}
-            if kinds:
-                out.edge_kinds.setdefault(pair, set()).update(kinds)
+            if pair in valid_pairs:
+                if pair not in valid_seen:
+                    valid_seen.add(pair)
+                    out.observed_valid_edges.append(pair)
+                kinds = {edge.kind for edge in ir.edges
+                         if edge.src == previous and edge.dst == hit}
+                if kinds:
+                    out.edge_kinds.setdefault(pair, set()).update(kinds)
+            elif pair not in unmatched_seen:
+                unmatched_seen.add(pair)
+                out.unmatched_transitions.append(pair)
         previous = hit
 
     for event in events:

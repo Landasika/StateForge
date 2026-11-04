@@ -83,7 +83,7 @@ loop extensions (epoch campaigns, frontier-directed feedback, sequence seeds,
 state/goal seed injection) live in `stateforge/fuzzing/` and
 `stateforge/evaluation/experiment/` — see the root README stage table.
 
-## Status (2026-10-19)
+## Status (2026-11-04)
 
 The static-structural pipeline above is the frozen Phase 1–3 core. Since
 then, all gated behind explicit flags (default experiment behavior
@@ -94,7 +94,20 @@ IR (`state/relational.py`), entity provenance tracking
 views and achievement witnesses (`state/goal_evaluation.py`), fixed
 intra-function CFG reachability in `state/goal_derivation.py`, and WAL-safe
 SQLite baselines (`runtime/snapshot/l2_sqlite.py`, backup/copy capture
-modes). Contract and plan: `docs/architecture/`. Full suite: 601 passed.
+modes). Contract and plan: `docs/architecture/`. Full suite: 881 passed.
+
+The **SS-07 line** (real HTTP request accounting per target callable,
+trusted session evidence, Session feedback consumed inside Atheris,
+controlled regression / online causality, five-application
+pre-registration) is reported in `docs/reports/SS-07*.md`; the frozen gate
+and its numbers live in `SS-07-FINAL.md`.
+
+The **directed greybox line (M1)** adds block-level target guidance:
+`fuzzing/guidance/` (target + distance table, scheduler, mutator, campaign
+and evidence writer), `analysis/static/predicate.py` (structured predicate
+extraction for branch-flip work), and the `guided` CLI subcommand. It is
+independent of the state/session line and needs no change to the frozen
+static layer.
 
 ## Layout
 
@@ -107,6 +120,8 @@ runtime/        ordered trace collection, mapping, coverage, replay,
                 snapshot subpackage (runtime/snapshot/, backup/copy modes)
 fuzzing/        thin Atheris boundary and harness
 fuzzing/feedback/  overlay, frontier, distance, scoring, corpus metadata
+fuzzing/guidance/  directed greybox (M1): target + distance table,
+                scheduler (selection/energy), mutator, campaign + evidence
 solving/        branch-feasibility solving; LLM subpackage (solving/llm/)
 state/          state extraction, annotation, planning (state/planning/);
                 relational goal line: relational.py (IR + evaluator),

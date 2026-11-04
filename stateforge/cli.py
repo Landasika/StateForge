@@ -123,6 +123,94 @@ def state_cmd(target: str, out: str) -> int:
     return 0
 
 
+def _load_adapter(spec: str):
+    """按 ``module:attribute`` 载入适配器;工厂函数会被调用一次。
+
+    只接受两种形态:已是带 ``execute`` 的对象,或返回该对象的工厂。其余
+    一律报错——宁可启动失败,也不要在 campaign 跑到一半才发现适配器不对。
+    """
+    import importlib
+    module_name, _, attribute = spec.partition(":")
+    if not module_name or not attribute:
+        raise ValueError("adapter must be 'module:attribute'")
+    module = importlib.import_module(module_name)
+    candidate = getattr(module, attribute)
+    if not hasattr(candidate, "execute"):
+        if not callable(candidate):
+            raise ValueError(f"{spec} is neither an adapter nor a factory")
+        candidate = candidate()
+    if not callable(getattr(candidate, "execute", None)):
+        raise ValueError(f"{spec} does not provide execute(data)")
+    return candidate
+
+
+def _load_seed_corpus(path: str) -> list[bytes]:
+    """读取初始语料:单文件即单种子,目录则取其中所有常规文件(按名排序)。"""
+    root = Path(path)
+    if root.is_dir():
+        return [item.read_bytes() for item in sorted(root.iterdir())
+                if item.is_file()]
+    if root.is_file():
+        return [root.read_bytes()]
+    raise OSError(f"seed corpus not found: {path}")
+
+
+def guided_cmd(target: str, block: str, adapter_spec: str, seeds: str,
+               out: str, executions: int, max_seconds: float | None,
+               random_seed: int, scheduler_name: str,
+               selection_policy: str | None, energy_policy: str | None,
+               max_input_size: int, max_corpus_size: int,
+               fault_policy: str, allow_stale_ir: bool) -> int:
+    """定向灰盒 campaign(块级目标 + 距离调度的端到端入口)。"""
+    from stateforge.analysis.static.icfg import build_icfg
+    from stateforge.fuzzing.guidance.campaign import (
+        CampaignConfig,
+        GuidedCampaign,
+    )
+    from stateforge.fuzzing.guidance.scheduler import EmptyCorpusError
+    from stateforge.fuzzing.guidance.target import (
+        BasicBlockTarget,
+        GuidanceError,
+    )
+    try:
+        ir = build_icfg(Path(target).resolve())
+        if block not in ir.blocks:
+            print(f"[guided] unknown basic block: {block}", file=sys.stderr)
+            return 2
+        initial = _load_seed_corpus(seeds)
+        config = CampaignConfig(
+            max_executions=executions,
+            max_seconds=max_seconds,
+            max_input_size=max_input_size,
+            max_corpus_size=max_corpus_size,
+            random_seed=random_seed,
+            fault_policy=fault_policy,
+            allow_stale_ir=allow_stale_ir,
+            output_dir=Path(out),
+            scheduler_name=scheduler_name,
+            selection_policy=(selection_policy
+                              if selection_policy is not None
+                              else "distance"),
+            energy_policy=(energy_policy
+                           if energy_policy is not None else "distance"),
+        )
+        campaign = GuidedCampaign(ir, BasicBlockTarget(block),
+                                  _load_adapter(adapter_spec), config=config)
+        result = campaign.run(initial)
+    except (GuidanceError, EmptyCorpusError, ValueError, OSError,
+            ImportError) as exc:
+        print(f"[guided] {type(exc).__name__}: {exc}", file=sys.stderr)
+        return 2
+    print(f"[guided] reached={result.target_reached} "
+          f"executions={result.executions} "
+          f"best_distance={result.best_distance} "
+          f"blocks={result.unique_covered_blocks} "
+          f"edges={result.unique_valid_icfg_edges}")
+    print(f"[guided] stop reason: {result.termination_reason}")
+    print(f"[out] {out}")
+    return 0 if result.target_reached else 1
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="StateForge structural feedback")
     parser.add_argument("-v", "--verbose", action="store_true",
@@ -150,8 +238,42 @@ def main() -> int:
                                 "+ static transition candidates (P3-M2)")
     state.add_argument("target")
     state.add_argument("--out", default="results/state.json")
+    guided = sub.add_parser("guided",
+                            help="directed greybox campaign toward one basic block")
+    guided.add_argument("target", help="source root to analyze")
+    guided.add_argument("--block", required=True,
+                        help="target basic block id (as produced by analyze)")
+    guided.add_argument("--adapter", required=True,
+                        help="adapter or factory as 'module:attribute'")
+    guided.add_argument("--seeds", required=True,
+                        help="seed file or directory of seed files")
+    guided.add_argument("--out", default="results/guided")
+    guided.add_argument("--executions", type=int, default=10000)
+    guided.add_argument("--max-seconds", type=float, default=None)
+    guided.add_argument("--random-seed", type=int, default=0)
+    guided.add_argument("--scheduler", choices=("guided", "uniform"),
+                        default="guided")
+    guided.add_argument("--selection-policy", choices=("distance", "uniform"),
+                        default=None,
+                        help="override scheduler selection (default: from --scheduler)")
+    guided.add_argument("--energy-policy", choices=("distance", "fixed"),
+                        default=None,
+                        help="override energy allocation (default: from --scheduler)")
+    guided.add_argument("--max-input-size", type=int, default=4096)
+    guided.add_argument("--max-corpus-size", type=int, default=1000)
+    guided.add_argument("--fault-policy", choices=("continue", "stop"),
+                        default="continue")
+    guided.add_argument("--allow-stale-ir", action="store_true",
+                        help="run even if sources changed since analysis")
     args = parser.parse_args()
     setup_logging(args.verbose)
+    if args.command == "guided":
+        return guided_cmd(args.target, args.block, args.adapter, args.seeds,
+                          args.out, args.executions, args.max_seconds,
+                          args.random_seed, args.scheduler,
+                          args.selection_policy, args.energy_policy,
+                          args.max_input_size, args.max_corpus_size,
+                          args.fault_policy, args.allow_stale_ir)
     if args.command == "analyze":
         return analyze_cmd(args.target, args.out, args.callgraph)
     if args.command == "experiment":

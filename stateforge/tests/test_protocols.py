@@ -192,8 +192,13 @@ def test_c3_mapped_trace_and_coverage_inmemory_shape(tmp_path):
     assert isinstance(trace, MappedTrace)
     assert set(vars(trace)) == {"blocks", "edges", "block_hits", "edge_hits",
                                 "edge_kinds", "unresolved", "block_requests",
-                                "edge_requests"}
+                                "edge_requests", "observed_valid_edges",
+                                "unmatched_transitions"}
     assert trace.unresolved == []
+    # M1 增量:valid/unmatched 是 edges 的划分(不重不漏),covered_edges 只取 valid
+    assert set(trace.observed_valid_edges).isdisjoint(trace.unmatched_transitions)
+    assert (set(trace.observed_valid_edges)
+            | set(trace.unmatched_transitions)) == set(trace.edges)
     assert sum(trace.block_hits.values()) >= 1
     cov = coverage(ir, trace).to_dict()
     assert list(cov.keys()) == ["blocks", "total_blocks", "block_ratio",

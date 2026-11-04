@@ -15,6 +15,9 @@ external/
 results/
 exp/results/
 
+# 历史实验产物归档:从 artifacts/ 移出的未跟踪轮次输出(不入库,可随时删)
+archive/
+
 # fuzz 产物
 corpus/
 crash-*

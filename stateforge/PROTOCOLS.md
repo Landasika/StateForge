@@ -118,10 +118,12 @@
 
 形状:
 
-- `MappedTrace`(`runtime/mapper.py:13-25`)字段:`blocks: list[str]`(块 id 序) `edges: list[tuple[str,str]]` `block_hits: Counter` `edge_hits: Counter` `edge_kinds: dict[pair, set[str]]`(只含有静态边支撑的对) `unresolved: list[TraceEvent]` `block_requests: dict[str, set[int]]` `edge_requests: dict[pair, set[int]]`
+- `MappedTrace`(`runtime/mapper.py:13-30`)字段:`blocks: list[str]`(块 id 序) `edges: list[tuple[str,str]]` `block_hits: Counter` `edge_hits: Counter` `edge_kinds: dict[pair, set[str]]`(只含有静态边支撑的对) `unresolved: list[TraceEvent]` `block_requests: dict[str, set[int]]` `edge_requests: dict[pair, set[int]]` `observed_valid_edges: list[pair]` `unmatched_transitions: list[pair]`
 - `Coverage.to_dict()`(`runtime/coverage.py:32-43`)键序:`blocks` `total_blocks` `block_ratio` `edges` `total_edges` `edge_ratio` `calls` `total_calls` `call_ratio`
 
 **内部语义:** 不落盘;唯一对外投影是 C1 消费方 `feedback.json` 里的 `coverage` 子对象(上面九键)。重构字段只需同步 mapper 与 feedback 域。
+
+**`observed_valid_edges` / `unmatched_transitions`(M1 定向灰盒增量):** 在既有 `edges`(运行时**相邻**序列,口径不变)之上补一次静态校验,把相邻对分成"ICFG 上真实存在"与"仅是先后执行"两类。二者是 `edges` 的**划分**——不重不漏,故 `covered_edges` 只取前者,不会把不存在的边计入结构覆盖。`edges` 继续供旧消费方按相邻口径使用。
 
 ---
 

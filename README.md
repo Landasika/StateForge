@@ -81,6 +81,20 @@ python -m stateforge.evaluation.experiment.four_arm --out results/experiment --r
 
 # 五臂战役（E=状态臂；--groups 可只跑子集臂，如正式口径 "D1,E"；ir 须为套件目录 analyze 的 program_ir.json）
 python -m stateforge.evaluation.experiment.campaign <target.py> results/structural/program_ir.json --out results/experiment/campaign --runs 10 --epochs 3 --seconds 10 --groups D1,E
+
+# 定向灰盒（M1）：朝某个基本块做定向搜索，证据落盘（config/metrics/summary/target input）
+python -m stateforge.cli guided stateforge/targets/guidance_m1 \
+  --block 'target.py::target_block::18-18::entry::1' \
+  --adapter 'stateforge.targets.guidance_m1.adapter:build_adapter' \
+  --seeds stateforge/targets/guidance_m1/seeds \
+  --out results/guided --executions 5000
+
+# 对照臂（同预算：等概率选种 + 恒定能量）
+python -m stateforge.cli guided stateforge/targets/guidance_m1 \
+  --block 'target.py::target_block::18-18::entry::1' \
+  --adapter 'stateforge.targets.guidance_m1.adapter:build_adapter' \
+  --seeds stateforge/targets/guidance_m1/seeds \
+  --out results/guided-uniform --executions 5000 --scheduler uniform
 ```
 
 ---
@@ -184,10 +198,13 @@ docs/phase1-mvp.md … docs/real-app-first-blood.md):
    ——成功记账只来自单点完整 TRUE,不从历史原子拼合;认证主体关联
    显式化:DB 有 user 行 ≠ 请求已认证);13 项联合求值测试(任务书
    八反例全覆盖);
-5. **当前状态**:全量测试 601 passed(基线随阶段增长,冻结口径见
+5. **当前状态**:全量测试 881 passed(基线随阶段增长,冻结口径见
    「冻结版本」节;关系线未冻结);样例产物 `artifacts/m0/`
-   (relational_goal.json / goal_evaluation_sample.json);下一步
-   M0-B(PR-04:五步已知链逐请求联合验证)。
+   (relational_goal.json / goal_evaluation_sample.json);M0-B(PR-04:
+   五步已知链逐请求联合验证)之后接 **SS-07** 五轮(真实 HTTP 计数/
+   Session 证据在线消费/受控回归,报告见 `docs/reports/SS-07*.md`,
+   门禁 `SS-07-FINAL.md`);最新增量为 **定向灰盒 M1**
+   (`fuzzing/guidance/` + `analysis/static/predicate.py` + `guided` 子命令)。
 
 ---
 
@@ -226,13 +243,13 @@ stateforge/
 | `stateforge/core/` | 数据契约:ProgramIR(结构 IR)+ AppModel(语义 IR)+ JSON 序列化 |
 | `stateforge/analysis/` | 静态分析域:单函数 CFG 与全程序 ICFG(`analysis/static/`)、语义分析入口与模式匹配(`analyzer.py`/`patterns.py`/`selector.py`)、SSTG 图构建导出(`builder.py`/`export.py`)、XFG 执行流图(`cfg.py`) |
 | `stateforge/runtime/` | 运行时域:`sys.settrace` 逐请求轨迹采集(`tracer.py`,untraced 观测窗口)、轨迹→ICFG 精确映射(`mapper.py`)、覆盖度量(`coverage.py`)、轨迹 I/O(`io.py`)、回放(`replay.py`/`snapshot_replay.py`)、快照子包(`runtime/snapshot/`:`l2_sqlite.py` backup/copy 双捕获——输入级 WAL 安全快照 / fork-COW 位级冻结,engine+supervisor 跨进程 fork-COW)、输入级执行上下文(`execution_context.py`:生命周期后端+观测编排+fail-closed 审计)、计划执行器(`plan_executor.py` 微靶 C10+写块判据 / `http_plan_executor.py` 真实应用 HTTP+块级判达,两段式) |
-| `stateforge/fuzzing/` | Fuzzing 集成域:Atheris 子进程入口(`entry_driver.py`)、选择性字节码插桩、语料管理/候选/前沿采集、约束变异器;含结构反馈子包 `fuzzing/feedback/`(P2 结构新颖度 + P3 前沿定向距离/组合/预算) |
+| `stateforge/fuzzing/` | Fuzzing 集成域:Atheris 子进程入口(`entry_driver.py`)、选择性字节码插桩、语料管理/候选/前沿采集、约束变异器;含结构反馈子包 `fuzzing/feedback/`(P2 结构新颖度 + P3 前沿定向距离/组合/预算;在线 `GuidedCorpus`/`GuidedSeed` 与 `score_distance` 距离打分)、定向灰盒子包 `fuzzing/guidance/`(M1:`target.py` 目标块+全图距离表/源指纹校验、`scheduler.py` 选种×能量策略、`mutator.py` 六算符、`deviation.py` 偏差分支分析、`campaign.py` 固定预算 campaign、`results.py` 证据落盘) |
 | `stateforge/solving/` | 求解域(P4 分支可行性):Guard 恢复→操作数观测→门内距离→输入溯源→约束求解→变异提示→停滞触发→LLM 种子注入;含 LLM 基础设施子包 `solving/llm/`(双协议 Provider/语义提升/缓存);goal 侧:`goal_checkpoint.py`(判达链检查点/C10 种子注入/复用重放)、`goal_seed_injector.py`(F 臂注入器,契约同 state_seed_injector) |
 | `stateforge/state/` | 状态域:状态提取与语义模型(`extractor.py`:Session/ORM/容器 dict 库/两步守卫别名+关系 term 解析)、会话访问/状态溯源、运行时观测契约(`runtime_observer.py`:StateObservation v2 结构化列+属性级可观测性声明)、标注子包 `state/annotation/`、规划子包 `state/planning/`(原 planner/;`backward.py` 择优生产者+`compat.py` 应用兼容层);goal 侧:`goal_derivation.py`(必要分支边+方向感知约束+函数内投影 CFG 可达性+`derive_relational_goal` 关系目标)、`goal_to_plan.py`(op 臂→合成 AppModel→链→谓词参数)、`goal_app_bridge.py`(真实应用:Django 框架补全+AppModel 目标映射);关系语义工作线:`relational.py`(Field/Const/RelPredicate IR+单点求值+MISSING 语义)、`provenance.py`(变量来源索引)、`goal_evaluation.py`(ObservationView+evaluate_goal 联合求数+witness) |
 | `stateforge/adapters/` | 目标适配层:TargetAdapter 协议 + 通用 Web/Flask/可调用/vulnshop 适配器(bytes → 目标可执行)+ `wsgi.py`(任意 WSGI callable→GenericWebAdapter,werkzeug 直驱) |
 | `stateforge/evaluation/` | 评测域:SF-Micro 真值基准、BranchSolve 报告、OWASP Benchmark 基线、多臂实验子包 `evaluation/experiment/`(four_arm 含 F 臂;campaign GROUPS 含 F)、goal 三臂对照(`goal_directed_eval.py`)、可视化子包 `evaluation/viz/` |
-| `stateforge/cli.py` | 命令行入口:analyze / feedback / experiment / viz / state |
-| `stateforge/targets/` | 测试靶场:vulnshop / vampi / dsvw / pygoat / realworld / microplus + **apps20/**(20 真实应用靶标:harness+fuzz_target+NOTES 四件套,口径见 docs/targets-real-apps.md) |
+| `stateforge/cli.py` | 命令行入口:analyze / feedback / experiment / viz / state / **guided**(定向灰盒 campaign,`--adapter module:attr` + `--block`,返回码 0=命中) |
+| `stateforge/targets/` | 测试靶场:vulnshop / vampi / dsvw / pygoat / realworld / microplus + **apps20/**(20 真实应用靶标:harness+fuzz_target+NOTES 四件套,口径见 docs/targets-real-apps.md)+ **guidance_m1/**(纯 Python 三道阈值门,定向灰盒最小可断言靶)+ **toy_app/toy_branches/toy_nested/**(Flask 三级递进靶,含 seeds 与 replay 命中输入) |
 | `stateforge/fixtures/` | 真值基准数据:micro / bs_micro / ls_micro / llm_loop / sf_branch_micro / buy_app(原位不动) |
 | `stateforge/tests/` | 测试套件(全量绿,计数见冻结版本节;子目录名沿用旧模块名为历史组织,import 已全部指向新路径) |
 
@@ -344,6 +361,39 @@ docs/phase1-mvp.md … docs/real-app-first-blood.md);F 臂(ca4b6ad);
 goal_evaluation 联合求值(PR-03);样例产物 artifacts/m0/。下一里程碑
 M0-B(PR-04:五步已知链逐请求联合验证)——进度与依赖图以
 docs/architecture/INTEGRATION_PLAN.md 为准。
+
+**SS-07 线(2026-10-20~29,已冻结)**:门禁 **783 passed / 1 skipped /
+26 deselected**(见 docs/reports/SS-07-FINAL.md;A–D 完成、E 预注册完成、
+F 未完成)。交付:真实 target-callable HTTP 计数与请求级/序列级原始
+JSONL(SS-07A)、可信 Session 证据与 baseline 绑定(SS-07B)、Atheris
+运行中消费 Session 反馈(SS-07C)、受控回归与在线因果(SS-07D)、五应用
+预注册与真实启动矩阵(SS-07E/F)。口径注:F 未完成,论文不得按"五应用
+全部验证"表述。
+
+**定向灰盒 M1(2026-11-04,本次合入)**:全量 **881 passed / 1 skipped /
+26 deselected**。把原独立仓 stateforge-clean 的两条特性线合入本仓
+(以 M2 静态层为准——其 `icfg.py`/`cfg.py`/`mapper.py`/`core/ir.py` 与本仓
+仅有注释差异,故未搬移,零改动冻结层):
+- 新增 `fuzzing/guidance/`:`TargetManager`(目标块+全图距离表+源指纹
+  stale 校验)、`GuidedScheduler`/`UniformScheduler`(选种×能量解耦)、
+  `BasicMutator`(六算符)、`DeviationAnalyzer`(偏差分支+置信度)、
+  `GuidedCampaign`(固定预算+证据落盘)、`CampaignReporter`
+  (config/metrics.jsonl/summary.json/corpus/crashes/target_archive);
+- 新增 `analysis/static/predicate.py`:结构化谓词提取,只认单运算符
+  比较,其余显式 `UnsupportedPredicate` + 原因(含调用/链式比较/
+  布尔式/不可判定操作数),并处理"测试含调用 → 分支边落在 returnsite"
+  这一 CFG 事实;
+- `feedback/corpus.py` 增 `GuidedCorpus`/`GuidedSeed`/`seed_id_for`
+  与容量裁剪+目标归档;`feedback/scorer.py` 增 `score_distance`/
+  `score_trace_cached`(旧签名保持兼容);
+- `runtime/tracer.py` 增 `trace_execution()`/`drain_request_events()`/
+  线程局部请求号(裸 `with session:` 的 rid=0 旧口径不变);
+  `runtime/mapper.py` 增 `observed_valid_edges`/`unmatched_transitions`
+  (是 `edges` 的划分,C3 契约与 PROTOCOLS.md 已同步);
+- 新靶 `targets/guidance_m1`(纯 Python 阈值门)+ `toy_app/toy_branches/
+  toy_nested`(Flask);新测试 `tests/guidance/` 98 项。
+
+**已知义务:** 语义标注缓存(`stateforge/solving/llm/cache/*.json`)键于 PROMPT_VERSION 与夹具内容——二者变更后需重跑生成器并提交新缓存,否则 fresh clone 回归"全 irrelevant"。缓存仅按显式路径提交(`git add stateforge/solving/llm/cache/<hash>.json`),勿在该目录使用 `git add -A`。
 
 **已知义务:** 语义标注缓存(`stateforge/solving/llm/cache/*.json`)键于 PROMPT_VERSION 与夹具内容——二者变更后需重跑生成器并提交新缓存,否则 fresh clone 回归"全 irrelevant"。缓存仅按显式路径提交(`git add stateforge/solving/llm/cache/<hash>.json`),勿在该目录使用 `git add -A`。
 
