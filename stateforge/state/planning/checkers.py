@@ -8,7 +8,7 @@ blocked(4xx/5xx)在执行器内提前返回,不会进 checker。
 
 from __future__ import annotations
 
-from stateforge.runtime.replay import GoalResult
+from stateforge.core.replay import GoalResult
 from stateforge.state.planning.binding import BindingContext
 
 

@@ -102,7 +102,7 @@ def run_bundled(provider, hypotheses: list[Hypothesis],
 
 def run_pilot(n_hyp=10, out_dir="/tmp/hvg_pilot"):
     """跑 Pilot:Isolated(n 个)+ Bundled(1 次调用)。"""
-    from stateforge.solving.llm.provider import Provider
+    from stateforge.analysis.semantics.provider import Provider
     provider = Provider.from_env()
     if provider is None:
         logger.error("ERROR: Provider not configured")

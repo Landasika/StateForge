@@ -11,72 +11,20 @@ from __future__ import annotations
 
 import time
 
-from stateforge.core.ir import ProgramIR
-from stateforge.runtime.execution_context import (
-    ExecutionContext,
-    LifecycleError,
-    audit_lifecycle_failure,
-)
-from stateforge.runtime.mapper import map_trace
-from stateforge.runtime.tracer import TraceSession
-from stateforge.fuzzing.recorder import ExperimentRecorder
-from stateforge.fuzzing.feedback.frontier_feedback import FrontierDirectedFeedback
+from stateforge.fuzzing.collector import Collector, CollectedExecution
 from stateforge.fuzzing.corpus_manager import CorpusManager
 
 
-class FrontierCollector:
-    def __init__(self, ir: ProgramIR, session: TraceSession,
-                 feedback: FrontierDirectedFeedback, corpus: CorpusManager,
-                 recorder: ExperimentRecorder, epoch: int, on_save=None,
-                 execution: ExecutionContext | None = None,   # P0-A 生命周期
-                 state_ledger=None,                # P0-B 证据台账
-                 state_novelty: bool = False):    # PR-07 状态新颖度保留(默认关)
-        self.ir, self.session, self.feedback = ir, session, feedback
-        self.corpus, self.recorder, self.epoch = corpus, recorder, epoch
-        self.on_save = on_save
-        self.execution = execution if execution is not None else ExecutionContext()
-        self.state_ledger = state_ledger
-        self.state_novelty = state_novelty          # 默认关:A–F 不变
-        self.frontier_saves = 0          # reason=frontier_proximity 的保留数
-        self.lifecycle_failures = 0      # 隔离失败次数(审计之外的记忆)
-        self._events_path = corpus.spool / "frontier_events.jsonl"
+class FrontierCollector(Collector):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.frontier_saves = 0
+        self._events_path = self.corpus.spool / "frontier_events.jsonl"
 
-    def _lifecycle_failed(self, exc: LifecycleError):
-        """fail-closed 审计:写 jsonl + 计数;调用方跳过该输入。"""
-        self.lifecycle_failures += 1
-        audit_lifecycle_failure(self.recorder.dir, {
-            "group": self.recorder.group, "epoch": self.epoch,
-            "lifecycle": self.execution.lifecycle.name,
-            "isolation": self.execution.lifecycle.isolation,
-            "error": str(exc)})
-
-    def handle(self, target, data: bytes):
-        start = len(self.session.events)
-        with self.session.request():
-            t0 = time.monotonic()
-            try:
-                self.execution.begin_run()           # P0-A:失败 → 未执行
-            except LifecycleError as exc:
-                self._lifecycle_failed(exc)
-                return None
-            try:
-                target(data)
-            except Exception:                      # noqa: BLE001
-                pass
-            exec_s = time.monotonic() - t0
-        # P0-A/P0-B:观测(还原前)+ 基线还原。挂起追踪(tracer.untraced
-        # docstring:request() 只切换归属不停止收集),观测/还原帧不入覆盖。
-        try:
-            with self.session.untraced():
-                result = self.execution.finish_run(data)
-        except LifecycleError as exc:
-            self._lifecycle_failed(exc)
-            return None
-        state_novel = ()
-        if self.state_ledger is not None:
-            state_novel = self.state_ledger.record(result.observations)
-        t1 = time.monotonic()
-        mapped = map_trace(self.session.events[start:], self.ir)
+    def _process(self, data: bytes, run: CollectedExecution):
+        mapped = run.mapped
+        state_novel = run.state_novel
+        exec_s, t1 = run.execution_seconds, run.feedback_started
         cid_pre = CorpusManager.content_id(data)
         obs = self.feedback.observe(mapped, cid_pre)   # 旧前沿上评分+组合挑战
         cid = None

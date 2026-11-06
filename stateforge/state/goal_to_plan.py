@@ -24,8 +24,7 @@ from pathlib import Path
 
 from stateforge.analysis.builder import build_sstg
 from stateforge.core.model import AppModel, Effect, Endpoint, Precondition
-from stateforge.state.extractor import (StateFactCandidate, StateOperation,
-                                        _store_table)
+from stateforge.state.extractor import StateFactCandidate, StateOperation
 from stateforge.state.goal_derivation import StateGoal, derive_state_goal
 from stateforge.state.planning.backward import plan_backward
 from stateforge.state.planning.goals import GoalSpec

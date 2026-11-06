@@ -77,20 +77,20 @@ def _deep_goal_blocks(ir, functions: tuple[str, ...]) -> list[str]:
 
 def _tpl_chain(amp, final_action: str, salt: str) -> list[dict]:
     """B 臂动作模板链:通用完备化(无关系目标)。"""
-    from stateforge.state.planning.backward import _to_step
+    from stateforge.state.planning.policies import policy_for
     from stateforge.state.planning.binding import BindingContext
     from stateforge.state.planning.compat import ensure_auth, resource_completion
     from stateforge.state.planning.goals import GoalSpec
-    from stateforge.solving.vulnshop_state_bridge import _render_step
+    from stateforge.state.planning.rendering import render_seed_step
 
     ep_index = {(ep.methods[0], ep.route): ep for ep in amp.model.endpoints}
     spec = GoalSpec(name="tpl", vuln_class="state", kind="reach_state",
                     target=None)
-    steps = [_to_step(ep_index, final_action, spec)]
+    steps = [policy_for("vulnshop").render_step(ep_index, final_action, spec)]
     steps = ensure_auth(steps)
-    steps = resource_completion(amp.model, ep_index, spec, steps, _to_step)
+    steps = resource_completion(amp.model, ep_index, spec, steps, policy_for("vulnshop").render_step)
     ctx = BindingContext(salt=salt)
-    return [_render_step(ctx, s) for s in steps]
+    return [render_seed_step(ctx, s) for s in steps]
 
 
 def _sequence_input(amp, rng, salt) -> list[dict]:

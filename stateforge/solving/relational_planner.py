@@ -31,10 +31,11 @@ from typing import Mapping, Sequence
 
 from stateforge.solving.vulnshop_state_bridge import (
     AppModelPath,
-    _render_step,
     render_seed,
 )
-from stateforge.state.planning.backward import _to_step, plan_backward
+from stateforge.state.planning.backward import plan_backward
+from stateforge.state.planning.policies import policy_for
+from stateforge.state.planning.rendering import render_seed_step
 from stateforge.state.planning.binding import BindingContext
 from stateforge.state.planning.compat import ensure_auth, resource_completion
 from stateforge.state.planning.goals import GoalSpec
@@ -221,12 +222,12 @@ def plan_for_relational_goal(goal, amp: AppModelPath,
     ep_index = {(ep.methods[0], ep.route): ep for ep in amp.model.endpoints}
     spec = GoalSpec(name="relational_final", vuln_class="state",
                     kind="reach_state", target=None)
-    final_ps = _to_step(ep_index, final_action, spec)
+    final_ps = policy_for("vulnshop").render_step(ep_index, final_action, spec)
     plan_steps = ensure_auth([final_ps])
     plan_steps = resource_completion(amp.model, ep_index, spec,
-                                     plan_steps, _to_step)
+                                     plan_steps, policy_for("vulnshop").render_step)
     ctx = BindingContext(salt=salt)
-    base = [_render_step(ctx, ps) for ps in plan_steps]
+    base = [render_seed_step(ctx, ps) for ps in plan_steps]
 
     # 3) 合并(原子链先行——内部序已由 plan_backward 拓扑保证;终结动作钉尾)
     merged: list[dict] = []

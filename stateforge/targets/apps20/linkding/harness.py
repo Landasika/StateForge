@@ -105,8 +105,20 @@ if _api_token is None:
 
 from django.test import Client  # noqa: E402
 
-CLIENT = Client()
-CLIENT.login(username=_USER, password=_PASS)
+
+def build_client(*, authenticated: bool = False) -> Client:
+    """Build an isolated client; authentication is explicit for goal execution."""
+    client = Client()
+    if authenticated:
+        client.login(username=_USER, password=_PASS)
+    return client
+
+
+def is_authenticated(client: Client) -> bool:
+    return "_auth_user_id" in client.session
+
+
+CLIENT = build_client(authenticated=True)
 
 BM_ID = _bm.pk
 TAG_ID = _tag.pk

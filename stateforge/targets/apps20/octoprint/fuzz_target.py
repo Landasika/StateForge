@@ -6,11 +6,10 @@ from stateforge.targets.apps20.octoprint.harness import AUTH_HEADERS, CLIENT  # 
 def _make_adapter():
     from stateforge.adapters.generic_web import GenericWebAdapter
 
-    adapter = GenericWebAdapter.__new__(GenericWebAdapter)
-    adapter.client = CLIENT
-    adapter.auth_headers = dict(AUTH_HEADERS)   # {"X-Api-Key": ...}
-    adapter.base_url = ""
-    return adapter
+    return GenericWebAdapter(
+        client=CLIENT,
+        auth_headers=dict(AUTH_HEADERS),
+        base_url="")
 
 
 _ADAPTER = _make_adapter()

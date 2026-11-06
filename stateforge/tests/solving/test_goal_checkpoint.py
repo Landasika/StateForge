@@ -43,6 +43,21 @@ def test_checkpoint_requires_verified_reach():
     assert ck is None
 
 
+def test_checkpoint_rejects_failed_steps_even_when_target_was_covered():
+    from dataclasses import replace
+    ir, facts, result, _ = _run(None)
+    from stateforge.state.goal_to_plan import plan_for_block
+    goal, _ = plan_for_block(ir, facts, TARGET)
+    failed = replace(result, steps=[replace(result.steps[0], ok=False,
+                                           blocking="exception:ValueError:after write")]
+                     + result.steps[1:])
+    assert failed.target_covered
+    assert checkpoint_from_execution(TARGET, SRC, goal, failed) is None
+    no_step_evidence = replace(result, steps=[replace(s, target_block_covered=False)
+                                             for s in result.steps])
+    assert checkpoint_from_execution(TARGET, SRC, goal, no_step_evidence) is None
+
+
 class _FakeGoal:
     constraints = ()
 

@@ -69,7 +69,7 @@ from pathlib import Path
 
 from stateforge.core.ir import ProgramIR
 from stateforge.fuzzing.corpus_manager import CorpusManager
-from stateforge.fuzzing.entry_driver import encode_sequence_seed
+from stateforge.core.seeds import encode_sequence_seed
 from stateforge.solving.state_seed_injector import (NEUTRAL, STATE_BUDGET,
                                                     reached_state_atoms,
                                                     synthesize_micro_model)

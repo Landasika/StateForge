@@ -17,7 +17,8 @@ from stateforge.runtime.mapper import map_trace
 from stateforge.runtime.tracer import TraceSession
 from stateforge.solving.branch_observer import Observer, load_observed_target
 from stateforge.solving.branch_solver import solve
-from stateforge.solving.guard_recovery import _TestIndex, recover_guard
+from stateforge.analysis.source_index import SourceTestIndex
+from stateforge.solving.guard_recovery import recover_guard
 from stateforge.solving.input_provenance import (apply_transforms,
                                                      resolve_operand_source)
 from stateforge.fuzzing.mutation_hint import MutationHint
@@ -66,7 +67,7 @@ def solve_loop(app_path: str | Path, ir: ProgramIR, seed: dict,
     app_path = Path(app_path)
     mod, observer = load_observed_target(app_path)
     tracker = FrontierTracker(ir)
-    test_index = _TestIndex(ir)
+    test_index = SourceTestIndex(ir)
     result = SolveResult()
     target_blocks = {b.id for b in ir.blocks.values()
                      if b.function == target_function}

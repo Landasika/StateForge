@@ -90,7 +90,7 @@ def build_sstg(model: AppModel) -> nx.MultiDiGraph:
                 if a == b:
                     continue
                 is_legal = (va, vb) in legal
-                if var == "Coupon.used" or inv.one_way:
+                if inv.one_way:
                     # 单向布尔:False→True 合法,反向非法
                     is_legal = (va in ("False", "0", "*")) and vb in ("True", "1", "*")
                 g.add_edge(a, b, kind="invariant", legal=is_legal)

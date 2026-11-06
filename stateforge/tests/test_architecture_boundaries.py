@@ -27,13 +27,13 @@ LAYERS = {
     "fuzzing": 2.5,
     "adapters": 2.5,
     "solving": 3,
+    "pipeline": 3.5,
     "evaluation": 4,
     "cli": 4,
 }
 
-# 不入分层的域:config=配置叶(importer 为 solving/llm/real_provider 与
-# solving/llm/provider 两处),targets=靶场数据域(引用须登记,见
-# ARCHITECTURE.md 例外表第 3 行)。
+# config 是配置叶;targets 是靶场数据域。核心管线不直接导入 targets,
+# 由应用工厂配置接入;适配器和评测入口可以装配具体应用。
 # fixtures/tests 整目录不在扫描范围。
 UNLAYERED_DOMAINS = {"config", "targets"}
 EXCLUDED_TOP_DIRS = {"targets", "fixtures", "tests", "__pycache__"}
@@ -49,15 +49,10 @@ PEER_EDGES = {("adapters", "fuzzing"), ("cli", "evaluation")}
 SINK_DOMAINS = {"evaluation", "adapters"}
 SINK_ALLOWED_SOURCES = SINK_DOMAINS | {"cli", "tests"}
 
-# ARCHITECTURE.md 例外登记表第 1-3 行(静态可查的豁免边):
-# (来源模块, 指向域或完整模块)。第 4-5 行(动态边、targets 域内自引用)
-# 静态扫描不可见,仅入表不入本集合——互锁:表行数 == len(本集合) + 2。
-ALLOWED_EXCEPTIONS = {
-    ("stateforge.analysis.analyzer", "solving"),                          # 行1 标注边界
-    ("stateforge.state.planning.checkers", "stateforge.runtime.replay"),  # 行2 GoalResult 仅类型
-    # 行3 仅锁/登记用:targets 不入分层,规则②不会过滤到它;此行撑起条数锁与来源锁
-    ("stateforge.runtime.snapshot.supervisor", "targets"),
-}
+# 本次重构消除了三条静态例外;动态配置边仍须文档登记。
+ALLOWED_EXCEPTIONS = set()
+# Subprocess entrypoints, configuration-resolved factories and target glue.
+DYNAMIC_EXCEPTION_ROWS = 5
 
 
 def _module_of(py_path: Path) -> str:
@@ -187,12 +182,12 @@ def test_architecture_md_exception_table_lock():
             continue                                   # 分隔行
         rows.append(cells)
 
-    # 互锁:表行数 == len(ALLOWED_EXCEPTIONS) + 2(第 4、5 行为不可静态扫描的留痕行)
-    assert len(rows) == len(ALLOWED_EXCEPTIONS) + 2, (
-        f"例外登记表行数({len(rows)})与测试例外集({len(ALLOWED_EXCEPTIONS)})+2 不同步:"
+    # 文档中的静态例外和动态登记行数分别互锁。
+    assert len(rows) == len(ALLOWED_EXCEPTIONS) + DYNAMIC_EXCEPTION_ROWS, (
+        f"例外登记表行数({len(rows)})与测试例外集({len(ALLOWED_EXCEPTIONS)})+DYNAMIC_EXCEPTION_ROWS 不同步:"
         f"md 与 ALLOWED_EXCEPTIONS 必须同时增删(ARCHITECTURE.md『例外登记表』)"
     )
-    # 前 3 行的来源文件须与 ALLOWED_EXCEPTIONS 的来源模块一一对应
+    # 静态例外行的来源文件与 ALLOWED_EXCEPTIONS 来源模块一一对应
     single = re.compile(r"^stateforge/[\w/]+\.py$")
     md_static = {c[0].replace("/", ".").removesuffix(".py") for c in rows if single.match(c[0])}
     assert md_static == {s for s, _ in ALLOWED_EXCEPTIONS}, (
@@ -238,3 +233,15 @@ def test_relative_import_resolution_feeds_upward_edge(tmp_path, monkeypatch):
         and not any(src == es and (tdom == et or target == et
                                    or target.startswith(et + "."))
                     for es, et in ALLOWED_EXCEPTIONS)
+
+
+def test_pipeline_has_no_static_target_imports():
+    violations = [_loc(s, n, t) for s, n, t, fd, td in _edges()
+                  if td == "targets" and fd in LAYERS and fd not in SINK_DOMAINS]
+    assert not violations, "Pipeline must receive target factories: " + repr(violations)
+
+
+def test_seed_consumers_do_not_import_engine_driver():
+    violations = [_loc(s, n, t) for s, n, t, _, _ in _edges()
+                  if t == "stateforge.fuzzing.entry_driver"]
+    assert not violations, "C10 consumers must use core.seeds: " + repr(violations)

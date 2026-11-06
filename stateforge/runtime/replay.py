@@ -6,31 +6,14 @@ httpx WSGITransport 进程内直调(无 HTTP 栈、无端口——Atropos"剔除
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 from typing import Any, Callable
 
 import httpx
 
 from stateforge.core.model import PlanSegment, PlanStep
+from stateforge.core.replay import GoalResult, StepTrace
 from stateforge.state.planning.binding import BindingContext
 from stateforge.state.planning.goals import GoalSpec
-
-
-@dataclass
-class StepTrace:
-    step: PlanStep
-    route: str
-    status: int
-    body: Any = None
-
-
-@dataclass
-class GoalResult:
-    goal: str
-    hit: bool
-    reason: str = ""
-    steps: list[StepTrace] = field(default_factory=list)
-    final_state: dict = field(default_factory=dict)
 
 
 class ReplayExecutor:

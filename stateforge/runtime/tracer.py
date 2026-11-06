@@ -86,7 +86,7 @@ class TraceSession:
             stack = []
             self._local.session_stack = stack
         # 嵌套 session 各自还原外层 settrace 与请求号,不再依赖单槽 _previous。
-        stack.append((self._previous, getattr(self._local, "request_id", None)))
+        stack.append((sys.gettrace(), getattr(self._local, "request_id", None)))
         self._previous = sys.gettrace()
         self._active_request = self.start_request()
         self._local.request_id = self._active_request

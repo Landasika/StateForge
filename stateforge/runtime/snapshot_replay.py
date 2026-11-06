@@ -8,7 +8,7 @@ exp/second_order.py 实验结论的执行面:检出 = 使用点 oracle × 状态
 from __future__ import annotations
 
 from stateforge.core.model import PlanSegment
-from stateforge.runtime.replay import GoalResult, StepTrace, _coerce, _safe_json
+from stateforge.runtime.replay import GoalResult, StepTrace, _coerce
 from stateforge.state.planning.binding import BindingContext
 from stateforge.state.planning.checkers import CHECKERS, verify_request
 from stateforge.state.planning.goals import GoalSpec

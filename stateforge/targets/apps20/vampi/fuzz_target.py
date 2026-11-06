@@ -6,12 +6,11 @@ from stateforge.targets.apps20.vampi.harness import CLIENT, _TOKEN  # noqa: F401
 def _make_adapter():
     from stateforge.adapters.generic_web import GenericWebAdapter
 
-    adapter = GenericWebAdapter.__new__(GenericWebAdapter)
-    adapter.client = CLIENT
-    adapter.auth_headers = ({"Authorization": f"Bearer {_TOKEN}"} if _TOKEN
-                            else {})
-    adapter.base_url = ""
-    return adapter
+    return GenericWebAdapter(
+        client=CLIENT,
+        auth_headers={"Authorization": f"Bearer {_TOKEN}"} if _TOKEN
+                            else {},
+        base_url="")
 
 
 _ADAPTER = _make_adapter()

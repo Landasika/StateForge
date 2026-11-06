@@ -19,7 +19,7 @@ import sys
 from pathlib import Path
 
 from stateforge.analysis.static.icfg import build_icfg
-from stateforge.fuzzing.entry_driver import (decode_sequence_seed,
+from stateforge.core.seeds import (decode_sequence_seed,
                                              encode_sequence_seed)
 from stateforge.state.session_access import OP_UNKNOWN, extract_session_accesses
 from stateforge.state.session_index import (build_session_index,

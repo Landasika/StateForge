@@ -43,6 +43,8 @@ from stateforge.fuzzing.guidance.target import (
     TargetManager,
 )
 from stateforge.runtime.mapper import map_trace
+from stateforge.runtime.execution import execute_traced
+from stateforge.runtime.execution_context import ExecutionContext
 from stateforge.runtime.tracer import TraceSession
 
 
@@ -80,21 +82,22 @@ class CampaignConfig:
     # ``scheduler_name`` 是"选种+能量"的合并开关(旧口径);显式给了
     # selection/energy_policy 时以后者为准,两者的组合在 __post_init__ 校验。
     scheduler_name: str | None = None
-    selection_policy: str = "distance"
-    energy_policy: str = "distance"
+    selection_policy: str | None = None
+    energy_policy: str | None = None
     fixed_energy: int = 1
     progress_every: int = 100
 
     def __post_init__(self) -> None:
-        if self.scheduler_name is not None:
-            if self.scheduler_name == "uniform":
-                self.selection_policy = "uniform"
-                self.energy_policy = "fixed"
-            elif self.scheduler_name == "guided":
-                self.selection_policy = "distance"
-                self.energy_policy = "distance"
-            else:
-                raise ValueError("scheduler_name must be 'guided' or 'uniform'")
+        defaults = {None: ("distance", "distance"),
+                    "guided": ("distance", "distance"),
+                    "uniform": ("uniform", "fixed")}
+        if self.scheduler_name not in defaults:
+            raise ValueError("scheduler_name must be 'guided' or 'uniform'")
+        selection, energy = defaults[self.scheduler_name]
+        if self.selection_policy is None:
+            self.selection_policy = selection
+        if self.energy_policy is None:
+            self.energy_policy = energy
         if self.selection_policy not in ("uniform", "distance"):
             raise ValueError("selection_policy must be 'uniform' or 'distance'")
         if self.energy_policy not in ("fixed", "distance"):
@@ -173,6 +176,7 @@ class GuidedCampaign:
         root = ir.metadata.get("root")
         self.session = (session if session is not None
                         else TraceSession(root if root else None))
+        self.execution = ExecutionContext()
         self._valid_edges = {(edge.src, edge.dst) for edge in ir.edges}
         self._rng = random.Random(self.config.random_seed ^ 0x5F3759DF)
         self.initial_seeds: list[bytes] = []
@@ -202,7 +206,6 @@ class GuidedCampaign:
             input_id = f"candidate_{self.executions}"
         started = time.perf_counter()
         events = []
-        request_id: int | None = None
         error: str | None = None
         try:
             # 适配器自身的重置/观测属于反馈机制,不是被测执行——挂起采集,
@@ -211,18 +214,12 @@ class GuidedCampaign:
             if callable(reset):
                 with self.session.untraced():
                     reset()
-            with self.session.trace_execution():
-                with self.session.request() as request_id:
-                    try:
-                        self.adapter.execute(data)
-                    except Exception as exc:
-                        error = f"{type(exc).__name__}: {exc}"
+            run = execute_traced(self.adapter.execute, data, self.session, self.execution)
+            events = run.events
+            if run.error is not None:
+                error = f"{type(run.error).__name__}: {run.error}"
         except Exception as exc:
-            if error is None:
-                error = f"{type(exc).__name__}: {exc}"
-        finally:
-            if request_id is not None:
-                events = self.session.drain_request_events(request_id)
+            error = f"{type(exc).__name__}: {exc}"
         execution_time_ms = (time.perf_counter() - started) * 1000.0
         mapped = map_trace(events, self.ir)
         reached = self.target_manager.reached(mapped)

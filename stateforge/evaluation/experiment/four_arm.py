@@ -24,10 +24,14 @@ import sys
 from pathlib import Path
 
 from stateforge.evaluation.experiment.epoch import run_epochs
+from stateforge.evaluation.experiment.arms import FOUR_ARM_ARMS, manifest
 
 
 def run_target(target_py: str, ir_path: str, name: str, out: Path,
                runs: int, epochs: int, seconds: int) -> dict:
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "arm_registry.json").write_text(json.dumps(
+        manifest("four_arm", FOUR_ARM_ARMS), indent=2), encoding="utf-8")
     results = []
     for k in range(runs):
         seed = 7 + k * 100
@@ -36,31 +40,14 @@ def run_target(target_py: str, ir_path: str, name: str, out: Path,
 
         total_time = epochs * seconds
 
-        # A:连续裸跑(吞吐参照)
-        a = run_epochs(target_py, ir_path, rd / "A", total_time, 1, seed,
-                        "A", mode="off", use_feedback=False)
-        # B:结构新颖度
-        b = run_epochs(target_py, ir_path, rd / "B", seconds, epochs, seed,
-                        "B", mode="feedback", use_feedback=True)
-        # C:前沿定向(portfolio)
-        c = run_epochs(target_py, ir_path, rd / "C", seconds, epochs, seed,
-                        "C", mode="frontier", use_feedback=True,
-                        policy="portfolio")
-        # D:C + LLM 种子注入(轮间产种子,Atheris 变异)
-        d = run_epochs(target_py, ir_path, rd / "D", seconds, epochs, seed,
-                        "D", mode="frontier", use_feedback=True,
-                        policy="llm")
-        # E:D 换 state 序列种子注入(确定性,零 LLM;P3-T4)
-        e = run_epochs(target_py, ir_path, rd / "E", seconds, epochs, seed,
-                        "E", mode="frontier", use_feedback=True,
-                        policy="state")
-
-        # F:E 同管线换 goal 目标块直导注入器(同引擎同预算同种子,
-        # 只换间隙注入器的目标来源——M1 状态原子 vs 未覆盖深块直导)
-        from stateforge.solving.goal_seed_injector import inject_goal_seeds
-        f = run_epochs(target_py, ir_path, rd / "F", seconds, epochs, seed,
-                       "F", mode="frontier", use_feedback=True,
-                       policy="state", state_injector=inject_goal_seeds)
+        arms = {}
+        for label, spec in FOUR_ARM_ARMS.items():
+            arms[label] = run_epochs(
+                target_py, ir_path, rd / label,
+                total_time if spec.continuous else seconds,
+                1 if spec.continuous else epochs, seed, label,
+                **spec.epoch_options())
+        a, b, c, d, e, f = (arms[label] for label in FOUR_ARM_ARMS)
 
         results.append({
             "seed": seed,

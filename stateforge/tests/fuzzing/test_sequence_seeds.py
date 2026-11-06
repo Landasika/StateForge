@@ -258,7 +258,7 @@ def test_coverage_union_over_sequence_steps(tmp_path):
     assert {bid.split("::")[1] for bid in feedback.global_blocks} >= \
         {"login_ok", "gate_granted", "unauthorized"}
     # 一个输入=一个 TraceSession 请求窗口：两步事件共享同一 request_id
-    rids = {e.request_id for e in session.events
+    rids = {e.request_id for e in collector.last_execution.events
             if e.function in ("login_ok", "gate_granted")}
     assert len(rids) == 1
 

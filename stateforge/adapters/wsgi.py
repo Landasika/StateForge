@@ -12,7 +12,7 @@ GenericWebAdapter 的 is_flask 分支(.open 存在)即接入既有 fuzz 管线�
 
 from __future__ import annotations
 
-from typing import Any, Callable
+from typing import Callable
 
 from stateforge.adapters.generic_web import GenericWebAdapter
 
@@ -26,9 +26,5 @@ def wsgi_adapter(app: Callable, auth_headers: dict | None = None,
     """
     from werkzeug.test import Client
 
-    client: Any = Client(app)
-    adapter = GenericWebAdapter.__new__(GenericWebAdapter)
-    adapter.client = client          # werkzeug Client 有 .open → 走 Flask 分支
-    adapter.auth_headers = auth_headers or {}
-    adapter.base_url = base_url
-    return adapter
+    return GenericWebAdapter(client=Client(app), auth_headers=auth_headers,
+                             base_url=base_url)

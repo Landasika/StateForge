@@ -16,7 +16,7 @@ import time
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from stateforge.fuzzing.entry_driver import decode_sequence_seed, encode_sequence_seed
+from stateforge.core.seeds import decode_sequence_seed, encode_sequence_seed
 from stateforge.state.session_observation import (SessionSnapshotView,
                                                   VERIFIED_TRUE,
                                                   evaluate_session_conditions)

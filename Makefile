@@ -10,7 +10,7 @@
 #                 artifact-manifest.sha256 为构建产物,不入库)
 #   make clean    清理缓存/构建产物(仅仓库内,不触碰 external/ anota/ .git)
 
-.PHONY: install test demo verify artifact clean
+.PHONY: install test demo verify wheel-check artifact clean
 
 PYTHON ?= python3
 
@@ -25,6 +25,9 @@ demo:
 
 verify:
 	./ci.sh
+
+wheel-check:
+	$(PYTHON) -m stateforge.evaluation.check_distribution
 
 artifact:
 	git ls-files | while IFS= read -r f; do \

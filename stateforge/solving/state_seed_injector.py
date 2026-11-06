@@ -72,10 +72,11 @@ import networkx as nx
 
 from stateforge.analysis.builder import build_sstg
 from stateforge.core.ir import ProgramIR
+from stateforge.core.serialization import coerce_program_ir
 from stateforge.core.model import (AppModel, Effect, Endpoint, Param,
                                    PlanStep, Precondition)
-from stateforge.fuzzing.corpus_manager import CorpusManager
-from stateforge.fuzzing.entry_driver import encode_sequence_seed
+from stateforge.fuzzing.seed_publisher import SeedPublisher
+from stateforge.core.seeds import encode_sequence_seed
 from stateforge.solving.vulnshop_state_bridge import (
     AppModelPath, appmodel_path, reached_atoms, render_seed)
 from stateforge.state.observer import run_state_analysis
@@ -468,15 +469,6 @@ def goal_atoms(sstg: nx.MultiDiGraph) -> set[str]:
     return {v for _, v, d in sstg.edges(data=True) if d.get("kind") == "requires"}
 
 
-def _coerce_ir(ir) -> ProgramIR | None:
-    if ir is None or isinstance(ir, ProgramIR):
-        return ir
-    try:
-        return ProgramIR.from_json(ir)
-    except (OSError, ValueError):
-        return None
-
-
 def _covered_lines(ir: ProgramIR, target: Path, state: dict) -> set[int]:
     """覆盖代理:本靶文件内已覆盖块的行集。"""
     covered = set(state.get("covered_blocks") or state.get("blocks") or [])
@@ -506,7 +498,7 @@ def reached_state_atoms(ir, target, state: dict) -> set[str]:
     if amp is not None:
         return reached_atoms(ir, state, amp)
     micro = synthesize_micro_model(target)
-    ir_obj = _coerce_ir(ir)
+    ir_obj = coerce_program_ir(ir)
     if micro is None or ir_obj is None:
         return set()
     lines = _covered_lines(ir_obj, micro.target, state or {})
@@ -602,7 +594,7 @@ def _inject_appmodel(ir, amp: AppModelPath, state: dict, corpus_dir,
 
     corpus_dir = Path(corpus_dir)
     corpus_dir.mkdir(parents=True, exist_ok=True)
-    spool = CorpusManager(corpus_dir.parent / "state_spool")
+    publisher = SeedPublisher(corpus_dir, "state_spool")
     audit_path = corpus_dir.parent / "epochs" / "state_injections.jsonl"
     salt = hashlib.sha256(
         str(amp.target.resolve()).encode("utf-8")).hexdigest()[:8]
@@ -624,11 +616,9 @@ def _inject_appmodel(ir, amp: AppModelPath, state: dict, corpus_dir,
             _audit(audit_path, {**record, "status": "NO_PLAN"})
             continue
         data = encode_sequence_seed(steps)
-        cid = spool.save(data, epoch=0, new_blocks=0, new_edges=0,
-                         discovered_blocks=0, discovered_edges=0,
+        cid = publisher.save(data,
                          interesting_reason="state_plan", origin="STATE")
         if cid:
-            (corpus_dir / cid).write_bytes(data)
             written += 1
             _audit(audit_path, {**record, "status": "INJECTED", "seed_id": cid})
         else:
@@ -657,7 +647,7 @@ def inject_state_seeds(ir, target, state: dict, corpus_dir,
 
     corpus_dir = Path(corpus_dir)
     corpus_dir.mkdir(parents=True, exist_ok=True)
-    spool = CorpusManager(corpus_dir.parent / "state_spool")
+    publisher = SeedPublisher(corpus_dir, "state_spool")
     audit_path = corpus_dir.parent / "epochs" / "state_injections.jsonl"
 
     written = 0
@@ -669,13 +659,11 @@ def inject_state_seeds(ir, target, state: dict, corpus_dir,
                                 "status": f"PLAN_ERROR_{type(exc).__name__}"})
             continue
         data = encode_sequence_seed(requests)
-        cid = spool.save(data, epoch=0, new_blocks=0, new_edges=0,
-                         discovered_blocks=0, discovered_edges=0,
+        cid = publisher.save(data,
                          interesting_reason="state_plan", origin="STATE")
         record = {"goal": atom, "op": op,
                   "steps": [r.get("json", {}).get("op") for r in requests]}
         if cid:
-            (corpus_dir / cid).write_bytes(data)
             written += 1
             record.update(status="INJECTED", seed_id=cid)
         else:

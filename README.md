@@ -48,6 +48,8 @@ Mapper（轨迹 → 静态 ICFG 块/边映射，Phase-1 冻结）
 
 ## 快速开始
 
+V0.2 新增统一状态入口 `goal-run`，覆盖自动规划、真实执行、冷启动检查点和 Atheris 种子消费。完整用法、证据格式与 5/8 验收进度见 [StateForge V0.2 实施说明](docs/STATEFORGE-V0.2.md)。
+
 ```bash
 # 安装（唯一依赖源：pyproject.toml；atheris 无预编译 wheel 时 sdist 编译需 clang）
 pip install -e ".[dev,test,fuzz]"
@@ -64,6 +66,16 @@ python -m stateforge.cli analyze <目标目录> --out results/structural
 
 # 状态发现（M2 迁移发现：session 变量/谓词/域）
 python -m stateforge.cli state <目标目录> --out results/state.json
+
+# 状态目标主流程：自动三步链→执行验证→冷启动重放→检查点
+python -m stateforge.cli goal-run stateforge/targets/stateful \
+  --source t_state_shop.py --block 't_state_shop.py::_handle::91-92::block::1' \
+  --mode execute --out results/goal-run
+
+# 同一条主流程继续把 C10 种子交给真实 Atheris（需要 fuzz 可选依赖）
+python -m stateforge.cli goal-run stateforge/targets/stateful \
+  --source t_state_shop.py --block 't_state_shop.py::_handle::91-92::block::1' \
+  --mode fuzz --fuzz-seconds 2 --fuzz-runs 100 --out results/goal-fuzz
 
 # 运行时反馈：执行轨迹 → 覆盖/前沿
 python -m stateforge.cli feedback results/structural/program_ir.json trace.jsonl --out feedback.json
@@ -393,9 +405,8 @@ JSONL(SS-07A)、可信 Session 证据与 baseline 绑定(SS-07B)、Atheris
 - 新靶 `targets/guidance_m1`(纯 Python 阈值门)+ `toy_app/toy_branches/
   toy_nested`(Flask);新测试 `tests/guidance/` 98 项。
 
-**已知义务:** 语义标注缓存(`stateforge/solving/llm/cache/*.json`)键于 PROMPT_VERSION 与夹具内容——二者变更后需重跑生成器并提交新缓存,否则 fresh clone 回归"全 irrelevant"。缓存仅按显式路径提交(`git add stateforge/solving/llm/cache/<hash>.json`),勿在该目录使用 `git add -A`。
+**已知义务:** 语义标注缓存(`stateforge/analysis/semantics/cache/*.json`)键于 PROMPT_VERSION 与夹具内容——二者变更后需重跑生成器并提交新缓存,否则 fresh clone 回归"全 irrelevant"。缓存仅按显式路径提交(`git add stateforge/analysis/semantics/cache/<hash>.json`),勿在该目录使用 `git add -A`。
 
-**已知义务:** 语义标注缓存(`stateforge/solving/llm/cache/*.json`)键于 PROMPT_VERSION 与夹具内容——二者变更后需重跑生成器并提交新缓存,否则 fresh clone 回归"全 irrelevant"。缓存仅按显式路径提交(`git add stateforge/solving/llm/cache/<hash>.json`),勿在该目录使用 `git add -A`。
 
 ---
 
@@ -413,3 +424,30 @@ JSONL(SS-07A)、可信 Session 证据与 baseline 绑定(SS-07B)、Atheris
 ## License
 
 Proprietary — Research use only.
+
+## 模块重构与兼容入口（2026-11-04）
+
+本轮将共享契约、执行设施、应用策略和实验配置拆开,详情见
+[重构交付记录](docs/reports/REFACTORING-2026-11-04.md)与
+[模块边界](stateforge/ARCHITECTURE.md)。
+
+- C10 编解码使用 `stateforge.core.seeds`;原 `fuzzing.entry_driver` 导出继续可用,导入时不再要求 Atheris。
+- `analysis.analyzer.extract_model(path, framework)` 只提取静态事实;`analyze(..., annotator=...)` 接受可替换语义后端。旧 `solving.llm` 模块路径兼容,实现及原样缓存迁至 `analysis.semantics`。
+- 通用反向规划默认 `GoalSpec(profile="generic", ...)`;历史商店规则显式选择 `profile="vulnshop"`。`VULNSHOP_GOALS` 已声明对应 profile。
+- 两个 collector 完成输入后排空轨迹;需要最近一次执行时使用 `collector.last_execution.events` 或 `collector.last_mapped`。直接使用 TraceSession 的累计事件 API 保持不变。
+- 快照监督器支持 `--app-factory your.module:create`;工厂接收参数 namespace,返回 `(wsgi_app, optional_db_path)`。历史 `--target vulnshop/vampi` 可继续使用。
+- 实验目录新增 `arm_registry.json`,记录 suite、注册版本、实际参数与规范策略,历史汇总字段保持兼容。
+
+基础安装包含模型、图算法及 YAML 依赖;按能力安装可选项:
+
+```bash
+pip install '.[llm]'       # 在线语义服务
+pip install '.[web]'       # Flask/WSGI 与 HTTP 回放
+pip install '.[django]'    # Django 客户端集成
+pip install '.[fuzz]'      # Atheris 驱动
+make wheel-check          # 构建 wheel,在隔离环境验证基础安装及资源完整性
+```
+
+在线 Provider 优先采用 `STATEFORGE_LLM_API_KEY/BASE_URL/MODEL/TIMEOUT`;
+未配置 canonical key 时继续读取既有 ANTHROPIC/OPENAI/SF 环境变量。
+canonical 超时默认 30 秒,legacy 保持原实现的 120 秒。

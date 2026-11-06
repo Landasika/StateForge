@@ -12,8 +12,7 @@ import json
 import sys
 from pathlib import Path
 
-import atheris
-
+from stateforge.core.seeds import decode_sequence_seed, encode_sequence_seed
 from stateforge.core.ir import ProgramIR
 from stateforge.runtime.tracer import TraceSession
 from stateforge.fuzzing.recorder import ExperimentRecorder
@@ -31,30 +30,6 @@ def _load_target(path: str):
 
 
 # ------------------------------------------------ C10 序列种子（P3-T2）分派
-
-
-def decode_sequence_seed(data: bytes) -> list | None:
-    """C10 消费端解码：bytes → 序列步列表；非序列种子 → None。
-
-    序列种子 = {"steps": [<单请求 dict>, ...]}（R1 裁决：前缀步素状态，
-    末步=当前请求）。分派只看 "steps" 键存在且值为 list——legacy 单请求
-    契约（{"query","form","json","header","cookie"}）保持冻结，凡非序列
-    输入一律由调用方原字节透传，行为逐字节不变（四臂非回归门）。
-    """
-    try:
-        seed = json.loads(data)
-    except (json.JSONDecodeError, UnicodeDecodeError):
-        return None
-    if isinstance(seed, dict) and isinstance(seed.get("steps"), list):
-        return seed["steps"]
-    return None
-
-
-def encode_sequence_seed(steps: list) -> bytes:
-    """C10 序列种子构造（steps → bytes）。T3 state 注入器落盘时必须
-    复用同一 builder，保证与消费端解码逐字节互认。"""
-    return json.dumps({"steps": list(steps)}, ensure_ascii=False,
-                      sort_keys=True).encode("utf-8")
 
 
 def execute_sequence(target, steps: list) -> None:
@@ -80,6 +55,8 @@ def dispatch_seed(target, data: bytes) -> None:
 
 
 def main() -> int:
+    import atheris
+
     parser = argparse.ArgumentParser()
     parser.add_argument("target")            # 目标 py 文件(含 target(data))
     parser.add_argument("ir")                # program_ir.json
@@ -126,7 +103,21 @@ def main() -> int:
     parser.add_argument("--target-block", default="")
     parser.add_argument("--cost-out", default=None,
                         help="SS-07A: 独立计量目录(默认与 out_dir 相同)")
+    parser.add_argument("--input-receipts", default=None,
+                        help="optional JSONL evidence from real Atheris input callbacks")
+    parser.add_argument("--receipt-sha256", default=None,
+                        help="only record receipts matching this input SHA-256")
     args = parser.parse_args()
+
+    if args.input_receipts and args.mode == "off":
+        parser.error("--input-receipts requires traced mode measure/feedback/frontier")
+    if args.receipt_sha256 and not args.input_receipts:
+        parser.error("--receipt-sha256 requires --input-receipts")
+    receipts = None
+    if args.input_receipts:
+        from stateforge.fuzzing.input_receipts import InputReceiptWriter
+        receipts = InputReceiptWriter(args.input_receipts, target_block=args.target_block,
+                                       run_id=args.run_id, expected_sha256=args.receipt_sha256)
 
     Path(args.corpus_dir).mkdir(parents=True, exist_ok=True)
     if args.session_guided and args.mode == "off":
@@ -176,10 +167,18 @@ def main() -> int:
             state_ledger = StateEvidenceLedger(
                 observer_name=getattr(observer, "name", ""))
 
+    dispatch_counts = {"started": 0, "completed": 0}
+
+    def counted_target(data: bytes):
+        dispatch_counts["started"] += 1
+        response = target(data)
+        dispatch_counts["completed"] += 1
+        return response
+
     def dispatch(data: bytes) -> None:
         # C10 分派：序列种子按序多步执行；其余输入原字节透传给 target
         # （legacy 单请求路径行为逐字节不变——四臂非回归门）。
-        dispatch_seed(target, data)
+        dispatch_seed(counted_target if receipts is not None else target, data)
 
     def _make_recorder():
         return ExperimentRecorder(args.out_dir, args.group, args.epoch)
@@ -262,7 +261,6 @@ def main() -> int:
         else:
             online = None
         session = TraceSession(root=root)
-        session.__enter__()
         # 反馈对象按模式先建(frontier 需要 load_state 恢复前沿/冠军)
         if args.mode == "frontier":
             from stateforge.fuzzing.feedback.frontier_feedback import FrontierDirectedFeedback
@@ -284,11 +282,10 @@ def main() -> int:
                 payload["state_evidence"] = state_ledger.to_payload()
             state_path.write_text(_json.dumps(payload), encoding="utf-8")
 
-        def _online_after(data: bytes, start: int) -> None:
-            if online is None:
+        def _online_after(data: bytes) -> None:
+            if online is None or collector.last_mapped is None:
                 return
-            from stateforge.runtime.mapper import map_trace
-            mapped = map_trace(session.events[start:], ir)
+            mapped = collector.last_mapped
             view = None
             probe = getattr(_target_module, "session_view", None)
             if callable(probe):
@@ -324,16 +321,6 @@ def main() -> int:
                                           execution=execution,
                                           state_ledger=state_ledger)
 
-            def handler(data: bytes) -> None:
-                start = len(session.events)
-                if ledger is not None:
-                    ledger.begin_sequence("atheris-input")
-                try:
-                    collector.handle(dispatch, data)
-                    _online_after(data, start)
-                finally:
-                    if ledger is not None:
-                        ledger.end_sequence()
         else:
             corpus = (CorpusManager(Path(args.out_dir) / "spool")
                       if args.mode == "feedback" else None)
@@ -343,16 +330,21 @@ def main() -> int:
                                            execution=execution,
                                            state_ledger=state_ledger)
 
-            def handler(data: bytes) -> None:
-                start = len(session.events)
+        def handler(data: bytes) -> None:
+            dispatch_counts.update(started=0, completed=0)
+            if ledger is not None:
+                ledger.begin_sequence("atheris-input")
+            try:
+                collector.handle(dispatch, data)
+                with session.untraced():
+                    if receipts is not None:
+                        receipts.record(data, collector.last_execution, collector.last_mapped,
+                                        started_steps=dispatch_counts["started"],
+                                        completed_steps=dispatch_counts["completed"])
+                    _online_after(data)
+            finally:
                 if ledger is not None:
-                    ledger.begin_sequence("atheris-input")
-                try:
-                    collector.handle(dispatch, data)
-                    _online_after(data, start)
-                finally:
-                    if ledger is not None:
-                        ledger.end_sequence()
+                    ledger.end_sequence()
 
     # 原生覆盖必须开(否则盲变异、语料不增长);用选择性插桩只打目标模块——
     # instrument_all 会把解释器全量模块插桩,启动 ~30s 且与 tracer 冲突风险高。

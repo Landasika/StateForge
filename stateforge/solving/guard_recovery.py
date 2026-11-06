@@ -8,61 +8,14 @@
 from __future__ import annotations
 
 import ast
-from pathlib import Path
 
 from stateforge.core.ir import ProgramIR
-from stateforge.solving.guard_ir import OP_SYMBOL, SUPPORTED_OPS, BranchGuard
+from stateforge.analysis.source_index import SourceTestIndex
+from stateforge.solving.guard_ir import BranchGuard
 
 
-def _function_map(ir: ProgramIR) -> dict[str, ast.FunctionDef]:
-    """qname → AST(按 ir.metadata.root 重解析,源即真相)。"""
-    root = Path(ir.metadata["root"])
-    out: dict[str, ast.FunctionDef] = {}
-    for path in sorted(root.rglob("*.py")):
-        try:
-            tree = ast.parse(path.read_text(encoding="utf-8"))
-        except (OSError, SyntaxError, UnicodeDecodeError):
-            # UnicodeDecodeError(ValueError 族,非 SyntaxError):真实文件树
-            # 可能含非 UTF-8 源(latin-1 等),漏接会炸穿整条求解链。
-            continue
-        rel = str(path.relative_to(root))
-        # icfg 模块名 = 相对路径去后缀;块 file 为绝对路径,键用 rel 前缀匹配
-        for node in ast.walk(tree):
-            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                out[str(path)] = out.get(str(path)) or {}
-        # 简化:存 (abs_path, func_name, lineno) 的 test 表索引
-    return out
-
-
-class _TestIndex:
-    """(函数名, test_lineno) → test 表达式 AST;覆盖 if/while/for 与嵌套。"""
-
-    def __init__(self, ir: ProgramIR):
-        self.by_line: dict[tuple[str, int], ast.expr] = {}
-        root = Path(ir.metadata["root"])
-        for path in sorted(root.rglob("*.py")):
-            try:
-                tree = ast.parse(path.read_text(encoding="utf-8"))
-            except (OSError, SyntaxError, UnicodeDecodeError):
-                continue
-            for node in ast.walk(tree):
-                if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                    self._index_function(node)
-
-    def _index_function(self, fn: ast.FunctionDef) -> None:
-        stack = list(fn.body)
-        while stack:
-            stmt = stack.pop()
-            if isinstance(stmt, (ast.If, ast.While)):
-                test = getattr(stmt, "test", None)
-                if test is not None:
-                    self.by_line[(fn.name, test.lineno)] = test
-            if isinstance(stmt, ast.For) and hasattr(stmt, "iter"):
-                self.by_line.setdefault((fn.name, stmt.iter.lineno), stmt.iter)
-            stack.extend(ast.iter_child_nodes(stmt))
-
-    def get(self, func: str, lineno: int) -> ast.expr | None:
-        return self.by_line.get((func, lineno))
+# Historical import path retained for external integrations.
+_TestIndex = SourceTestIndex
 
 
 def _classify(test: ast.expr) -> tuple[str, str]:
@@ -93,7 +46,7 @@ def recover_guard(ir: ProgramIR, source_block: str, target_block: str,
                   ) -> BranchGuard:
     block = ir.blocks[source_block]
     idx = test_index or _TestIndex(ir)
-    test = idx.get(block.function, block.start_line)
+    test = idx.get(block.function, block.start_line, file=block.file)
     if block.kind != "branch" or test is None:
         return BranchGuard(
             guard_id=f"{block.file}:{block.start_line}:0:none",

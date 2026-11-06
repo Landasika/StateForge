@@ -14,8 +14,8 @@ soft producer 兜底(静态提取盲区,如参数化 SQL 的 status=?):
 
 attack 模式:GoalSpec.drop_requires 声明"假设运行时缺席的前置"(bypass 假设)。
 
-应用特定规则(JSON_FILL 预填值/认证链完备化/资源补全)隔离在 compat.py
-(诊断 4),本模块只经其调用;通用请求生成机制按 Phase-3 排期替换。
+应用特定规则经显式 PlanningPolicy 注入;缺省 generic 不补靶场路由。
+历史 vulnshop profile 保留 JSON 预填、认证链和资源补全规则。
 """
 
 from __future__ import annotations
@@ -23,14 +23,13 @@ from __future__ import annotations
 import networkx as nx
 
 from stateforge.core.model import AppModel, PlanSegment, PlanStep
-from stateforge.state.planning.goals import GoalSpec, auth_provisioning
-from stateforge.state.planning.compat import (
-    JSON_FILL as _JSON_FILL,
-    ensure_auth as _ensure_auth,
-    produces_token as _produces_token,
-    resource_completion as _resource_completion,
-    uses_token as _uses_token,
-)
+from stateforge.state.planning.goals import GoalSpec
+from stateforge.state.planning.policies import PlanningPolicy, policy_for
+
+
+# Compatibility name. New code uses the public policy/rendering interface.
+def _to_step(ep_index: dict, action: str, goal: GoalSpec) -> PlanStep:
+    return policy_for(goal.profile).render_step(ep_index, action, goal)
 
 
 def _pick_producer(producers: list[str], sstg: nx.MultiDiGraph,
@@ -54,11 +53,11 @@ def _pick_producer(producers: list[str], sstg: nx.MultiDiGraph,
     return min(producers, key=cost)
 
 
-def plan_backward(model: AppModel, sstg: nx.MultiDiGraph, goal: GoalSpec) -> PlanSegment:
+def plan_backward(model: AppModel, sstg: nx.MultiDiGraph, goal: GoalSpec, *,
+                  policy: PlanningPolicy | None = None) -> PlanSegment:
+    policy = policy if policy is not None else policy_for(goal.profile)
     if goal.step_template:
-        steps = list(goal.step_template)
-        if _uses_token(steps) and not _produces_token(steps):
-            steps = auth_provisioning() + steps
+        steps = policy.prepare_template(list(goal.step_template))
         return PlanSegment(goal=goal.name, steps=steps)
 
     ep_index = {(ep.methods[0], ep.route): ep for ep in model.endpoints}
@@ -103,9 +102,8 @@ def plan_backward(model: AppModel, sstg: nx.MultiDiGraph, goal: GoalSpec) -> Pla
             agenda.append((v, depth - 1))
 
     ordered = _topo_order(sstg, collected, soft_map)
-    steps = [_to_step(ep_index, a, goal) for a in ordered]
-    steps = _ensure_auth(steps)  # compat:认证链完备化(应用特定)
-    steps = _resource_completion(model, ep_index, goal, steps, _to_step)
+    steps = [policy.render_step(ep_index, a, goal) for a in ordered]
+    steps = policy.complete(model, ep_index, goal, steps)
     return PlanSegment(goal=goal.name, steps=steps, notes=notes)
 
 
@@ -154,28 +152,3 @@ def _soft_producers(model: AppModel, atom: str) -> list[str]:
             candidates.append(f"{ep.methods[0]} {ep.route}")
     candidates.sort(key=lambda a: "<" not in a)  # 带路径参数的排前
     return candidates
-
-
-def _to_step(ep_index: dict, action: str, goal: GoalSpec) -> PlanStep:
-    """SSTG action → PlanStep(槽位物化:path→?名,json→覆盖/预填/中性)。
-
-    JSON 预填值来自 compat 层(应用特定);未覆盖槽位中性 "x"。
-    """
-    method, _, route = action.partition(" ")
-    ep = ep_index.get((method, route))
-    step = PlanStep(action=action)
-    if ep is None:
-        return step
-    for p in ep.params:
-        if p.location == "path":
-            step.path[p.name] = f"?{p.name}"
-        elif p.location == "json":
-            step.json[p.name] = goal.param_overrides.get(p.name) or _JSON_FILL.get(p.name, "x")
-    if any(pre.var == "Session.authed_as" for pre in ep.preconditions):
-        step.headers["Authorization"] = "Bearer ?token"
-    if route.endswith("/login"):
-        step.extract["token"] = "?token"
-    elif method == "POST" and "<" not in route and ep.observes and "id" in ep.observes:
-        # 只有集合级 POST(无路径参数)才是"资源创建",其响应 id 才是新资源
-        step.extract["id"] = "?oid"
-    return step

@@ -10,13 +10,10 @@ from stateforge.targets.apps20.bakerydemo.harness import CLIENT  # noqa: F401
 def _make_adapter():
     from stateforge.adapters.generic_web import GenericWebAdapter
 
-    CLIENT.generic = lambda method, path, **kw: CLIENT.request(
-        REQUEST_METHOD=method, PATH_INFO=path, **kw)
-    adapter = GenericWebAdapter.__new__(GenericWebAdapter)
-    adapter.client = CLIENT
-    adapter.auth_headers = {}
-    adapter.base_url = ""
-    return adapter
+    return GenericWebAdapter(
+        client=CLIENT,
+        auth_headers={},
+        base_url="")
 
 
 _ADAPTER = _make_adapter()

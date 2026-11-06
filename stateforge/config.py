@@ -1,9 +1,9 @@
-"""config.py —— LLM 环境变量统一入口(P1 收敛 + P2 legacy 族并入)。
+"""Central configuration for semantic providers and snapshot application factories.
 
-唯一读取入口:RealLLMProvider 及后续 Phase 一律经
-`from stateforge.config import llm_settings` 取值,legacy 双协议 Provider
-(provider.py)经 `legacy_provider_settings` 取值,不散读 os.environ。
-解析顺序:显式 overrides > 环境变量 > 内置默认(默认值=原实现内置,逐字保留)。
+STATEFORGE_LLM_* selects the canonical OpenAI-compatible provider when its key
+is configured. Legacy ANTHROPIC_*/OPENAI_API_KEY/SF_LLM_* settings remain
+supported with their original defaults. Provider.from_env combines both readers;
+explicit reader overrides always take precedence over environment values.
 """
 
 from __future__ import annotations
@@ -146,3 +146,18 @@ def legacy_provider_settings(
         ssl_verify=(raw_verify.lower() != "false" if isinstance(raw_verify, str)
                     else bool(raw_verify)),
     )
+
+
+# Compatibility target names are configuration, not runtime execution logic.
+SNAPSHOT_APP_FACTORIES = {
+    "vulnshop": "stateforge.targets.snapshot_factories:vulnshop",
+    "vampi": "stateforge.targets.snapshot_factories:vampi",
+}
+
+
+def snapshot_app_factory(target: str) -> str:
+    """Resolve a historical target label to an explicit application factory."""
+    try:
+        return SNAPSHOT_APP_FACTORIES[target]
+    except KeyError as exc:
+        raise ValueError(f"unknown snapshot target: {target}") from exc

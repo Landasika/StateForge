@@ -66,10 +66,12 @@ from stateforge.analysis.analyzer import derive_invariants
 from stateforge.analysis.builder import build_sstg
 from stateforge.analysis.flask_adapter import extract_flask
 from stateforge.core.ir import ProgramIR
+from stateforge.core.serialization import coerce_program_ir
 from stateforge.core.model import (AppModel, Effect, PlanStep,
                                    Precondition)
 from stateforge.state.planning.backward import plan_backward
 from stateforge.state.planning.binding import BindingContext
+from stateforge.state.planning.rendering import render_seed_step
 from stateforge.state.planning.goals import GoalSpec, register_step
 
 _AUTH_VAR = "Session.authed_as"
@@ -290,15 +292,6 @@ appmodel_path.cache_info = _appmodel_path.cache_info
 # --------------------------------------------------------------- 判达(§3)
 
 
-def _coerce_ir(ir) -> ProgramIR | None:
-    if ir is None or isinstance(ir, ProgramIR):
-        return ir
-    try:
-        return ProgramIR.from_json(ir)
-    except (OSError, ValueError):
-        return None
-
-
 def _covered_lines_by_file(ir: ProgramIR, state: dict, app_root: Path
                            ) -> dict[str, set[int]]:
     """覆盖代理:app_root 内已覆盖块的行集,按绝对文件分组。"""
@@ -324,7 +317,7 @@ def _covered_lines_by_file(ir: ProgramIR, state: dict, app_root: Path
 
 def reached_atoms(ir, state: dict, amp: AppModelPath) -> set[str]:
     """已达 requires 原子(写点覆盖代理,§3;无覆盖态 → 空集)。"""
-    ir_obj = _coerce_ir(ir)
+    ir_obj = coerce_program_ir(ir)
     if ir_obj is None:
         return set()
     lines = _covered_lines_by_file(ir_obj, state or {}, amp.app_root)
@@ -359,27 +352,8 @@ def _complete_plan(model: AppModel, steps: list[PlanStep]) -> list[PlanStep]:
     return steps
 
 
-def _symbolic(ctx: BindingContext, v):
-    """@fresh/@items 代入;?槽与其余值原样(靶侧运行期绑定,§4)。"""
-    if isinstance(v, str) and v.startswith("@"):
-        return ctx.render(v)
-    return v
-
-
-def _render_step(ctx: BindingContext, st: PlanStep) -> dict:
-    method, _, route = st.action.partition(" ")
-    path = route
-    for name, v in st.path.items():
-        val = str(_symbolic(ctx, v))
-        path = path.replace(f"<int:{name}>", val).replace(f"<{name}>", val)
-    step = {"method": method or "GET", "path": path}
-    if st.json:
-        step["json"] = {k: _symbolic(ctx, v) for k, v in st.json.items()}
-    if st.headers:
-        step["header"] = {k: _symbolic(ctx, v) for k, v in st.headers.items()}
-    if st.extract:
-        step["extract"] = dict(st.extract)
-    return step
+# Compatibility alias; shared request rendering lives in the planning layer.
+_render_step = render_seed_step
 
 
 def render_seed(amp: AppModelPath, atom: str, salt: str) -> list[dict]:
@@ -388,8 +362,8 @@ def render_seed(amp: AppModelPath, atom: str, salt: str) -> list[dict]:
     无可规划链(coverage-gap)→ 空列表(调用方按 NO_PLAN 审计,不占预算)。
     """
     goal = GoalSpec(name=f"reach_{atom}", vuln_class="state_reach",
-                    kind="reach_state", target=atom)
+                    kind="reach_state", target=atom, profile="vulnshop")
     segment = plan_backward(amp.model, amp.sstg, goal)
     steps = _complete_plan(amp.model, segment.steps)
     ctx = BindingContext(salt=salt)
-    return [_render_step(ctx, st) for st in steps]
+    return [render_seed_step(ctx, st) for st in steps]

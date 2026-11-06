@@ -17,8 +17,9 @@ import sys
 from pathlib import Path
 
 from stateforge.evaluation.experiment.epoch import run_epochs
+from stateforge.evaluation.experiment.arms import RUNNER_ARMS, manifest
 
-GROUPS = ("A_native", "A_measure", "B", "C", "D1", "D2R", "D2P", "E", "F")
+GROUPS = tuple(RUNNER_ARMS)
 
 
 def run_experiment(target: str, ir: str, out: Path, epochs: int,
@@ -39,54 +40,15 @@ def run_experiment(target: str, ir: str, out: Path, epochs: int,
     t0 = __import__("time").monotonic()
     report = {"target": target, "ir": str(ir), "seed": seed, "epochs": epochs,
               "seconds_per_epoch": seconds_per_epoch, "groups": {}}
-    # A_native / A_measure:连续单进程(epochs=1, 总时长)
-    if "A_native" in groups:
-        report["groups"]["A_native"] = run_epochs(
-            target, ir, out / "A_native", total, 1, seed, "A_native",
-            mode="off", use_feedback=False, t0=t0)
-    if "A_measure" in groups:
-        report["groups"]["A_measure"] = run_epochs(
-            target, ir, out / "A_measure", total, 1, seed, "A_measure",
-            mode="measure", use_feedback=False, t0=t0)
-    if "B" in groups:
-        report["groups"]["B"] = run_epochs(
-            target, ir, out / "B", seconds_per_epoch, epochs, seed, "B",
-            mode="measure", use_feedback=False, t0=t0)
-    if "C" in groups:
-        report["groups"]["C"] = run_epochs(
-            target, ir, out / "C", seconds_per_epoch, epochs, seed, "C",
-            mode="feedback", use_feedback=True, t0=t0)
-    # D1 = 3.1(frontier,全局冠军语义已被组合取代,行为兼容:组合挑战最近前沿)
-    if "D1" in groups:
-        report["groups"]["D1"] = run_epochs(
-            target, ir, out / "D1", seconds_per_epoch, epochs, seed, "D1",
-            mode="frontier", use_feedback=True, t0=t0)
-    # D2-R:组合冠军,普通重注入(语料联合结转)
-    if "D2R" in groups:
-        report["groups"]["D2R"] = run_epochs(
-            target, ir, out / "D2R", seconds_per_epoch, epochs, seed, "D2R",
-            mode="frontier", use_feedback=True, t0=t0, policy="reinjection")
-    # D2-P:组合冠军(policy=portfolio;原 focused 偶数轮语义已随
-    # _focused_corpus 死分支删除——P4-T1 R6 结转统一后与 D2R 同语义,
-    # 臂名保留维持 run 目录连续性)
-    if "D2P" in groups:
-        report["groups"]["D2P"] = run_epochs(
-            target, ir, out / "D2P", seconds_per_epoch, epochs, seed, "D2P",
-            mode="frontier", use_feedback=True, t0=t0, policy="portfolio")
-    # E = four_arm 的 E 同配置:frontier + feedback,轮间换 state 规划器
-    # 序列注入(零 LLM、确定性)。campaign 侧配对对照 = D1(唯一差异 =
-    # policy,见 campaign.py state_gain 注释)
-    if "E" in groups:
-        report["groups"]["E"] = run_epochs(
-            target, ir, out / "E", seconds_per_epoch, epochs, seed, "E",
-            mode="frontier", use_feedback=True, t0=t0, policy="state")
-    # F:E 同管线换 goal 目标块直导注入器(four_arm 对照的 campaign 注册)
-    if "F" in groups:
-        from stateforge.solving.goal_seed_injector import inject_goal_seeds
-        report["groups"]["F"] = run_epochs(
-            target, ir, out / "F", seconds_per_epoch, epochs, seed, "F",
-            mode="frontier", use_feedback=True, t0=t0, policy="state",
-            state_injector=inject_goal_seeds)
+    selected = {label: spec for label, spec in RUNNER_ARMS.items() if label in groups}
+    (out / "arm_registry.json").write_text(json.dumps(
+        manifest("runner", selected), indent=2), encoding="utf-8")
+    for label, spec in selected.items():
+        report["groups"][label] = run_epochs(
+            target, ir, out / label,
+            total if spec.continuous else seconds_per_epoch,
+            1 if spec.continuous else epochs, seed, label,
+            t0=t0, **spec.epoch_options())
     (out / "experiment.json").write_text(
         json.dumps(report, indent=1, ensure_ascii=False), encoding="utf-8")
     return report

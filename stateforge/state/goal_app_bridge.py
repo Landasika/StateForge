@@ -84,9 +84,9 @@ def django_auth_completion(model: AppModel,
             func="django.contrib.auth.LoginView", route="/login/",
             methods=["POST"], params=[
                 __import__("stateforge.core.model", fromlist=["Param"]).Param(
-                    name="username", location="json"),
+                    name="username", location="form"),
                 __import__("stateforge.core.model", fromlist=["Param"]).Param(
-                    name="password", location="json"),
+                    name="password", location="form"),
             ],
             effects=[Effect(var=_AUTH_VAR, op="set", key="username",
                             file=str(root), line=0)],

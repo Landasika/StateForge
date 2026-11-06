@@ -21,6 +21,7 @@ class ActorSpec(BaseModel):
 
 
 class GoalSpec(BaseModel):
+    profile: Literal["generic", "vulnshop"] = "generic"
     name: str
     vuln_class: str
     kind: Literal["reach_state", "forbidden_transition", "authz_replay"]
@@ -41,6 +42,7 @@ ITEMS = [{"sku": "book", "price": 100, "qty": 1}]
 
 VULNSHOP_GOALS: list[GoalSpec] = [
     GoalSpec(
+        profile="vulnshop",
         name="goal_workflow_bypass", vuln_class="workflow_bypass",
         kind="forbidden_transition", target="Order.status=SHIPPED",
         transition=("PAID", "SHIPPED"),
@@ -48,6 +50,7 @@ VULNSHOP_GOALS: list[GoalSpec] = [
         verify_endpoint="GET /orders/<int:oid>",
     ),
     GoalSpec(
+        profile="vulnshop",
         name="goal_coupon_reuse", vuln_class="coupon_reuse",
         kind="reach_state", target="Coupon.used=1",
         step_template=[
@@ -62,6 +65,7 @@ VULNSHOP_GOALS: list[GoalSpec] = [
         verify_endpoint="GET /coupons/<code>",
     ),
     GoalSpec(
+        profile="vulnshop",
         name="goal_idor", vuln_class="idor",
         kind="authz_replay", target="Order.status=CREATED",
         step_template=[
@@ -81,12 +85,14 @@ VULNSHOP_GOALS: list[GoalSpec] = [
         verify_endpoint="GET /orders/<int:oid>",
     ),
     GoalSpec(
+        profile="vulnshop",
         name="goal_payment_bypass", vuln_class="payment_bypass",
         kind="reach_state", target="Order.status=PAID",
         param_overrides={"amount": "10"},      # 只付 10(total=100)仍要 PAID
         verify_endpoint="GET /orders/<int:oid>",
     ),
     GoalSpec(
+        profile="vulnshop",
         name="goal_privilege", vuln_class="privilege",
         kind="authz_replay", target="User.role=user",
         step_template=[

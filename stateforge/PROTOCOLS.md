@@ -24,7 +24,7 @@
 | C4 | StructuralFeedback / Observation | fuzzing.feedback.structural → entry_driver 采集器 | 内存 | 内部 | —(全局覆盖落盘归 C8) |
 | C5 | MutationProposal JSONL | solving.proposal_trace.ProposalTraceRecorder → 离线审计聚合(评测域) | JSONL | 演进 | `proposal_trace.jsonl` |
 | C6 | StateFact / StructuredPredicate JSON | state.extractor → state.index → state.annotation(5B LLM 输入);P3-M2 起 run_state_analysis(`transitions`)→ cli state | JSON-ready dict | 演进 | 由调用方决定(现状内存传递;cli state 落盘 `<out>/state.json`) |
-| C7 | LLM cache JSON | solving.llm.cache.put(lifting label/relate)→ cache.get(缓存优先通道) | JSON 单行 | 冻结 | `stateforge/solving/llm/cache/<sha256>.json`(随仓) |
+| C7 | LLM cache JSON | solving.llm.cache.put(lifting label/relate)→ cache.get(缓存优先通道) | JSON 单行 | 冻结 | `stateforge/analysis/semantics/cache/<sha256>.json`(随仓) |
 | C8 | corpus + global_state.json | fuzzing.corpus_manager / fuzzing.entry_driver → export_seed_dir(libFuzzer)、evaluation.experiment.epoch | bytes + JSONL + JSON | 演进 | `spool/seeds/<cid>`、`spool/meta.jsonl`、`global_state.json` |
 | C9 | 实验记录 JSONL | fuzzing.recorder.ExperimentRecorder → evaluation.experiment.epoch | JSONL | 演进 | `<group>-e<N>-snapshots.jsonl`、`<group>-e<N>-candidates.jsonl` |
 | C10 | 序列种子 JSON(steps) | `solving/state_seed_injector.inject_state_seeds`(P3-T3,经 `epoch.py::_inject_state_seeds_between_epochs`,policy="state")→ fuzzing.entry_driver 解码分派、targets.stateful.* 靶 | JSON | 演进 | corpus 种子文件(`lf_corpus/<cid>`、`state_spool/seeds/<cid>`) |
@@ -209,7 +209,7 @@
 
 ---
 
-## C7 LLM cache JSON(solving/llm/cache/*.json)—— 冻结
+## C7 LLM cache JSON(analysis/semantics/cache/*.json)—— 冻结
 
 | | |
 |---|---|
@@ -330,7 +330,7 @@ epoch 记录 `rec["state"]` → group_summary.json 的
 
 - 分派只看 `"steps"` 键存在且值为 list:是→按序逐步执行,每步经 `json.dumps` 走与单请求**同一** `target(data)` 执行面;否→**原字节透传**,legacy 单请求路径行为逐字节不变(四臂非回归门)。已知碰撞方向:legacy 单请求 JSON 若顶层恰含 `"steps": list` 会被误判为序列种子走逐步重放(判型只看顶层键);当前靶族与生产者均不产出该形状(单请求契约键集为 query/form/json/header/cookie)。
 - 会话连续性 = 进程内持久:adapter 持有的 app/test_client、靶模块级会话态跨步存活;Atheris 仍是唯一执行引擎,整条序列是一次输入,序列变异即状态空间探索(涌现)。
-- 跨输入策略:无逐输入重置——状态在 libFuzzer 输入间延续(进程内);需干净态的实验以 target 的 reset_state() 显式重置(见各靶 docstring)。
+- 跨输入策略:旧驱动默认 `--lifecycle noop`，状态在 libFuzzer 输入间延续。显式 `--lifecycle reset` 在每条输入前调用 `reset_state()`；V0.2 `goal-run --mode fuzz` 固定启用 reset，序列内部各请求之间不重置。snapshot 生命周期见运行时契约。
 - 覆盖口径 = 序列全程并集:所有步在同一 handler 调用、同一 TraceSession 请求窗口内执行,coverage 计数自然累加(R3)。
 - 畸形输入确定性:`steps: []` = 零执行;非 dict 步原样序列化喂靶(靶自己的错误路径消化);`steps` 非 list → 按 legacy 透传;单步异常由外层 handler 统一吞,不向引擎泄 crash。
 - 加字段安全(演进):顶层可加新键(消费端只按 `steps` 分派);`steps[i]` 内沿用单请求契约的演进纪律。
@@ -359,3 +359,13 @@ python -m pytest stateforge/tests/test_protocols.py -v
 | 执行面 | `tests/evaluation/test_relational_arm.py` |
 
 **演进语义与纪律**：指标四桶分键、永不混计——`goal_coverage.achieved` 仅统计一致观测点完整 witness（无观测臂为 `null`+note，不伪造 0）；`instance_state_novelty`/`verified_transition_novelty` 为首见计数（无静态分母）；`proxy_progress` 独立分桶。公平字段（seed/budget/requests_executed/wall）每行必带。同种子确定性由 `random.Random(seed)` 保证。
+
+## V0.2 主流程与验证证据（演进）
+
+`pipeline.GoalRunner` 的固定产物为 `ir.json / goal.json / plan.json / execution.json / summary.json`。成功时前四项保持原有 ProgramIR、StateGoal、PlanSegment、PlanExecution 数据形状；未运行时使用显式 `status=not_run` 占位。`summary` 的 `status` 为 running/planned/verified/failed，记录 `run_id`、`stages`、`failed_stage` 和错误类型/消息。`target_covered` 是主执行的块覆盖，`execution_verified` 是完整链验证，`verified` 是该模式要求的全部验证，不互相替代。
+
+`GoalCheckpoint` 新增带缺省值的 `source_hash / verification / replay_evidence`。旧 JSON 缺字段仍可加载；作为已验证检查点的依据是执行证据，主流程还要求独立进程冷启动重放。历史静态种子注入器可使用该数据载体描述候选链，缺少验证字段的候选不具备已验证检查点语义。新 Fuzz 入口拒绝缺少执行或冷重放验证的检查点。
+
+`cold_replay.json` 记录子进程 `pid / parent_pid / cold_start / verified / execution / verification`，失败时含 `error`，调用方补充退出码或超时原因。Atheris 的可选 `input_receipts.jsonl` 记录 `engine / phase / pid / run_id / sha256 / size / sequence_steps / started_steps / completed_steps / lifecycle / isolation / target_block / target_covered / execution_recorded / error`，仅来自输入回调；主流程以 SHA-256 和本次运行 ID 匹配原始 C10 种子。原有 C10 字节协议、旧驱动默认隔离策略及实验输出键集不变。
+
+执行面：`tests/integration/test_goal_runner.py`、`tests/integration/test_goal_fuzz.py`、`tests/solving/test_goal_checkpoint.py`。完整命令及证据边界见 [V0.2 实施说明](../docs/STATEFORGE-V0.2.md)。

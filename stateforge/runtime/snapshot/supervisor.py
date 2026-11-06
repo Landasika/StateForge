@@ -12,14 +12,14 @@
 from __future__ import annotations
 
 import argparse
+import importlib
 import os
 import socket
-import sys
 import time
-from pathlib import Path
 
 from werkzeug.serving import BaseWSGIServer
 
+from stateforge.config import snapshot_app_factory
 from stateforge.runtime.snapshot import engine
 from stateforge.runtime.snapshot.l2_sqlite import L2Handle, L2Sqlite
 from stateforge.runtime.snapshot.protocol import _send
@@ -37,23 +37,20 @@ class CountingWSGIServer(BaseWSGIServer):
 
 
 def build_app(args):
-    if args.target == "vulnshop":
-        sys.path.insert(0, str(Path(__file__).parents[2]))
-        from stateforge.targets.vulnshop import app as vshop
-
-        return vshop.create_app(db_path=args.db, guards=args.guards, init_db=True), args.db
-    if args.target == "vampi":
-        sys.path.insert(0, str(Path(__file__).parents[2]))
-        from stateforge.targets.vampi import adapter
-
-        flask_app = adapter.make_app(vulnerable=args.guards, token_ttl=600)
-        return flask_app, str(adapter.VAMPI_DIR / "database" / "database.db")
-    raise SystemExit(f"unknown target: {args.target}")
+    """Load an injected module:callable returning (WSGI app, optional DB path)."""
+    spec = getattr(args, "app_factory", None) or snapshot_app_factory(args.target)
+    module_name, separator, name = spec.partition(":")
+    if not separator or not module_name or not name:
+        raise ValueError("app factory must have the form module:callable")
+    factory = getattr(importlib.import_module(module_name), name)
+    return factory(args)
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--target", required=True)
+    source = ap.add_mutually_exclusive_group(required=True)
+    source.add_argument("--target", help="legacy target name from configuration")
+    source.add_argument("--app-factory", help="module:callable returning (app, db_path)")
     ap.add_argument("--sock", required=True)
     ap.add_argument("--host", default="127.0.0.1")
     ap.add_argument("--port", type=int, default=0)

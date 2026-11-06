@@ -15,12 +15,13 @@ from __future__ import annotations
 
 import hashlib
 import json
+import time
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
 from stateforge.core.model import PlanSegment, PlanStep
-from stateforge.fuzzing.corpus_manager import CorpusManager
-from stateforge.fuzzing.entry_driver import encode_sequence_seed
+from stateforge.fuzzing.seed_publisher import SeedPublisher
+from stateforge.core.seeds import encode_sequence_seed
 
 
 @dataclass
@@ -35,6 +36,15 @@ class GoalCheckpoint:
     hits: list[str] = field(default_factory=list)
     step_evidence: list[dict] = field(default_factory=list)
     created_at: float = 0.0
+    source_hash: str = ""                # Hash of the analyzed source tree, if available.
+    verification: dict = field(default_factory=dict)
+    replay_evidence: dict = field(default_factory=dict)
+    # Execution transport: micro targets take {"json": ...} through target();
+    # real applications take {"method","path","form"|"json"} through a client.
+    transport: str = "micro"
+    # Real applications are fuzzed through their in-process adapter, which is a
+    # different file from the analyzed source the checkpoint fingerprints.
+    fuzz_target: str = ""
 
     def to_json(self) -> str:
         return json.dumps(asdict(self), ensure_ascii=False, indent=1)
@@ -58,6 +68,13 @@ class GoalCheckpoint:
     def to_segment(self) -> PlanSegment:
         steps = []
         for i, s in enumerate(self.steps):
+            if self.transport == "http":
+                steps.append(PlanStep(
+                    action=f"{s.get('method', 'GET')} {s.get('path', '/')}",
+                    json=dict(s.get("json", {})),
+                    form=dict(s.get("form", {})),
+                    headers=dict(s.get("header", {}))))
+                continue
             j = dict(s.get("json", {}))
             arm = j.get("op", f"step:{i}")       # 保留臂名供写块验证
             steps.append(PlanStep(action=f"POST op={arm}", json=j))
@@ -66,9 +83,12 @@ class GoalCheckpoint:
 
 
 def checkpoint_from_execution(target_block: str, source_file: str,
-                              goal, execution) -> GoalCheckpoint | None:
+                              goal, execution, *, ir=None) -> GoalCheckpoint | None:
     """判达的 PlanExecution → 检查点(未判达不存档)。"""
-    if not execution.target_covered or not execution.steps:
+    from stateforge.runtime.plan_executor import verify_plan_execution
+
+    verification = verify_plan_execution(execution)
+    if not verification["verified"] or goal.target_block != target_block:
         return None
     step_jsons = [dict(s.request) for s in execution.steps]
     payload = json.dumps(
@@ -78,12 +98,52 @@ def checkpoint_from_execution(target_block: str, source_file: str,
         checkpoint_id=f"gc-{hashlib.sha256(payload).hexdigest()[:12]}",
         target_block=target_block,
         source_file=str(source_file),
+        source_hash=ir.metadata.get("source_hash", "") if ir is not None else "",
+        created_at=time.time(),
+        verification=verification,
         goal_constraints=[p.to_dict() for p in goal.constraints],
         steps=[{"json": j} for j in step_jsons],
         hits=list(execution.hits),
         step_evidence=[
             {"action": s.action, "ok": s.ok, "write_block": s.write_block,
-             "covered": s.n_covered} for s in execution.steps])
+             "covered": s.n_covered, "target_block_covered": s.target_block_covered,
+             "blocking": s.blocking} for s in execution.steps])
+
+
+def http_checkpoint_from_execution(target_block: str, source_file: str,
+                                   goal_constraints: list[dict], execution,
+                                   *, ir=None, fuzz_target: str = "") -> GoalCheckpoint | None:
+    """Validated real-application execution → checkpoint (else ``None``).
+
+    Only the request a client actually received becomes a checkpoint step, so a
+    replay cannot silently re-derive credentials or encodings.
+    """
+    from stateforge.runtime.http_plan_executor import verify_http_execution
+
+    verification = verify_http_execution(execution)
+    if not verification["verified"]:
+        return None
+    steps = [dict(s.request) for s in execution.steps]
+    if not steps or any(not s.get("method") or not s.get("path") for s in steps):
+        return None
+    payload = json.dumps({"target_block": target_block, "steps": steps},
+                         sort_keys=True).encode()
+    return GoalCheckpoint(
+        checkpoint_id=f"gc-{hashlib.sha256(payload).hexdigest()[:12]}",
+        target_block=target_block,
+        source_file=str(source_file),
+        source_hash=ir.metadata.get("source_hash", "") if ir is not None else "",
+        created_at=time.time(),
+        verification=verification,
+        goal_constraints=[dict(c) for c in goal_constraints],
+        steps=steps,
+        transport="http",
+        fuzz_target=str(fuzz_target),
+        step_evidence=[
+            {"action": s.action, "status": s.status, "ok": s.ok,
+             "target_block_covered": s.target_covered,
+             "session_authenticated": s.session_authenticated,
+             "blocking": s.blocking} for s in execution.steps])
 
 
 def inject_checkpoint_seed(ckpt: GoalCheckpoint,
@@ -92,26 +152,32 @@ def inject_checkpoint_seed(ckpt: GoalCheckpoint,
     内容哈希去重);返回 cid,None=重复。"""
     corpus_dir = Path(corpus_dir)
     corpus_dir.mkdir(parents=True, exist_ok=True)
-    spool = CorpusManager(corpus_dir.parent / "goal_spool")
+    publisher = SeedPublisher(corpus_dir, "goal_spool")
     data = ckpt.sequence_seed()
-    cid = spool.save(data, epoch=0, new_blocks=0, new_edges=0,
-                     discovered_blocks=0, discovered_edges=0,
+    cid = publisher.save(data,
                      interesting_reason="goal_checkpoint",
                      origin="GOAL")
-    if cid:
-        (corpus_dir / cid).write_bytes(data)
     return cid
 
 
 def replay_checkpoint(ckpt: GoalCheckpoint, ir, facts,
-                      arms) -> tuple:
+                      arms):
     """复用重放:检查点 steps 直接执行(零推导),返回 PlanExecution。
 
     检查点有效性判据 = 重放后目标块仍覆盖(状态构造的可复现证据)。
     """
-    from stateforge.runtime.plan_executor import (_load_target_module,
+    from stateforge.runtime.plan_executor import (load_target_module,
                                                   execute_plan)
 
-    mod = _load_target_module(ckpt.source_file)
+    block = ir.blocks.get(ckpt.target_block)
+    root = Path(ir.metadata["root"]).resolve()
+    if block is None or (root / block.file).resolve() != Path(ckpt.source_file).resolve():
+        raise ValueError("checkpoint target/source does not match the analyzed block")
+    if ckpt.source_hash:
+        from stateforge.analysis.static.icfg import _source_hash
+        if (ckpt.source_hash != ir.metadata.get("source_hash")
+                or ckpt.source_hash != _source_hash(root)):
+            raise ValueError("checkpoint source hash mismatch; analyze and verify again")
+    mod = load_target_module(ckpt.source_file)
     return execute_plan(ckpt.to_segment(), mod, ir, facts,
                         ckpt.target_block, ckpt.source_file, arms)

@@ -38,7 +38,9 @@ def _module_name(root: Path, path: Path) -> str:
 
 def _files(root: Path):
     for path in sorted(root.rglob("*.py")):
-        if not any(part in _SKIP for part in path.parts):
+        # Exclude descendants of the selected root, not its ancestors. An
+        # explicitly selected application can itself live in site-packages.
+        if not any(part in _SKIP for part in path.relative_to(root).parts[:-1]):
             yield path
 
 

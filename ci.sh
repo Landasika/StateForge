@@ -11,12 +11,13 @@ trap 'rm -rf "$SF_CI_DIR"' EXIT
 
 # pytest/demo 运行时屏蔽 LLM 凭据(无 key 路径 = fresh-clone 验收口径)
 # 屏蔽 legacy 族:ANTHROPIC_* + SF_LLM_{PROVIDER,BASE_URL,MODEL,MAX_CALLS,SSL_VERIFY}
-# + OPENAI_API_KEY(=provider.py 实际变量名);STATEFORGE_LLM_* 不屏蔽——
-# 验收链自身 config 面由测试构造 fake,不依赖宿主环境。
+# + OPENAI_API_KEY + canonical STATEFORGE_LLM_*;配置测试自行构造 fake。
 SANITIZE_ENV=(env -u ANTHROPIC_API_KEY -u ANTHROPIC_BASE_URL
               -u ANTHROPIC_AUTH_TOKEN -u ANTHROPIC_MODEL
               -u SF_LLM_PROVIDER -u SF_LLM_BASE_URL -u SF_LLM_MODEL
-              -u SF_LLM_MAX_CALLS -u SF_LLM_SSL_VERIFY -u OPENAI_API_KEY)
+              -u SF_LLM_MAX_CALLS -u SF_LLM_SSL_VERIFY -u OPENAI_API_KEY
+              -u STATEFORGE_LLM_API_KEY -u STATEFORGE_LLM_BASE_URL
+              -u STATEFORGE_LLM_MODEL -u STATEFORGE_LLM_TIMEOUT)
 
 echo "== [1/5] clone $REPO_ROOT -> $SF_CI_DIR/src"
 git clone -q "$REPO_ROOT" "$SF_CI_DIR/src"
@@ -28,6 +29,9 @@ source "$SF_CI_DIR/venv/bin/activate"
 
 echo "== [3/5] pip install -e \".[dev,test,fuzz]\""
 python -m pip install -e ".[dev,test,fuzz]"
+
+echo "== wheel isolated installation check"
+"${SANITIZE_ENV[@]}" python -m stateforge.evaluation.check_distribution
 
 echo "== [4/5] pytest(fresh clone:预期全绿;数字随阶段测试数增长,以 pytest 汇总行为准)"
 if ! PYTEST_TAIL="$("${SANITIZE_ENV[@]}" python -m pytest 2>&1 \

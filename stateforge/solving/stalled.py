@@ -10,7 +10,8 @@ from dataclasses import dataclass
 
 from stateforge.core.ir import ProgramIR
 from stateforge.solving.guard_ir import BranchGuard
-from stateforge.solving.guard_recovery import _TestIndex, recover_guard
+from stateforge.analysis.source_index import SourceTestIndex
+from stateforge.solving.guard_recovery import recover_guard
 
 N_MIN_HITS = 100            # 冻结:源块最低命中次数
 
@@ -28,11 +29,11 @@ class StalledFrontier:
 
 def find_stalled(ir: ProgramIR, covered_blocks: dict[str, int],
                  covered_edges: set[tuple[str, str]],
-                 test_index: _TestIndex | None = None,
+                 test_index: SourceTestIndex | None = None,
                  min_hits: int = N_MIN_HITS
                  ) -> list[StalledFrontier]:
     """返回当前全部 stalled guarded frontier(按源块 hit 降序)。"""
-    idx = test_index or _TestIndex(ir)
+    idx = test_index or SourceTestIndex(ir)
     out: list[StalledFrontier] = []
     for e in ir.edges:
         if e.kind not in ("true", "false"):

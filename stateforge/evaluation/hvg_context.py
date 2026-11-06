@@ -212,7 +212,7 @@ def score_with_ecr_esr(results: list[VerificationResult],
 
 def run_p2(n_hyp=10, out_dir="/tmp/hvg_p2"):
     """跑三个臂(A0/A1/A2),同一个 H 集合 + GT + 模型。"""
-    from stateforge.solving.llm.provider import Provider
+    from stateforge.analysis.semantics.provider import Provider
     provider = Provider.from_env()
     if provider is None:
         logger.error("ERROR: Provider not configured")

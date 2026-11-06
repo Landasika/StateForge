@@ -26,7 +26,7 @@ CandidateSource = Literal["session_access", "db_field", "condition", "ownership_
 
 class Param(BaseModel):
     name: str
-    location: Literal["path", "query", "json", "header", "cookie"]
+    location: Literal["path", "query", "json", "form", "header", "cookie"]
     py_type: str = "str"
     value_domain: list[str] | None = None
 
@@ -113,6 +113,7 @@ class PlanStep(BaseModel):
 
     action: str                       # "POST /auth/register"
     json: dict[str, str] = Field(default_factory=dict)
+    form: dict[str, str] = Field(default_factory=dict)
     path: dict[str, str] = Field(default_factory=dict)      # 路径参数(已代入或 ?var)
     headers: dict[str, str] = Field(default_factory=dict)   # 如 Authorization: Bearer ?token
     extract: dict[str, str] = Field(default_factory=dict)   # 响应键 → ?var

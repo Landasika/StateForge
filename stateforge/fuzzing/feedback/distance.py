@@ -7,20 +7,33 @@ from collections import deque
 from stateforge.core.ir import ProgramIR
 
 
-def distance_to_targets(ir: ProgramIR, sources: set[str], targets: set[str]) -> dict[str, int]:
-    """Return the shortest directed ICFG distance from any source to each target."""
+def reverse_graph(ir: ProgramIR) -> dict[str, list[str]]:
     reverse: dict[str, list[str]] = {}
     for edge in ir.edges:
         reverse.setdefault(edge.dst, []).append(edge.src)
-    dist: dict[str, int] = {}
-    queue = deque((target, 0) for target in targets)
+    return reverse
+
+
+def reverse_distances(reverse: dict[str, list[str]], anchors: dict[str, str]
+                      ) -> tuple[dict[str, int], dict[str, str]]:
+    """Multi-source BFS; anchor insertion order resolves equal-distance owners."""
+    distances = dict.fromkeys(anchors, 0)
+    nearest = dict(anchors)
+    queue = deque(anchors)
     while queue:
-        node, d = queue.popleft()
-        if node in dist and dist[node] <= d:
-            continue
-        dist[node] = d
-        queue.extend((parent, d + 1) for parent in reverse.get(node, []))
-    return {source: dist[source] for source in sources if source in dist}
+        node = queue.popleft()
+        for parent in reverse.get(node, []):
+            if parent not in distances:
+                distances[parent] = distances[node] + 1
+                nearest[parent] = nearest[node]
+                queue.append(parent)
+    return distances, nearest
+
+
+def distance_to_targets(ir: ProgramIR, sources: set[str], targets: set[str]) -> dict[str, int]:
+    """Return the shortest directed ICFG distance from sources to a target set."""
+    distances, _ = reverse_distances(reverse_graph(ir), {t: t for t in targets})
+    return {source: distances[source] for source in sources if source in distances}
 
 
 def target_distances(ir: ProgramIR, targets: set[str]) -> dict[str, int]:

@@ -52,19 +52,6 @@ def apply_transforms(raw, chain):
     return raw
 
 
-def _match_source(expr: ast.expr) -> tuple[str, str] | None:
-    """request.<attr>["key"] / request.<attr>.get("key") → (kind, key)。"""
-    inner = expr
-    if isinstance(inner, ast.Call) and isinstance(inner.func, ast.Attribute) \
-            and inner.func.attr == "get" and len(inner.args) == 1 \
-            and isinstance(inner.args[0], ast.Constant):
-        inner = inner.func.value
-        key = None
-        # get 形式的 key 在 args;重取
-        return None  # 占位,下面统一处理
-    return None
-
-
 def _extract(expr: ast.expr) -> tuple[str, str] | None:
     """统一提取:Subscript(request.<attr>[Constant]) 或 .get(Constant)。"""
     if isinstance(expr, ast.Subscript) and isinstance(expr.value, ast.Attribute):

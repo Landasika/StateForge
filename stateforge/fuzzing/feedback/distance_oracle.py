@@ -7,16 +7,13 @@ UNREACHABLE = 不在距离表里 → proximity=0,单独统计。
 
 from __future__ import annotations
 
-from collections import deque
-
 from stateforge.core.ir import ProgramIR
+from stateforge.fuzzing.feedback.distance import reverse_graph, reverse_distances
 
 
 class DistanceOracle:
     def __init__(self, ir: ProgramIR):
-        self._reverse: dict[str, list[str]] = {}
-        for edge in ir.edges:
-            self._reverse.setdefault(edge.dst, []).append(edge.src)
+        self._reverse = reverse_graph(ir)
         self._version: int | None = None
         self._dist: dict[str, int] = {}
         self._nearest: dict[str, str] = {}
@@ -26,20 +23,8 @@ class DistanceOracle:
         if version == self._version:
             return
         self._version = version
-        self._dist, self._nearest = {}, {}
-        queue = deque()
-        for (u, v) in edge_frontiers:          # 锚点:未走边的源块 u(距它 0)
-            self._dist[u] = 0
-            self._nearest[u] = f"{u}->{v}"
-            queue.append(u)
-        while queue:
-            node = queue.popleft()
-            d = self._dist[node]
-            for parent in self._reverse.get(node, []):
-                if parent not in self._dist:
-                    self._dist[parent] = d + 1
-                    self._nearest[parent] = self._nearest[node]
-                    queue.append(parent)
+        anchors = {u: f"{u}->{v}" for u, v in edge_frontiers}
+        self._dist, self._nearest = reverse_distances(self._reverse, anchors)
 
     def distance(self, blocks: set[str]) -> tuple[int | None, str | None]:
         """D(x) = min d(v,F);None = 全部不可达(UNREACHABLE,proximity=0)。"""

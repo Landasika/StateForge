@@ -65,3 +65,79 @@ def test_stage2_real_http_reaches_target_block(plan_and_ir, capsys):
     assert r.returncode == 0, r.stderr[-400:]
     assert "target_covered: True" in r.stdout
     assert "302" in r.stdout and "200" in r.stdout
+
+
+# --------------------------------------------------------------- full pipeline
+#
+# The two-stage test above proves the executor can reach the block. This one
+# proves the *pipeline* can: one command goes analysis → goal → plan → execute
+# → isolation probe → checkpoint → cold replay → C10 seed → real Atheris, and
+# every stage must leave evidence.
+
+NARROW = LINKDING / "bookmarks" / "views"
+NARROW_TARGET = "bookmarks.py::edit::239-241::block::1"
+ADAPTER = (REPO / "stateforge" / "targets" / "real_apps" / "linkding"
+           / "inproc_target.py")
+
+
+def _app_goal_run(out: Path, *extra: str) -> subprocess.CompletedProcess:
+    return subprocess.run(
+        [str(VENV_PY), "-m", "stateforge.cli", "app-goal-run", str(LINKDING),
+         "--block", NARROW_TARGET, "--analysis-root", str(NARROW),
+         "--harness", "stateforge.targets.apps20.linkding.harness",
+         "--out", str(out), *extra],
+        cwd=REPO, capture_output=True, text=True, timeout=1800)
+
+
+def test_pipeline_executes_and_cold_replays(tmp_path):
+    out = tmp_path / "run"
+    r = _app_goal_run(out, "--mode", "execute")
+    assert r.returncode == 0, (r.stdout[-1500:], r.stderr[-800:])
+    summary = json.loads((out / "summary.json").read_text(encoding="utf-8"))
+    assert summary["status"] == "verified"
+    assert all(v == "ok" for v in summary["stages"].values()), summary["stages"]
+    assert summary["target_covered"] and summary["execution_verified"]
+    # The prefix must be load-bearing, not merely sufficient.
+    assert summary["prefix_necessary"] is True
+    # Cold replay is a different process than the runner.
+    replay = summary["cold_replay"]
+    assert replay["verified"] and replay["pid"] != replay["parent_pid"]
+    # The plan is the HTTP chain derived from the framework guard.
+    plan = json.loads((out / "plan.json").read_text(encoding="utf-8"))
+    assert [s["action"] for s in plan["steps"]] == [
+        "POST /login/", "GET bookmarks/<int:bookmark_id>/edit"]
+    goal = json.loads((out / "goal.json").read_text(encoding="utf-8"))
+    assert goal["constraints"] == [
+        {"var": "Session.authed_as", "op": "truthy", "value": None}]
+
+
+def test_pipeline_seed_is_consumed_by_real_atheris(tmp_path):
+    out = tmp_path / "fuzz"
+    r = _app_goal_run(out, "--mode", "fuzz", "--adapter", str(ADAPTER),
+                      "--fuzz-seconds", "2", "--fuzz-runs", "20")
+    assert r.returncode == 0, (r.stdout[-1500:], r.stderr[-800:])
+    summary = json.loads((out / "summary.json").read_text(encoding="utf-8"))
+    fuzzing = summary["fuzzing"]
+    assert fuzzing["verified"] and fuzzing["consumed"]
+    assert fuzzing["target_covered"] and fuzzing["engine"] == "atheris"
+    assert fuzzing["sequence_steps"] == 2
+    receipt = fuzzing["matching_receipts"][0]
+    assert receipt["engine"] == "atheris"
+    assert receipt["phase"] == "input_callback"
+    assert receipt["completed_steps"] == 2
+    assert receipt["lifecycle"] == "reset" and receipt["isolation"] == "reset"
+    assert receipt["target_covered"] and receipt["error"] is None
+
+
+def test_pipeline_replay_mode_reproduces_a_saved_checkpoint(tmp_path):
+    first = tmp_path / "execute"
+    assert _app_goal_run(first, "--mode", "execute").returncode == 0
+    saved = json.loads((first / "summary.json").read_text(encoding="utf-8"))
+    checkout = tmp_path / "replay"
+    r = _app_goal_run(checkout, "--mode", "replay",
+                      "--checkpoint", saved["checkpoint"])
+    assert r.returncode == 0, (r.stdout[-1500:], r.stderr[-800:])
+    summary = json.loads((checkout / "summary.json").read_text(encoding="utf-8"))
+    assert summary["status"] == "verified"
+    assert summary["input_checkpoint"] == saved["checkpoint"]
+    assert summary["cold_replay"]["verified"]

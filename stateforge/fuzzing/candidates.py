@@ -18,78 +18,15 @@ from __future__ import annotations
 
 import time
 
-from stateforge.core.ir import ProgramIR
-from stateforge.runtime.execution_context import (
-    ExecutionContext,
-    LifecycleError,
-    audit_lifecycle_failure,
-)
-from stateforge.runtime.mapper import map_trace
-from stateforge.runtime.tracer import TraceSession
-from stateforge.fuzzing.recorder import ExperimentRecorder
-from stateforge.fuzzing.feedback.structural import StructuralFeedback
+from stateforge.fuzzing.collector import Collector, CollectedExecution
 from stateforge.fuzzing.corpus_manager import CorpusManager
 
 
-class CandidateCollector:
-    def __init__(self, ir: ProgramIR, session: TraceSession,
-                 feedback: StructuralFeedback,
-                 corpus: CorpusManager | None,       # None = measure 模式
-                 recorder: ExperimentRecorder, epoch: int,
-                 on_save=None,                      # P0-7:保存时持久化全局覆盖
-                 execution: ExecutionContext | None = None,   # P0-A 生命周期
-                 state_ledger=None,                # P0-B 证据台账
-                 state_novelty: bool = False):    # PR-07 状态新颖度保留(默认关)
-        self.ir = ir
-        self.session = session
-        self.feedback = feedback
-        self.corpus = corpus
-        self.recorder = recorder
-        self.epoch = epoch
-        self.on_save = on_save
-        self.execution = execution if execution is not None else ExecutionContext()
-        self.state_ledger = state_ledger
-        self.state_novelty = state_novelty          # 默认关:A–F 不变
-        self.lifecycle_failures = 0         # 隔离失败次数(审计之外的记忆)
-
-    def _lifecycle_failed(self, exc: LifecycleError):
-        """fail-closed 审计:写 jsonl + 计数;调用方跳过该输入。"""
-        self.lifecycle_failures += 1
-        audit_lifecycle_failure(self.recorder.dir, {
-            "group": self.recorder.group, "epoch": self.epoch,
-            "lifecycle": self.execution.lifecycle.name,
-            "isolation": self.execution.lifecycle.isolation,
-            "error": str(exc)})
-
-    def handle(self, target, data: bytes):
-        start = len(self.session.events)
-        with self.session.request():
-            t0 = time.monotonic()
-            try:
-                self.execution.begin_run()           # P0-A:失败 → 未执行
-            except LifecycleError as exc:
-                self._lifecycle_failed(exc)
-                return None
-            try:
-                target(data)
-            except Exception:                      # noqa: BLE001  fuzz 输入不得中断引擎
-                pass
-            exec_s = time.monotonic() - t0
-        # P0-A/P0-B:观测(还原前)+ 基线还原。TraceSession.request() 只切
-        # 换事件归属、不停止收集(tracer.untraced docstring),故此处必须
-        # 显式挂起追踪——观测器/还原帧是反馈机制自身,不得混进覆盖计数;
-        # 还原失败同样 fail-closed。
-        try:
-            with self.session.untraced():
-                result = self.execution.finish_run(data)
-        except LifecycleError as exc:
-            self._lifecycle_failed(exc)
-            return None
-        state_novel = ()
-        if self.state_ledger is not None:
-            state_novel = self.state_ledger.record(result.observations)
-        t1 = time.monotonic()
-        mapped = map_trace(self.session.events[start:], self.ir)
+class CandidateCollector(Collector):
+    def _process(self, data: bytes, run: CollectedExecution):
+        mapped = run.mapped
+        state_novel = run.state_novel
+        exec_s, t1 = run.execution_seconds, run.feedback_started
         obs = self.feedback.observe(mapped)         # 对执行前快照评分
         cid = None
         keep_for_state = self.state_novelty and bool(state_novel)

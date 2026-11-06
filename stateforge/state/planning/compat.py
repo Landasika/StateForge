@@ -7,7 +7,7 @@
   resource_completion() "?oid 等资源槽无上游 extract → 前插资源创建端点
 
 这些是**既有靶场(vulnshop 族)的实用规则**,不是通用规划算法的一部分;
-planner 核心(plan_backward)只经本模块调用,应用特定知识不得散落通用
+仅显式 VulnshopPolicy 调用本模块,应用特定知识不得散落通用
 路径(消融臂 state_ablation 按"无本层"口径对照,贡献差即本层+链选择)。
 通用机制(路由参数/数据流/响应绑定自动生成请求)按 Phase-3 排期替换,
 届时本模块退役或降级为 vulnshop 专用 adapter。

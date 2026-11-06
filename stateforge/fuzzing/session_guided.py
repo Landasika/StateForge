@@ -33,7 +33,7 @@ from pathlib import Path
 from typing import Callable, Iterable
 
 from stateforge.core.ir import ProgramIR
-from stateforge.fuzzing.entry_driver import encode_sequence_seed
+from stateforge.core.seeds import encode_sequence_seed
 from stateforge.runtime.mapper import map_trace
 from stateforge.runtime.tracer import TraceSession
 from stateforge.state.session_index import (COND_EQ, COND_EXISTS, COND_FALSY,

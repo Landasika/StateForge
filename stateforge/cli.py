@@ -188,11 +188,8 @@ def guided_cmd(target: str, block: str, adapter_spec: str, seeds: str,
             allow_stale_ir=allow_stale_ir,
             output_dir=Path(out),
             scheduler_name=scheduler_name,
-            selection_policy=(selection_policy
-                              if selection_policy is not None
-                              else "distance"),
-            energy_policy=(energy_policy
-                           if energy_policy is not None else "distance"),
+            selection_policy=selection_policy,
+            energy_policy=energy_policy,
         )
         campaign = GuidedCampaign(ir, BasicBlockTarget(block),
                                   _load_adapter(adapter_spec), config=config)
@@ -216,6 +213,42 @@ def main() -> int:
     parser.add_argument("-v", "--verbose", action="store_true",
                         help="DEBUG logging on stderr (default INFO)")
     sub = parser.add_subparsers(dest="command", required=True)
+    goal_run = sub.add_parser("goal-run", help="derive, plan and verify a state goal")
+    goal_run.add_argument("target", help="source root to analyze")
+    goal_run.add_argument("--source", required=True, help="target(data) file within source root")
+    goal_run.add_argument("--block", required=True, help="target basic block id")
+    goal_run.add_argument("--mode", choices=("plan", "execute", "replay", "fuzz"), default="execute")
+    goal_run.add_argument("--checkpoint", help="saved checkpoint for --mode replay")
+    goal_run.add_argument("--fuzz-seconds", type=float, default=2,
+                          help="Atheris time budget in fuzz mode (at least 1 second)")
+    goal_run.add_argument("--fuzz-runs", type=int, default=100,
+                          help="maximum Atheris runs in fuzz mode")
+    goal_run.add_argument("--out", default="results/goal-run")
+    app_goal_run = sub.add_parser(
+        "app-goal-run",
+        help="same pipeline for a real Django/Flask app through its own client")
+    app_goal_run.add_argument("app_root", help="application source root")
+    app_goal_run.add_argument("--block", required=True, help="target basic block id")
+    app_goal_run.add_argument("--harness", required=True,
+                              help="harness module exposing build_client/is_authenticated")
+    app_goal_run.add_argument("--framework", default="django")
+    app_goal_run.add_argument("--analysis-root",
+                              help="analyzed subtree inside the app (default: app root)")
+    app_goal_run.add_argument("--trace-root",
+                              help="traced subtree (default: analysis root)")
+    app_goal_run.add_argument("--adapter",
+                              help="in-process fuzz target file (required in fuzz mode)")
+    app_goal_run.add_argument("--python",
+                              help="application interpreter (default: $SF_APP_PYTHON)")
+    app_goal_run.add_argument("--user", default="probe")
+    app_goal_run.add_argument("--password", default="Passw0rd!")
+    app_goal_run.add_argument("--mode",
+                              choices=("plan", "execute", "replay", "fuzz"),
+                              default="execute")
+    app_goal_run.add_argument("--checkpoint", help="saved checkpoint for --mode replay")
+    app_goal_run.add_argument("--fuzz-seconds", type=float, default=2)
+    app_goal_run.add_argument("--fuzz-runs", type=int, default=50)
+    app_goal_run.add_argument("--out", default="results/app-goal-run")
     analyze = sub.add_parser("analyze", help="build a stable ProgramIR/ICFG")
     analyze.add_argument("target")
     analyze.add_argument("--out", default="results/structural")
@@ -267,6 +300,39 @@ def main() -> int:
                         help="run even if sources changed since analysis")
     args = parser.parse_args()
     setup_logging(args.verbose)
+    if args.command == "goal-run":
+        from stateforge.pipeline import GoalRunner
+        try:
+            report = GoalRunner().run(args.target, args.block, source=args.source,
+                                      mode=args.mode, out=args.out, checkpoint=args.checkpoint,
+                                      fuzz_seconds=args.fuzz_seconds, fuzz_runs=args.fuzz_runs)
+        except OSError as exc:
+            print(f"[goal-run] unable to write artifacts: {exc}", file=sys.stderr)
+            return 2
+        print(json.dumps(report.summary, ensure_ascii=False, indent=2))
+        print(f"[out] {args.out}")
+        if report.success:
+            return 0
+        return 2 if report.summary["failed_stage"] in ("validation", "analysis") else 1
+    if args.command == "app-goal-run":
+        from stateforge.pipeline import AppGoalRunner
+        try:
+            report = AppGoalRunner(python=args.python, user=args.user,
+                                   password=args.password).run(
+                args.app_root, args.block, framework=args.framework,
+                analysis_root=args.analysis_root, harness=args.harness,
+                adapter=args.adapter, trace_root=args.trace_root,
+                mode=args.mode, out=args.out, checkpoint=args.checkpoint,
+                fuzz_seconds=args.fuzz_seconds, fuzz_runs=args.fuzz_runs)
+        except OSError as exc:
+            print(f"[app-goal-run] unable to write artifacts: {exc}",
+                  file=sys.stderr)
+            return 2
+        print(json.dumps(report.summary, ensure_ascii=False, indent=2))
+        print(f"[out] {args.out}")
+        if report.success:
+            return 0
+        return 2 if report.summary["failed_stage"] in ("validation", "analysis") else 1
     if args.command == "guided":
         return guided_cmd(args.target, args.block, args.adapter, args.seeds,
                           args.out, args.executions, args.max_seconds,

@@ -6,11 +6,10 @@ from stateforge.targets.apps20.microblog.harness import CLIENT, _BEARER  # noqa:
 def _make_adapter():
     from stateforge.adapters.generic_web import GenericWebAdapter
 
-    adapter = GenericWebAdapter.__new__(GenericWebAdapter)
-    adapter.client = CLIENT           # Flask test_client(有 .open,自动走分支)
-    adapter.auth_headers = _BEARER    # API 蓝图 Bearer;页面域靠 client 会话 cookie
-    adapter.base_url = ""
-    return adapter
+    return GenericWebAdapter(
+        client=CLIENT,
+        auth_headers=_BEARER,
+        base_url="")
 
 
 _ADAPTER = _make_adapter()

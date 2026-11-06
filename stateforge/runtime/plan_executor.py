@@ -23,6 +23,8 @@ from pathlib import Path
 
 from stateforge.core.ir import ProgramIR
 from stateforge.runtime.mapper import map_trace
+from stateforge.runtime.execution import execute_traced
+from stateforge.runtime.execution_context import ExecutionContext
 from stateforge.runtime.tracer import TraceSession
 from stateforge.state.extractor import StateFactCandidate, StateOperation
 
@@ -47,13 +49,32 @@ class PlanExecution:
     notes: list[str] = field(default_factory=list)
 
 
-def _load_target_module(target_path: str | Path):
+def load_target_module(target_path: str | Path):
     path = Path(target_path).resolve()
     spec = importlib.util.spec_from_file_location(path.stem, path)
     mod = importlib.util.module_from_spec(spec)
     sys.modules[path.stem] = mod
     spec.loader.exec_module(mod)
     return mod
+
+
+# Compatibility for existing callers; orchestration uses the public loader.
+_load_target_module = load_target_module
+
+
+def verify_plan_execution(execution: PlanExecution,
+                          expected_steps: int | None = None) -> dict:
+    """Verify trace evidence, without claiming arbitrary state values were read."""
+    blocking = [s.blocking or f"{s.action}: step rejected"
+                for s in execution.steps if not s.ok or s.blocking]
+    target_steps = [i for i, s in enumerate(execution.steps) if s.target_block_covered]
+    complete = (bool(execution.steps) and
+                (expected_steps is None or len(execution.steps) == expected_steps))
+    verified = bool(complete and execution.target_covered and target_steps and not blocking)
+    return {"verified": verified,
+            "basis": "traced_target_block_and_expected_write_blocks",
+            "complete": complete, "target_steps": target_steps, "blocking": blocking,
+            "notes": list(execution.notes)}
 
 
 def _expected_write_block(facts: list[StateFactCandidate],
@@ -91,38 +112,34 @@ def execute_plan(segment, target_module, ir: ProgramIR,
         result.notes.append("no target() entry on module")
         return result
 
-    root = str(Path(source_file).resolve().parent)
-    with TraceSession(root=root) as session:
-        for step in segment.steps:
-            arm = step.action.removeprefix("POST op=")
-            arm_line = _arm_lines(arms, arm)
-            wblock = _expected_write_block(facts, source_file, arm, arm_line)
-            payload = json.dumps({"json": step.json}).encode()
-            with session.request() as rid:
-                exc: Exception | None = None
-                try:
-                    target_fn(payload)
-                except Exception as e:            # noqa: BLE001
-                    exc = e
-            evs = [e for e in session.events if e.request_id == rid]
-            covered = set(map_trace(evs, ir).blocks)
-            hit_target = target_block in covered
-            if exc is not None:
-                ok = False
-                blocking = f"exception:{type(exc).__name__}:{exc}"
-            elif wblock is None:
-                ok = hit_target                  # 消费步:目标块即判据
-                blocking = None if ok else "target block not covered"
-            else:
-                ok = wblock in covered
-                blocking = None if ok else (
-                    f"write block {wblock} not covered"
-                    f" (guard rejected, arm lines {arm_line[0]}-{arm_line[1]})")
-            result.steps.append(StepResult(
-                action=step.action, request=dict(step.json), ok=ok,
-                write_block=wblock, n_covered=len(covered),
-                target_block_covered=hit_target, blocking=blocking))
-            result.target_covered = result.target_covered or hit_target
+    root = ir.metadata.get("root") or str(Path(source_file).resolve().parent)
+    session = TraceSession(root=root)
+    execution = ExecutionContext()
+    for step in segment.steps:
+        arm = step.action.removeprefix("POST op=")
+        arm_line = _arm_lines(arms, arm)
+        wblock = _expected_write_block(facts, source_file, arm, arm_line)
+        payload = json.dumps({"json": step.json}).encode()
+        run = execute_traced(target_fn, payload, session, execution)
+        exc, evs = run.error, run.events
+        covered = set(map_trace(evs, ir).blocks)
+        hit_target = target_block in covered
+        if exc is not None:
+            ok = False
+            blocking = f"exception:{type(exc).__name__}:{exc}"
+        elif wblock is None:
+            ok = hit_target                  # 消费步:目标块即判据
+            blocking = None if ok else "target block not covered"
+        else:
+            ok = wblock in covered
+            blocking = None if ok else (
+                f"write block {wblock} not covered"
+                f" (guard rejected, arm lines {arm_line[0]}-{arm_line[1]})")
+        result.steps.append(StepResult(
+            action=step.action, request=dict(step.json), ok=ok,
+            write_block=wblock, n_covered=len(covered),
+            target_block_covered=hit_target, blocking=blocking))
+        result.target_covered = result.target_covered or hit_target
 
     hits = getattr(target_module, "HITS", None)
     result.hits = list(hits) if isinstance(hits, list) else []

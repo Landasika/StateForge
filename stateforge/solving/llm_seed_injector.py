@@ -11,15 +11,15 @@ import time
 from pathlib import Path
 
 from stateforge.core.ir import ProgramIR
-from stateforge.solving.guard_recovery import (_TestIndex,
-                                                    recover_guard)
+from stateforge.analysis.source_index import SourceTestIndex
+from stateforge.solving.guard_recovery import recover_guard
 from stateforge.solving.enhanced_provenance import resolve_enhanced
 from stateforge.solving.llm_solver import LLMSemanticSolver
 from stateforge.solving.proposal import ProposalStatus
 from stateforge.solving.proposal_validator import validate
 from stateforge.fuzzing.constraint_mutator import (MutationError,
                                                 apply_hint)
-from stateforge.fuzzing.corpus_manager import CorpusManager
+from stateforge.fuzzing.seed_publisher import SeedPublisher
 from stateforge.fuzzing.mutation_hint import MutationHint
 
 
@@ -42,8 +42,9 @@ def inject_llm_seeds(ir: ProgramIR, app_path: Path,
     if not covered_blocks:
         return []
 
-    index = _TestIndex(ir)
+    index = SourceTestIndex(ir)
     solver = LLMSemanticSolver(provider)
+    publisher = SeedPublisher(corpus_dir, "llm_spool")
     records = []
 
     # 找 stalled guarded frontiers
@@ -105,13 +106,11 @@ def inject_llm_seeds(ir: ProgramIR, app_path: Path,
         try:
             seed = apply_hint(base_seed, hint)
             seed_bytes = json.dumps(seed, sort_keys=True).encode()
-            cid = CorpusManager(corpus_dir.parent / "llm_spool").save(
-                seed_bytes, epoch=0, new_blocks=0, new_edges=0,
-                discovered_blocks=0, discovered_edges=0,
+            cid = publisher.save(
+                seed_bytes,
                 nearest_frontier=sf.frontier_id,
                 interesting_reason="llm_proposal", origin="LLM")
             if cid:
-                (corpus_dir / cid).write_bytes(seed_bytes)
                 base_seed = seed           # 下一个 LLM 变异基于此(叠加)
                 records.append({"frontier": sf.frontier_id,
                                 "status": "INJECTED",
