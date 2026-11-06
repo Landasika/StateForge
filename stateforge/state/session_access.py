@@ -196,17 +196,37 @@ def _assigned_names(fn: ast.AST) -> set[str]:
 
 def _is_session_expr(node: ast.AST | None, names: set[str],
                      flask_names: set[str]) -> bool:
+    """True when an expression denotes a session store.
+
+    Beyond the Flask spelling and the legacy bare name, fall back to the
+    general object resolver so framework-neutral forms such as Django's
+    ``request.session`` and ``self.session`` are recognised too. Without
+    this a Django target reports ``not-session-resolvable`` and the guided
+    search has no writer to aim at.
+    """
     if isinstance(node, ast.Name):
         return node.id in names
     if isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name):
-        return (node.value.id in flask_names and node.attr == "session")
-    return False
+        if node.value.id in flask_names and node.attr == "session":
+            return True
+    from stateforge.state import objects
+    if node is None:
+        return False
+    return objects.is_session_like(objects.describe(node))
 
 
 def _name_provenance(node: ast.AST, names: set[str]) -> tuple[str, ...]:
+    """Where a session expression came from, for audit.
+
+    Attribute forms are reported by their resolved dotted text (for example
+    ``attr:request.session``) instead of a fixed Flask label, so the audit
+    trail names the object that was actually used.
+    """
     if isinstance(node, ast.Name):
         return (f"name:{node.id}",) if node.id in names else ()
-    return ("attr:flask.session",)
+    from stateforge.state import objects
+    text = objects.describe(node)
+    return (f"attr:{text}",) if text else ()
 
 
 def _session_names(fn: ast.AST, module_imports: dict[str, str]) -> tuple[set[str], set[str]]:
@@ -395,13 +415,47 @@ def _handle_call(ctx: _Ctx, path: Path, node: ast.Call,
     return out
 
 
+def _has_attribute_session(fn: ast.AST) -> bool:
+    """True when the function touches a session through attribute access.
+
+    ``request.session[...]`` and ``self.session[...]`` denote the same kind of
+    store as Flask's bare ``session`` but introduce no local binding, so the
+    name-based prefilter cannot see them.
+    """
+    from stateforge.state import objects
+    for node in _walk_scope(fn):
+        target = None
+        if isinstance(node, ast.Assign):
+            for t in node.targets:
+                if isinstance(t, ast.Subscript):
+                    target = t.value
+        elif isinstance(node, (ast.AugAssign,)):
+            if isinstance(node.target, ast.Subscript):
+                target = node.target.value
+        elif isinstance(node, ast.Delete):
+            for t in node.targets:
+                if isinstance(t, ast.Subscript):
+                    target = t.value
+        elif isinstance(node, ast.Subscript):
+            target = node.value
+        if target is None:
+            continue
+        if isinstance(target, ast.Attribute) and objects.is_session_like(
+                objects.describe(target)):
+            return True
+    return False
+
+
 def _extract_function(ctx: _Ctx, path: Path, fn: ast.AST,
                       module_imports: dict[str, str]) -> list[SessionAccess]:
     names, flask_names = _session_names(fn, module_imports)
-    if not names and not flask_names:
-        return []
     aliases = _alias_session_names(fn, names, flask_names)
     names |= set(aliases)
+    # An attribute-form store (Django's ``request.session``) binds to no local
+    # name, so the name sets say nothing about it. Only skip the function when
+    # there is neither a named session nor any attribute-form session access.
+    if not names and not flask_names and not _has_attribute_session(fn):
+        return []
     out: list[SessionAccess] = []
 
     # 先记录下标/赋值/删除；Call 里的下标参数不重复算读。

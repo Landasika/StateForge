@@ -48,6 +48,54 @@ def _load_defs(app_root: Path):
     return funcs, classes
 
 
+def _function_view_methods(fdef) -> list[str]:
+    """HTTP methods a function-based view actually accepts.
+
+    Returning a blanket ``["GET"]`` hid POST-only views: linkding's ``login``
+    is a function view whose body branches on ``request.method == "POST"``, so
+    a pool built from the analysis never contained ``POST /login/`` and no
+    search could ever reach the login session write.
+
+    Two cases, because Django treats function views differently from Flask:
+
+    * explicit ``require_POST`` / ``require_http_methods`` decorators state the
+      exact set, so they are authoritative;
+    * a plain function view is dispatched for *every* method unless it guards
+      ``request.method`` itself. linkding's ``edit`` renders on GET and saves
+      on POST, so it must publish both.
+
+    Reads ``request.method == "POST"`` / ``!= "GET"`` style comparisons to add
+    methods, and never narrows below GET for an unguarded view.
+    """
+    if fdef is None:
+        return ["GET"]
+    explicit: list[str] = []
+    guarded: list[str] = []
+    verbs = ("GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS")
+    for node in ast.walk(fdef):
+        if isinstance(node, ast.Compare) and len(node.ops) == 1:
+            for side in (node.left, node.comparators[0]):
+                if isinstance(side, ast.Constant) and isinstance(side.value, str) \
+                        and side.value.upper() in verbs:
+                    verb = side.value.upper()
+                    if isinstance(node.ops[0], ast.Eq) and verb not in guarded:
+                        guarded.append(verb)
+                    elif isinstance(node.ops[0], ast.NotEq) and verb == "GET" \
+                            and "POST" not in guarded:
+                        guarded.append("POST")
+        elif isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
+            name = node.func.id
+            if name.startswith("require_") and name[8:].upper() in verbs:
+                verb = name[8:].upper()
+                if verb not in explicit:
+                    explicit.append(verb)
+    if explicit:
+        return explicit
+    # A function view accepts every method unless it branches on request.method
+    # or is restricted by a decorator; GET is always included.
+    return ["GET"] + [m for m in guarded if m != "GET"]
+
+
 def _class_view(cls: ast.ClassDef, name: str):
     methods = [m.upper() for m in ("get", "post", "put", "delete", "patch")
                if any(isinstance(s, ast.FunctionDef) and s.name == m
@@ -61,15 +109,15 @@ def _view_ref(node, funcs, classes):
     """view 参数 → (methods, FunctionDef|None, 显示名);解析不了返回 None。"""
     if isinstance(node, ast.Name):                     # 直接函数名(同模块 import)
         f = next((f for (m, n), f in funcs.items() if n == node.id), None)
-        return (["GET"], f, node.id) if f else None    # type: ignore[list-item]
+        return (_function_view_methods(f), f, node.id) if f else None
     if isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name):
         key = (node.value.id, node.attr)               # views.detail
         if key in funcs:
-            return ["GET"], funcs[key], node.attr      # type: ignore[list-item]
+            return _function_view_methods(funcs[key]), funcs[key], node.attr
         if key in classes:
             return _class_view(classes[key], node.attr)
         f = next((f for (m, n), f in funcs.items() if n == node.attr), None)
-        return (["GET"], f, node.attr) if f else None  # type: ignore[list-item]
+        return (_function_view_methods(f), f, node.attr) if f else None
     if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) \
             and node.func.attr == "as_view":           # View.as_view()
         inner = node.func.value

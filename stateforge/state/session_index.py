@@ -387,11 +387,24 @@ def _session_source(node: ast.AST, aliases: dict[str, tuple[str, str | None, str
 
 def _looks_like_session(node: ast.AST, names: set[str],
                         flask_names: set[str]) -> bool:
+    """True when an expression denotes a session store.
+
+    Name bindings and the Flask spelling are checked first; then the general
+    object resolver, so attribute forms such as Django's ``request.session``
+    resolve even with no local binding and no import.
+    """
     if isinstance(node, ast.Name):
-        return node.id in names
+        if node.id in names:
+            return True
+        # Bare names such as ``session`` / ``app_session`` denote a session
+        # store by convention even with no import, matching the extractor.
+        from stateforge.state import objects
+        return objects.is_session_like(node.id)
     if isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name):
-        return node.value.id in flask_names and node.attr == "session"
-    return False
+        if node.value.id in flask_names and node.attr == "session":
+            return True
+    from stateforge.state import objects
+    return objects.is_session_like(objects.describe(node))
 
 
 def _key_from_ast(node: ast.AST | None) -> tuple[str, str | None]:
