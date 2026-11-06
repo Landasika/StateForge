@@ -13,6 +13,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from stateforge.state import objects
 from stateforge.state.model import (
     StateDomain, StateFactCandidate, StateOperation, Relevance,
     PredicateOp, StructuredPredicate)
@@ -47,17 +48,26 @@ _SESSION_METHODS = {"get": StateOperation.READ, "pop": StateOperation.DELETE,
 
 
 def _extract_session(fn_node: ast.FunctionDef, filename: str,
-                     in_guard: bool) -> list[StateFactCandidate]:
+                     in_guard: bool,
+                     constants: dict[str, str] | None = None
+                     ) -> list[StateFactCandidate]:
+    """Session operations, matched by resolved object rather than by name.
+
+    ``session[k]``, ``request.session[k]``, ``self.session[k]`` and ``s[k]``
+    where ``s = request.session`` all denote the same store; the object is
+    resolved through :mod:`stateforge.state.objects`, so none of those
+    spellings is missed. ``constants`` expands symbolic keys such as
+    Django's ``SESSION_KEY``.
+    """
     facts = []
+    aliases = objects.Aliases.collect(fn_node)
     for node in ast.walk(fn_node):
-        # session["key"] = value  (WRITE)
+        # <session-like>["key"] = value  (WRITE)
         if isinstance(node, ast.Assign):
             for target in node.targets:
-                if (isinstance(target, ast.Subscript)
-                        and isinstance(target.value, ast.Name)
-                        and target.value.id == "session"
-                        and isinstance(target.slice, ast.Constant)):
-                    key = str(target.slice.value)
+                key = objects.session_key(target, constants)
+                if key is not None and objects.is_session_like(
+                        objects.object_of_subscript(target, aliases)):
                     val = _extract_const(node.value)
                     facts.append(StateFactCandidate(
                         candidate_id=make_id("SESSION", canon_session(key),
@@ -74,15 +84,19 @@ def _extract_session(fn_node: ast.FunctionDef, filename: str,
                         evidence=(f"{filename}:{node.lineno} write",),
                     ))
 
-        # session.get("key") / session.pop("key") / "key" in session
+        # <session-like>.get("key") / .pop("key") / .clear()
         if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute):
-            obj = node.func.value
             method = node.func.attr
-            if isinstance(obj, ast.Name) and obj.id == "session" \
-                    and method in _SESSION_METHODS:
+            obj_text = objects.object_of_call_receiver(node, aliases)
+            if method in _SESSION_METHODS and objects.is_session_like(obj_text):
                 op = _SESSION_METHODS[method]
+                key = None
                 if node.args and isinstance(node.args[0], ast.Constant):
                     key = str(node.args[0].value)
+                elif node.args and isinstance(node.args[0], ast.Name) and constants:
+                    key = constants.get(node.args[0].id,
+                                        f"<{node.args[0].id}>")
+                if key is not None:
                     facts.append(StateFactCandidate(
                         candidate_id=make_id("SESSION", canon_session(key),
                                              op.value, filename, node.lineno),
@@ -100,11 +114,9 @@ def _extract_session(fn_node: ast.FunctionDef, filename: str,
                                   f"session.{method}",),
                     ))
 
-        # session["key"] 读(非赋值,如 if session["user_id"] 或 y = session["key"])
+        # <session-like>["key"] 读(非赋值)
         if isinstance(node, ast.Subscript) \
-                and isinstance(node.value, ast.Name) \
-                and node.value.id == "session" \
-                and isinstance(node.slice, ast.Constant):
+                and objects.is_session_subscript(node, aliases):
             # 排除赋值目标(上面已处理)
             is_target = False
             for assign in ast.walk(fn_node):
@@ -114,7 +126,9 @@ def _extract_session(fn_node: ast.FunctionDef, filename: str,
                                 and t.lineno == node.lineno:
                             is_target = True
             if not is_target:
-                key = str(node.slice.value)
+                key = objects.session_key(node, constants)
+                if key is None:
+                    continue
                 facts.append(StateFactCandidate(
                     candidate_id=make_id("SESSION", canon_session(key),
                                          "READ", filename, node.lineno),
@@ -132,14 +146,12 @@ def _extract_session(fn_node: ast.FunctionDef, filename: str,
                     evidence=(f"{filename}:{node.lineno} session read",),
                 ))
 
-        # del session["key"]
+        # del <session-like>["key"]
         if isinstance(node, ast.Delete):
             for target in node.targets:
-                if isinstance(target, ast.Subscript) \
-                        and isinstance(target.value, ast.Name) \
-                        and target.value.id == "session" \
-                        and isinstance(target.slice, ast.Constant):
-                    key = str(target.slice.value)
+                key = objects.session_key(target, constants)
+                if key is not None and objects.is_session_subscript(
+                        target, aliases):
                     facts.append(StateFactCandidate(
                         candidate_id=make_id("SESSION", canon_session(key),
                                              "DELETE", filename, node.lineno),
@@ -717,12 +729,14 @@ def extract_state_facts(source_dir: str | Path,
                               filename=str(py))
         except (OSError, SyntaxError, UnicodeDecodeError):
             continue
+        # Symbolic session keys (Django's SESSION_KEY = "_auth_user_id").
+        constants = objects.module_constants(tree)
         for fn in ast.walk(tree):
             if not isinstance(fn, (ast.FunctionDef, ast.AsyncFunctionDef)):
                 continue
             in_guard = False   # 简化:整体函数标记(增强版可逐行)
             facts = []
-            facts.extend(_extract_session(fn, str(py), in_guard))
+            facts.extend(_extract_session(fn, str(py), in_guard, constants))
             facts.extend(_extract_db(fn, str(py), in_guard))
             facts.extend(_extract_file(fn, str(py), in_guard))
             facts.extend(_extract_dict_store(fn, str(py), in_guard))
