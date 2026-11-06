@@ -180,3 +180,63 @@ python -m stateforge.evaluation.check_distribution
 - 冷重放进程与运行器 PID 不同，`parent_pid` 指向运行器；独立重跑 `http_checkpoint_replay` 得到整链 `302→200` 命中、仅末步 `302` 不命中。
 - Atheris 实跑 30 次输入，C10 种子 SHA-256 `0c353bc094e11050ba0aa4ec3a4b437ee8afd8861eab0d73d439c7d415073f80`，回执记录完成 2 步、`lifecycle=reset`、`isolation=reset`、目标块覆盖、无异常。
 - 证据目录 `results/app-goal-run/`（五份清单 + `runs/<id>/` 下的检查点、冷重放记录、种子回执与 Atheris 日志），共 10 个 JSON 产物。
+
+## 会话写入块的自动发现（实验记录 2026-11-06）
+
+目标：不再由人指定"该发哪个请求"，而是静态找出会话写入发生在哪个基本块，
+把它当作 fuzz 靶子。实验分三步，结论如下。
+
+### 一、识别"会话在哪里被改"
+
+三层原本各自用字面量 `session` / `flask.session` 匹配，Django 目标上全部失明：
+
+| 层 | 修复前 | 修复后 |
+| --- | --- | --- |
+| `state/extractor.py` | linkding 0 / Django-auth 0 | linkding 4 / Django-auth 13 |
+| `state/session_access.py` | 0 条访问 | 19 条（含 login 193/194/195） |
+| `state/session_index.py` | `not-session-resolvable`，候选写入者 0 | 解析出 7 个候选写入者、2 组条件 |
+
+统一到 `state/objects.py`：从 AST 还原表达式指向的对象，覆盖属性访问
+（`request.session` / `self.session`）、局部别名（`s = request.session`，含链式）、
+调用结果、模块常量展开（`request.session[SESSION_KEY]` → `_auth_user_id`）。
+不依赖任何框架名，只依赖 Python 表达式语法与 `session` 这一通用命名约定。
+
+`login()` 三行写入绑定到同一块：`__init__.py::login::191-198::block::1`。
+
+诚实边界：对象名不含 session 语义（如 `ctx.data`）时不识别，需类型推断，
+本层不解决；跨函数别名传递亦不跟踪。
+
+### 二、请求池能否自动生成
+
+可以，但有两个必要条件：
+
+- 分析面不能用 `bookmarks/views`（`urls.py` 不在其中，端点为 0），要用 `bookmarks/`；
+  实测 29 个端点。
+- 函数视图不能一律判为 GET。`login` 分支 `request.method == "POST"`，
+  旧逻辑丢弃 POST 分支，池子里永远没有 `POST /login/`。
+
+填上路径参数后：未登录 26×302 + 1×200 + 2×404；已登录 19×200 + 7×302 + 2×404。
+
+### 三、把写入块交给 fuzz
+
+`session_guided` 用自动池子跑，结果 `NOT_FOUND`。定位到的原因不在搜索能力，
+而在搜索契约本身：
+
+> 引擎不得知道目标的合法凭据；它只能复用合法单请求池里已出现的值，
+> 加上类型边界值（`None/True/False/0/1/""`）。
+
+池子只给路径时，`POST /login/` 被发出（4 次），但无表单值，登录未成立；
+给结构化的登录项（字段名齐、值为空串）后，引擎仅按 `form:single-request-pool`
+复用空串，仍无法得到有效凭据。这是**有意的设计约束**，不是缺陷。
+
+对照：手工执行单步 `POST /login/`（带真实凭据）在同一 IR 上
+1131 事件、目标块覆盖 `True`，说明靶子与判据都正常。
+
+结论：写入块作为自动化目标这一步是通的；卡点在"凭据不得由引擎猜"。
+若要继续，需要显式的凭据来源（调用方提供凭据池，或引入探针驱动的
+值搜索），而不是让引擎自行扩散凭据 —— 后者会破坏该模块的诚实边界。
+
+另测得搜索预算问题：`max_steps=4, max_execs=200` 下多数尝试只用 2 步，
+`/login/` 在 200 次中只被选中 6 次，且均为单步。图距离排序偏向与目标
+相邻的端点，结构上无关的认证端点排在末尾。若继续该方向，需要按
+"能否改变会话"而非"图距离"来排序候选。
