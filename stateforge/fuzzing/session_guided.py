@@ -273,7 +273,45 @@ class SessionGuidedSearch:
                 if prev not in dist:
                     dist[prev] = dist[cur] + 1
                     q.append(prev)
-        return dist
+        # Only keep distances for *path-divergent* blocks: those with both an
+        # edge that stays on a target-reaching path and an edge that leaves
+        # it. Reaching a divergent block means the input made a decision that
+        # matters.
+        #
+        # Blocks every request must pass through carry no signal, and keeping
+        # them destroys the metric. Measured on linkding: tracing Django's
+        # auth package, every request -- logged in or not, on any URL -- runs
+        # `_get_user_session_key`, whose exit block sits exactly 2 hops from
+        # the target. All 200 attempts therefore scored distance 2, so sorting
+        # by distance could not distinguish anything. That block is
+        # `divergent=False`; the 22 blocks that actually decide (get_user,
+        # check_password, permission checks) survive.
+        outgoing: dict[str, list[str]] = defaultdict(list)
+        for edge in self.ir.edges:
+            outgoing[edge.src].append(edge.dst)
+        divergent: dict[str, int] = {}
+        for src, value in dist.items():
+            # Only a real decision point discriminates between inputs. A
+            # function exit is not one: `get_user_model`'s exit has four
+            # return edges, some back onto a target-reaching path and some
+            # not, so it satisfies a naive "has both kinds of edge" test and
+            # is then executed by every single request -- pinning every
+            # attempt to the same distance again (measured: d=4 for all 29
+            # endpoints). Restrict the signal to branch/terminal control
+            # points, which is what actually forks the execution.
+            block = self.ir.blocks.get(src)
+            if block is None or block.kind not in ("branch", "terminal"):
+                continue
+            dsts = outgoing.get(src, ())
+            if not dsts:
+                continue
+            on_path = any(dst in dist for dst in dsts)
+            off_path = any(dst not in dist for dst in dsts)
+            if on_path and off_path:
+                divergent[src] = value
+        # The target itself is the destination, not a signal about progress.
+        divergent[self.target_block] = 0
+        return divergent
 
     def _reset(self) -> None:
         if self.reset_hook is not None:
