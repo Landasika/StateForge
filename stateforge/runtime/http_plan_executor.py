@@ -17,6 +17,7 @@ import json
 import sys
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
+from urllib.parse import urlencode
 
 from stateforge.core.ir import ProgramIR
 from stateforge.runtime.mapper import map_trace
@@ -101,8 +102,12 @@ def execute_app_chain(segment, client, ir: ProgramIR, target_block: str,
                 try:
                     if method == "GET":
                         resp = client.get(path, **extra)
-                    elif form_body:
+                    elif form_body and method == "POST":
                         resp = client.post(path, data=form_body, **extra)
+                    elif form_body:
+                        resp = client.generic(
+                            method, path, data=urlencode(form_body, doseq=True),
+                            content_type="application/x-www-form-urlencoded", **extra)
                     else:
                         resp = client.generic(
                             method, path,

@@ -15,62 +15,96 @@ class MappedTrace:
     edges: list[tuple[str, str]] = field(default_factory=list)
     block_hits: Counter = field(default_factory=Counter)
     edge_hits: Counter = field(default_factory=Counter)
-    # A runtime pair can correspond to one or more static edge kinds.  Keep
-    # the pair-based API above for callers that only need adjacency, while
-    # retaining the structural kind information for coverage accounting.
     edge_kinds: dict[tuple[str, str], set[str]] = field(default_factory=dict)
     unresolved: list[TraceEvent] = field(default_factory=list)
-    # P1-4:request 维度——块/边被哪些请求命中
     block_requests: dict[str, set[int]] = field(default_factory=dict)
     edge_requests: dict[tuple[str, str], set[int]] = field(default_factory=dict)
-    # 定向灰盒(M1)诊断:把"运行时相邻"与"静态合法"分开记账。``edges`` 保持
-    # 相邻序列口径不变(旧调用方不受影响),下列两表在其上补一次静态校验,
-    # 使下游能区分"真的走通一条 ICFG 边"与"只是先后执行了两块"。
     observed_valid_edges: list[tuple[str, str]] = field(default_factory=list)
     unmatched_transitions: list[tuple[str, str]] = field(default_factory=list)
 
 
 def map_trace(events: list[TraceEvent], ir: ProgramIR) -> MappedTrace:
-    by_func: dict[tuple[str, str], list[str]] = {}
-    function_by_loc: dict[tuple[str, str], object] = {}
+    # Keep every same-name definition. A call event identifies its definition
+    # line; subsequent events use that frame's block membership, not a global
+    # short-name lookup. This also works with the frozen legacy trace schema.
+    functions: dict[tuple[str, str], list] = {}
     for function in ir.functions.values():
-        function_by_loc[(function.file, function.name.rsplit(".", 1)[-1])] = function
+        functions.setdefault((function.file, function.name.rsplit(".", 1)[-1]), []).append(function)
+    by_func: dict[tuple[str, str], list[str]] = {}
     for bid, block in ir.blocks.items():
         by_func.setdefault((block.file, block.function), []).append(bid)
+
+    def resolve(event):
+        choices = functions.get((event.file, event.function), [])
+        if len(choices) == 1:
+            return choices[0]
+        if event.event_type == "call":
+            exact = [f for f in choices if ir.blocks[f.entry].start_line == event.line]
+        else:
+            exact = [f for f in choices if any(
+                event.line in ir.blocks[b].line_numbers
+                and ir.blocks[b].kind not in ("entry", "exit", "callsite", "returnsite")
+                for b in f.blocks)]
+        return exact[0] if len(exact) == 1 else None
+
     out = MappedTrace()
-    previous: str | None = None
-    previous_request: int | None = None
-
-    # P1-2 对齐:静态链 B→CS#i→callee.entry / callee.exit→RS#i。
-    # cs_chain 以 (调用方文件, 调用方函数, 调用行, callee 入口) 为键、按链序 n 排列;
-    # 运行时用最近的 line 事件定位调用行,第 k 次动态命中取链上第 k 个 CS。
-    cs_chain: dict[tuple[str, str, int, str], list[str]] = {}
+    previous = None
+    previous_request = None
+    cs_chain: dict[tuple[str, int, str], list[str]] = {}
     rs_for_cs: dict[str, str] = {}
+    owner_by_block = {bid: owner for owner in ir.functions.values() for bid in owner.blocks}
+    return_edges = {(e.dst, e.callee) for e in ir.edges if e.kind == "return"}
     for edge in ir.edges:
-        src_block = ir.blocks.get(edge.src)
-        if edge.kind == "call" and src_block is not None and src_block.kind == "callsite":
-            key = (src_block.file, src_block.function,
-                   edge.callsite_line or src_block.start_line, edge.dst)
-            cs_chain.setdefault(key, []).append(edge.src)
-        if edge.kind == "return" and edge.callsite_line is not None and edge.callee:
-            cs = next((e.src for e in ir.edges
-                       if e.kind == "call" and e.callee == edge.callee
-                       and e.callsite_line == edge.callsite_line), None)
-            if cs is not None:
-                rs_for_cs[cs] = edge.dst
+        block = ir.blocks.get(edge.src)
+        if edge.kind != "call" or block is None or block.kind != "callsite":
+            continue
+        # CS and RS share the complete caller identity and ordinal in their
+        # IDs. Never pair returns using a callee and line shared by callers.
+        rs = edge.src.replace("::callsite::", "::returnsite::")
+        if (rs, edge.callee) in return_edges:
+            rs_for_cs[edge.src] = rs
+        owner = owner_by_block.get(edge.src)
+        if owner is not None:
+            cs_chain.setdefault((owner.entry, edge.callsite_line or block.start_line,
+                                 edge.dst), []).append(edge.src)
+    # An expression can emit more line events between operand calls. Those
+    # update caller location without executing its host block a second time.
+    host_for_rs = {}
+    incoming_flow = {}
+    for edge in ir.edges:
+        if edge.kind in ("flow", "true", "false"):
+            incoming_flow.setdefault(edge.dst, []).append(edge.src)
+    cs_for_rs = {rs: cs for cs, rs in rs_for_cs.items()}
+    for rs, cs in cs_for_rs.items():
+        pending, seen, hosts = [cs], set(), set()
+        while pending:
+            node = pending.pop()
+            if node in seen:
+                continue
+            seen.add(node)
+            for src in incoming_flow.get(node, []):
+                if src in cs_for_rs:
+                    pending.append(cs_for_rs[src])
+                elif ir.blocks[src].kind not in ("callsite", "returnsite"):
+                    hosts.add(src)
+        host_for_rs[rs] = hosts
+    for chain in cs_chain.values():
+        chain.sort(key=lambda b: int(b.rsplit("::", 1)[-1]))
 
-    call_stack: list[str] = []
-    chain_hits: dict[tuple[str, str, int, str], int] = {}
-    last_line: tuple[str, str, int] | None = None
-    valid_pairs = {(edge.src, edge.dst) for edge in ir.edges}
-    valid_seen: set[tuple[str, str]] = set()
-    unmatched_seen: set[tuple[str, str]] = set()
+    # Each dynamic frame retains its caller line and ordinal while callees run.
+    # A new line event starts a new evaluation (including another loop turn).
+    frames: list[dict] = []
+    valid_kinds: dict[tuple[str, str], set[str]] = {}
+    for edge in ir.edges:
+        valid_kinds.setdefault((edge.src, edge.dst), set()).add(edge.kind)
+    valid_seen = set()
+    unmatched_seen = set()
 
-    def append_block(hit: str) -> None:
+    def append_block(hit):
         nonlocal previous
-        rid_now = previous_request if previous_request is not None else -1
-        out.block_requests.setdefault(hit, set()).add(rid_now)
-        if out.blocks and out.blocks[-1] == hit:
+        rid = previous_request if previous_request is not None else -1
+        out.block_requests.setdefault(hit, set()).add(rid)
+        if previous == hit:
             return
         out.blocks.append(hit)
         out.block_hits[hit] += 1
@@ -78,15 +112,12 @@ def map_trace(events: list[TraceEvent], ir: ProgramIR) -> MappedTrace:
             pair = (previous, hit)
             out.edges.append(pair)
             out.edge_hits[pair] += 1
-            out.edge_requests.setdefault(pair, set()).add(rid_now)
-            if pair in valid_pairs:
+            out.edge_requests.setdefault(pair, set()).add(rid)
+            if pair in valid_kinds:
                 if pair not in valid_seen:
                     valid_seen.add(pair)
                     out.observed_valid_edges.append(pair)
-                kinds = {edge.kind for edge in ir.edges
-                         if edge.src == previous and edge.dst == hit}
-                if kinds:
-                    out.edge_kinds.setdefault(pair, set()).update(kinds)
+                out.edge_kinds.setdefault(pair, set()).update(valid_kinds[pair])
             elif pair not in unmatched_seen:
                 unmatched_seen.add(pair)
                 out.unmatched_transitions.append(pair)
@@ -95,60 +126,84 @@ def map_trace(events: list[TraceEvent], ir: ProgramIR) -> MappedTrace:
     for event in events:
         if previous_request is not None and event.request_id != previous_request:
             previous = None
-            call_stack = []
-            chain_hits = {}
-            last_line = None
+            frames = []
         previous_request = event.request_id
-        filename = event.file
-        function = function_by_loc.get((filename, event.function))
-        if event.event_type == "call" and function is not None:
+        if event.event_type == "call":
+            function = resolve(event)
             cs = None
-            if last_line is not None:
-                key = (last_line[0], last_line[1], last_line[2], function.entry)
-                chain = cs_chain.get(key, [])
-                idx = chain_hits.get(key, 0)
-                if idx < len(chain):
-                    chain_hits[key] = idx + 1
-                    cs = chain[idx]
+            if function is not None and frames:
+                caller = frames[-1]
+                owner = caller["function"]
+                if owner is not None:
+                    key = (owner.entry, caller["line"], function.entry)
+                    chain = cs_chain.get(key, [])
+                    index = caller["hits"].get(key, 0)
+                    reachable = [site for site in chain if (previous, site) in valid_kinds]
+                    if len(reachable) == 1:
+                        cs = reachable[0]
+                        caller["hits"][key] = chain.index(cs) + 1
+                    elif not reachable and index < len(chain):
+                        cs = chain[index]
+                        caller["hits"][key] = index + 1
+                    elif len(reachable) > 1:
+                        out.unresolved.append(event)
+                    # Multiple reachable same-line calls to the same callee
+                    # cannot be distinguished by the frozen line-only trace.
+                    # Leave CS/RS unresolved rather than inventing coverage.
             if cs is not None:
                 append_block(cs)
-                call_stack.append(cs)
-            append_block(function.entry)
-            last_line = None
+            frames.append({"function": function, "file": event.file,
+                           "name": event.function, "line": None, "hits": {}, "cs": cs})
+            if function is not None:
+                append_block(function.entry)
+            else:
+                out.unresolved.append(event)
             continue
-        if event.event_type == "return" and function is not None:
-            append_block(function.exit)
-            if call_stack:
-                rs = rs_for_cs.get(call_stack.pop())
+
+        frame = frames[-1] if frames else None
+        if frame is not None and (frame["file"], frame["name"]) != (event.file, event.function):
+            frame = None
+        function = frame["function"] if frame else resolve(event)
+        if event.event_type == "return":
+            if function is not None:
+                append_block(function.exit)
+            else:
+                out.unresolved.append(event)
+            if frame is not None:
+                frames.pop()
+                rs = rs_for_cs.get(frame["cs"])
                 if rs is not None:
                     append_block(rs)
-            last_line = None
             continue
-        candidates = by_func.get((filename, event.function), [])
-        if not candidates:
-            candidates = [bid for bid, block in ir.blocks.items()
-                          if block.file == filename and block.function == event.function]
-        # H2(评审§15):精确 line_numbers 优先(块 range 可能吞并嵌套块的行);
-        # 合成 callsite/returnsite 与宿主语句同行时,优先真实块;range 兜底
-        # 多行语句的中段行。
-        exact = [bid for bid in candidates
-                 if event.line in ir.blocks[bid].line_numbers]
-        real = [bid for bid in exact
-                if ir.blocks[bid].kind not in ("callsite", "returnsite")]
-        pool = real or exact
-        if len(pool) == 1:
-            hit = pool[0]
-        else:
-            hit = next((bid for bid in pool
-                        if ir.blocks[bid].start_line <= event.line <= ir.blocks[bid].end_line),
-                       None)
-            if hit is None:
-                hit = next((bid for bid in candidates
-                            if ir.blocks[bid].start_line <= event.line <= ir.blocks[bid].end_line),
-                           None)
+        candidates = function.blocks if function is not None else by_func.get((event.file, event.function), [])
+        # With ambiguous same-name definitions, do not map entry/exit or a
+        # guessed range from another method. Exact body lines may still resolve.
+        exact = [b for b in candidates if event.line in ir.blocks[b].line_numbers
+                 and ir.blocks[b].kind not in ("callsite", "returnsite", "entry", "exit")]
+        pool = exact or [b for b in candidates
+                         if ir.blocks[b].kind not in ("callsite", "returnsite", "entry", "exit")
+                         and ir.blocks[b].start_line <= event.line <= ir.blocks[b].end_line]
+        if not pool and event.event_type == "line" and function is not None:
+            entry = ir.blocks[function.entry]
+            if event.line == entry.start_line:
+                # Legacy line-only traces may encode the function entry as a
+                # line at its definition instead of a separate call event.
+                pool = [function.entry]
+        hit = pool[0] if len(pool) == 1 else None
         if hit is None:
             out.unresolved.append(event)
             continue
-        last_line = (filename, event.function, event.line)
-        append_block(hit)
+        if frame is None:
+            frame = {"function": function, "file": event.file, "name": event.function,
+                     "line": None, "hits": {}, "cs": None}
+            frames.append(frame)
+        continuing_expression = (
+            event.event_type == "line" and frame["line"] != event.line
+            and hit in host_for_rs.get(previous, set()))
+        if event.event_type == "line":
+            frame["line"] = event.line
+            if not continuing_expression:
+                frame["hits"] = {}
+        if not continuing_expression:
+            append_block(hit)
     return out

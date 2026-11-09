@@ -28,7 +28,9 @@ from stateforge.evaluation.experiment.arms import FOUR_ARM_ARMS, manifest
 
 
 def run_target(target_py: str, ir_path: str, name: str, out: Path,
-               runs: int, epochs: int, seconds: int) -> dict:
+               runs: int, epochs: int, seconds: float) -> dict:
+    if out.exists() and any(out.iterdir()):
+        raise ValueError(f"new experiment requires an empty output directory: {out}")
     out.mkdir(parents=True, exist_ok=True)
     (out / "arm_registry.json").write_text(json.dumps(
         manifest("four_arm", FOUR_ARM_ARMS), indent=2), encoding="utf-8")
@@ -102,6 +104,8 @@ def main() -> int:
                         help="microplus=旧三靶(默认);stateful=状态门靶")
     args = parser.parse_args()
     out = Path(args.out)
+    if out.exists() and any(out.iterdir()):
+        raise ValueError(f"new experiment requires an empty output directory: {out}")
     out.mkdir(parents=True, exist_ok=True)
     all_s = {}
 
@@ -123,7 +127,7 @@ def main() -> int:
 
     for tp, name in SUITES[args.suite]:
         s = run_target(tp, ir_path, name, out / name,
-                        args.runs, args.epochs, int(args.seconds))
+                        args.runs, args.epochs, args.seconds)
         all_s[name] = s
         print(f"  → {name}: B={s['B_mean']} C={s['C_mean']} "
               f"D={s['D_mean']} E={s['E_mean']} F={s['F_mean']} "

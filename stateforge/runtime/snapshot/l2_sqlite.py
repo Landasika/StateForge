@@ -6,8 +6,8 @@
   ``sqlite3.Connection.backup()`` 页级一致快照——WAL 下自动含已提交
   未 checkpoint 帧;捕获**不触碰** live 的 ``-wal/-shm``(活跃连接可能
   正在使用);并发写者由 backup 内部页计数重试保证一致性。恢复 =
-  删 sidecar(由生命周期前置条件保证无活跃连接)→ ``backup(tpl→live)``
-  (``timeout=0``:任何残余锁立即 OperationalError → 上层 fail-closed)。
+  ``backup(tpl→live)``(不删除活跃 sidecar)。残余 BUSY/LOCKED 立即失败,
+  页级 progress deadline 限制持续重试,捕获和恢复共用有界路径。
 
 - ``capture="copy"``(**fork-COW 引擎/supervisor 专用**,位级语义):
   保留既有"文件拷贝 + sidecar 清理"(ADR-0004 的正确性论证依赖
@@ -27,6 +27,7 @@ from __future__ import annotations
 
 import shutil
 import sqlite3
+import time
 from pathlib import Path
 
 _SIDECAR_SUFFIXES = ("-journal", "-wal", "-shm")
@@ -50,6 +51,25 @@ class L2Sqlite:
     CAPTURE_BACKUP = "backup"   # 逻辑一致快照(WAL 安全;输入级生命周期)
     CAPTURE_COPY = "copy"       # 位级拷贝(fork-COW;WAL 下 fail-closed)
     _MODES = (CAPTURE_BACKUP, CAPTURE_COPY)
+    # sqlite's connection timeout does not bound Connection.backup's retry loop.
+    _BACKUP_TIMEOUT = 1.0
+
+    def _backup(self, src: sqlite3.Connection, dst: sqlite3.Connection) -> None:
+        deadline = time.monotonic() + self._BACKUP_TIMEOUT
+
+        def progress(status, remaining, total):
+            if status in (sqlite3.SQLITE_BUSY, sqlite3.SQLITE_LOCKED):
+                raise SnapshotConsistencyError(
+                    f"SQLite backup 被持锁连接占用: {self.live}")
+            if time.monotonic() >= deadline:
+                raise SnapshotConsistencyError(
+                    f"SQLite backup 超过 {self._BACKUP_TIMEOUT:g}s: {self.live}")
+
+        try:
+            src.backup(dst, pages=256, progress=progress, sleep=0.01)
+        except sqlite3.Error as exc:
+            raise SnapshotConsistencyError(
+                f"SQLite backup 失败: {self.live}: {exc}") from exc
 
     def __init__(self, live_path: str, tpl_root: str | None = None,
                  capture: str = CAPTURE_BACKUP):
@@ -127,7 +147,7 @@ class L2Sqlite:
         try:
             dst_conn = sqlite3.connect(dst, timeout=0)
             try:
-                src.backup(dst_conn)         # 页级一致(含 WAL 已提交帧)
+                self._backup(src, dst_conn)  # 页级一致(含 WAL 已提交帧),有界失败
             finally:
                 dst_conn.close()
         finally:
@@ -188,7 +208,7 @@ class L2Sqlite:
                     raise SnapshotConsistencyError(
                         f"恢复目标被持锁连接占用(靶侧连接未关闭?): "
                         f"{self.live}: {exc}") from exc
-                src.backup(dst)
+                self._backup(src, dst)
                 if self._journal_mode(dst) == "wal":
                     try:                      # 非致命:有其他读者时失败可接受
                         dst.execute("PRAGMA wal_checkpoint(TRUNCATE)")

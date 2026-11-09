@@ -8,6 +8,7 @@ Prompt 固定(实验前冻结),不根据结果调整。
 from __future__ import annotations
 
 import json
+import math
 import re
 import time
 
@@ -54,19 +55,32 @@ def _parse_llm_output(raw: str, frontier_id: str) -> MutationProposal:
             frontier_id=frontier_id, source_kind="", source_key="",
             operation="", proposed_value=None,
             status=ProposalStatus.INVALID_OUTPUT, raw_output=raw)
-    status_str = obj.get("status", "")
-    try:
-        status = ProposalStatus(status_str)
-    except ValueError:
+    def invalid() -> MutationProposal:
         return MutationProposal(
-            frontier_id=frontier_id,
-            source_kind=obj.get("source_kind", ""),
-            source_key=obj.get("source_key", ""),
-            operation=obj.get("operation", ""),
-            proposed_value=obj.get("proposed_value"),
-            rationale=obj.get("rationale", ""),
-            confidence=obj.get("confidence", 0.0),
+            frontier_id=frontier_id, source_kind="", source_key="",
+            operation="", proposed_value=None,
             status=ProposalStatus.INVALID_OUTPUT, raw_output=raw)
+
+    if not isinstance(obj, dict):
+        return invalid()
+    if any(not isinstance(obj.get(key, ""), str)
+           for key in ("status", "source_kind", "source_key", "operation", "rationale")):
+        return invalid()
+    confidence = obj.get("confidence", 0.0)
+    if (type(confidence) not in (int, float)
+            or not 0 <= confidence <= 1 or not math.isfinite(confidence)):
+        return invalid()
+    try:
+        # The decoder accepts NaN/Infinity by default; proposals must remain
+        # portable strict JSON, including nested proposed values.
+        json.dumps(obj.get("proposed_value"), allow_nan=False)
+        status = ProposalStatus(obj.get("status", ""))
+    except (ValueError, TypeError):
+        return invalid()
+    if status == ProposalStatus.PROPOSED and (
+            not obj.get("source_kind") or not obj.get("source_key")
+            or not obj.get("operation", "REPLACE") or "proposed_value" not in obj):
+        return invalid()
     return MutationProposal(
         frontier_id=frontier_id,
         source_kind=obj.get("source_kind", ""),

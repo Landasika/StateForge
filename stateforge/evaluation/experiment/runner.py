@@ -35,6 +35,8 @@ def run_experiment(target: str, ir: str, out: Path, epochs: int,
         if unknown or not groups:
             raise ValueError(f"未知组 {unknown or '空子集'};"
                              f" 有效组: {', '.join(GROUPS)}")
+    if out.exists() and any(out.iterdir()):
+        raise ValueError(f"new experiment requires an empty output directory: {out}")
     out.mkdir(parents=True, exist_ok=True)
     total = epochs * seconds_per_epoch
     t0 = __import__("time").monotonic()
@@ -66,7 +68,7 @@ def main() -> int:
     report = run_experiment(args.target, args.ir, Path(args.out),
                             args.epochs, args.seconds, args.seed)
     for name, g in report["groups"].items():
-        print(f"[{name}] exec={g['total_executions']} wall={g['wall_total']}s "
+        print(f"[{name}] exec={g['total_executions']} wall={g['wall_span']}s "
               f"blocks={g['final_blocks']} edges={g['final_edges']}"
               + (f" nsg={g['novel_seed_gain']['novel_seed_gain']}"
                  if "novel_seed_gain" in g else ""))

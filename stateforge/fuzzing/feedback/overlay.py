@@ -20,7 +20,8 @@ class Overlay:
 
 
 def build_overlay(ir: ProgramIR, trace: MappedTrace) -> Overlay:
-    return Overlay(set(trace.block_hits), set(trace.edge_hits),
-                   dict(trace.block_hits), dict(trace.edge_hits),
+    valid = {(edge.src, edge.dst) for edge in ir.edges} & set(trace.edge_hits)
+    return Overlay(set(trace.block_hits), valid,
+                   dict(trace.block_hits), {e: trace.edge_hits[e] for e in valid},
                    {b: len(r) for b, r in trace.block_requests.items()},
-                   {e: len(r) for e, r in trace.edge_requests.items()})
+                   {e: len(trace.edge_requests.get(e, set())) for e in valid})

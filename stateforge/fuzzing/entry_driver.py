@@ -7,8 +7,10 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import importlib.util
 import json
+import math
 import sys
 from pathlib import Path
 
@@ -52,6 +54,56 @@ def dispatch_seed(target, data: bytes) -> None:
         target(data)                          # legacy：逐字节不变
         return
     execute_sequence(target, steps)
+
+
+def _prepare_run(args) -> tuple[dict, dict | None]:
+    """Authorize only consecutive epochs of the same explicitly named run.
+
+    A fresh direct CLI invocation may omit run-id, but cannot import persisted
+    output. Controller-managed epochs carry their UUID and identical identity.
+    """
+    out = Path(args.out_dir)
+    identity = {
+        "version": 1, "run_id": args.run_id,
+        "target": str(Path(args.target).resolve()),
+        "target_sha256": hashlib.sha256(Path(args.target).read_bytes()).hexdigest(),
+        "ir": str(Path(args.ir).resolve()),
+        "ir_sha256": hashlib.sha256(Path(args.ir).read_bytes()).hexdigest(),
+        "options": {k: v for k, v in vars(args).items() if k not in {
+            "target", "ir", "corpus_dir", "out_dir", "epoch", "seconds",
+            "run_id", "cost_out", "input_receipts"}},
+    }
+    manifest_path = out / "driver_identity.json"
+    state_path = out / "global_state.json"
+    prior = None
+    if args.epoch <= 1 or not manifest_path.exists():
+        # An epoch label alone does not request state recovery: direct callers
+        # may start a fresh output directory at any label.
+        # Direct callers prepare IR/config/log files in out_dir before launch.
+        # Reject prior execution artifacts without treating those inputs as runs.
+        artifacts = [manifest_path, state_path, out / "spool"]
+        if out.exists():
+            artifacts.extend(out.glob("*-snapshots.jsonl"))
+            artifacts.extend(out.glob("*-candidates.jsonl"))
+        if any(path.exists() for path in artifacts):
+            raise ValueError(f"new driver run cannot reuse execution artifacts: {out}")
+    else:
+        if not args.run_id or not manifest_path.exists():
+            raise ValueError("continuing an epoch requires run-id and driver identity")
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        if manifest.get("identity") != identity or manifest.get("epoch") != args.epoch - 1:
+            raise ValueError("driver run identity or preceding epoch mismatch")
+        if args.mode != "off" and not state_path.exists():
+            raise ValueError("preceding epoch coverage state is missing")
+        if state_path.exists():
+            prior = json.loads(state_path.read_text(encoding="utf-8"))
+            if (prior.get("run_identity") != identity
+                    or prior.get("epoch") != args.epoch - 1):
+                raise ValueError("global_state belongs to a different run or epoch")
+    out.mkdir(parents=True, exist_ok=True)
+    manifest_path.write_text(json.dumps({"identity": identity, "epoch": args.epoch},
+                                        indent=2), encoding="utf-8")
+    return identity, prior
 
 
 def main() -> int:
@@ -108,6 +160,12 @@ def main() -> int:
     parser.add_argument("--receipt-sha256", default=None,
                         help="only record receipts matching this input SHA-256")
     args = parser.parse_args()
+    if not math.isfinite(args.seconds) or args.seconds <= 0:
+        parser.error("--seconds must be finite and positive")
+    try:
+        run_identity, prior_state = _prepare_run(args)
+    except (OSError, ValueError) as exc:
+        parser.error(str(exc))
 
     if args.input_receipts and args.mode == "off":
         parser.error("--input-receipts requires traced mode measure/feedback/frontier")
@@ -278,6 +336,8 @@ def main() -> int:
                     "blocks": sorted(feedback.global_blocks),
                     "edges": [list(e) for e in sorted(feedback.global_edges)],
                 }
+            payload["run_identity"] = run_identity
+            payload["epoch"] = args.epoch
             if state_ledger is not None:                # P0-B:仅 --observe-state
                 payload["state_evidence"] = state_ledger.to_payload()
             state_path.write_text(_json.dumps(payload), encoding="utf-8")
@@ -302,8 +362,8 @@ def main() -> int:
 
         recorder = ExperimentRecorder(args.out_dir, args.group, args.epoch,
                                        on_sample=_dump_state)
-        if state_path.exists():
-            prior = _json.loads(state_path.read_text(encoding="utf-8"))
+        if prior_state is not None:
+            prior = prior_state
             if args.mode == "frontier":
                 feedback.load_state(prior)              # 恢复覆盖+前沿版本+冠军
             else:
@@ -355,7 +415,7 @@ def main() -> int:
         for obj in vars(_target_module).values()
         if callable(obj) and getattr(obj, "__module__", "") == "sf_target")
     argv = [sys.argv[0], args.corpus_dir,
-            f"-max_total_time={int(args.seconds)}", f"-seed={args.seed}",
+            f"-max_total_time={math.ceil(args.seconds)}", f"-seed={args.seed}",
             "-print_final_stats=1"]
     if args.max_runs is not None:
         if args.max_runs <= 0:

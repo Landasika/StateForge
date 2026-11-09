@@ -97,6 +97,10 @@ def _handle_serve(server, msg, ctrl, l2):
 def _handle_freeze(server, msg, ctrl, parent_name, l2):
     """嵌套检查点:子进程自己服务 build 链,然后冻结为新恢复点;控制 fd 传回。"""
     name, build, depth = msg["name"], msg.get("build", 0), msg.get("depth")
+    # The frozen process owns memory, but live files are shared by every leaf.
+    # Rebase on this parent's bound template before building a new checkpoint.
+    if l2 is not None:
+        l2.restore()
     parent_end, child_end = socket.socketpair(socket.AF_UNIX, socket.SOCK_STREAM)
     t0 = time.perf_counter()
     pid = os.fork()

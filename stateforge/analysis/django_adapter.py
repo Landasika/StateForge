@@ -39,6 +39,9 @@ def _load_defs(app_root: Path):
         except SyntaxError:
             continue
         for node in ast.walk(tree):
+            # AST nodes retain their defining source, independently of the
+            # URLconf that imports/registers them.
+            node._sf_source_file = str(py)
             if isinstance(node, ast.FunctionDef):
                 funcs.setdefault((module, node.name), node)
                 funcs.setdefault((short, node.name), node)
@@ -192,10 +195,12 @@ def extract_django(app_root: Path) -> AppModel:
             if ref is None:
                 continue                                  # admin.site.urls 等
             methods, fdef, name = ref
+            source_file = getattr(fdef, "_sf_source_file", str(origin))
             ep = Endpoint(func=name, route=full, methods=methods,
-                          params=_path_params(full), file=str(origin),
+                          params=_path_params(full), file=source_file,
                           line=(fdef.lineno if fdef else 0))
             if fdef is not None:
+                ex.file = source_file
                 ex._extract_endpoint_into(fdef, full, methods, ep)
             model.endpoints.append(ep)
 

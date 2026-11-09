@@ -59,6 +59,8 @@ def build_icfg(app_root: str | Path, callgraph: dict[str, list[str]] | None = No
     ir = ProgramIR(metadata={"root": str(root), "kind": "icfg", "version": 1})
     ast_functions: dict[tuple[str, str], ast.FunctionDef | ast.AsyncFunctionDef] = {}
     aliases: dict[str, list[str]] = {}
+    function_nodes = {}
+    block_nodes = {}
     for path in _files(root):
         try:
             tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
@@ -77,6 +79,8 @@ def build_icfg(app_root: str | Path, callgraph: dict[str, list[str]] | None = No
                 cfg = build_function_cfg(node, str(path), module, id_file=rel_id)
                 if not include_all_functions and callgraph and qname not in callgraph:
                     continue
+                function_nodes[qname] = (module, node)
+                block_nodes.update(cfg.ast_nodes)
                 ir.functions[qname] = cfg.function
                 ir.blocks.update(cfg.blocks)
                 for edge in cfg.edges:
@@ -89,68 +93,71 @@ def build_icfg(app_root: str | Path, callgraph: dict[str, list[str]] | None = No
     #   RS#1 -flow-> CS#2 ... RS#N -(原 kind)-> succ(B)
     unresolved: list[dict[str, object]] = []
     for qname, fn in list(ir.functions.items()):
-        module, _, fname = qname.rpartition(".")
-        node = ast_functions.get((module, fname))
-        if node is None:
-            continue
-        block_calls: dict[str, list[tuple[int, int, str]]] = {}
-        for call in _iter_owned_calls(node):
-            callee_short = _callee_name(call)
-            callee = _resolve_callee(callee_short, module, ast_functions, aliases)
-            if callee is None and callee_short and callgraph is not None:
-                # H3(评审§13):名字解析失败/歧义时,用预生成调用图
-                # (PyCG 在 ANOTA 侧预出 JSON,驱动侧 py3.13 不可运行)消歧
-                callee = _resolve_via_callgraph(qname, callee_short,
-                                                ir, callgraph)
-            line = getattr(call, "lineno", 0)
-            if callee is None or callee not in ir.functions:
-                unresolved.append({"caller": qname, "callee": callee_short,
-                                   "line": line})
+        module, node = function_nodes[qname]
+        fname = node.name
+        # Associate calls with their owning AST block, including multiline
+        # expressions; statement line ranges cannot establish AST ownership.
+        for host in list(fn.blocks):
+            roots = block_nodes.get(host, [])
+            calls = []
+            for expression in roots:
+                for call in _owned_expression_calls(expression):
+                    callee_short = _callee_name(call)
+                    callee = _resolve_callee(callee_short, module, ast_functions, aliases)
+                    if callee is None and callee_short and callgraph is not None:
+                        callee = _resolve_via_callgraph(qname, callee_short, ir, callgraph)
+                    if callee is None or callee not in ir.functions:
+                        unresolved.append({"caller": qname, "callee": callee_short,
+                                           "line": call.lineno})
+                    else:
+                        calls.append((call, callee))
+            if not calls:
                 continue
-            host = next((bid for bid in fn.blocks
-                         if line in ir.blocks[bid].line_numbers), None)
-            if host is None:
-                unresolved.append({"caller": qname, "callee": callee_short,
-                                   "reason": "no host block", "line": line})
-                continue
-            col = getattr(call, "col_offset", 0)
-            block_calls.setdefault(host, []).append((line, col, callee))
-
-        for host, calls in block_calls.items():
-            calls.sort(key=lambda t: (t[0], t[1]))   # H4:同行按 col_offset
-            succs = [out for out in ir.outgoing(host)
-                     if out.kind in ("flow", "true", "false")]
-            continuations = succs or []          # return helper() 的空后继→exit
-            for out in succs:
-                ir.remove_edge(host, out.dst, out.kind)
+            calls.sort(key=lambda item: (item[0].lineno, item[0].col_offset))
             file = ir.blocks[host].file
-            # H6:合成节点 ID 用相对路径(与块 ID 一致,跨机器稳定)
-            root_str = str(root)
-            id_file = file[len(root_str) + 1:] if file.startswith(root_str + "/") else file
-            prev = host
-            chain_blocks: list[str] = []
-            for n, (line, _col, callee) in enumerate(calls, start=1):
+            id_file = str(Path(file).relative_to(root))
+            sites = {}
+            for n, (call, callee) in enumerate(calls, start=1):
+                line = call.lineno
                 cs = f"{id_file}::{fname}::{line}-{line}::callsite::{n}"
                 rs = f"{id_file}::{fname}::{line}-{line}::returnsite::{n}"
+                # Distinct blocks can contain separate same-line suites.  Keep
+                # IDs paired while avoiding accidental cross-host replacement.
+                while cs in ir.blocks:
+                    n += len(calls)
+                    cs = f"{id_file}::{fname}::{line}-{line}::callsite::{n}"
+                    rs = f"{id_file}::{fname}::{line}-{line}::returnsite::{n}"
                 ir.blocks[cs] = BasicBlock(cs, file, module, fname, line, line,
                                            "callsite", [f"<call> {callee}"], [line])
                 ir.blocks[rs] = BasicBlock(rs, file, module, fname, line, line,
                                            "returnsite", [f"<ret> {callee}"], [line])
-                chain_blocks.extend([cs, rs])
-                ir.add_edge(FlowEdge(prev, cs, "flow", callsite_line=line,
-                                     callee=callee))
+                fn.blocks.extend([cs, rs])
+                sites[call] = (cs, rs, callee)
                 ir.add_edge(FlowEdge(cs, ir.functions[callee].entry, "call",
                                      callsite_line=line, callee=callee))
                 ir.add_edge(FlowEdge(ir.functions[callee].exit, rs, "return",
                                      callsite_line=line, callee=callee))
-                prev = rs
-            if continuations:
-                for out in continuations:       # 保留原 true/false 标注
-                    ir.add_edge(FlowEdge(prev, out.dst, out.kind,
+            succs = [out for out in ir.outgoing(host)
+                     if out.kind in ("flow", "true", "false")]
+            for out in succs:
+                # A with header is also observed during cleanup. Re-evaluating
+                # its context expression then would be a false mandatory call;
+                # retain direct cleanup continuations conservatively.
+                if ir.blocks[host].kind != "with":
+                    ir.remove_edge(host, out.dst, out.kind)
+            flow = _ExpressionCalls(ir, sites)
+            ports = {(host, "flow")}
+            truth = (ports, ports)
+            for expression in roots:
+                truth = flow.build(expression, ports)
+                ports = flow.merge(*truth)
+            for out in succs or [FlowEdge(host, fn.exit)]:
+                exits = (truth[0] if out.kind == "true" else truth[1]
+                         if out.kind == "false" else ports)
+                for src, kind in sorted(exits):
+                    ir.add_edge(FlowEdge(src, out.dst,
+                                         out.kind if out.kind != "flow" else kind,
                                          condition=out.condition))
-            else:
-                ir.add_edge(FlowEdge(prev, fn.exit, "flow"))
-            fn.blocks.extend(chain_blocks)
     ir.metadata["callgraph_supplied"] = callgraph is not None
     ir.metadata["function_count"] = len(ir.functions)
     ir.metadata["block_count"] = len(ir.blocks)
@@ -158,6 +165,83 @@ def build_icfg(app_root: str | Path, callgraph: dict[str, list[str]] | None = No
     ir.metadata["unresolved_calls"] = unresolved
     ir.metadata["source_hash"] = _source_hash(root)
     return ir
+
+
+def _owned_expression_calls(node):
+    if isinstance(node, _OWNED_STOP):
+        return
+    if isinstance(node, ast.Call):
+        yield node
+    for child in ast.iter_child_nodes(node):
+        yield from _owned_expression_calls(child)
+
+
+class _ExpressionCalls:
+    """Connect observable call sites without inventing untraceable gate nodes.
+
+    Ports retain the outcome of a short-circuit decision until the next call
+    or CFG continuation. Unknown non-call truth values conservatively allow
+    both outcomes; mutually exclusive IfExp arms never become a serial chain.
+    """
+
+    def __init__(self, ir, sites):
+        self.ir, self.sites = ir, sites
+
+    @staticmethod
+    def merge(*groups):
+        ports = set().union(*groups)
+        # If both outcomes reach the same continuation, it is unconditional.
+        for src, _ in list(ports):
+            if (src, "flow") in ports or ({(src, "true"), (src, "false")} <= ports):
+                ports.difference_update({(src, "true"), (src, "false")})
+                ports.add((src, "flow"))
+        return ports
+
+    @staticmethod
+    def tag(ports, kind):
+        return {(src, kind) for src, _ in ports}
+
+    def build(self, node, incoming):
+        if not incoming:
+            return set(), set()
+        if isinstance(node, _OWNED_STOP):
+            return incoming, incoming
+        if isinstance(node, ast.BoolOp):
+            active = incoming
+            skipped = set()
+            is_and = isinstance(node.op, ast.And)
+            for value in node.values[:-1]:
+                yes, no = self.build(value, active)
+                skipped |= self.tag(no if is_and else yes,
+                                    "false" if is_and else "true")
+                active = self.tag(yes if is_and else no,
+                                  "true" if is_and else "false")
+            yes, no = self.build(node.values[-1], active)
+            return ((self.tag(yes, "true"), skipped | self.tag(no, "false"))
+                    if is_and else
+                    (skipped | self.tag(yes, "true"), self.tag(no, "false")))
+        if isinstance(node, ast.IfExp):
+            yes, no = self.build(node.test, incoming)
+            body_yes, body_no = self.build(node.body, self.tag(yes, "true"))
+            else_yes, else_no = self.build(node.orelse, self.tag(no, "false"))
+            return self.merge(body_yes, else_yes), self.merge(body_no, else_no)
+        if isinstance(node, ast.UnaryOp) and isinstance(node.op, ast.Not):
+            yes, no = self.build(node.operand, incoming)
+            return no, yes
+        ports = incoming
+        # AST field order matches ordinary expression evaluation (callee and
+        # arguments before the call itself). Definitions are ownership stops.
+        for child in ast.iter_child_nodes(node):
+            ports = self.merge(*self.build(child, ports))
+        if node in self.sites:
+            cs, rs, callee = self.sites[node]
+            for src, kind in sorted(ports):
+                self.ir.add_edge(FlowEdge(src, cs, kind,
+                                         callsite_line=node.lineno, callee=callee))
+            ports = {(rs, "flow")}
+        if isinstance(node, ast.Constant):
+            return (ports, set()) if bool(node.value) else (set(), ports)
+        return ports, ports
 
 
 def _walk_with_class(tree: ast.Module):

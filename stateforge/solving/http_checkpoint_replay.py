@@ -34,6 +34,27 @@ def _execute(checkpoint: GoalCheckpoint, ir: ProgramIR, harness: str,
              *, mode: str) -> dict:
     import importlib
 
+    # Validate before importing the harness: importing it can bootstrap/mutate
+    # the application, and must not run for a stale or mismatched checkpoint.
+    from stateforge.analysis.static.icfg import _source_hash
+
+    if checkpoint.transport != "http":
+        raise ValueError("checkpoint is not an HTTP checkpoint")
+    if not ir.metadata.get("root"):
+        raise ValueError("checkpoint IR has no analysis root")
+    root = Path(ir.metadata["root"]).resolve()
+    block = ir.blocks.get(checkpoint.target_block)
+    source = Path(checkpoint.source_file)
+    source = (source if source.is_absolute() else root / source).resolve()
+    if block is None or (root / block.file).resolve() != source:
+        raise ValueError("checkpoint target/source does not match the analyzed block")
+    if not source.is_file() or not source.is_relative_to(root):
+        raise ValueError("checkpoint source must exist inside the analysis root")
+    if (not checkpoint.source_hash
+            or checkpoint.source_hash != ir.metadata.get("source_hash")
+            or checkpoint.source_hash != _source_hash(root)):
+        raise ValueError("checkpoint source hash mismatch; analyze and verify again")
+
     module = importlib.import_module(harness)
     factory = getattr(module, "build_client", None)
     if not callable(factory):

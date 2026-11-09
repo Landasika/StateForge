@@ -108,15 +108,34 @@ def _includes_django_auth_urls(root: Path) -> bool:
 
 
 def _endpoint_for_block(model: AppModel, ir, block_id: str) -> Endpoint | None:
-    """目标块所在函数 → AppModel endpoint(view 函数名匹配)。"""
+    """Match the source file and lexical function, refusing ambiguous routes."""
     blk = ir.blocks.get(block_id)
     if blk is None:
         return None
-    fn = blk.function.rsplit(".", 1)[-1]
+    model_root = Path(model.app_root).resolve()
+    ir_root = Path(ir.metadata.get("root") or model_root).resolve()
+    source = (ir_root / blk.file).resolve()
+    # FunctionIR membership retains class/lexical scope even for older blocks
+    # whose `function` field contains only the last name component.
+    owners = [(name, fn) for name, fn in ir.functions.items()
+              if block_id in fn.blocks]
+    if len(owners) > 1:
+        return None
+    fn = owners[0][0] if owners else blk.function
+    module = owners[0][1].module if owners else blk.module
+    if module and fn.startswith(module + "."):
+        fn = fn[len(module) + 1:]
+    names = {fn, f"{module}.{fn}"}
+    if source.is_relative_to(model_root):
+        model_module = ".".join(source.relative_to(model_root).with_suffix("").parts)
+        names.add(f"{model_module}.{fn}")
+    matches = []
     for ep in model.endpoints:
-        if (ep.func or "").rsplit(".", 1)[-1] == fn:
-            return ep
-    return None
+        if not ep.file or (model_root / ep.file).resolve() != source:
+            continue
+        if ep.func in names:
+            matches.append(ep)
+    return matches[0] if len(matches) == 1 else None
 
 
 def app_goal_constraints(model: AppModel, ir,

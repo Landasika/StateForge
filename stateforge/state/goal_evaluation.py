@@ -109,7 +109,19 @@ class ObservationView:
         absent: set[str] = set()
         seen: dict[tuple, object] = {}
         auth_subject: str | None = None
+        auth_seen = False
         points: set[int] = set()
+
+        def mark_presence(table: str, eid: str, present: bool) -> None:
+            identity = f"{table}:{eid}"
+            if ((present and identity in absent)
+                    or (not present and eid in entities.get(table, {}))):
+                raise ValueError(
+                    f"同观测点存在性冲突: {identity}(拒绝矛盾实体证据)")
+            if present:
+                entities.setdefault(table, {}).setdefault(eid, {})
+            else:
+                absent.add(identity)
 
         for obs in observations:
             # P0-C:证据过滤——仅 RUNTIME_VERIFIED 入视图
@@ -127,10 +139,22 @@ class ObservationView:
                 else source or subject.split(".", 1)[0].lower()
 
             if subject == AUTH_SUBJECT:       # P0-B:认证探测事实
-                if obs.value is True \
-                        and getattr(obs, "value_kind", None) not in \
-                        (None, "UNKNOWN"):
-                    auth_subject = str(getattr(obs, "observed_value", None))
+                kind = getattr(obs, "value_kind", None)
+                value = getattr(obs, "observed_value", None)
+                if kind == "UNKNOWN":
+                    continue
+                if obs.value is False or kind == "MISSING":
+                    candidate = None          # verified unauthenticated probe
+                elif obs.value is True and kind is not None and value is not None:
+                    candidate = str(value)
+                else:
+                    continue
+                if auth_seen and auth_subject != candidate:
+                    raise ValueError(
+                        f"同观测点认证主体冲突: {auth_subject!r} vs "
+                        f"{candidate!r}(拒绝静默覆盖)")
+                auth_seen = True
+                auth_subject = candidate
                 continue
 
             root, attr = subject.split(".", 1)
@@ -138,16 +162,16 @@ class ObservationView:
             eid = str(obs.key.entity)
             kind = getattr(obs, "value_kind", None)
 
-            if attr == "exists":
-                if obs.value is False:
-                    absent.add(f"{table}:{eid}")   # 确认缺席,不建在场实体
-                elif obs.value is True:
-                    entities.setdefault(table, {}).setdefault(eid, {})
-                continue
             if kind == "UNKNOWN":             # 未观测值不得伪装成确定状态
                 continue
             if kind == "MISSING":
-                absent.add(f"{table}:{eid}")
+                mark_presence(table, eid, False)
+                continue
+            if attr == "exists":
+                if obs.value is False:
+                    mark_presence(table, eid, False)
+                elif obs.value is True:
+                    mark_presence(table, eid, True)
                 continue
             fkey = (table, eid, attr)
             val = getattr(obs, "observed_value", None)
@@ -156,7 +180,8 @@ class ObservationView:
                     f"同观测点冲突值: {root}.{attr} of {table}:{eid} "
                     f"= {seen[fkey]!r} vs {val!r}(拒绝静默覆盖)")
             seen[fkey] = val
-            entities.setdefault(table, {}).setdefault(eid, {})[attr] = val
+            mark_presence(table, eid, True)
+            entities[table][eid][attr] = val
 
         if len(points) > 1:
             raise ValueError(

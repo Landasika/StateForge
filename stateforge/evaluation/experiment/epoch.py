@@ -9,10 +9,12 @@ P0-9:NovelSeedGain——SF 候选中 native 语料没有的比例(信息增益)
 from __future__ import annotations
 
 import json
+import math
 import shutil
 import subprocess
 import sys
 import time
+import uuid
 from pathlib import Path
 
 from stateforge.fuzzing.corpus_manager import CorpusManager
@@ -32,6 +34,8 @@ def _run_driver(target: str, ir: str, corpus_dir: Path, out_dir: Path,
            target, ir, str(corpus_dir), str(out_dir),
            "--seconds", str(seconds), "--mode", mode,
            "--seed", str(seed), "--epoch", str(epoch), "--group", group]
+    run = json.loads((out_dir.parent / "run_identity.json").read_text(encoding="utf-8"))
+    cmd.extend(["--run-id", run["run_id"]])
     proc = subprocess.run(cmd, capture_output=True, text=True,
                           timeout=seconds * 4 + 120)
     if proc.returncode not in (0, -2, 245):
@@ -56,18 +60,35 @@ def _load_epoch_summary(out_dir: Path, group: str, epoch: int) -> dict:
             "candidates_saved": len(cands)}
 
 
+def _corpus_ids(directory: Path) -> set[str]:
+    return {CorpusManager.content_id(f.read_bytes())
+            for f in directory.iterdir() if f.is_file()} if directory.exists() else set()
+
+
 def _novel_seed_gain(workdir: Path) -> dict:
-    """P0-9:SF 候选 ∩ native(libFuzzer)语料 → 真正额外种子比例。"""
-    spool = workdir / "epochs" / "spool" / "seeds"
-    lf = workdir / "lf_corpus"
-    sf_ids = {f.name for f in spool.iterdir()} if spool.exists() else set()
-    lf_ids = {CorpusManager.content_id(f.read_bytes())
-              for f in lf.iterdir() if f.is_file()} if lf.exists() else set()
-    total, overlap = len(sf_ids), len(sf_ids & lf_ids)
+    """Compare SF candidates with native *new outputs*, never imported inputs.
+
+    This is within-run provenance, not an independent native-only counterfactual:
+    native mutations may descend from injected SF/LLM/state inputs. Old runs
+    without provenance return an unavailable metric rather than guessing from
+    the final merged corpus.
+    """
+    sf_ids = _corpus_ids(workdir / "epochs" / "spool" / "seeds")
+    ledger_path = workdir / "native_provenance.json"
+    ledger = json.loads(ledger_path.read_text(encoding="utf-8")) \
+        if ledger_path.exists() else None
+    native_ids = set(ledger["native_discovered_ids"]) if ledger is not None else set()
+    total = len(sf_ids)
+    overlap = len(sf_ids & native_ids) if ledger is not None else None
+    unique = total - overlap if overlap is not None else None
     return {"sf_candidates_total": total,
             "sf_already_in_native": overlap,
-            "sf_unique_vs_native": total - overlap,
-            "novel_seed_gain": round((total - overlap) / total, 4) if total else None}
+            "sf_unique_vs_native": unique,
+            "novel_seed_gain": round(unique / total, 4)
+                if unique is not None and total else None,
+            "native_provenance": "epoch_output_minus_input" if ledger is not None
+                else "unavailable",
+            "native_discovered_total": len(native_ids) if ledger is not None else None}
 
 
 def _inject_llm_between_epochs(ir, workdir: Path, corpus_dir: Path,
@@ -298,8 +319,12 @@ def run_epochs(target: str, ir: str, workdir: Path, seconds_per_epoch: float,
                epochs: int, seed: int, group: str, mode: str,
                use_feedback: bool, t0: float | None = None,
                policy: str = "reinjection", state_trigger: str = "r2",
-               state_injector=None) -> dict:
+               state_injector=None, initial_corpus: Path | None = None) -> dict:
     """跑一组(单 epoch 连续或多 epoch 重启),返回含墙钟与累计的完整记录。
+
+    workdir must be absent or empty: cross-run resume is deliberately rejected.
+    Explicit initial inputs live outside workdir and are copied via initial_corpus.
+    Within this invocation, epochs share one run UUID and validated driver state.
 
     policy:reinjection(默认)=公共语料联合结转;llm/state=轮间种子注入
     (注入先于结转,注入种子经公共路径进下一轮);portfolio=P4-T1 起与
@@ -312,10 +337,36 @@ def run_epochs(target: str, ir: str, workdir: Path, seconds_per_epoch: float,
     _inject_state_seeds_between_epochs docstring(trigger="r2"|"always";
     injector=注入策略钩子,E-rand 的随机采样器经此接入)。
     """
+    if epochs < 1 or not math.isfinite(seconds_per_epoch) or seconds_per_epoch <= 0:
+        raise ValueError("epochs and seconds_per_epoch must be positive")
+    workdir = Path(workdir)
+    if workdir.exists() and any(workdir.iterdir()):
+        raise ValueError(f"new run requires an empty workdir: {workdir}; "
+                         "choose a new directory (cross-run resume is not supported)")
+    initial = Path(initial_corpus) if initial_corpus is not None else None
+    if initial is not None:
+        if not initial.is_dir():
+            raise ValueError(f"initial_corpus is not a directory: {initial}")
+        if initial.resolve().is_relative_to(workdir.resolve()):
+            raise ValueError("initial_corpus must live outside the new workdir")
     t0 = t0 if t0 is not None else time.monotonic()
     workdir.mkdir(parents=True, exist_ok=True)
+    run_id = uuid.uuid4().hex
+    (workdir / "run_identity.json").write_text(json.dumps({
+        "version": 1, "run_id": run_id, "target": str(Path(target).resolve()),
+        "ir": str(Path(ir).resolve()), "seed": seed, "group": group,
+        "mode": mode, "policy": policy, "epochs": epochs,
+        "seconds_per_epoch": seconds_per_epoch,
+        "initial_corpus": str(initial.resolve()) if initial is not None else None,
+    }, indent=2), encoding="utf-8")
     corpus_dir = workdir / "lf_corpus"
-    corpus_dir.mkdir(exist_ok=True)
+    corpus_dir.mkdir()
+    if initial is not None:
+        for f in initial.iterdir():
+            if f.is_file():
+                shutil.copy2(f, corpus_dir / f.name)
+    native_ids: set[str] = set()
+    native_epochs: list[dict] = []
 
     # StallTracker:policy=llm 时追踪前沿停滞,N 轮无改善才触发
     stall_tracker = None
@@ -370,10 +421,21 @@ def run_epochs(target: str, ir: str, workdir: Path, seconds_per_epoch: float,
                         shutil.copy2(f, in_dir / f.name)
 
         in_stats = _dir_stats(in_dir)
+        input_ids = _corpus_ids(in_dir)
         start_off = time.monotonic() - t0
         _run_driver(target, ir, in_dir, workdir / "epochs",
                     seconds_per_epoch, mode, seed, group, epoch)
         end_off = time.monotonic() - t0
+        output_ids = _corpus_ids(in_dir)
+        discovered_ids = output_ids - input_ids
+        native_ids.update(discovered_ids)
+        native_epochs.append({"epoch": epoch, "input_ids": sorted(input_ids),
+                              "new_output_ids": sorted(discovered_ids)})
+        (workdir / "native_provenance.json").write_text(json.dumps({
+            "version": 1, "run_id": run_id,
+            "definition": "epoch_output_minus_input",
+            "native_discovered_ids": sorted(native_ids), "epochs": native_epochs,
+        }, indent=1), encoding="utf-8")
         if in_dir != corpus_dir:
             for f in in_dir.iterdir():
                 if f.is_file():
@@ -401,8 +463,10 @@ def run_epochs(target: str, ir: str, workdir: Path, seconds_per_epoch: float,
               ("executions", "exec_seconds", "feedback_seconds",
                "candidates_saved")}
     last = epoch_records[-1]
-    result = {"group": group, "mode": mode, "epochs": epochs,
+    result = {"run_id": run_id, "group": group, "mode": mode, "epochs": epochs,
               "seed": seed, "epoch_records": epoch_records,
+              "seconds_per_epoch": seconds_per_epoch,
+              "native_max_total_time_per_epoch": math.ceil(seconds_per_epoch),
               "total_executions": totals["executions"],
               "total_exec_seconds": round(totals["exec_seconds"], 3),
               "total_feedback_seconds": round(totals["feedback_seconds"], 3),

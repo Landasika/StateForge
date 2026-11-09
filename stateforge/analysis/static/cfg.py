@@ -18,6 +18,9 @@ class FunctionCFG:
     function: FunctionIR
     blocks: dict[str, BasicBlock] = field(default_factory=dict)
     edges: list[FlowEdge] = field(default_factory=list)
+    # Build-time ownership only; not serialized into ProgramIR.  Keeping AST
+    # roots avoids assigning multiline calls to an unrelated line-range block.
+    ast_nodes: dict[str, list[ast.AST]] = field(default_factory=dict)
 
 
 class _Builder:
@@ -132,6 +135,30 @@ class _Builder:
             self.returns.append(block)      # 复用 return→exit 的统一出口连接
             return []
 
+        if isinstance(stmt, (ast.With, ast.AsyncWith)):
+            # Keep the header distinct so later straight-line statements cannot
+            # absorb it, and recurse into the body like any other suite.  Exit
+            # protocol / exception suppression remain conservative.
+            header = self.new("with", [stmt])
+            self._connect(incoming, header)
+            before_returns = len(self.returns)
+            before_edges = len(self.edges)
+            normal = self._sequence(stmt.body, [(header, "flow")], loops)
+            # Python emits the header line again while leaving a context.
+            # Reuse that observable block rather than inventing an ambiguous
+            # same-line cleanup node. It conservatively has both entry and
+            # cleanup continuations, including abrupt completion paths.
+            self._connect(normal, header)
+            for terminal in self.returns[before_returns:]:
+                self.edge(terminal, header)
+            if self.returns[before_returns:]:
+                self.returns.append(header)
+            for src, dst, kind, condition in list(self.edges[before_edges:]):
+                if condition in ("break", "continue"):
+                    self.edge(src, header)
+                    self.edge(header, dst, kind, condition)
+            return [(header, "flow")] if normal else []
+
         if isinstance(stmt, ast.Try):
             # CONSERVATIVE APPROXIMATION(评审§12):handler 从 try 入口可达
             # (flow+condition),不是从真实抛出点出发的 exception 边;
@@ -167,10 +194,12 @@ class _Builder:
         ids: dict[str, str] = {}
         used: dict[str, int] = {}
         blocks: dict[str, BasicBlock] = {}
+        ast_nodes: dict[str, list[ast.AST]] = {}
         for raw, kind, stmts, test in self.raw_blocks:
             lines = [getattr(s, "lineno", self.node.lineno) for s in stmts]
             if test is not None:
-                lines.append(getattr(test, "lineno", self.node.lineno))
+                lines.extend(range(getattr(test, "lineno", self.node.lineno),
+                                   getattr(test, "end_lineno", test.lineno) + 1))
             if not lines:
                 lines = [self.node.lineno]
             lo, hi = min(lines), max(lines)
@@ -178,6 +207,12 @@ class _Builder:
             used[base] = used.get(base, 0) + 1
             bid = f"{base}::{used[base]}"
             ids[raw] = bid
+            if kind == "with":
+                # Body ASTs belong to their recursively built blocks.
+                ast_nodes[bid] = [item.context_expr for stmt in stmts
+                                  for item in stmt.items]
+            else:
+                ast_nodes[bid] = ([test] if test is not None else []) + list(stmts)
             text = [ast.unparse(s) for s in stmts]
             if test is not None:
                 text = [f"<test> {ast.unparse(test)}"] + text
@@ -189,7 +224,7 @@ class _Builder:
                 edges.append(FlowEdge(ids[src], ids[dst], kind, condition))
         qname = f"{self.module}.{self.node.name}"
         fn = FunctionIR(qname, self.file, self.module, ids[entry], ids[exit_node], list(blocks))
-        return FunctionCFG(fn, blocks, edges)
+        return FunctionCFG(fn, blocks, edges, ast_nodes)
 
 
 def build_function_cfg(node: ast.FunctionDef | ast.AsyncFunctionDef,
