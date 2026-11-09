@@ -100,6 +100,7 @@ PROV_SELF_METHOD = "self_method"          # method of the caller's own class
 PROV_BASE_METHOD = "base_method"          # method inherited from a local base
 PROV_ANNOTATION = "annotation"            # receiver type from an annotation
 PROV_IMPORT = "import"                    # qualified through an import table
+PROV_DYNAMIC = "dynamic"                  # observed at runtime for this site
 
 
 @dataclass(frozen=True)

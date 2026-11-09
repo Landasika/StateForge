@@ -35,7 +35,14 @@ __all__ = ["build_icfg", "_source_hash", "_iter_owned_calls"]
 
 
 def build_icfg(app_root: str | Path, callgraph: dict[str, list[str]] | None = None,
-               include_all_functions: bool = True) -> ProgramIR:
-    """Build the ICFG for the Python sources under *app_root*."""
+               include_all_functions: bool = True,
+               dynamic: dict[tuple[str, int], str] | None = None) -> ProgramIR:
+    """Build the ICFG for the Python sources under *app_root*.
+
+    ``dynamic`` maps ``(caller qname, line)`` to a callee observed at runtime;
+    it is the strongest evidence available and is applied first (see
+    :class:`~stateforge.analysis.solver.callgraph.NameCallSolver`).
+    """
     return build_python_icfg(app_root, callgraph=callgraph,
-                             include_all_functions=include_all_functions)
+                             include_all_functions=include_all_functions,
+                             dynamic=dynamic)

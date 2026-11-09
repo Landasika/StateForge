@@ -5,6 +5,8 @@ Consumes :mod:`stateforge.analysis.facts` and produces a
 are *evidence ordered*, not language ordered, so a new frontend inherits all of
 them for free:
 
+0. ``dynamic``     — the target observed at runtime for this exact call site.
+   Nothing outranks an observation, so this rule runs first.
 1. ``self_method``/``base_method`` — the receiver is the caller's own class.
 2. ``annotation``  — the receiver carries a known local type.
 3. ``module_direct`` — a bare call naming something the caller's module declares.
@@ -40,6 +42,7 @@ from stateforge.analysis.facts import (
     PROV_ANNOTATION,
     PROV_BASE_METHOD,
     PROV_CALLGRAPH_HINT,
+    PROV_DYNAMIC,
     PROV_IMPORT,
     PROV_MODULE_DIRECT,
     PROV_SELF_METHOD,
@@ -63,10 +66,12 @@ class NameCallSolver:
 
     def __init__(self, facts: ProgramFacts, *,
                  known: Iterable[str] | None = None,
-                 callgraph: Mapping[str, list[str]] | None = None) -> None:
+                 callgraph: Mapping[str, list[str]] | None = None,
+                 dynamic: Mapping[tuple[str, int], str] | None = None) -> None:
         self.facts = facts
         self.known: set[str] | None = None if known is None else set(known)
         self.callgraph = callgraph
+        self.dynamic = dict(dynamic) if dynamic else {}
 
     # -- public API ------------------------------------------------------
     def resolve(self, site: CallSiteFact) -> Resolution | None:
@@ -76,7 +81,8 @@ class NameCallSolver:
         ``self.x()`` targets a method of the caller's class, ``mod.x()`` targets
         what ``mod`` was imported as, and ``var.x()`` needs a known type.
         """
-        evidence = (self._by_self_method,
+        evidence = (self._by_dynamic,
+                    self._by_self_method,
                     self._by_annotated_receiver,
                     self._by_local_name,
                     self._by_import,
@@ -96,6 +102,19 @@ class NameCallSolver:
         return self.known is None or resolution.callee in self.known
 
     # -- evidence rules --------------------------------------------------
+    def _by_dynamic(self, site: CallSiteFact) -> Resolution | None:
+        """A target observed at runtime for this ``(caller, line)``.
+
+        Static analysis cannot see the receiver's type, but the interpreter
+        can.  A recorded call is ground truth for the site, so this rule
+        outranks every inference.  It is keyed by caller and line rather than
+        by run, so one observation serves later runs that reach the same site.
+        """
+        callee = self.dynamic.get((site.caller, site.line))
+        if callee is None:
+            return None
+        return Resolution(callee, PROV_DYNAMIC)
+
     def _by_self_method(self, site: CallSiteFact) -> Resolution | None:
         """``self.x()`` / ``cls.x()`` -> the caller's own class, then its bases."""
         if site.receiver != SELF or not site.callee_name:

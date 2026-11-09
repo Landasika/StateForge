@@ -231,7 +231,8 @@ def _receiver_kind(call: ast.Call) -> tuple[str, str | None]:
 
 def build_python_icfg(app_root: str | Path,
                       callgraph: dict[str, list[str]] | None = None,
-                      include_all_functions: bool = True) -> ProgramIR:
+                      include_all_functions: bool = True,
+                      dynamic: dict[tuple[str, int], str] | None = None) -> ProgramIR:
     root = Path(app_root).resolve()
     ir = ProgramIR(metadata={"root": str(root), "kind": "icfg", "version": 1})
     facts = ProgramFacts()
@@ -297,7 +298,8 @@ def build_python_icfg(app_root: str | Path,
 
     # Resolution is delegated to the language-neutral solver: this frontend
     # only reports what the syntax shows (spec P1-2).
-    solver = NameCallSolver(facts, known=set(ir.functions), callgraph=callgraph)
+    solver = NameCallSolver(facts, known=set(ir.functions), callgraph=callgraph,
+                            dynamic=dynamic)
     unresolved: list[dict[str, object]] = []
     for qname, fn in list(ir.functions.items()):
         module, node = function_nodes[qname]
