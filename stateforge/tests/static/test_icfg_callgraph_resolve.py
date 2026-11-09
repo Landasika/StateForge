@@ -5,7 +5,7 @@ from stateforge.analysis.static.icfg import build_icfg
 
 SRC_A = '''\
 from b import get
-from c import get as get_c   # noqa: F401  制造别名歧义
+from c import get            # 同名重绑定:哪个 get 都不确定
 
 def handler(x):
     return get(x)
@@ -21,6 +21,19 @@ def _root(tmp_path):
     (d / "b.py").write_text(SRC_B, encoding="utf-8")
     (d / "c.py").write_text(SRC_C, encoding="utf-8")
     return d
+
+
+def test_imported_name_is_qualified(tmp_path):
+    """``from b import get`` 后调用 ``get`` 就是 ``b.get``:导入表给了确定证据。"""
+    d = tmp_path / "app"
+    d.mkdir()
+    (d / "a.py").write_text("from b import get\n\ndef handler(x):\n    return get(x)\n",
+                            encoding="utf-8")
+    (d / "b.py").write_text(SRC_B, encoding="utf-8")
+    (d / "c.py").write_text(SRC_C, encoding="utf-8")
+    ir = build_icfg(d)
+    assert any(e.callee == "b.get" for e in ir.edges if e.kind == "call")
+    assert not any(u["caller"] == "a.handler" for u in ir.metadata["unresolved_calls"])
 
 
 def test_ambiguous_without_callgraph(tmp_path):

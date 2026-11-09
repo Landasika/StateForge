@@ -99,6 +99,22 @@ PROV_CALLGRAPH_HINT = "callgraph_hint"    # supplied external call graph
 PROV_SELF_METHOD = "self_method"          # method of the caller's own class
 PROV_BASE_METHOD = "base_method"          # method inherited from a local base
 PROV_ANNOTATION = "annotation"            # receiver type from an annotation
+PROV_IMPORT = "import"                    # qualified through an import table
+
+
+@dataclass(frozen=True)
+class ImportFact:
+    """``local`` is bound to ``target`` (a module path) inside ``scope``.
+
+    For ``import a.b as x`` the local is ``x`` and the target is ``a.b``; for
+    ``from a.b import c`` the local is ``c`` and the target is ``a.b``.  The
+    solver turns ``mod.f``/``f`` into a qualified candidate with this instead
+    of guessing by name, which is the only sound way to read ``mod.f()``.
+    """
+
+    scope: str
+    local: str
+    target: str
 
 
 @dataclass(frozen=True)
@@ -148,6 +164,7 @@ class ProgramFacts:
     functions: dict[str, FunctionFact] = field(default_factory=dict)
     classes: dict[str, ClassFact] = field(default_factory=dict)
     types: list[TypeFact] = field(default_factory=list)
+    imports: list[ImportFact] = field(default_factory=list)
     call_sites: list[CallSiteFact] = field(default_factory=list)
 
     def add_function(self, fact: FunctionFact) -> None:
@@ -158,6 +175,9 @@ class ProgramFacts:
 
     def add_type_fact(self, fact: TypeFact) -> None:
         self.types.append(fact)
+
+    def add_import(self, fact: ImportFact) -> None:
+        self.imports.append(fact)
 
     def add_call_site(self, site: CallSiteFact) -> None:
         self.call_sites.append(site)
@@ -186,6 +206,16 @@ class ProgramFacts:
             return None
         qname = f"{class_qname}.{method}"
         return qname if qname in self.functions else None
+
+    def import_target(self, scope: str, local: str) -> str | None:
+        """Module that ``local`` refers to in ``scope``, when unambiguous.
+
+        Two imports of the same local name from different modules (a genuine
+        redefinition) yield ``None``: picking one would be a guess.
+        """
+        targets = {i.target for i in self.imports
+                   if i.scope == scope and i.local == local}
+        return targets.pop() if len(targets) == 1 else None
 
     def types_of(self, scope: str, symbol: str) -> list[TypeFact]:
         return [t for t in self.types

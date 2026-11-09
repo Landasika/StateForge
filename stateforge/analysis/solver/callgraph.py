@@ -2,19 +2,29 @@
 
 Consumes :mod:`stateforge.analysis.facts` and produces a
 :class:`~stateforge.analysis.facts.Resolution` per call site.  The rules below
-are deliberately *evidence ordered* rather than *language ordered*, so a new
-frontend inherits all of them for free:
+are *evidence ordered*, not language ordered, so a new frontend inherits all of
+them for free:
 
-1. ``module_direct``  — the callee is declared in the caller's own module.
-2. ``unique_short``   — exactly one declaration project-wide matches the short
+1. ``self_method``/``base_method`` — the receiver is the caller's own class.
+2. ``annotation``  — the receiver carries a known local type.
+3. ``module_direct`` — a bare call naming something the caller's module declares.
+4. ``import``      — the callee (or the receiver) is qualified by an import:
+   ``mod.f()`` means "``f`` in whatever ``mod`` denotes".
+5. ``unique_short``  — exactly one declaration project-wide matches the short
    (class-qualified) name.
-3. ``unique_alias``   — the qualified name resolves to a single declaration.
-4. ``callgraph_hint`` — an externally supplied call graph (for example PyCG)
-   disambiguates what name matching cannot.
+6. ``callgraph_hint`` — an externally supplied call graph (for example PyCG).
 
-Ambiguity is never broken arbitrarily: if more than one declaration matches and
-no further evidence exists, the solver returns ``None`` and the call stays
-unresolved.  Inventing an edge would silently corrupt every downstream
+Rules 3 and 5 apply **only to bare-name calls**.  A call written ``x.f()`` on a
+local variable has no evidence about ``x`` unless a type or an import supplies
+it, and matching by name alone connects ``row.get()`` to whatever module-level
+``def get`` the project happens to have.  That is a false edge, and a false edge
+is worse than a missing one: it silently credits coverage to a function that was
+never called.  So receiver-bearing calls without receiver evidence stay
+unresolved.
+
+Ambiguity is never broken arbitrarily either: if more than one declaration
+matches and no further evidence exists, the solver returns ``None`` and the call
+stays unresolved.  Inventing an edge would silently corrupt every downstream
 coverage and state metric, so refusing is the correct answer.
 
 The solver does not know about source syntax, so it can answer for any language
@@ -26,9 +36,11 @@ from __future__ import annotations
 from typing import Iterable, Mapping
 
 from stateforge.analysis.facts import (
+    NONE,
     PROV_ANNOTATION,
     PROV_BASE_METHOD,
     PROV_CALLGRAPH_HINT,
+    PROV_IMPORT,
     PROV_MODULE_DIRECT,
     PROV_SELF_METHOD,
     PROV_UNIQUE_SHORT,
@@ -60,14 +72,15 @@ class NameCallSolver:
     def resolve(self, site: CallSiteFact) -> Resolution | None:
         """Return the callee for *site*, or ``None`` when evidence is missing.
 
-        Rules run from strongest to weakest evidence.  A receiver-bearing call
-        is answered before any bare-name rule: ``self.x()`` targets a method of
-        the caller's class, never a module-level function that happens to share
-        the name.
+        A receiver-bearing call is answered only by receiver evidence:
+        ``self.x()`` targets a method of the caller's class, ``mod.x()`` targets
+        what ``mod`` was imported as, and ``var.x()`` needs a known type.
         """
         evidence = (self._by_self_method,
                     self._by_annotated_receiver,
-                    self._by_name)
+                    self._by_local_name,
+                    self._by_import,
+                    self._by_unique_short)
         for rule in evidence:
             resolution = rule(site)
             if resolution is not None:
@@ -141,23 +154,73 @@ class NameCallSolver:
                 return found
         return None
 
-    def _by_name(self, site: CallSiteFact) -> Resolution | None:
+    def _by_local_name(self, site: CallSiteFact) -> Resolution | None:
+        """A bare call naming a function the caller's own module declares."""
+        if site.receiver != NONE or not site.callee_name:
+            return None
+        caller = self.facts.functions.get(site.caller)
+        if caller is None:
+            return None
+        return self._by_module_and_short(caller.module, site.callee_name,
+                                         PROV_MODULE_DIRECT)
+
+    def _by_import(self, site: CallSiteFact) -> Resolution | None:
+        """Qualify the callee through the caller module's import table.
+
+        ``from a.b import c`` followed by ``c()`` names ``a.b.c``; the same
+        import followed by ``c.d()`` names ``a.b.c.d`` (``c`` may be a module).
+        ``import a.b as x`` followed by ``x.f()`` names ``a.b.f``.  Turning a
+        guess into a lookup is the only sound reason to resolve ``mod.f()``.
+        """
         short = site.callee_name
         if not short:
             return None
-
         caller = self.facts.functions.get(site.caller)
-        if caller is not None:
-            direct = self.facts.by_module_and_short(caller.module, short)
-            if direct is not None:
-                return Resolution(direct, PROV_MODULE_DIRECT)
+        if caller is None:
+            return None
+        scope = caller.module
 
-        # Note: the previous implementation had a third step that read the
-        # per-name alias list.  It was unreachable — the alias list is built
-        # from exactly the same declarations as ``by_short``, so whenever it
-        # held a single entry the unique-short rule had already answered, and
-        # whenever it held several the answer was still "ambiguous".  Folding
-        # it into the rule above keeps behaviour identical.
+        if site.receiver == NONE:
+            if self._by_module_and_short(scope, short, PROV_MODULE_DIRECT):
+                return None                   # a local declaration wins
+            base = self.facts.import_target(scope, short)
+            if base is None:
+                return None
+            candidates = [base]
+        elif site.receiver_symbol:
+            base = self.facts.import_target(scope, site.receiver_symbol)
+            if base is None:
+                return None
+            candidates = [f"{base}.{short}"]
+        else:
+            return None
+
+        for candidate in candidates:
+            for qname in self._package_variants(candidate):
+                if qname in self.facts.functions:
+                    return Resolution(qname, PROV_IMPORT)
+        return None
+
+    def _by_module_and_short(self, module: str, short: str,
+                             provenance: str) -> Resolution | None:
+        for qname in self._package_variants(f"{module}.{short}"):
+            if qname in self.facts.functions:
+                return Resolution(qname, provenance)
+        return None
+
+    def _package_variants(self, qname: str) -> list[str]:
+        """``a.b`` plus ``a.__init__.b``: a package's own names live in ``__init__``."""
+        if "." not in qname:
+            return [qname]
+        head, _, tail = qname.rpartition(".")
+        return [qname, f"{head}.__init__.{tail}"]
+
+    def _by_unique_short(self, site: CallSiteFact) -> Resolution | None:
+        short = site.callee_name
+        if not short or site.receiver != NONE:
+            # No receiver evidence: refuse rather than glue ``x.f()`` onto a
+            # module-level ``def f`` that merely shares the name.
+            return None
         candidates = self.facts.by_short(short)
         if len(candidates) == 1:
             return Resolution(candidates[0], PROV_UNIQUE_SHORT)

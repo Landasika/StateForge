@@ -30,6 +30,7 @@ from stateforge.analysis.facts import (
     CallSiteFact,
     ClassFact,
     FunctionFact,
+    ImportFact,
     ProgramFacts,
     TypeFact,
 )
@@ -60,8 +61,22 @@ def _iter_owned_calls(fn_node: ast.FunctionDef | ast.AsyncFunctionDef):
 
 
 def _module_name(root: Path, path: Path) -> str:
+    """Dotted module path as an import statement would spell it.
+
+    The name starts at the outermost directory below *root* that is a package.
+    Without that, a ``src/`` layout yields ``src.pkg.mod`` while every import in
+    the program says ``pkg.mod``, so no import ever matches a declaration.
+    Roots with no packages at all (test fixtures) keep the plain relative path.
+    """
     rel = path.relative_to(root).with_suffix("")
-    return ".".join(rel.parts)
+    parts = list(rel.parts)
+    for index in range(max(len(parts) - 1, 0)):
+        if (root.joinpath(*parts[: index + 1]) / "__init__.py").is_file():
+            parts = parts[index:]
+            break
+    if parts and parts[-1] == "__init__":
+        parts = parts[:-1]
+    return ".".join(parts)
 
 
 def _files(root: Path):
@@ -124,6 +139,58 @@ def _owned_nodes(fn_node: ast.FunctionDef | ast.AsyncFunctionDef):
         stack.extend(ast.iter_child_nodes(node))
 
 
+def _package_of(module: str) -> str:
+    """The package a module lives in (``a.b.c`` -> ``a.b``; ``a.b.__init__`` -> ``a.b``)."""
+    parts = module.split(".")
+    if parts and parts[-1] == "__init__":
+        return ".".join(parts[:-1])
+    return ".".join(parts[:-1])
+
+
+def _resolve_relative(module: str, level: int, target: str | None) -> str | None:
+    """Absolute module path for a relative ``ImportFrom``."""
+    if level <= 0:
+        return target
+    parts = module.split(".")
+    if parts and parts[-1] == "__init__":
+        base = parts[:-1]
+        drop = level - 1
+    else:
+        base = parts[:-1]
+        drop = level
+    if drop > len(base):
+        return None
+    resolved = base[: len(base) - drop]
+    if target:
+        resolved = resolved + target.split(".")
+    return ".".join([p for p in resolved if p])
+
+
+def _import_facts(module: str, tree: ast.Module) -> list[ImportFact]:
+    """Bindings an import statement creates, as ``local -> target module``."""
+    out: list[ImportFact] = []
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            for alias in node.names:
+                local = alias.asname or alias.name.split(".")[0]
+                target = alias.name if alias.asname else alias.name.split(".")[0]
+                out.append(ImportFact(scope=module, local=local, target=target))
+        elif isinstance(node, ast.ImportFrom):
+            resolved = _resolve_relative(module, node.level or 0, node.module)
+            if resolved is None:
+                continue
+            for alias in node.names:
+                if alias.name == "*":
+                    continue
+                # ``from a.b import c`` binds ``c`` to the qualified path
+                # ``a.b.c``: it may be a function there, or a submodule that
+                # the call site then dereferences as ``c.d()``.
+                target = f"{resolved}.{alias.name}" if resolved else alias.name
+                out.append(ImportFact(scope=module, local=alias.asname or alias.name,
+                                      target=target))
+    return out
+
+
 def _constructor_assignments(fn_node) -> list[tuple[str, str]]:
     """``x = ClassName(...)`` bindings that are safe to treat as a type.
 
@@ -176,6 +243,8 @@ def build_python_icfg(app_root: str | Path,
         except (OSError, SyntaxError):
             continue
         module = _module_name(root, path)
+        for fact in _import_facts(module, tree):
+            facts.add_import(fact)
         for node, class_path in _walk_with_class(tree):
             if isinstance(node, ast.ClassDef):
                 facts.add_class(ClassFact(
