@@ -1,0 +1,8 @@
+AUTH_CONFLICT alice,bob accepted_subject=bob status=VERIFIED_ACHIEVED witness=True
+AUTH_CONFLICT bob,alice accepted_subject=alice status=VERIFIED_NOT_ACHIEVED witness=False
+EXISTENCE_CONFLICT absent=['users:bob'] snapshot={'users:bob': {'id': 7}} status=VERIFIED_ACHIEVED
+HTTP_METHOD actual=('POST', '/item', {'confirm': 'yes'}) recorded={'method': 'DELETE', 'path': '/item', 'form': {'confirm': 'yes'}} verified=True
+HTTP_STALE_HASH changed=True verified=True returncode=0 error=None
+ENDPOINT_COLLISION target=b.py::edit::2-2::terminal::1 constraints=['Session.authed_as'] steps=['POST /login', 'GET /a/edit']
+/tmp/ci-venv/lib/python3.13/site-packages/pydantic/_internal/_fields.py:198: UserWarning: Field name "json" in "PlanStep" shadows an attribute in parent "BaseModel"
+  warnings.warn(

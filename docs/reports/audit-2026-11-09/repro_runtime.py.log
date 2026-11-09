@@ -1,0 +1,7 @@
+FREEZE_EVENT {'evt': 'frozen', 'name': 'child'}
+ROOT_BASELINE_ROWS []
+CHILD_BUILD_ZERO_ROWS [(99,)]
+FRAGMENTED_CONTROL JSONDecodeError
+COALESCED_CONTROL JSONDecodeError
+READ_LOCK_RESTORE: HANG beyond 2s despite timeout=0
+ARTIFACT_ROOT /tmp/sf-runtime-audit-f1u296k1
