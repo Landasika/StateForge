@@ -24,10 +24,14 @@ from stateforge.analysis.facts import (
     MODULE,
     NONE,
     SELF,
+    TYPE_ANNOTATION,
+    TYPE_ASSIGNMENT,
     UNKNOWN,
     CallSiteFact,
+    ClassFact,
     FunctionFact,
     ProgramFacts,
+    TypeFact,
 )
 from stateforge.analysis.solver.callgraph import NameCallSolver
 from stateforge.analysis.static.cfg import build_function_cfg
@@ -87,6 +91,62 @@ def _annotation_text(node: ast.expr | None) -> str | None:
         return None
 
 
+def _annotation_type_name(node: ast.expr | None) -> str | None:
+    """The simple type name an annotation denotes, when that is unambiguous.
+
+    Only plain names and dotted names qualify.  Subscripts are skipped on
+    purpose: ``list[User]`` does not mean "this value is a User", and treating
+    it as one would create method edges against the wrong receiver.
+    """
+    if isinstance(node, ast.Name):
+        return node.id
+    if isinstance(node, ast.Attribute):
+        return node.attr
+    return None
+
+
+def _base_name(node: ast.expr) -> str:
+    """Base-class name as written, for local-hierarchy lookups."""
+    name = _annotation_type_name(node)
+    if name is not None:
+        return name
+    return _annotation_text(node) or ""
+
+
+def _owned_nodes(fn_node: ast.FunctionDef | ast.AsyncFunctionDef):
+    """Every node owned by *fn_node*, never descending into nested definitions."""
+    stack = list(fn_node.body)
+    while stack:
+        node = stack.pop()
+        if isinstance(node, _OWNED_STOP):
+            continue
+        yield node
+        stack.extend(ast.iter_child_nodes(node))
+
+
+def _constructor_assignments(fn_node) -> list[tuple[str, str]]:
+    """``x = ClassName(...)`` bindings that are safe to treat as a type.
+
+    Only single-assignment symbols qualify: rebinding would make a
+    flow-insensitive fact wrong, and a wrong type manufactures a wrong call
+    edge, which is worse than leaving the call unresolved.
+    """
+    counts: dict[str, int] = {}
+    candidate: dict[str, str] = {}
+    for node in _owned_nodes(fn_node):
+        if not isinstance(node, ast.Assign) or len(node.targets) != 1:
+            continue
+        target = node.targets[0]
+        if not isinstance(target, ast.Name):
+            continue
+        counts[target.id] = counts.get(target.id, 0) + 1
+        if isinstance(node.value, ast.Call):
+            callee = _callee_name(node.value)
+            if callee:
+                candidate[target.id] = callee
+    return [(name, cls) for name, cls in candidate.items() if counts.get(name) == 1]
+
+
 def _receiver_kind(call: ast.Call) -> tuple[str, str | None]:
     """Classify the syntactic receiver of a call (not a type judgement)."""
     func = call.func
@@ -117,6 +177,15 @@ def build_python_icfg(app_root: str | Path,
             continue
         module = _module_name(root, path)
         for node, class_path in _walk_with_class(tree):
+            if isinstance(node, ast.ClassDef):
+                facts.add_class(ClassFact(
+                    qname=".".join([module, *class_path, node.name]),
+                    module=module, name=node.name,
+                    bases=tuple(_base_name(b) for b in node.bases),
+                    methods=tuple(n.name for n in node.body
+                                  if isinstance(n, (ast.FunctionDef,
+                                                    ast.AsyncFunctionDef))),
+                ))
             if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
                 # F2(封版):方法按类限定命名(module.Class.method)——同名方法
                 # 不合并;对它们的裸名/属性名调用解析不出→unresolved(不造假边)
@@ -130,6 +199,22 @@ def build_python_icfg(app_root: str | Path,
                     params=tuple(a.arg for a in node.args.args),
                     return_type=_annotation_text(node.returns),
                 ))
+                # Parameter annotations are the cheapest real type evidence in
+                # Python: record them so ``u.method()`` can find the class.
+                every_arg = (list(getattr(node.args, "posonlyargs", []))
+                             + list(node.args.args)
+                             + list(node.args.kwonlyargs))
+                for arg in every_arg:
+                    type_name = _annotation_type_name(arg.annotation)
+                    if type_name:
+                        facts.add_type_fact(TypeFact(
+                            scope=qname, symbol=arg.arg,
+                            type_name=type_name, source=TYPE_ANNOTATION))
+                # ``x = ClassName(...)`` is the other cheap, safe type source.
+                for symbol, type_name in _constructor_assignments(node):
+                    facts.add_type_fact(TypeFact(
+                        scope=qname, symbol=symbol,
+                        type_name=type_name, source=TYPE_ASSIGNMENT))
                 rel_id = str(path.relative_to(root))
                 cfg = build_function_cfg(node, str(path), module, id_file=rel_id)
                 if not include_all_functions and callgraph and qname not in callgraph:

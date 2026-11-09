@@ -26,9 +26,13 @@ from __future__ import annotations
 from typing import Iterable, Mapping
 
 from stateforge.analysis.facts import (
+    PROV_ANNOTATION,
+    PROV_BASE_METHOD,
     PROV_CALLGRAPH_HINT,
     PROV_MODULE_DIRECT,
+    PROV_SELF_METHOD,
     PROV_UNIQUE_SHORT,
+    SELF,
     CallSiteFact,
     ProgramFacts,
     Resolution,
@@ -54,11 +58,23 @@ class NameCallSolver:
 
     # -- public API ------------------------------------------------------
     def resolve(self, site: CallSiteFact) -> Resolution | None:
-        """Return the callee for *site*, or ``None`` when evidence is missing."""
-        resolution = self._by_name(site)
-        if resolution is None and site.callee_name and self.callgraph is not None:
-            resolution = self._by_callgraph(site)
-        return resolution
+        """Return the callee for *site*, or ``None`` when evidence is missing.
+
+        Rules run from strongest to weakest evidence.  A receiver-bearing call
+        is answered before any bare-name rule: ``self.x()`` targets a method of
+        the caller's class, never a module-level function that happens to share
+        the name.
+        """
+        evidence = (self._by_self_method,
+                    self._by_annotated_receiver,
+                    self._by_name)
+        for rule in evidence:
+            resolution = rule(site)
+            if resolution is not None:
+                return resolution
+        if site.callee_name and self.callgraph is not None:
+            return self._by_callgraph(site)
+        return None
 
     def is_usable(self, resolution: Resolution | None) -> bool:
         """True when the answer names a function this run actually built."""
@@ -67,6 +83,64 @@ class NameCallSolver:
         return self.known is None or resolution.callee in self.known
 
     # -- evidence rules --------------------------------------------------
+    def _by_self_method(self, site: CallSiteFact) -> Resolution | None:
+        """``self.x()`` / ``cls.x()`` -> the caller's own class, then its bases."""
+        if site.receiver != SELF or not site.callee_name:
+            return None
+        caller = self.facts.functions.get(site.caller)
+        if caller is None or not caller.class_path:
+            return None
+        class_qname = ".".join([caller.module, *caller.class_path])
+        return self._method_in_hierarchy(class_qname, site.callee_name,
+                                         PROV_SELF_METHOD)
+
+    def _by_annotated_receiver(self, site: CallSiteFact) -> Resolution | None:
+        """``u.x()`` where ``u`` carries a local type annotation for ``x``.
+
+        Only fires when the annotation names a class declared in this project
+        exactly once, so an annotation on a library type simply yields no
+        evidence instead of a speculative edge.
+        """
+        name = site.callee_name
+        if not name or not site.receiver_symbol:
+            return None
+        if site.receiver == SELF:
+            return None                       # handled by the stronger rule
+        for fact in self.facts.types_of(site.caller, site.receiver_symbol):
+            classes = self.facts.class_by_simple_name(fact.type_name)
+            if len(classes) != 1:
+                continue
+            found = self._method_in_hierarchy(classes[0], name, PROV_ANNOTATION)
+            if found is not None:
+                return found
+        return None
+
+    def _method_in_hierarchy(self, class_qname: str, method: str,
+                             provenance: str, _seen: set[str] | None = None
+                             ) -> Resolution | None:
+        """Find *method* on the class or, failing that, on a local base class."""
+        seen = _seen if _seen is not None else set()
+        if class_qname in seen:
+            return None                       # cycle guard for bad hierarchies
+        seen.add(class_qname)
+
+        direct = self.facts.method_of(class_qname, method)
+        if direct is not None:
+            return Resolution(direct, provenance)
+
+        cls = self.facts.classes.get(class_qname)
+        if cls is None:
+            return None
+        inherited = PROV_BASE_METHOD if provenance == PROV_SELF_METHOD else provenance
+        for base in cls.bases:
+            bases = self.facts.class_by_simple_name(base.rsplit(".", 1)[-1])
+            if len(bases) != 1:
+                continue                      # unknown or ambiguous base
+            found = self._method_in_hierarchy(bases[0], method, inherited, seen)
+            if found is not None:
+                return found
+        return None
+
     def _by_name(self, site: CallSiteFact) -> Resolution | None:
         short = site.callee_name
         if not short:

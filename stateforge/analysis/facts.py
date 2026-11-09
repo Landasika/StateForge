@@ -96,6 +96,49 @@ class Resolution:
 PROV_MODULE_DIRECT = "module_direct"      # same module declares this name
 PROV_UNIQUE_SHORT = "unique_short"        # exactly one declaration project-wide
 PROV_CALLGRAPH_HINT = "callgraph_hint"    # supplied external call graph
+PROV_SELF_METHOD = "self_method"          # method of the caller's own class
+PROV_BASE_METHOD = "base_method"          # method inherited from a local base
+PROV_ANNOTATION = "annotation"            # receiver type from an annotation
+
+
+@dataclass(frozen=True)
+class ClassFact:
+    """A class declaration, as far as call resolution cares about it.
+
+    ``bases`` keeps base names *as written*; a frontend does not resolve them,
+    and the solver only follows ones that map unambiguously onto classes
+    declared in the analysed program.
+    """
+
+    qname: str
+    module: str
+    name: str
+    bases: tuple[str, ...] = ()
+    methods: tuple[str, ...] = ()
+
+    def has_method(self, method: str) -> bool:
+        return method in self.methods
+
+
+@dataclass(frozen=True)
+class TypeFact:
+    """``symbol`` is known to hold a value of ``type_name`` within ``scope``.
+
+    Deliberately weak: this is evidence, not a type system.  A frontend records
+    what it can establish cheaply (an annotation, later an assignment) and the
+    solver uses it to pick a method target.
+    """
+
+    scope: str          # qname of the function where the symbol is bound
+    symbol: str         # variable/parameter name
+    type_name: str      # simple type name as written, e.g. "User"
+    source: str = "annotation"
+
+
+#: Where a :class:`TypeFact` came from, so metrics can separate declared from
+#: inferred types.
+TYPE_ANNOTATION = "annotation"
+TYPE_ASSIGNMENT = "assignment"
 
 
 @dataclass
@@ -103,10 +146,18 @@ class ProgramFacts:
     """Symbol table plus call sites for one analyzed program."""
 
     functions: dict[str, FunctionFact] = field(default_factory=dict)
+    classes: dict[str, ClassFact] = field(default_factory=dict)
+    types: list[TypeFact] = field(default_factory=list)
     call_sites: list[CallSiteFact] = field(default_factory=list)
 
     def add_function(self, fact: FunctionFact) -> None:
         self.functions[fact.qname] = fact
+
+    def add_class(self, fact: ClassFact) -> None:
+        self.classes[fact.qname] = fact
+
+    def add_type_fact(self, fact: TypeFact) -> None:
+        self.types.append(fact)
 
     def add_call_site(self, site: CallSiteFact) -> None:
         self.call_sites.append(site)
@@ -123,6 +174,22 @@ class ProgramFacts:
     def by_name(self, name: str) -> list[str]:
         """Every declaration whose bare name matches."""
         return [q for q, f in self.functions.items() if f.name == name]
+
+    def class_by_simple_name(self, name: str) -> list[str]:
+        """Project classes whose simple name matches *name*."""
+        return [q for q, c in self.classes.items() if c.name == name]
+
+    def method_of(self, class_qname: str, method: str) -> str | None:
+        """The method declared directly by *class_qname*, if it exists."""
+        cls = self.classes.get(class_qname)
+        if cls is None or not cls.has_method(method):
+            return None
+        qname = f"{class_qname}.{method}"
+        return qname if qname in self.functions else None
+
+    def types_of(self, scope: str, symbol: str) -> list[TypeFact]:
+        return [t for t in self.types
+                if t.scope == scope and t.symbol == symbol]
 
 
 def group_call_sites(sites: Iterable[CallSiteFact]) -> Mapping[str, list[CallSiteFact]]:
