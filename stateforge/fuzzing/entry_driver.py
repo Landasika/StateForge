@@ -81,7 +81,11 @@ def _prepare_run(args) -> tuple[dict, dict | None]:
         # may start a fresh output directory at any label.
         # Direct callers prepare IR/config/log files in out_dir before launch.
         # Reject prior execution artifacts without treating those inputs as runs.
-        artifacts = [manifest_path, state_path, out / "spool"]
+        # ``spool`` is deliberately absent: it is a corpus *input* directory that
+        # callers may pre-seed with champion seeds before the first epoch.  A
+        # completed run is identified by driver_identity.json, which is written
+        # only after this check.
+        artifacts = [manifest_path, state_path]
         if out.exists():
             artifacts.extend(out.glob("*-snapshots.jsonl"))
             artifacts.extend(out.glob("*-candidates.jsonl"))

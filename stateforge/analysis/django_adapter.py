@@ -108,19 +108,70 @@ def _class_view(cls: ast.ClassDef, name: str):
     return (methods or ["GET"], fdef, name)
 
 
-def _view_ref(node, funcs, classes):
+def _urlconf_imports(tree: ast.Module, app_root: Path) -> dict[str, str]:
+    """该 URLconf 的 ``本地名 -> 完整模块路径`` 表。
+
+    URLconf 常用 ``from bookmarks.views import bundles as bundles_views`` 这类
+    别名注册视图。别名本身不是文件名,拿它去按短名猜会张冠李戴——linkding 的
+    ``bundles/<int:bundle_id>/edit`` 就是这样被记成了 ``bookmarks.py`` 里的
+    ``edit``。
+    """
+    root = app_root.resolve()
+    out: dict[str, str] = {}
+    for node in ast.walk(tree):
+        if isinstance(node, ast.ImportFrom) and node.module and not node.level:
+            for alias in node.names:
+                out[alias.asname or alias.name] = f"{node.module}.{alias.name}"
+        elif isinstance(node, ast.Import):
+            for alias in node.names:
+                if alias.asname:
+                    out[alias.asname] = alias.name
+    # A relative import would need package context we do not track here; such
+    # entries are simply absent, which makes the caller refuse rather than guess.
+    del root
+    return out
+
+
+def _unique_by_name(name: str, table: dict) -> object | None:
+    """按名字全项目查;只有唯一候选时才接受。
+
+    旧实现取 ``next(...)`` 的第一个命中,于是任意同名函数都可能被认成目标
+    ——这是"看起来解析成功、实际指错位置"的假匹配。宁可返回 None。
+    """
+    hits = {id(node): node for (module, candidate), node in table.items()
+            if candidate == name}
+    return next(iter(hits.values())) if len(hits) == 1 else None
+
+
+def _view_ref(node, funcs, classes, imports: dict[str, str] | None = None):
     """view 参数 → (methods, FunctionDef|None, 显示名);解析不了返回 None。"""
+    imports = imports or {}
     if isinstance(node, ast.Name):                     # 直接函数名(同模块 import)
-        f = next((f for (m, n), f in funcs.items() if n == node.id), None)
+        f = _unique_by_name(node.id, funcs)
         return (_function_view_methods(f), f, node.id) if f else None
     if isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name):
-        key = (node.value.id, node.attr)               # views.detail
+        alias, attr = node.value.id, node.attr
+        # 1) 别名经该 URLconf 的导入表解析成完整模块(唯一可靠路径)
+        target = imports.get(alias)
+        if target:
+            submodule = target.rsplit(".", 1)[0] if target.rsplit(".", 1)[-1] != attr \
+                else target
+            for candidate in (target, f"{target}.{attr}", submodule):
+                if (candidate, attr) in funcs:
+                    f = funcs[(candidate, attr)]
+                    return _function_view_methods(f), f, attr
+                if (candidate, attr) in classes:
+                    return _class_view(classes[(candidate, attr)], attr)
+            # 别名已确定却查不到成员:说明它是第三方视图,拒绝而不是猜
+            if (alias, attr) not in funcs and (alias, attr) not in classes:
+                return None
+        key = (alias, attr)                            # 文件名/模块名直接命中
         if key in funcs:
-            return _function_view_methods(funcs[key]), funcs[key], node.attr
+            return _function_view_methods(funcs[key]), funcs[key], attr
         if key in classes:
-            return _class_view(classes[key], node.attr)
-        f = next((f for (m, n), f in funcs.items() if n == node.attr), None)
-        return (_function_view_methods(f), f, node.attr) if f else None
+            return _class_view(classes[key], attr)
+        f = _unique_by_name(attr, funcs)
+        return (_function_view_methods(f), f, attr) if f else None
     if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) \
             and node.func.attr == "as_view":           # View.as_view()
         inner = node.func.value
@@ -165,7 +216,7 @@ def extract_django(app_root: Path) -> AppModel:
                  for p, t in urlconfs.items()}
     by_short = {p.parent.name: t for p, t in urlconfs.items()}
 
-    def walk(els: list, prefix: str, origin: Path):
+    def walk(els: list, prefix: str, origin: Path, imports: dict[str, str]):
         for elt in els:
             if not (isinstance(elt, ast.Call)
                     and isinstance(elt.func, (ast.Name, ast.Attribute))):
@@ -187,11 +238,16 @@ def extract_django(app_root: Path) -> AppModel:
                            or by_module.get(target + ".urls")
                            or by_short.get(target.split(".")[0].rstrip("/")))
                 if sub is not None:
-                    walk(_parse_urlpatterns(sub), full, origin)
+                    sub_imports = {}
+                    for p2, t2 in urlconfs.items():
+                        if t2 is sub:
+                            sub_imports = _urlconf_imports(t2, app_root)
+                            break
+                    walk(_parse_urlpatterns(sub), full, origin, sub_imports)
                 continue                                  # 第三方 include 静默跳过
             if view is None:
                 continue
-            ref = _view_ref(view, funcs, classes)
+            ref = _view_ref(view, funcs, classes, imports)
             if ref is None:
                 continue                                  # admin.site.urls 等
             methods, fdef, name = ref
@@ -205,7 +261,7 @@ def extract_django(app_root: Path) -> AppModel:
             model.endpoints.append(ep)
 
     for p, tree in urlconfs.items():
-        walk(_parse_urlpatterns(tree), "", p)
+        walk(_parse_urlpatterns(tree), "", p, _urlconf_imports(tree, app_root))
     model.candidates.extend(ex.candidates)
     model.config_flags.update(ex.config_flags)
     return model

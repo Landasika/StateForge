@@ -28,17 +28,15 @@ def _dir_stats(d: Path) -> dict:
 
 
 def _has_run_artifacts(root: Path) -> bool:
-    """True when the directory holds results from an earlier run.
+    """True when the directory holds results from an earlier *run*.
 
-    Empty scaffolding (for example a pre-created ``epochs/`` folder) carries no
-    inputs, so it must not block a fresh run; anything containing a file does.
+    A completed run always writes ``run_identity.json`` at the top of the
+    workdir, so that single file is the marker.  Testing "contains any file"
+    instead would reject legitimate pre-seeded *inputs*: callers may seed
+    ``epochs/spool`` with champion seeds before the first epoch, and that is a
+    supported way to give the run a warm start rather than a stale result.
     """
-    for entry in root.iterdir():
-        if entry.is_file():
-            return True
-        if entry.is_dir() and any(entry.iterdir()):
-            return True
-    return False
+    return (root / "run_identity.json").is_file()
 
 
 def _run_driver(target: str, ir: str, corpus_dir: Path, out_dir: Path,
@@ -374,7 +372,10 @@ def run_epochs(target: str, ir: str, workdir: Path, seconds_per_epoch: float,
         "initial_corpus": str(initial.resolve()) if initial is not None else None,
     }, indent=2), encoding="utf-8")
     corpus_dir = workdir / "lf_corpus"
-    corpus_dir.mkdir()
+    # A caller may have created the corpus directory while staging initial
+    # inputs; an empty one is not a prior run (that is what run_identity.json
+    # marks), so tolerate it instead of failing.
+    corpus_dir.mkdir(exist_ok=True)
     if initial is not None:
         for f in initial.iterdir():
             if f.is_file():

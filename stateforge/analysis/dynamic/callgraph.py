@@ -19,10 +19,23 @@ recovers sites neither layer resolves alone.
 
 from __future__ import annotations
 
-from typing import Iterable, Mapping
+from typing import Iterable, Mapping, Protocol
 
 from stateforge.core.ir import ProgramIR
-from stateforge.runtime.tracer import TraceEvent
+
+
+class TraceRecord(Protocol):
+    """The four fields the learning pass reads.
+
+    A structural type rather than the runtime's own class: the dynamic layer
+    sits below ``stateforge.runtime`` in the layering, so it must not import
+    from it.  Anything shaped like a trace event works.
+    """
+
+    file: str
+    function: str
+    line: int
+    event_type: str
 
 
 def _caller_qname(ir: ProgramIR, file: str, function: str) -> str | None:
@@ -34,7 +47,7 @@ def _caller_qname(ir: ProgramIR, file: str, function: str) -> str | None:
     return None
 
 
-def learn_call_edges(events: Iterable[TraceEvent],
+def learn_call_edges(events: Iterable[TraceRecord],
                      ir: ProgramIR) -> dict[tuple[str, int], str]:
     """Map ``(caller qname, call line)`` to the callee the trace entered.
 
