@@ -27,6 +27,20 @@ def _dir_stats(d: Path) -> dict:
     return {"files": len(files), "bytes": sum(f.stat().st_size for f in files)}
 
 
+def _has_run_artifacts(root: Path) -> bool:
+    """True when the directory holds results from an earlier run.
+
+    Empty scaffolding (for example a pre-created ``epochs/`` folder) carries no
+    inputs, so it must not block a fresh run; anything containing a file does.
+    """
+    for entry in root.iterdir():
+        if entry.is_file():
+            return True
+        if entry.is_dir() and any(entry.iterdir()):
+            return True
+    return False
+
+
 def _run_driver(target: str, ir: str, corpus_dir: Path, out_dir: Path,
                 seconds: float, mode: str, seed: int, group: str,
                 epoch: int) -> None:
@@ -340,7 +354,7 @@ def run_epochs(target: str, ir: str, workdir: Path, seconds_per_epoch: float,
     if epochs < 1 or not math.isfinite(seconds_per_epoch) or seconds_per_epoch <= 0:
         raise ValueError("epochs and seconds_per_epoch must be positive")
     workdir = Path(workdir)
-    if workdir.exists() and any(workdir.iterdir()):
+    if workdir.exists() and _has_run_artifacts(workdir):
         raise ValueError(f"new run requires an empty workdir: {workdir}; "
                          "choose a new directory (cross-run resume is not supported)")
     initial = Path(initial_corpus) if initial_corpus is not None else None

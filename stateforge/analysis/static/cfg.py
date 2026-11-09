@@ -32,6 +32,10 @@ class _Builder:
         self.raw_blocks: list[tuple[str, str, list[ast.stmt], ast.expr | None]] = []
         self.edges: list[tuple[str, str, str, str | None]] = []
         self.ordinal = 0
+        # Structural nodes without statements (e.g. the `try` anchor) still
+        # own a source line; otherwise their line events fall outside every
+        # block and cannot be attributed.
+        self.anchor: dict[str, int] = {}
         self.returns: list[str] = []     # H1:return terminal 块,build 时统一连 exit
 
     def new(self, kind: str, stmts: list[ast.stmt] | None = None,
@@ -165,6 +169,7 @@ class _Builder:
             # 正常流与异常派发在静态上均自 try_entry 出发——过近似,已记
             # spec §10;动态 exception 事件仅留诊断,不参与结构反馈。
             try_entry = self.new("try")
+            self.anchor[try_entry] = stmt.lineno
             self._connect(incoming, try_entry)
             normal = self._sequence(stmt.body, [(try_entry, "flow")], loops)
             for handler in stmt.handlers:
@@ -196,13 +201,45 @@ class _Builder:
         blocks: dict[str, BasicBlock] = {}
         ast_nodes: dict[str, list[ast.AST]] = {}
         for raw, kind, stmts, test in self.raw_blocks:
-            lines = [getattr(s, "lineno", self.node.lineno) for s in stmts]
+            # Identity uses the statement *start* lines only, so ids stay
+            # stable; the line set additionally covers each statement's whole
+            # span, so continuation lines of a multi-line statement map here
+            # instead of falling outside every block.
+            starts = [getattr(s, "lineno", self.node.lineno) for s in stmts]
+            lines = []
+            if kind == "with":
+                # The header owns its own line and the context expressions;
+                # the body belongs to the recursively built blocks and must
+                # not claim its first line twice.
+                for stmt in stmts:
+                    lines.append(getattr(stmt, "lineno", self.node.lineno))
+                    for item in stmt.items:
+                        start = getattr(item.context_expr, "lineno", stmt.lineno)
+                        end = getattr(item.context_expr, "end_lineno", start) or start
+                        lines.extend(range(start, end + 1))
+            else:
+                for stmt in stmts:
+                    start = getattr(stmt, "lineno", self.node.lineno)
+                    if isinstance(stmt, (ast.FunctionDef, ast.AsyncFunctionDef,
+                                         ast.ClassDef)):
+                        # A nested definition is one line for its parent: its
+                        # body belongs to the nested function's own blocks.
+                        lines.append(start)
+                        continue
+                    end = getattr(stmt, "end_lineno", start) or start
+                    lines.extend(range(start, end + 1))
             if test is not None:
-                lines.extend(range(getattr(test, "lineno", self.node.lineno),
-                                   getattr(test, "end_lineno", test.lineno) + 1))
+                test_lines = range(getattr(test, "lineno", self.node.lineno),
+                                   getattr(test, "end_lineno", test.lineno) + 1)
+                starts.extend(test_lines)
+                lines.extend(test_lines)
+            if not starts:
+                starts = [self.node.lineno]
             if not lines:
-                lines = [self.node.lineno]
-            lo, hi = min(lines), max(lines)
+                # Structural anchors (the `try` header) keep their own line in
+                # the match set while the id stays on the function's line.
+                lines = [self.anchor.get(raw, self.node.lineno)]
+            lo, hi = min(starts), max(starts)
             base = f"{self.id_file}::{self.node.name}::{lo}-{hi}::{kind}"
             used[base] = used.get(base, 0) + 1
             bid = f"{base}::{used[base]}"
