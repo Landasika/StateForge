@@ -85,3 +85,39 @@ realworld-django-ninja 是真 Django,其端点为 0 的问题维持原判。
 3. 守卫经调用图归属到端点(直接归属仅 12%~57%)
 4. Flask 排除路由装饰器后的非平凡装饰器信号
 5. `db.session`/`cache` 链的命名空间语义(链即命名空间,消费侧过滤)
+
+## 端到端实测:session 转移点 抓包验证(CTFd,11-10)
+
+真实请求流(CTFd 自管 Flask 应用,真实 sqlite + 真实 CSRF,8 个包):
+
+```
+GET / → GET /login → POST /login 错密码 → POST /login 正确
+→ GET /challenges → GET /admin/config → GET /logout → GET /challenges
+```
+
+### 结果
+
+- **静态**:12 个 session 转移点(CTFd 自身代码 10 个 + flask 内部 2 个)
+- **执行确认 6/12**(write×4 + pop×1 + clear×1):
+  `auth.py:16/17/18`(id/nonce/hash 写,即登录转移)、
+  `auth.py:35`(session.clear,登出转移)、
+  `initialization:398`(CSRF nonce 播种)、`flask/helpers.py:431`(flash 消费)
+- **转移记录(快照差)抓到 4 条**:
+  - `GET /`:+nonce(匿名态播种)
+  - `POST /login`:+id +hash +_permanent,~nonce 轮换 —— **匿名 → 已登录**
+  - `GET /logout`:-id -hash -nonce -_permanent —— **已登录 → 匿名**
+  - `GET /challenges`(登出后):+nonce 重新播种
+- **join 率 8/10**:观测到的 10 个 key 变化事件,8 个映射回静态转移点
+
+### 发现的提取器缺口(真实、具体)
+
+`session.permanent = True`(auth.py:19)——**属性写,不是下标写**,
+提取器只认 `x[k]=v`,漏了这一类。flask 把它序列化成 session 里的
+`_permanent` key,快照差里看得见(2/10 的缺口全源于它),但 join 不回
+静态点。改进项:store 链上的属性赋值(`x.attr = v`)也应记转移点。
+
+### 未执行的 6 个(流程未覆盖,非提取器问题)
+
+update_user×2(需改密码)、reset_password×2、setup 向导×1、flash 写×1。
+
+脚本:`sess_driver_ctfd.py` / `sess_analyze.py`(本目录)。
