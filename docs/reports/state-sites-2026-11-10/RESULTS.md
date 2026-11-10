@@ -237,3 +237,50 @@ CTFd 8 请求实测(每请求独立追踪 + 前后快照):
 渲染:`ctfd_state_machine.png`(本目录)。
 
 测试:test_join_machine.py 8 用例;全量 1012 通过 / 0 失败。
+
+## 跨全部应用跑整条静态链(11-10,19 应用)
+
+端点 → 转移点抓取率 → 骨架 → 路由归属,external/ 全量:
+
+| 应用 | 框架 | 端点(匹配) | 归属函数 | session 转移点 | slots/prod/reads |
+|---|---|---|---|---|---|
+| CTFd | flask | 63 (62) | 155 | **13/13=100%** | 36/71/66 |
+| healthchecks | django | 193 (96) | 161 | **46/46=100%** | 32/56/22 |
+| linkding | django | 29 (29) | 206 | **4/4=100%** | 13/15/11 |
+| microblog | flask | 27 (27) | 39 | **2/2=100%** | 43/28/55 |
+| moin | flask | 88 (87) | 156 | **17/17=100%** | 49/59/33 |
+| BenchmarkPython | flask | 2463 (2463) | 2467 | 无写点 | 10/6/12 |
+| fava | flask | 15 (15) | 18 | 无写点 | 12/7/14 |
+| OctoPrint | flask | 207 (**105**) | 226 | 48/62=77% | 63/89/249 |
+| mezzanine | django | 25 (**3**) | 42 | 0/3 | 22/18/7 |
+| wger | django | 9 (**3**) | 4 | 0/15 | 16/7/25 |
+| django-oscar | django | **0** | 0 | 0/19 | 10/3/10 |
+| django-blog-zinnia | django | **0** | 0 | 0/1 | 0/0/0 |
+| realworld | django | **0** | 0 | 无写点 | 4/3/4 |
+| bakerydemo | django | **1** | 1 | 无写点 | 34/2/34 |
+| Spirit | django | 89 (67) | 153 | 无写点 | 5/6/6 |
+| trac/Radicale/Predator/atropos | — | 无 django/flask venv,现适配器范围外 | | | |
+
+### 读法:链条的薄弱环节是端点提取,不是新层
+
+依赖链已清晰:**端点质量 → 入口判定 → 转移点资格 → 骨架 → 归属**。
+端点正常的 5 个应用,session 转移点全部 100%。端点坏的,后面全断。
+三种端点病(全部在适配器,即 URLconf/路由提取层):
+
+1. **include 解析不进 venv**(oscar/zinnia/realworld/bakerydemo,0~1 端点)
+   ——已知问题;修它同时能注册 Django CBV 类,顺带解 CBV 资格缺口
+2. **mezzanine:路由字段全空**——老式 `url()` + 点分字符串视图
+   (`url(r"^login/", "mezzanine.core.views.login")`),适配器不认这种写法
+3. **wger:func 字段为空/类名、文件记成 urls.py**——SPA 模式
+   (`ReactView.as_view()` 承接所有前端路由)
+4. **OctoPrint:一半端点未匹配 + 采进了测试文件**(`csrf_test.py` 的
+   `/active`、`/exempt` 成了端点)——适配器卫生问题
+
+### 结论
+
+- sites/graph/attribution 三层在端点正常的应用上全部 100%/高匹配,
+  无一失败;此前"别只盯 CTFd"的担心在新层不成立
+- **下一个该修的是适配器(端点提取),优先级:include 进 venv >
+  mezzanine 老式 url() > wger ReactView > OctoPrint 测试文件**
+
+脚本:`all_apps_chain.py`(本目录)。
