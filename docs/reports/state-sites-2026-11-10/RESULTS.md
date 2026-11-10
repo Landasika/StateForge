@@ -210,3 +210,30 @@ CTFd 真值核对(与 auth.py 源码及动态实测一致):
 动态转移记录(快照差)将来叠加为 slot-state 边即成状态机;本图是骨架。
 
 测试:test_state_graph.py 6 用例;全量 1004 通过 / 0 失败。
+
+## 观测状态机(11-10):静态骨架 × 动态快照差 接通
+
+新增两个纯模块(L1.5,零运行时依赖):
+
+- `state/join.py`:`observe(trigger, before, after, executed_points, chains)`
+  → `ObservedTransition`。归因四级:精确 key → 下划线前缀
+  (约定匹配,非框架词典)→ clear/flush 承接全部删除 → 如实
+  unattributed。快照无变化返回 None(登录失败天然不出边)
+- `state/machine.py`:`StateMachine` 按 (from,to,trigger) 去重累积;
+  查询接口 `triggers_producing(key)` = 规划入口
+
+CTFd 8 请求实测(每请求独立追踪 + 前后快照):
+
+- **4 条边、3 个状态、零未归因**:
+  ∅ --GET /--> {nonce} --POST /login--> {_permanent,hash,id,nonce}
+  --GET /logout--> ∅;GET /challenges 回播种边
+- **4 个无变化请求不出边**(含错密码——转移不发生,机器正确沉默)
+- **`_permanent` 经下划线规则归因到 auth.py:19 session[permanent]**
+- **logout 的 4 个删除全部归到 auth.py:35 clear 点**
+- **闭环自证**:查询"哪个请求能建立 session[id]" →
+  `POST /login`(证据 auth.py:16/17/18/19)。配合静态骨架的
+  reads 边(谁读 session[id]),"要到受保护代码先登录"由机器自动推出
+
+渲染:`ctfd_state_machine.png`(本目录)。
+
+测试:test_join_machine.py 8 用例;全量 1012 通过 / 0 失败。

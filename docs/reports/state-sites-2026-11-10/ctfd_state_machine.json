@@ -1,0 +1,54 @@
+{
+ "states": [
+  "∅",
+  "{nonce}",
+  "{_permanent,hash,id,nonce}"
+ ],
+ "edges": [
+  {
+   "from": "∅",
+   "to": "{nonce}",
+   "trigger": "GET /",
+   "points": [
+    "__init__.py:398 write session[nonce]"
+   ],
+   "changed": [],
+   "hits": 1
+  },
+  {
+   "from": "{nonce}",
+   "to": "{_permanent,hash,id,nonce}",
+   "trigger": "POST /login",
+   "points": [
+    "auth.py:19 write session[permanent]",
+    "auth.py:18 write session[hash]",
+    "auth.py:16 write session[id]",
+    "auth.py:17 write session[nonce]"
+   ],
+   "changed": [
+    "nonce"
+   ],
+   "hits": 1
+  },
+  {
+   "from": "{_permanent,hash,id,nonce}",
+   "to": "∅",
+   "trigger": "GET /logout",
+   "points": [
+    "auth.py:35 clear session[*]"
+   ],
+   "changed": [],
+   "hits": 1
+  },
+  {
+   "from": "∅",
+   "to": "{nonce}",
+   "trigger": "GET /challenges",
+   "points": [
+    "__init__.py:398 write session[nonce]"
+   ],
+   "changed": [],
+   "hits": 1
+  }
+ ]
+}
