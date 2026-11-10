@@ -148,3 +148,33 @@ update_user×2(需改密码)、reset_password×2、setup 向导×1、flash 写×
 测量备注:首版脚本把 .venv 内 Django 自身代码混进了应用基准
 (app 根包含 .venv、框架切片豁免 skip),已修正——基准只算应用代码。
 脚本:`static_capture.py`(本目录)。
+
+## 缺口修复(11-10):属性写 + CBV 入口判定
+
+### 修复 1:属性写(生效,全捕获)
+
+`visit_Assign` 增加属性目标分支;属性写过**下标证据门**——仅当
+同一链在扫描范围内有别处的下标/变更证据(证明是字典式 store)才
+记转移点(`self.title = x` 这类纯属性赋值不认,key_status="attr")。
+
+| 应用 | 修复前 | 修复后 |
+|---|---|---|
+| CTFd | 10/13(属性写 3 漏) | **13/13 = 100%** |
+| microblog | 0/2(属性写 2 漏) | **2/2 = 100%**(证据来自 flask_login 切片) |
+| 四应用合计 | 60/65 | **65/65 = 100%** |
+
+### 修复 2:CBV 入口判定(机制就位,真实缺口在更深处)
+
+新增 `make_entry_matcher`:函数名 `Class.method` 按类名匹配端点
+(过近似,对资格判定是安全方向),单元测试覆盖。
+
+**但真实应用上数字不变,原因查实了**:4 个漏掉的 django 内部 CBV 写点
+(PasswordResetConfirmView×2、SessionStorage×2)所属的类,linkding
+**没有路由**(它路由的是 LogoutView/PasswordChangeDoneView);而
+linkding 路由的那两个 CBV 也进不了端点表——`_load_defs` 只扫应用根,
+venv 里的类对 URLconf 视图解析不可见。所以 CBV 资格缺口实际卡在
+**URLconf 视图解析进 venv**——与 oscar/realworld 端点=0 同根因,
+是下一个待办,不在本次两个修复内。四个应用自身代码的 CBV
+session 写为 0,应用侧无可测对象。
+
+测试:test_sites.py 10 用例;全量 998 通过 / 0 失败。

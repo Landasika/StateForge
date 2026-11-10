@@ -8,6 +8,9 @@
     其中 ``x`` 是**跨函数共享**的下标基链。共享判定 = 同一链出现在
     ≥ ``min_functions`` 个不同函数——这是"跨请求可变状态"的纯静态
     近似:单函数局部字典不是持久状态,不靠名字判断,靠使用分布。
+  * 属性写:``x.attr = v``(如 ``session.permanent = True``)。**仅当
+    该链在扫描范围内别处有下标/变更证据**才记为转移点——属性接口
+    本身不证明对象是 store(``self.title = ...`` 到处都是),不猜。
   * 守卫:``if <cond>: return/raise``(提前退出形状)。只认形状,
     不解释语义;``not`` 前缀单独记极性。
 - key 解析:同文件模块级/类级常量折叠(Django 的 ``SESSION_KEY`` →
@@ -42,7 +45,7 @@ class StoreSite:
 
     chain: str            # 基链:"request.session" / "session" / ...
     key: str | None       # 解析后的 key;None = 整库操作(clear/flush)
-    key_status: str       # literal | const | name | dyn | none
+    key_status: str       # literal | const | name | dyn | attr | none
     op: str               # write | delete | pop | setdefault | update | clear | flush
     value: str | None     # 写入值的源码(截断);删除/清空为 None
     file: str
@@ -155,6 +158,7 @@ class _Visitor(ast.NodeVisitor):
         self.fn_stack: list[str] = []
         self.params: set[str] = set()
         self.stores: list[StoreSite] = []
+        self.attr_writes: list[StoreSite] = []   # 属性写候选(待证据门)
         self.guards: list[GuardSite] = []
         self.usage: dict[str, set[str]] = {}   # chain -> {函数全名}
 
@@ -188,6 +192,8 @@ class _Visitor(ast.NodeVisitor):
             if isinstance(target, ast.Subscript):
                 self._record(target.value, target.slice, "write",
                              ast.unparse(node.value)[:60], node.lineno)
+            elif isinstance(target, ast.Attribute):
+                self._record_attr(target, node.value, node.lineno)
         self.generic_visit(node)
 
     def visit_Delete(self, node: ast.Delete) -> None:
@@ -218,6 +224,23 @@ class _Visitor(ast.NodeVisitor):
             value=value, file=self.file, line=lineno, function=self._fn(),
             head_is_param=head in self.params,
             head_is_import=head in self.module_imports))
+        self.usage.setdefault(chain, set()).add(self._fn())
+
+    def _record_attr(self, target: ast.Attribute, value_node, lineno) -> None:
+        """属性写候选(x.attr = v)。仅记录;入列与否由
+        ``extract_sites`` 的下标证据门决定(见模块 docstring)。
+        """
+        chain = _chain(target.value)
+        if chain is None:
+            return
+        head = chain.split(".", 1)[0]
+        self.attr_writes.append(StoreSite(
+            chain=chain, key=target.attr, key_status="attr", op="write",
+            value=ast.unparse(value_node)[:60], file=self.file,
+            line=lineno, function=self._fn(),
+            head_is_param=head in self.params,
+            head_is_import=head in self.module_imports))
+        self.usage.setdefault(chain, set()).add(self._fn())
         self.usage.setdefault(chain, set()).add(self._fn())
 
     # -- 守卫 --
@@ -255,6 +278,29 @@ def _module_imports(tree: ast.Module) -> set[str]:
     return out
 
 
+def make_entry_matcher(entries) -> Callable[[str, str], bool]:
+    """由端点索引 ``(文件名, 函数名)`` 构造 ``is_entry``,CBV 感知。
+
+    类视图方法在本提取器里的函数全名是 ``Class.method``(函数栈压入
+    类名),而端点侧登记的是类名(如 linkding 的
+    ``django_auth_views.PasswordChangeDoneView``)。直接逐字匹配会把
+    类视图的每个方法都判成非入口,连锁头 ``self`` 的
+    ``self.request.session`` 全部失去资格。规则:函数名按 ``.`` 去掉
+    最后一段后命中端点类名(且文件相同)即视为入口——过近似
+    (辅助方法也算),但对"store 资格"这粒度是安全方向。
+    """
+    entry_set = set(entries)
+
+    def is_entry(function: str, file: str) -> bool:
+        base = Path(file).name
+        if (base, function) in entry_set:
+            return True
+        cls, sep, _method = function.rpartition(".")
+        return bool(sep) and (base, cls) in entry_set
+
+    return is_entry
+
+
 def extract_sites(roots: Iterable[Path | str], *,
                   skip: Callable[[Path], bool] | None = None,
                   min_functions: int = 2,
@@ -266,18 +312,20 @@ def extract_sites(roots: Iterable[Path | str], *,
     跨函数共享是"跨请求状态"的静态影子——框架代码(django 等)与
     应用代码放在同一 ``roots`` 里联合判定。
 
-    ``is_entry(function, file)``:入口函数判定(如端点视图)。提供时,
-    共享链还须**有资格**:链头是某个入口函数的形参(``request.session``
-    ← 框架以参数流入视图),或是模块级导入名(flask 的 ``session``
-    代理)。这把 ``kwargs``/``context`` 这类跨函数但请求内局部的
-    字典排除掉——不靠名字,靠"身份是否可能活得比一次请求久"。
+    ``is_entry(function, file)``:入口函数判定(如端点视图,可用
+    ``make_entry_matcher`` 构造)。提供时,共享链还须**有资格**:
+    链头是某个入口函数的形参(``request.session`` ← 框架以参数流入
+    视图),或是模块级导入名(flask 的 ``session`` 代理)。这把
+    ``kwargs``/``context`` 这类跨函数但请求内局部的字典排除掉——
+    不靠名字,靠"身份是否可能活得比一次请求久"。
     不提供时退回纯共享判定(全部函数视为潜在入口)。
+
+    属性写(``x.attr = v``)过**下标证据门**:仅当同一链在扫描范围内
+    有下标/变更证据(证明对象是字典式 store)才并入转移点。
     """
     roots = [Path(r) for r in roots]
-    stores: list[StoreSite] = []
     guards: list[GuardSite] = []
-    usage: dict[str, set[str]] = {}
-    by_chain: dict[str, list[StoreSite]] = {}
+    visitors: list[_Visitor] = []
     seen_files: set[Path] = set()      # 多根重叠(app 根 ⊇ 框架切片)只扫一次
     for p in _iter_files(roots, skip):
         rp = p.resolve()
@@ -290,8 +338,17 @@ def extract_sites(roots: Iterable[Path | str], *,
             continue
         v = _Visitor(str(p), _const_table(tree), _module_imports(tree))
         v.visit(tree)
-        stores.extend(v.stores)
+        visitors.append(v)
         guards.extend(v.guards)
+
+    # 下标/变更证据链(属性写并入的门)
+    evidenced = {s.chain for v in visitors for s in v.stores}
+    stores: list[StoreSite] = []
+    usage: dict[str, set[str]] = {}
+    by_chain: dict[str, list[StoreSite]] = {}
+    for v in visitors:
+        v.stores.extend(a for a in v.attr_writes if a.chain in evidenced)
+        stores.extend(v.stores)
         for s in v.stores:
             by_chain.setdefault(s.chain, []).append(s)
         for chain, fns in v.usage.items():

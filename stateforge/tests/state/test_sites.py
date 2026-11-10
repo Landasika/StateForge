@@ -10,7 +10,7 @@ import ast
 import textwrap
 from pathlib import Path
 
-from stateforge.state.sites import extract_sites
+from stateforge.state.sites import extract_sites, make_entry_matcher
 
 SAMPLE = textwrap.dedent("""
     TOKEN_KEY = "tk"
@@ -23,6 +23,7 @@ SAMPLE = textwrap.dedent("""
 
     def view_b(request):
         request.session.pop("tmp")
+        request.session.permanent = True
         request.session.flush()
 
     def helper(d):
@@ -57,11 +58,50 @@ def test_shared_store_kept_and_local_dropped(tmp_path):
 
 def test_constant_folding_of_key(tmp_path):
     scan = _run(tmp_path)
-    writes = [s for s in scan.stores if s.op == "write"]
+    writes = [s for s in scan.stores
+              if s.op == "write" and s.key_status != "attr"]
     assert len(writes) == 1
     assert writes[0].key == "tk"
     assert writes[0].key_status == "const"
     assert writes[0].slot == 'request.session[tk]'
+
+
+def test_attribute_write_on_evidenced_chain(tmp_path):
+    """session.permanent = True:属性写,链有下标证据 → 记为转移点。"""
+    scan = _run(tmp_path)
+    attrs = [s for s in scan.stores if s.key_status == "attr"]
+    assert len(attrs) == 1
+    a = attrs[0]
+    assert (a.chain, a.key, a.op, a.function) == (
+        "request.session", "permanent", "write", "view_b")
+    assert a.slot == "request.session[permanent]"
+
+
+def test_attribute_write_without_evidence_dropped(tmp_path):
+    """链上无任何下标证据 → 属性写不认(属性接口不证明是 store)。"""
+    f = tmp_path / "cfg.py"
+    f.write_text(textwrap.dedent("""
+        def a(opts):
+            opts.timeout = 5
+
+        def b(opts):
+            opts.retries = 3
+    """), encoding="utf-8")
+    scan = extract_sites([tmp_path])
+    assert all(not (s.key_status == "attr" and s.file.endswith("cfg.py"))
+               for s in scan.stores)
+
+
+def test_make_entry_matcher_cbv_aware():
+    """类视图方法(Class.method)按类名匹配端点。"""
+    m = make_entry_matcher({("views.py", "MyView"), ("api.py", "detail")})
+    assert m("MyView.post", "/app/views.py") is True      # CBV 方法
+    assert m("MyView.dispatch", "/app/views.py") is True
+    assert m("detail", "/app/api.py") is True             # 函数视图
+    assert m("other", "/app/views.py") is False
+    assert m("MyView.post", "/app/other.py") is False     # 文件不同
+    # 过近似(安全方向):类的辅助方法也算入口
+    assert m("MyView._helper", "/app/views.py") is True
 
 
 def test_pop_and_flush_ops(tmp_path):

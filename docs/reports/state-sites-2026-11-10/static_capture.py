@@ -19,7 +19,8 @@ from collections import Counter
 from pathlib import Path
 
 sys.path.insert(0, "/home/landasika/icassp")
-from stateforge.state.sites import extract_sites          # noqa: E402
+from stateforge.state.sites import (                   # noqa: E402
+    extract_sites, make_entry_matcher)
 from stateforge.analysis.analyzer import analyze          # noqa: E402
 
 _MUT = {"pop", "setdefault", "update", "clear", "flush"}
@@ -96,11 +97,11 @@ def run(app, framework):
 
     model = analyze(root, framework)
     entries = {(Path(e.file).name, e.func) for e in model.endpoints}
-    entry = lambda fn, f: (Path(f).name, fn) in entries  # noqa: E731
+    entry = make_entry_matcher(entries)
 
     raw_sub, raw_mut, raw_attr = raw_sites(root, skip)
 
-    s_raw = extract_sites([root], skip=skip, min_functions=1)
+    s_raw = extract_sites([root, *fs], skip=skip, min_functions=1)
     s_shared = extract_sites([root], skip=skip)                    # min_functions=2
     s_qual = extract_sites([root, *fs], skip=skip, is_entry=entry)
 
@@ -123,8 +124,8 @@ def run(app, framework):
           f" = {raw_sub + raw_mut + raw_attr}")
     print(f"  漏斗: raw {n_raw} → shared {n_shared} → qualified {n_qual}"
           f"  (框架内另捕获 {fw_qual})")
-    base = raw_sub + raw_mut
-    print(f"  下标抓取率: {n_qual}/{base} = {n_qual / base:.0%}"
+    base = raw_sub + raw_mut + raw_attr
+    print(f"  抓取率(含属性写): {n_qual}/{base} = {n_qual / base:.0%}"
           if base else "  无 session 写")
     print(f"  属性写(形状缺口,全漏): {raw_attr}")
     print(f"  key 证据: {dict(keys)}")
