@@ -73,9 +73,26 @@ class GuardSite:
 
 
 @dataclass(frozen=True)
+class ReadSite:
+    """store 读位点(读侧事实):下标读 / get / pop 取值。
+
+    与守卫分开:读 ≠ 门卫(读可能发生在守卫已过之后)。
+    语义上的 requires 由上层(动态/规划)派生,这里只给证据。
+    """
+
+    chain: str
+    key: str | None
+    key_status: str       # literal | const | name | dyn | none
+    file: str
+    line: int
+    function: str
+
+
+@dataclass(frozen=True)
 class SiteScan:
     stores: tuple[StoreSite, ...]
     guards: tuple[GuardSite, ...]
+    reads: tuple[ReadSite, ...]        # 读位点(读侧事实)
     dropped_unshared: int   # 因"仅单函数使用"被丢弃的候选 store 数
 
 
@@ -160,6 +177,7 @@ class _Visitor(ast.NodeVisitor):
         self.stores: list[StoreSite] = []
         self.attr_writes: list[StoreSite] = []   # 属性写候选(待证据门)
         self.guards: list[GuardSite] = []
+        self.reads: list[ReadSite] = []
         self.usage: dict[str, set[str]] = {}   # chain -> {函数全名}
 
     def _fn(self) -> str:
@@ -210,7 +228,29 @@ class _Visitor(ast.NodeVisitor):
             if op in _KEYLESS:
                 key_node = None
             self._record(node.func.value, key_node, op, None, node.lineno)
+        elif isinstance(node.func, ast.Attribute) \
+                and node.func.attr in ("get", "pop", "setdefault") \
+                and node.args:
+            self._record_read(node.func.value, node.args[0], node.lineno)
         self.generic_visit(node)
+
+    def visit_Subscript(self, node: ast.Subscript) -> None:
+        """下标读(Load 上下文)。写/删目标在 visit_Assign/Delete 处理。"""
+        if isinstance(node.ctx, ast.Load):
+            self._record_read(node.value, node.slice, node.lineno)
+        self.generic_visit(node)
+
+    def _record_read(self, base: ast.AST, key_node, lineno: int) -> None:
+        chain = _chain(base)
+        if chain is None:
+            return
+        key, status = _resolve_key(key_node, self.consts)
+        self.reads.append(ReadSite(
+            chain=chain, key=key, key_status=status,
+            file=self.file, line=lineno, function=self._fn()))
+        # 共享计数含读:写于一处、读于另一处,恰是跨函数持久状态的
+        # 最强信号(生产者/消费者分居两个请求处理函数)。
+        self.usage.setdefault(chain, set()).add(self._fn())
 
     def _record(self, base: ast.AST, key_node, op: str,
                 value: str | None, lineno: int) -> None:
@@ -325,6 +365,7 @@ def extract_sites(roots: Iterable[Path | str], *,
     """
     roots = [Path(r) for r in roots]
     guards: list[GuardSite] = []
+    reads: list[ReadSite] = []
     visitors: list[_Visitor] = []
     seen_files: set[Path] = set()      # 多根重叠(app 根 ⊇ 框架切片)只扫一次
     for p in _iter_files(roots, skip):
@@ -340,6 +381,7 @@ def extract_sites(roots: Iterable[Path | str], *,
         v.visit(tree)
         visitors.append(v)
         guards.extend(v.guards)
+        reads.extend(v.reads)
 
     # 下标/变更证据链(属性写并入的门)
     evidenced = {s.chain for v in visitors for s in v.stores}
@@ -371,5 +413,5 @@ def extract_sites(roots: Iterable[Path | str], *,
                   if any(_qualified(s) for s in by_chain.get(c, ()))}
     kept = tuple(s for s in stores if s.chain in shared)
     return SiteScan(
-        stores=kept, guards=tuple(guards),
+        stores=kept, guards=tuple(guards), reads=tuple(reads),
         dropped_unshared=len(stores) - len(kept))

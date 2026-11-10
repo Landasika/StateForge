@@ -178,3 +178,35 @@ venv 里的类对 URLconf 视图解析不可见。所以 CBV 资格缺口实际�
 session 写为 0,应用侧无可测对象。
 
 测试:test_sites.py 10 用例;全量 998 通过 / 0 失败。
+
+## 状态面图(11-10):由转移点构造的静态骨架
+
+`state/graph.py::build_state_plane_graph`:转移点 + 读位点 → 二分图。
+
+- **slot 节点**(椭圆)= `链[key]` 不透明原子;`链[*]` = 整库(clear/flush);
+  只读 slot 灰点虚线(生产者在扫描范围外)
+- **action 节点**(方框)= 函数
+- **produces**(实线)= 转移点 → slot,标 op;clear/flush 红色
+- **reads**(虚线)= 读位点 → slot;同函数有提前退出守卫的读标蓝
+  (读 ≠ 门卫,语义 requires 留给动态派生)
+
+关键实现修正:共享计数**含读**——写于一处、读于另一处恰是跨函数
+持久状态的最强信号(生产者/消费者分居两个请求处理函数)。此前只数
+写函数,单写多读的链会被误丢。
+
+真实应用:
+
+| | slots | 只读 | actions | produces | reads |
+|---|---|---|---|---|---|
+| CTFd | 36 | 19 | 67 | 71 | 66 |
+| healthchecks | 32 | 5 | 31 | 56 | 22 |
+
+CTFd 真值核对(与 auth.py 源码及动态实测一致):
+`login_user` → session[id]/[nonce]/[hash]/[permanent] write;
+`logout_user` → session[*] clear;
+`authed` → 读 session[id];`get_current_user` → 读 session[id]/[hash]。
+
+渲染:`CTFd_state_plane.png`、`healthchecks_state_plane.png`(本目录)。
+动态转移记录(快照差)将来叠加为 slot-state 边即成状态机;本图是骨架。
+
+测试:test_state_graph.py 6 用例;全量 1004 通过 / 0 失败。
