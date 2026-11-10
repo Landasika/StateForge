@@ -15,7 +15,8 @@ from stateforge.state.transition import (
     StaticCandidate,
     TransitionEdge,
     TransitionRecorder,
-    static_transition_candidates,
+    static_guard_candidates,
+    static_transition_points,
 )
 
 S11_FIXTURE = Path(__file__).parents[2] / "fixtures" / "state_micro" / "S11_login_admin"
@@ -97,15 +98,16 @@ class TestTransitionRecorderDynamic:
 
 class TestStaticCandidates:
     def test_s11_set_mutation_attributed_to_login(self):
-        cands = static_transition_candidates(S11_FIXTURE)
-        sets = [c for c in cands if c.op == "set"]
+        pts = static_transition_points(S11_FIXTURE)
+        sets = [c for c in pts if c.op == "set"]
         assert any(c.function == "login" and c.var == "session.uid"
                    and c.evidence[0].endswith("app.py:2") for c in sets)
 
     def test_s11_route_guards_produce_candidates(self):
-        """路由守卫(admin/predicate)也产候选,带 file:line 证据。"""
-        cands = static_transition_candidates(S11_FIXTURE)
-        guards = [c for c in cands if c.op.startswith("guard:")]
+        """守卫(读侧事实)单独分列,不混入转移点;带 file:line 证据。"""
+        guards = static_guard_candidates(S11_FIXTURE)
+        pts = static_transition_points(S11_FIXTURE)
+        assert all(not c.op.startswith("guard:") for c in pts)
         assert any(c.function == "admin" and c.var == "session.role"
                    and c.op == "guard:EQ(admin)"
                    and c.evidence[0].endswith("app.py:13") for c in guards)
@@ -125,8 +127,9 @@ class TestRunStateAnalysisTransitions:
         result = run_state_analysis(S11_FIXTURE)
         tr = result["transitions"]
         assert any(c["function"] == "login" and c["op"] == "set"
-                   for c in tr["static_candidates"])
-        assert "TransitionRecorder" in tr["note"]   # 动态边来自 fuzz 期
+                   for c in tr["transition_points"])
+        assert any(c["op"].startswith("guard:") for c in tr["guards"])
+        assert "TransitionRecorder" in tr["note"]   # 转移记录(边)来自 fuzz 期
         for key in ("accesses", "predicates", "domains",
                     "n_variables", "n_predicates"):  # M1 既有键不动
             assert key in result
@@ -142,4 +145,4 @@ class TestCliState:
                     "n_variables", "n_predicates", "transitions"):
             assert key in payload
         assert any(c["op"] == "set" and c["function"] == "login"
-                   for c in payload["transitions"]["static_candidates"])
+                   for c in payload["transitions"]["transition_points"])

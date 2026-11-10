@@ -103,10 +103,11 @@ def experiment_cmd(target: str, out: str, trace_paths: list[str] | None = None) 
 
 
 def state_cmd(target: str, out: str) -> int:
-    """Session 状态面:变量/访问/谓词/域 + 静态迁移候选(P3-M2)。
+    """Session 状态面:变量/访问/谓词/域 + 转移点/守卫(分列)。
 
-    动态迁移边不在静态产物中——由 state.transition.TransitionRecorder
-    在 fuzz 期填充 StateRegistry.edges(见 result["transitions"]["note"])。
+    转移点(语句级)与守卫(读侧)是两类事实,分开产出;转移记录
+    (边)不在静态产物中——由 state.transition.TransitionRecorder
+    在 fuzz 期对转移点前后拍快照派生(见 result["transitions"]["note"])。
     """
     from stateforge.state.observer import run_state_analysis
     root = Path(target).resolve()
@@ -116,9 +117,11 @@ def state_cmd(target: str, out: str) -> int:
     outpath = Path(out)
     outpath.parent.mkdir(parents=True, exist_ok=True)
     save_json(payload, outpath)
+    transitions = result["transitions"]
     print(f"[state] variables={result['n_variables']} "
           f"predicates={result['n_predicates']} "
-          f"candidates={len(result['transitions']['static_candidates'])}")
+          f"transition_points={len(transitions['transition_points'])} "
+          f"guards={len(transitions['guards'])}")
     print(f"[out] {out}")
     return 0
 

@@ -300,13 +300,20 @@ def _if_bodies(tree) -> dict[int, frozenset[int]]:
 
 
 def _target_candidates(path: Path) -> list[dict]:
-    """run_state_analysis 的 M2 静态候选,过滤到本靶文件。"""
+    """run_state_analysis 的静态事实(转移点 + 守卫),过滤到本靶文件。
+
+    两类事实在源处分列(`transition_points` / `guards`);本函数按需
+    合并消费——转移点供 producer join,守卫供前置构造。
+    """
     try:
         analysis = run_state_analysis(path.parent)
     except Exception:                                  # noqa: BLE001
         return []
+    transitions = analysis.get("transitions", {})
+    raw = list(transitions.get("transition_points", [])) + \
+        list(transitions.get("guards", []))
     out = []
-    for cand in analysis.get("transitions", {}).get("static_candidates", []):
+    for cand in raw:
         evidence = (cand.get("evidence") or [""])[0]
         file_part = evidence.rsplit(":", 1)[0]
         try:

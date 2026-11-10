@@ -99,14 +99,16 @@ def run_state_analysis(source_dir: str | Path) -> dict:
     """端到端:session access + predicates + domains → StateContext。
 
     M2:返回 dict 增 ``transitions`` 键(演进,只加不改)——
-    静态候选 + 动态边说明;动态迁移边不在静态产物中,由
-    ``transition.TransitionRecorder.observe()`` 在 fuzz 期写入
-    ``StateRegistry.edges``。
+    **转移点**(语句级,静态可提)与**守卫**(读侧事实)分列;
+    转移**记录**(边)不在静态产物中,由
+    ``transition.TransitionRecorder`` 在 fuzz 期对转移点前后拍
+    快照派生,写入 ``StateRegistry.edges``。
     """
     from pathlib import Path
     from stateforge.state.session_access import analyze_session_access
     from stateforge.state.predicate_extractor import extract_predicates
-    from stateforge.state.transition import static_transition_candidates
+    from stateforge.state.transition import (
+        static_guard_candidates, static_transition_points)
 
     accesses = analyze_session_access(source_dir)
     predicates = extract_predicates(source_dir)
@@ -121,9 +123,12 @@ def run_state_analysis(source_dir: str | Path) -> dict:
         "n_variables": len(domains),
         "n_predicates": len(predicates),
         "transitions": {
-            "static_candidates": [c.to_dict()
-                                  for c in static_transition_candidates(source_dir)],
-            "note": "dynamic edges are discovered at fuzz time by "
-                    "TransitionRecorder.observe() into StateRegistry.edges",
+            "transition_points": [c.to_dict()
+                                  for c in static_transition_points(source_dir)],
+            "guards": [c.to_dict()
+                       for c in static_guard_candidates(source_dir)],
+            "note": "transition records (edges) are derived at fuzz time by "
+                    "TransitionRecorder.observe() snapshots around the "
+                    "transition points into StateRegistry.edges",
         },
     }

@@ -9,9 +9,15 @@ request_id 被丢弃——没有边。本模块补迁移发现两侧:
   **会话边界显式**:`new_session()` 重置"当前节点"——StateRegistry
   是全局节点去重的,而边只连接同一逻辑会话内相邻两次观察,跨会话
   不得连线;会话重置只影响边的 from 端,不污染全局注册表。
-- 静态:`static_transition_candidates` 把 session 变异(SET/UPDATE)
-  与守卫谓词归属到所在函数,产证据级候选(file:line)——只声称
-  静态证据,不声称运行时确认。
+- 静态:两个**分开的**事实源(概念不混):
+  * `static_transition_points` —— **状态转移点**(语句级):session
+    SET/UPDATE 变异。转移点就是那条赋值语句本身,执行它持久状态
+    即变;不需要配守卫、不锚定"两端"。
+  * `static_guard_candidates` —— **守卫**(读侧,另一类事实):session
+    谓词判断 × 所属函数。它回答"这段代码需要什么状态才能过",
+    与"谁改变了状态"是两类事实;规划时 join 使用,但不属于转移的定义。
+  转移**记录**(边)由动态层派生:请求执行到转移点前后各拍快照,
+  差即 from→to(`TransitionRecorder`);静态层只给点,不给边。
 """
 
 from __future__ import annotations
@@ -98,10 +104,12 @@ class TransitionRecorder:
 
 @dataclass(frozen=True)
 class StaticCandidate:
-    """静态迁移候选(证据级):函数归属的 session 变异或守卫。
+    """静态事实(证据级):转移点或守卫,按 op 前缀区分。
 
-    op:变异取 StateOp 值("set"/"update");守卫取
-    "guard:<OP>(<value>)"(如 guard:EQ(admin)、guard:IS_NONE)。
+    转移点:op 为 StateOp 值("set"/"update")——执行即改变持久状态。
+    守卫:op 为 "guard:<OP>(<value>)"(如 guard:EQ(admin))——读侧
+    判断,不改状态。两类事实分开产出(`static_transition_points` /
+    `static_guard_candidates`),此处共用一个记录形状。
     evidence = ["<file>:<line>"]。
     """
 
@@ -118,16 +126,29 @@ class StaticCandidate:
 _MUTATION_OPS = frozenset({StateOp.SET, StateOp.UPDATE})
 
 
-def static_transition_candidates(source_dir) -> list[StaticCandidate]:
-    """session SET/UPDATE 变异 + 守卫谓词 × 所属函数 → 候选迁移列表。"""
-    candidates: list[StaticCandidate] = []
+def static_transition_points(source_dir) -> list[StaticCandidate]:
+    """状态转移点(session SET/UPDATE 变异)× 所属函数。
+
+    转移点 = 语句本身;守卫**不**在此列(见 `static_guard_candidates`)。
+    """
+    out: list[StaticCandidate] = []
     for access in analyze_session_access(source_dir):
         if access.operation in _MUTATION_OPS:
-            candidates.append(StaticCandidate(
+            out.append(StaticCandidate(
                 function=access.function or "<module>",
                 var=access.variable.canonical,
                 op=access.operation.value,
                 evidence=[f"{access.filename}:{access.lineno}"]))
+    return out
+
+
+def static_guard_candidates(source_dir) -> list[StaticCandidate]:
+    """守卫(session 谓词判断)× 所属函数(读侧事实,非转移)。
+
+    复用 predicate_extractor._resolve_condition(同一 provenance 解析),
+    保证谓词与 M1 谓词表词汇一致;行号取守卫节点自身。
+    """
+    out: list[StaticCandidate] = []
     for py in sorted(Path(source_dir).rglob("*.py")):
         if "__pycache__" in str(py):
             continue
@@ -138,8 +159,8 @@ def static_transition_candidates(source_dir) -> list[StaticCandidate]:
         for fn in ast.walk(tree):
             if not isinstance(fn, (ast.FunctionDef, ast.AsyncFunctionDef)):
                 continue
-            candidates.extend(_guard_candidates(fn, str(py)))
-    return candidates
+            out.extend(_guard_candidates(fn, str(py)))
+    return out
 
 
 def _guard_candidates(fn, filename: str) -> list[StaticCandidate]:
