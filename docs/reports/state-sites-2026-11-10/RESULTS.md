@@ -284,3 +284,41 @@ CTFd 8 请求实测(每请求独立追踪 + 前后快照):
   mezzanine 老式 url() > wger ReactView > OctoPrint 测试文件**
 
 脚本:`all_apps_chain.py`(本目录)。
+
+## include 修复(11-10):端点提取层四个真 bug
+
+修前诊断(bakerydemo/zinnia 端点 0 的根因),四件事:
+
+1. **venv 路径拼接错**:点分模块名拼成了单文件名(`wagtail.urls.py`),
+   应按点分段(`wagtail/urls.py`)——修后 `_venv_module_file`
+2. **urls 包不索引**:zinnia 的 `zinnia.urls` 是包(`urls/__init__.py`
+   + 子模块 `urls/entries.py`),`rglob("urls.py")` 全漏
+3. **老式 `url()` 不认**:walker 只认 `path`/`re_path`,zinnia/mezzanine
+   的 `url(...)` 整条跳过(include 都看不见)
+4. **`urlpatterns +=` / `i18n_patterns` 漏读**:只认第一条赋值,
+   oscar 的主体路由全在 `urlpatterns += i18n_patterns(...)` 里
+
+修复后(唯一 route,func 对):
+
+| 应用 | 修前 | 修后 |
+|---|---|---|
+| bakerydemo | 1 | **17**(wagtail venv include 全通)|
+| django-blog-zinnia | 0 | **42** |
+| Spirit | 89 | **149** |
+| wger | 9 | 23 |
+| mezzanine | 0 有效路由 | 28(其中 5 条有效;点分字符串视图待修)|
+| django-oscar | 0 | 2(动态 include `apps.get_app_config(...)`,静态不可解,如实记录)|
+| realworld | 0 | 0(django-ninja 自有路由体系,需专用适配器)|
+| healthchecks | 97 | 95(+去重;丢的 2 条是空路由垃圾)|
+
+**session 转移点 100% 的应用:5 → 6**(+mezzanine 3/3)。
+
+### 新暴露的缺口(下一个)
+
+- **ICFG 不扫 venv,归属对 venv 视图失效**:bakerydemo 17 端点只匹配
+  1——wagtail 视图函数在 site-packages,ICFG(应用根)里没有,
+  attribution 的 (file,func) 匹配不到。需要 ICFG 可选 venv 切片
+- mezzanine 点分字符串视图(`url(r'^login/', "pkg.views.login")`)
+- wger ReactView:23 端点匹配 15,但写 session 的函数仍不是入口
+
+测试:test_django_urlconf_includes.py 7 用例;全量 1025 通过 / 0 失败。

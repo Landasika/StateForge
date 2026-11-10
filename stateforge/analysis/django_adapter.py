@@ -143,9 +143,26 @@ def _unique_by_name(name: str, table: dict) -> object | None:
     return next(iter(hits.values())) if len(hits) == 1 else None
 
 
-def _view_ref(node, funcs, classes, imports: dict[str, str] | None = None):
-    """view 参数 → (methods, FunctionDef|None, 显示名);解析不了返回 None。"""
+def _view_ref(node, funcs, classes, imports: dict[str, str] | None = None,
+              ext: "_ExtDefs | None" = None):
+    """view 参数 → (methods, FunctionDef|None, 显示名);解析不了返回 None。
+
+    ``ext``:venv 惰性 def 索引。URLconf include 解进 venv 后,视图也
+    定义在 venv(wagtail/django.contrib.auth);应用注册表查不到时按
+    候选模块名取 venv 定义,**仍然只认能精确命中的,不猜**。
+    """
     imports = imports or {}
+
+    def _ext_hit(module: str, name: str):
+        if ext is None:
+            return None
+        defs = ext.module_defs(module)
+        if defs and name in defs:
+            node_def = defs[name]
+            if isinstance(node_def, ast.ClassDef):
+                return _class_view(node_def, name)
+            return _function_view_methods(node_def), node_def, name
+        return None
     if isinstance(node, ast.Name):                     # 直接函数名(同模块 import)
         f = _unique_by_name(node.id, funcs)
         return (_function_view_methods(f), f, node.id) if f else None
@@ -162,7 +179,10 @@ def _view_ref(node, funcs, classes, imports: dict[str, str] | None = None):
                     return _function_view_methods(f), f, attr
                 if (candidate, attr) in classes:
                     return _class_view(classes[(candidate, attr)], attr)
-            # 别名已确定却查不到成员:说明它是第三方视图,拒绝而不是猜
+                hit = _ext_hit(candidate, attr)
+                if hit is not None:
+                    return hit
+            # 别名已确定却查不到成员:第三方视图,拒绝而不是猜
             if (alias, attr) not in funcs and (alias, attr) not in classes:
                 return None
         key = (alias, attr)                            # 文件名/模块名直接命中
@@ -191,12 +211,120 @@ def _view_ref(node, funcs, classes, imports: dict[str, str] | None = None):
 
 
 def _parse_urlpatterns(tree: ast.Module) -> list:
+    """urlpatterns 全量收集:首赋值、``+=`` 拼接、``i18n_patterns`` 包裹。
+
+    只认第一条赋值的旧实现漏了两类真实写法:oscar 的
+    ``urlpatterns += i18n_patterns(...)``(主体路由全在里面,漏读即
+    0 端点)与 zinnia 的多段 ``urlpatterns += [...]``。
+    """
+    out: list = []
+
+    def _add(value):
+        if isinstance(value, (ast.List, ast.Tuple)):
+            out.extend(value.elts)
+        elif (isinstance(value, ast.Call)
+              and isinstance(value.func, ast.Name)
+              and value.func.id == "i18n_patterns"):
+            for arg in value.args:
+                if isinstance(arg, (ast.List, ast.Tuple)):
+                    out.extend(arg.elts)
+                else:
+                    out.append(arg)
+
     for node in tree.body:
-        if isinstance(node, ast.Assign) and any(
-            isinstance(t, ast.Name) and t.id == "urlpatterns" for t in node.targets
-        ) and isinstance(node.value, (ast.List, ast.Tuple)):
-            return list(node.value.elts)
-    return []
+        if isinstance(node, (ast.Assign, ast.AugAssign)):
+            targets = (node.targets if isinstance(node, ast.Assign)
+                       else [node.target])
+            if any(isinstance(t, ast.Name) and t.id == "urlpatterns"
+                   for t in targets):
+                _add(node.value)
+    return out
+
+
+def _iter_urlconf_files(app_root: Path) -> list[Path]:  # noqa: D401
+    """应用根下的 URLconf 文件:``urls.py`` 与 ``urls`` **包**
+    (``urls/__init__.py``——zinnia 的 ``zinnia.urls`` 就是包,
+    只 rglob("urls.py") 会整个漏掉)。
+    """
+    out: list[Path] = []
+    for p in sorted(app_root.rglob("urls.py")):
+        if any(part in _SKIP_DIRS for part in p.parts):
+            continue
+        out.append(p)
+    for p in sorted(app_root.rglob("urls/*.py")):      # urls 包的子模块
+        if any(part in _SKIP_DIRS for part in p.parts):
+            continue
+        out.append(p)
+    return list(dict.fromkeys(out))
+
+
+def _module_key(p: Path, app_root: Path) -> str:
+    """URLconf 文件 → 点分模块名:urls.py/子模块.py 去后缀,
+    urls/__init__.py 取目录(即 urls 包本身)。"""
+    rel = p.parent if p.name == "__init__.py" else p.with_suffix("")
+    return ".".join(rel.parts[len(app_root.parts):])
+
+
+def _venv_site(app_root: Path) -> Path | None:
+    for sp in app_root.glob(".venv/lib/python3*/site-packages"):
+        return sp
+    return None
+
+
+def _venv_module_file(sp: Path, dotted: str) -> Path | None:
+    """点分模块名 → venv 文件(按点分段:``wagtail.urls`` → wagtail/urls.py)。"""
+    base = sp.joinpath(*dotted.split("."))
+    for cand in (base.with_suffix(".py"), base / "__init__.py"):
+        if cand.is_file():
+            return cand
+    return None
+
+
+class _ExtDefs:
+    """venv 里的 def 惰性索引:按需解析单个模块文件,不全量扫依赖树。
+
+    URLconf include 解进 venv 后,视图也定义在 venv(如 wagtail);
+    只解析真正被引用的模块文件,每文件一次。
+    """
+
+    def __init__(self, site_packages: Path | None):
+        self.sp = site_packages
+        self._cache: dict[str, dict | None] = {}
+
+    def module_defs(self, dotted: str) -> dict | None:
+        if dotted in self._cache:
+            return self._cache[dotted]
+        result = None
+        if self.sp is not None:
+            cand = _venv_module_file(self.sp, dotted)
+            if cand is not None:
+                try:
+                    tree = ast.parse(cand.read_text(encoding="utf-8"))
+                except (OSError, SyntaxError):
+                    tree = None
+                if tree is not None:
+                    defs: dict = {}
+                    for node in ast.walk(tree):
+                        node._sf_source_file = str(cand)
+                        if isinstance(node, ast.FunctionDef):
+                            defs[node.name] = node
+                        elif isinstance(node, ast.ClassDef):
+                            defs[node.name] = node
+                    result = defs
+        self._cache[dotted] = result
+        return result
+
+    def parse_module_tree(self, dotted: str) -> ast.Module | None:
+        """按模块名解析整棵 URLconf 树(include 递归用)。"""
+        if self.sp is None:
+            return None
+        cand = _venv_module_file(self.sp, dotted)
+        if cand is None:
+            return None
+        try:
+            return ast.parse(cand.read_text(encoding="utf-8"))
+        except (OSError, SyntaxError):
+            return None
 
 
 def extract_django(app_root: Path) -> AppModel:
@@ -204,50 +332,40 @@ def extract_django(app_root: Path) -> AppModel:
     ex = EndpointExtractor(str(app_root), model.config_flags)
     funcs, classes = _load_defs(app_root)
 
-    urlconfs: dict[Path, ast.Module] = {}
-    for p in sorted(app_root.rglob("urls.py")):
-        if any(part in _SKIP_DIRS for part in p.parts):
-            continue
+    trees: dict[str, ast.Module] = {}
+    for p in _iter_urlconf_files(app_root):
         try:
-            urlconfs[p] = ast.parse(p.read_text(encoding="utf-8"), filename=str(p))
+            trees[_module_key(p, app_root)] = ast.parse(
+                p.read_text(encoding="utf-8"), filename=str(p))
         except SyntaxError:
             continue
-    by_module = {".".join(p.with_suffix("").parts[len(app_root.parts):]): t
-                 for p, t in urlconfs.items()}
-    by_short = {p.parent.name: t for p, t in urlconfs.items()}
+    by_short = {key.rsplit(".", 1)[0]: t for key, t in trees.items()}
+    ext = _ExtDefs(_venv_site(app_root))
 
-    def walk(els: list, prefix: str, origin: Path, imports: dict[str, str]):
+    def walk(els: list, prefix: str, origin: Path, imports: dict[str, str],
+             depth: int = 0):
         for elt in els:
             if not (isinstance(elt, ast.Call)
                     and isinstance(elt.func, (ast.Name, ast.Attribute))):
                 continue
             fname = (elt.func.id if isinstance(elt.func, ast.Name)
                      else elt.func.attr)
-            if fname not in ("path", "re_path"):
+            if fname not in ("path", "re_path", "url"):   # url=老式(Django<4)
                 continue
             route = _literal(elt.args[0]) if elt.args else ""
             view = elt.args[1] if len(elt.args) > 1 else None
             full = prefix + (route or "")
             if isinstance(view, ast.Call) and isinstance(view.func, ast.Name) \
                     and view.func.id == "include":
-                target = _literal(view.args[0]) if view.args else ""
-                sub = None
-                if target:
-                    sub = (by_module.get(target)
-                           or by_module.get(target.rstrip("/") + ".urls")
-                           or by_module.get(target + ".urls")
-                           or by_short.get(target.split(".")[0].rstrip("/")))
-                if sub is not None:
-                    sub_imports = {}
-                    for p2, t2 in urlconfs.items():
-                        if t2 is sub:
-                            sub_imports = _urlconf_imports(t2, app_root)
-                            break
-                    walk(_parse_urlpatterns(sub), full, origin, sub_imports)
-                continue                                  # 第三方 include 静默跳过
+                _include(view.args[0] if view.args else None,
+                         full, origin, imports, depth)
+                continue
+            if isinstance(view, ast.Call) and isinstance(view.func, ast.Attribute) \
+                    and view.func.attr == "urls":
+                continue                                  # admin.site.urls 等
             if view is None:
                 continue
-            ref = _view_ref(view, funcs, classes, imports)
+            ref = _view_ref(view, funcs, classes, imports, ext=ext)
             if ref is None:
                 continue                                  # admin.site.urls 等
             methods, fdef, name = ref
@@ -260,8 +378,54 @@ def extract_django(app_root: Path) -> AppModel:
                 ex._extract_endpoint_into(fdef, full, methods, ep)
             model.endpoints.append(ep)
 
-    for p, tree in urlconfs.items():
-        walk(_parse_urlpatterns(tree), "", p, _urlconf_imports(tree, app_root))
+    def _resolve_include_dotted(arg, imports: dict[str, str]) -> str | None:
+        """include 参数 → 点分模块名:字面量 / 变量(经导入表) / 属性链。"""
+        if isinstance(arg, ast.Constant) and isinstance(arg.value, str):
+            return arg.value
+        if isinstance(arg, ast.Name):
+            return imports.get(arg.id)
+        if isinstance(arg, ast.Attribute):
+            parts = []
+            node = arg
+            while isinstance(node, ast.Attribute):
+                parts.append(node.attr)
+                node = node.value
+            if isinstance(node, ast.Name):
+                base = imports.get(node.id, node.id)
+                return ".".join([base] + list(reversed(parts)))
+        return None
+
+    def _include(arg, full: str, origin: Path, imports: dict[str, str],
+                 depth: int = 0) -> None:
+        target = _resolve_include_dotted(arg, imports)
+        if not target or depth > 8 or target in visited:
+            return
+        sub = (trees.get(target)
+               or trees.get(target.rstrip("/") + ".urls")
+               or trees.get(target + ".urls"))
+        sub_imports = imports
+        if sub is None:
+            sub = ext.parse_module_tree(target)
+            if sub is None:
+                sub = ext.parse_module_tree(target.rstrip("/") + ".urls")
+            if sub is not None:
+                sub_imports = _urlconf_imports(sub, app_root)
+        else:
+            sub_imports = _urlconf_imports(sub, app_root)
+        if sub is None:
+            return
+        visited.add(target)
+        for elt in _parse_urlpatterns(sub):
+            _walk_elt(elt, full, origin, sub_imports, depth + 1)
+
+    def _walk_elt(elt, prefix: str, origin: Path, imports: dict[str, str],
+                  depth: int = 0) -> None:
+        walk([elt], prefix, origin, imports, depth)
+
+    visited: set[str] = set()
+    for key, tree in trees.items():
+        visited.add(key)
+        walk(_parse_urlpatterns(tree), "", Path(key), _urlconf_imports(tree, app_root))
     model.candidates.extend(ex.candidates)
     model.config_flags.update(ex.config_flags)
     return model
