@@ -121,3 +121,30 @@ GET / → GET /login → POST /login 错密码 → POST /login 正确
 update_user×2(需改密码)、reset_password×2、setup 向导×1、flash 写×1。
 
 脚本:`sess_driver_ctfd.py` / `sess_analyze.py`(本目录)。
+
+## 纯静态抓取率测量(11-10,零执行)
+
+基准 = 应用代码里所有 session 链上的状态写(下标写/删/变更调用
++ 属性写)。提取器产出对照基准:
+
+| 应用 | 基准(下标+变更) | 抓到 | 抓取率 | 属性写(缺口) | 框架内另捕获 |
+|---|---|---|---|---|---|
+| healthchecks | 46 | 46 | 100% | 0 | 8 |
+| CTFd | 10 | 10 | 100% | 3 | 2 |
+| microblog | 0 | 0 | — | 2 | 22 |
+| linkding | 4 | 4 | 100% | 0 | 8 |
+| **合计** | **60** | **60** | **100%** | **5** | 40 |
+
+- **下标类 session 转移点:60/60 全中**。资格过滤(共享+入口)
+  在 session 链上零损失——它只杀 kwargs 类噪声链,不误伤。
+- **属性写 5 个全漏**(`session.permanent = True` 这类):形状缺口,
+  与动态实测发现的缺口一致,纯静态即可确认。
+- **框架侧 CBV 缺口**:django/contrib 里 `self.request.session`
+  的 4 个写点(PasswordResetConfirmView×2、SessionStorage×2)
+  因链头 `self` 不是入口形参而不过资格——CBV 方法的入口判定
+  是资格规则的待改进项;flask_login 22 个全中。
+- key 解析:literal 为主,4 应用合计零 `<dyn>`。
+
+测量备注:首版脚本把 .venv 内 Django 自身代码混进了应用基准
+(app 根包含 .venv、框架切片豁免 skip),已修正——基准只算应用代码。
+脚本:`static_capture.py`(本目录)。
