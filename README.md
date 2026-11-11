@@ -182,8 +182,8 @@ docs/phase1-mvp.md … docs/real-app-first-blood.md):
 上一节的 goal 闭环依赖"目标块→单主体谓词"推导;本工作线解决其
 最深缺口——**状态间语义关系**(如 `order["user_id"] != user["id"]`
 的归属约束)的自动发现与联合验证,不写业务规则、不用 LLM。契约与
-计划见 `docs/architecture/`(STATE_CONTRACT v1.1b / INTEGRATION_PLAN,
-实施依赖图 PR-00→…→PR-07,M0 拆 A/B/C):
+计划见 `docs/architecture/INTEGRATION_PLAN.md`(实施依赖图
+PR-00→…→PR-07,M0 拆 A/B/C):
 
 1. **关口 A / M0-A(关系 IR+静态提取)**:`state/relational.py`
    (Field/Const/RelPredicate + 路径条件 + 来源链 + 单点结构求值)、
@@ -214,8 +214,8 @@ docs/phase1-mvp.md … docs/real-app-first-blood.md):
    「冻结版本」节;关系线未冻结);样例产物 `artifacts/m0/`
    (relational_goal.json / goal_evaluation_sample.json);M0-B(PR-04:
    五步已知链逐请求联合验证)之后接 **SS-07** 五轮(真实 HTTP 计数/
-   Session 证据在线消费/受控回归,报告见 `docs/reports/SS-07*.md`,
-   门禁 `SS-07-FINAL.md`);最新增量为 **定向灰盒 M1**
+   Session 证据在线消费/受控回归,门禁 `docs/reports/SS-07-FINAL.md`
+   (分册 A–E 逐轮报告随阶段冻结已清理,见 git 历史));最新增量为 **定向灰盒 M1**
    (`fuzzing/guidance/` + `analysis/static/predicate.py` + `guided` 子命令)。
 
 ---

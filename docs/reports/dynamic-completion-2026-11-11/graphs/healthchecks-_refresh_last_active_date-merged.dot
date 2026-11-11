@@ -1,0 +1,21 @@
+digraph Coverage {
+  rankdir=LR;
+  node [fontname="Helvetica", fontsize=9];
+  edge [fontname="Helvetica", fontsize=7];
+  subgraph cluster_legend { label="legend"; style=dashed;
+    L1 [label="covered", shape=box, style=filled, fillcolor="palegreen"];
+    L2 [label="not covered", shape=box, color="gray", fontcolor="gray"];
+    L3 [label="session access", shape=box, color="darkorange", penwidth=2.5];
+    L4 [label="dynamic edge", shape=plaintext, fontcolor="blue"];
+  }
+  "hc/front/views.py::_refresh_last_active_date::196-196::entry::1" [shape=circle, style=filled, fillcolor="palegreen", label="hc/front/views.py::_refresh_last_active_date::196-196::entry::1\n hits=3"];
+  "hc/front/views.py::_refresh_last_active_date::197-199::block::1" [shape=rect, style=filled, fillcolor="palegreen", label="hc/front/views.py::_refresh_last_active_date::197-199::block::1\n hits=3"];
+  "hc/front/views.py::_refresh_last_active_date::200-200::branch::1" [shape=diamond, style=filled, fillcolor="palegreen", label="hc/front/views.py::_refresh_last_active_date::200-200::branch::1\n hits=3"];
+  "hc/front/views.py::_refresh_last_active_date::201-206::block::1" [shape=rect, style=filled, fillcolor="palegreen", color="darkorange", penwidth=2.5, label="hc/front/views.py::_refresh_last_active_date::201-206::block::1\n hits=1"];
+  "hc/front/views.py::_refresh_last_active_date::196-196::exit::1" [shape=doublecircle, style=filled, fillcolor="palegreen", label="hc/front/views.py::_refresh_last_active_date::196-196::exit::1\n hits=3"];
+  "hc/front/views.py::_refresh_last_active_date::196-196::entry::1" -> "hc/front/views.py::_refresh_last_active_date::197-199::block::1";
+  "hc/front/views.py::_refresh_last_active_date::197-199::block::1" -> "hc/front/views.py::_refresh_last_active_date::200-200::branch::1";
+  "hc/front/views.py::_refresh_last_active_date::200-200::branch::1" -> "hc/front/views.py::_refresh_last_active_date::201-206::block::1";
+  "hc/front/views.py::_refresh_last_active_date::201-206::block::1" -> "hc/front/views.py::_refresh_last_active_date::196-196::exit::1";
+  "hc/front/views.py::_refresh_last_active_date::200-200::branch::1" -> "hc/front/views.py::_refresh_last_active_date::196-196::exit::1";
+}
