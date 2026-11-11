@@ -160,28 +160,61 @@ TYPE_ASSIGNMENT = "assignment"
 
 @dataclass
 class ProgramFacts:
-    """Symbol table plus call sites for one analyzed program."""
+    """Symbol table plus call sites for one analyzed program.
+
+    The lookups below are answered from an index built on first use and
+    invalidated on every addition, so queries are dict hits instead of scans.
+    That matters once a dependency slice puts tens of thousands of
+    declarations here: the solver asks per call site, and a linear scan turns
+    the whole build quadratic.
+    """
 
     functions: dict[str, FunctionFact] = field(default_factory=dict)
     classes: dict[str, ClassFact] = field(default_factory=dict)
     types: list[TypeFact] = field(default_factory=list)
     imports: list[ImportFact] = field(default_factory=list)
     call_sites: list[CallSiteFact] = field(default_factory=list)
+    _index: dict | None = field(default=None, repr=False, compare=False)
 
     def add_function(self, fact: FunctionFact) -> None:
         self.functions[fact.qname] = fact
+        self._index = None
 
     def add_class(self, fact: ClassFact) -> None:
         self.classes[fact.qname] = fact
+        self._index = None
 
     def add_type_fact(self, fact: TypeFact) -> None:
         self.types.append(fact)
+        self._index = None
 
     def add_import(self, fact: ImportFact) -> None:
         self.imports.append(fact)
+        self._index = None
 
     def add_call_site(self, site: CallSiteFact) -> None:
         self.call_sites.append(site)
+
+    def _indices(self) -> dict:
+        if self._index is None:
+            by_short: dict[str, list[str]] = {}
+            by_name: dict[str, list[str]] = {}
+            for qname, fact in self.functions.items():
+                by_short.setdefault(fact.short, []).append(qname)
+                by_name.setdefault(fact.name, []).append(qname)
+            classes: dict[str, list[str]] = {}
+            for qname, cls in self.classes.items():
+                classes.setdefault(cls.name, []).append(qname)
+            imports: dict[tuple[str, str], set[str]] = {}
+            for fact in self.imports:
+                imports.setdefault((fact.scope, fact.local), set()).add(fact.target)
+            types: dict[tuple[str, str], list[TypeFact]] = {}
+            for fact in self.types:
+                types.setdefault((fact.scope, fact.symbol), []).append(fact)
+            self._index = {"short": by_short, "name": by_name,
+                           "classes": classes, "imports": imports,
+                           "types": types}
+        return self._index
 
     # -- indices used by the solver -------------------------------------
     def by_module_and_short(self, module: str, short: str) -> str | None:
@@ -190,15 +223,15 @@ class ProgramFacts:
 
     def by_short(self, short: str) -> list[str]:
         """Every declaration whose short (class-qualified) name matches."""
-        return [q for q, f in self.functions.items() if f.short == short]
+        return self._indices()["short"].get(short, [])
 
     def by_name(self, name: str) -> list[str]:
         """Every declaration whose bare name matches."""
-        return [q for q, f in self.functions.items() if f.name == name]
+        return self._indices()["name"].get(name, [])
 
     def class_by_simple_name(self, name: str) -> list[str]:
         """Project classes whose simple name matches *name*."""
-        return [q for q, c in self.classes.items() if c.name == name]
+        return self._indices()["classes"].get(name, [])
 
     def method_of(self, class_qname: str, method: str) -> str | None:
         """The method declared directly by *class_qname*, if it exists."""
@@ -214,13 +247,11 @@ class ProgramFacts:
         Two imports of the same local name from different modules (a genuine
         redefinition) yield ``None``: picking one would be a guess.
         """
-        targets = {i.target for i in self.imports
-                   if i.scope == scope and i.local == local}
-        return targets.pop() if len(targets) == 1 else None
+        targets = self._indices()["imports"].get((scope, local), set())
+        return next(iter(targets)) if len(targets) == 1 else None
 
     def types_of(self, scope: str, symbol: str) -> list[TypeFact]:
-        return [t for t in self.types
-                if t.scope == scope and t.symbol == symbol]
+        return self._indices()["types"].get((scope, symbol), [])
 
 
 def group_call_sites(sites: Iterable[CallSiteFact]) -> Mapping[str, list[CallSiteFact]]:

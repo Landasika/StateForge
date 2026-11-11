@@ -11,6 +11,7 @@ from __future__ import annotations
 import ast
 from pathlib import Path
 
+from stateforge.analysis.frontend.pyslice import venv_site_packages
 from stateforge.analysis.patterns import EndpointExtractor, _path_params
 from stateforge.core.model import AppModel, Endpoint
 
@@ -266,9 +267,14 @@ def _module_key(p: Path, app_root: Path) -> str:
 
 
 def _venv_site(app_root: Path) -> Path | None:
-    for sp in app_root.glob(".venv/lib/python3*/site-packages"):
-        return sp
-    return None
+    """The virtualenv's ``site-packages``, however the venv is named.
+
+    Discovery is shared with the ICFG dependency slice, so a project keeping
+    its environment in ``env/``, ``venv/`` or a custom directory resolves
+    ``include("pkg.urls")`` just like one using ``.venv``.
+    """
+    sites = venv_site_packages(app_root)
+    return sites[0] if sites else None
 
 
 def _venv_module_file(sp: Path, dotted: str) -> Path | None:

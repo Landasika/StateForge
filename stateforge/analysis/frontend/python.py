@@ -11,6 +11,13 @@ Responsibilities that are language specific live here:
 Call-target resolution is *not* here.  It is delegated to the language-neutral
 :class:`~stateforge.analysis.solver.callgraph.NameCallSolver`, so adding another
 language means writing another frontend, not another resolver.
+
+The scan covers the application tree.  A dependency slice can be added on
+request (``build_python_icfg(..., deps=True)``): the installed modules the
+application can actually reach, discovered by :mod:`stateforge.analysis.
+frontend.pyslice`.  Without it the IR stops at the application boundary, which
+is what coverage wants but not what route attribution needs — a Django view
+resolved from a URLconf may be defined in ``site-packages``.
 """
 
 from __future__ import annotations
@@ -18,6 +25,7 @@ from __future__ import annotations
 import ast
 import hashlib
 from pathlib import Path
+from typing import Iterable
 
 from stateforge.analysis.facts import (
     EXPR,
@@ -34,6 +42,7 @@ from stateforge.analysis.facts import (
     ProgramFacts,
     TypeFact,
 )
+from stateforge.analysis.frontend.pyslice import Slice, slice_modules
 from stateforge.analysis.solver.callgraph import NameCallSolver
 from stateforge.analysis.static.cfg import build_function_cfg
 from stateforge.core.ir import BasicBlock, FlowEdge, ProgramIR
@@ -42,6 +51,11 @@ _SKIP = {"tests", "__pycache__", "migrations", "node_modules", ".git", "golden",
          ".venv", "venv", ".tox", ".eggs", "site-packages"}
 
 _OWNED_STOP = (ast.FunctionDef, ast.AsyncFunctionDef, ast.Lambda, ast.ClassDef)
+
+#: Upper bound on installed modules in one dependency slice.  A library whose
+#: ``__init__`` re-exports its whole API can pull in a large closure; the cap
+#: keeps a single build finite and is reported in ``metadata["deps"]``.
+DEPS_MAX_MODULES = 4000
 
 
 def _iter_owned_calls(fn_node: ast.FunctionDef | ast.AsyncFunctionDef):
@@ -87,10 +101,64 @@ def _files(root: Path):
             yield path
 
 
-def _source_hash(root: Path) -> str:
-    """P1-7:目标源指纹(path:size:mtime),缓存失效判据。"""
-    parts = []
+def _app_sources(root: Path) -> dict[str, Path]:
+    """Dotted module name -> file, for the application tree under *root*."""
+    out: dict[str, Path] = {}
     for path in _files(root):
+        out.setdefault(_module_name(root, path), path)
+    return out
+
+
+def _dependency_slice(root: Path, extra_roots: Iterable[Path | str] = ()
+                      ) -> Slice:
+    """Installed modules reachable from the application under *root*."""
+    return slice_modules(root, _app_sources(root), extra_roots,
+                         max_files=DEPS_MAX_MODULES)
+
+
+def _load_deps(root: Path, deps: bool | Iterable[Path | str]) -> Slice:
+    """Resolve the ``deps`` argument into a slice (empty when disabled)."""
+    if deps is False or deps is None:
+        return Slice(modules={}, roots=())
+    if deps is True:
+        return _dependency_slice(root)
+    if isinstance(deps, (str, Path)):
+        return _dependency_slice(root, [deps])
+    return _dependency_slice(root, list(deps))
+
+
+def _owning_root(path: Path, slice_info: Slice) -> Path:
+    """The directory *path*'s relative identity is taken against.
+
+    For an installed module that is the ``site-packages`` directory it was
+    found in, so its block IDs read ``wagtail/admin/views/workflows.py::…``
+    rather than repeating the venv path.
+    """
+    for site in slice_info.roots:
+        try:
+            Path(path).relative_to(site)
+        except ValueError:
+            continue
+        return site
+    return Path(path).parent
+
+
+def _relative_id(base: Path, path: Path) -> str:
+    """Block-ID file component: relative when possible, absolute otherwise."""
+    try:
+        return str(Path(path).relative_to(base))
+    except ValueError:
+        return str(path)
+
+
+def _source_hash(root: Path, extra_files: Iterable[Path] = ()) -> str:
+    """P1-7:目标源指纹(path:size:mtime),缓存失效判据。
+
+    *extra_files* extends the fingerprint to the dependency slice: when the
+    IR contains installed code, a changed library is a changed input.
+    """
+    parts = []
+    for path in [*_files(root), *sorted(set(extra_files))]:
         st = path.stat()
         parts.append(f"{path}:{st.st_size}:{st.st_mtime_ns}")
     return hashlib.sha256("\n".join(parts).encode()).hexdigest()
@@ -232,18 +300,43 @@ def _receiver_kind(call: ast.Call) -> tuple[str, str | None]:
 def build_python_icfg(app_root: str | Path,
                       callgraph: dict[str, list[str]] | None = None,
                       include_all_functions: bool = True,
-                      dynamic: dict[tuple[str, int], str] | None = None) -> ProgramIR:
+                      dynamic: dict[tuple[str, int], str] | None = None,
+                      deps: bool | Iterable[Path | str] = False) -> ProgramIR:
+    """Build the ICFG for the Python sources under *app_root*.
+
+    ``deps`` adds the dependency slice: ``True`` discovers the virtualenvs
+    under the root, a path (or list of paths) names them explicitly — either a
+    virtualenv directory or a ``site-packages`` directory.  Sliced files keep
+    relative block IDs against their own root, so an ID never embeds a path
+    that only exists on this machine.
+    """
     root = Path(app_root).resolve()
     ir = ProgramIR(metadata={"root": str(root), "kind": "icfg", "version": 1})
+    slice_info = _load_deps(root, deps)
+    # Every file to parse, paired with the root its relative paths are taken
+    # against: the application against *root*, installed code against its own
+    # site-packages.  Application files come first and win name collisions —
+    # an application module shadows the installed module of the same name, as
+    # ``sys.path`` ordering makes it at run time.
+    app_files = [(p, root) for p in _files(root)]
+    shadowed = {_module_name(root, p) for p, _ in app_files}
+    sources: list[tuple[Path, Path]] = list(app_files)
+    for name in sorted(slice_info.modules):
+        if name in shadowed:
+            continue
+        path = slice_info.modules[name]
+        sources.append((path, _owning_root(path, slice_info)))
     facts = ProgramFacts()
     function_nodes = {}
     block_nodes = {}
-    for path in _files(root):
+    file_bases: dict[str, Path] = {}
+    for path, base in sources:
+        file_bases[str(path)] = base
         try:
             tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
         except (OSError, SyntaxError):
             continue
-        module = _module_name(root, path)
+        module = _module_name(base, path)
         for fact in _import_facts(module, tree):
             facts.add_import(fact)
         for node, class_path in _walk_with_class(tree):
@@ -285,7 +378,7 @@ def build_python_icfg(app_root: str | Path,
                     facts.add_type_fact(TypeFact(
                         scope=qname, symbol=symbol,
                         type_name=type_name, source=TYPE_ASSIGNMENT))
-                rel_id = str(path.relative_to(root))
+                rel_id = _relative_id(base, path)
                 cfg = build_function_cfg(node, str(path), module, id_file=rel_id)
                 if not include_all_functions and callgraph and qname not in callgraph:
                     continue
@@ -326,7 +419,7 @@ def build_python_icfg(app_root: str | Path,
                 continue
             calls.sort(key=lambda item: (item[0].lineno, item[0].col_offset))
             file = ir.blocks[host].file
-            id_file = str(Path(file).relative_to(root))
+            id_file = _relative_id(file_bases.get(file, root), Path(file))
             sites = {}
             for n, (call, callee) in enumerate(calls, start=1):
                 line = call.lineno
@@ -369,12 +462,22 @@ def build_python_icfg(app_root: str | Path,
                     ir.add_edge(FlowEdge(src, out.dst,
                                          out.kind if out.kind != "flow" else kind,
                                          condition=out.condition))
+    # Removals during the flow rewrite are deferred for speed; fold them into
+    # the edge list before anyone reads it, so counts and serialization match
+    # what the index reports.
+    ir.compact()
     ir.metadata["callgraph_supplied"] = callgraph is not None
     ir.metadata["function_count"] = len(ir.functions)
     ir.metadata["block_count"] = len(ir.blocks)
     ir.metadata["edge_count"] = len(ir.edges)
     ir.metadata["unresolved_calls"] = unresolved
-    ir.metadata["source_hash"] = _source_hash(root)
+    ir.metadata["source_hash"] = _source_hash(root, slice_info.modules.values())
+    if deps:
+        ir.metadata["deps"] = {
+            "module_count": len(slice_info.modules),
+            "roots": [str(r) for r in slice_info.roots],
+            "truncated": slice_info.truncated,
+        }
     return ir
 
 

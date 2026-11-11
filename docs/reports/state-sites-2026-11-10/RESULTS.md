@@ -313,12 +313,45 @@ CTFd 8 请求实测(每请求独立追踪 + 前后快照):
 
 **session 转移点 100% 的应用:5 → 6**(+mezzanine 3/3)。
 
-### 新暴露的缺口(下一个)
+### 已关闭:ICFG venv 切片(2026-11-11)
 
-- **ICFG 不扫 venv,归属对 venv 视图失效**:bakerydemo 17 端点只匹配
-  1——wagtail 视图函数在 site-packages,ICFG(应用根)里没有,
-  attribution 的 (file,func) 匹配不到。需要 ICFG 可选 venv 切片
+`build_icfg(..., deps=True)` 把 venv 里**可达**的模块并入 ICFG。
+
+切片不做枚举,做可达性闭包:虚拟环境靠 `pyvenv.cfg` 识别(`.venv`、`venv`、
+`env`、任意自定义目录都行),模块进入切片只因为应用代码点了它的名——
+`import` / `from ... import` / 点分字符串字面量(`include("wagtail.urls")`、
+`INSTALLED_APPS`)。没有框架名表,没有「值得扫的包」清单。应用模块同名时
+遮蔽已安装模块,与 `sys.path` 顺序一致。闭包上限 4000 模块,截断时
+`Slice.truncated` 如实上报。
+
+归属匹配率(app-only → +venv 切片):
+
+| 应用 | 端点 | 匹配(前) | 匹配(后) |
+|---|---|---|---|
+| bakerydemo | 17 | 1 | **17** |
+| django-oscar | 2 | 0 | **2** |
+| healthchecks | 97 | 96 | 96 |
+| linkding | 31 | 29 | 29 |
+| Spirit | 149 | 127 | 127 |
+| mezzanine | 28 | 6 | 6 |
+| wger | 23 | 15 | 15 |
+| django-blog-zinnia | 42 | 5 | 5 |
+| **合计** | **389** | **279** | **297** |
+
+提升全部来自视图定义在 `site-packages` 的应用(bakerydemo 的 wagtail admin
+视图、oscar 的视图);其余应用的缺口是别的原因,见下。
+
+顺带修掉的真问题:`ProgramIR` 的边装配是 O(E²)——`add_edge` 查重和
+`outgoing` 都全表扫描,`remove_edge` 还每次重建索引。加邻接索引 + 惰性压缩
+后,healthchecks 带切片构建 **45s → 7s**,app-only 的边集合与块 ID 完全不变
+(8236 边,逐条对齐)。
+
+测试:`test_deps_slice.py` 13 用例(venv 发现、模块索引、种子、遮蔽、截断、
+显式根、source_hash 覆盖切片、metadata 键集不变);全量 **1038 通过 / 0 失败**。
+
+### 仍开放的缺口(下一个)
+
 - mezzanine 点分字符串视图(`url(r'^login/', "pkg.views.login")`)
 - wger ReactView:23 端点匹配 15,但写 session 的函数仍不是入口
-
-测试:test_django_urlconf_includes.py 7 用例;全量 1025 通过 / 0 失败。
+- linkding CBV 端点:`Endpoint.file` 指向 `bookmarks.urls` 而非视图类所在
+  文件,attribution 按 basename 匹配不到
