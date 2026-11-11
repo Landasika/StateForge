@@ -269,6 +269,16 @@ def main() -> int:
     viz.add_argument("ir")
     viz.add_argument("feedback")
     viz.add_argument("--out", default="results/coverage.dot")
+    viz.add_argument("--session-blocks",
+                     help="JSON list of block ids that touch session state")
+    viz.add_argument("--dynamic-edges",
+                     help="JSON list of [src, dst] pairs learned from a trace")
+    viz.add_argument("--function", default=None,
+                     help="limit the picture to one function")
+    viz.add_argument("--around", default=None,
+                     help="limit to one block id plus its neighbours")
+    viz.add_argument("--only-learned", action="store_true",
+                     help="draw only the blocks touched by dynamic edges")
     state = sub.add_parser("state",
                            help="session-state variables/predicates/domains "
                                 "+ static transition candidates (P3-M2)")
@@ -353,7 +363,15 @@ def main() -> int:
         from stateforge.evaluation.viz.coverage_dot import coverage_dot
         ir_obj = ProgramIR.from_json(args.ir)
         fb = json.loads(Path(args.feedback).read_text(encoding="utf-8"))
-        out = coverage_dot(ir_obj, fb, args.out)
+        session_blocks = (json.loads(Path(args.session_blocks).read_text(encoding="utf-8"))
+                          if args.session_blocks else ())
+        learned = (json.loads(Path(args.dynamic_edges).read_text(encoding="utf-8"))
+                   if args.dynamic_edges else ())
+        out = coverage_dot(ir_obj, fb, args.out,
+                           session_blocks=session_blocks,
+                           learned_edges=[tuple(e) for e in learned],
+                           function=args.function, around=args.around,
+                           only_learned=args.only_learned)
         print(f"[viz] {out}")
         return 0
     return feedback_cmd(args.ir, args.trace, args.out)
