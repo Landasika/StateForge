@@ -1,0 +1,1360 @@
+[
+  {
+    "app": "ctfd",
+    "verdict": "PARTIAL",
+    "ok": true,
+    "stage": "smoke",
+    "routes": 28,
+    "probed": 28,
+    "results": [
+      [
+        "GET /",
+        "404"
+      ],
+      [
+        "GET /login",
+        "200"
+      ],
+      [
+        "GET /register",
+        "302"
+      ],
+      [
+        "GET /challenges",
+        "200"
+      ],
+      [
+        "GET /scoreboard",
+        "200"
+      ],
+      [
+        "GET /notifications",
+        "200"
+      ],
+      [
+        "GET /settings",
+        "200"
+      ],
+      [
+        "GET /users",
+        "200"
+      ],
+      [
+        "GET /teams",
+        "404"
+      ],
+      [
+        "GET /setup",
+        "302"
+      ],
+      [
+        "GET /tos",
+        "404"
+      ],
+      [
+        "GET /privacy",
+        "404"
+      ],
+      [
+        "GET /admin",
+        "302"
+      ],
+      [
+        "GET /admin/challenges",
+        "200"
+      ],
+      [
+        "GET /admin/challenges/new",
+        "200"
+      ],
+      [
+        "GET /admin/config",
+        "200"
+      ],
+      [
+        "GET /admin/statistics",
+        "200"
+      ],
+      [
+        "GET /admin/scoreboard",
+        "200"
+      ],
+      [
+        "GET /admin/submissions",
+        "200"
+      ],
+      [
+        "GET /admin/pages",
+        "200"
+      ],
+      [
+        "GET /admin/pages/new",
+        "200"
+      ],
+      [
+        "GET /admin/reset",
+        "200"
+      ],
+      [
+        "GET /api/v1/users",
+        "200"
+      ],
+      [
+        "GET /api/v1/users/me",
+        "200"
+      ],
+      [
+        "GET /api/v1/challenges",
+        "200"
+      ],
+      [
+        "GET /api/v1/configs",
+        "200"
+      ],
+      [
+        "GET /api/v1/statistics/challenges/solves",
+        "200"
+      ],
+      [
+        "GET /api/v1/scoreboard",
+        "200"
+      ]
+    ],
+    "elapsed": 8.4
+  },
+  {
+    "app": "linkding",
+    "verdict": "PARTIAL",
+    "ok": true,
+    "stage": "smoke",
+    "routes": 39,
+    "probed": 39,
+    "results": [
+      [
+        "GET /",
+        "302"
+      ],
+      [
+        "GET /login/",
+        "302"
+      ],
+      [
+        "GET /bookmarks",
+        "200"
+      ],
+      [
+        "GET /bookmarks/archived",
+        "200"
+      ],
+      [
+        "GET /bookmarks/shared",
+        "200"
+      ],
+      [
+        "GET /bookmarks/new",
+        "200"
+      ],
+      [
+        "GET /bookmarks/1/edit",
+        "200"
+      ],
+      [
+        "GET /tags",
+        "200"
+      ],
+      [
+        "GET /tags/new",
+        "200"
+      ],
+      [
+        "GET /tags/1/edit",
+        "200"
+      ],
+      [
+        "GET /tags/merge",
+        "200"
+      ],
+      [
+        "GET /bundles",
+        "200"
+      ],
+      [
+        "GET /bundles/new",
+        "200"
+      ],
+      [
+        "GET /bundles/1/edit",
+        "200"
+      ],
+      [
+        "GET /bundles/preview",
+        "200"
+      ],
+      [
+        "GET /settings",
+        "200"
+      ],
+      [
+        "GET /settings/general",
+        "200"
+      ],
+      [
+        "GET /settings/integrations",
+        "200"
+      ],
+      [
+        "GET /settings/import",
+        "302"
+      ],
+      [
+        "GET /settings/export",
+        "200"
+      ],
+      [
+        "GET /admin/tasks/",
+        "200"
+      ],
+      [
+        "GET /admin/",
+        "200"
+      ],
+      [
+        "GET /feeds/1c9ae0674d6d96e261c9099b40c8cd09341e1a6d/all",
+        "200"
+      ],
+      [
+        "GET /feeds/1c9ae0674d6d96e261c9099b40c8cd09341e1a6d/unread",
+        "200"
+      ],
+      [
+        "GET /feeds/1c9ae0674d6d96e261c9099b40c8cd09341e1a6d/shared",
+        "200"
+      ],
+      [
+        "GET /feeds/shared",
+        "200"
+      ],
+      [
+        "GET /api/",
+        "200"
+      ],
+      [
+        "GET /api/bookmarks/",
+        "200"
+      ],
+      [
+        "GET /api/bookmarks/archived/",
+        "200"
+      ],
+      [
+        "GET /api/bookmarks/1/",
+        "200"
+      ],
+      [
+        "GET /api/tags/",
+        "200"
+      ],
+      [
+        "GET /api/tags/?limit=5",
+        "200"
+      ],
+      [
+        "GET /api/bundles/",
+        "200"
+      ],
+      [
+        "GET /api/user/profile/",
+        "200"
+      ],
+      [
+        "GET /health",
+        "200"
+      ],
+      [
+        "GET /manifest.json",
+        "200"
+      ],
+      [
+        "GET /custom_css",
+        "200"
+      ],
+      [
+        "GET /opensearch.xml",
+        "200"
+      ],
+      [
+        "GET /assets/1",
+        "404"
+      ]
+    ],
+    "elapsed": 5.1
+  },
+  {
+    "app": "fava",
+    "verdict": "PARTIAL",
+    "ok": true,
+    "stage": "smoke",
+    "routes": 30,
+    "probed": 30,
+    "results": [
+      [
+        "GET /",
+        "302"
+      ],
+      [
+        "GET /harness-ledger/",
+        "302"
+      ],
+      [
+        "GET /harness-ledger/income_statement/",
+        "200"
+      ],
+      [
+        "GET /harness-ledger/balance_sheet/",
+        "200"
+      ],
+      [
+        "GET /harness-ledger/trial_balance/",
+        "200"
+      ],
+      [
+        "GET /harness-ledger/journal/",
+        "200"
+      ],
+      [
+        "GET /harness-ledger/journal/?account=Assets:Cash",
+        "200"
+      ],
+      [
+        "GET /harness-ledger/query/",
+        "200"
+      ],
+      [
+        "GET /harness-ledger/query/?query_string=balances",
+        "200"
+      ],
+      [
+        "GET /harness-ledger/commodities/",
+        "200"
+      ],
+      [
+        "GET /harness-ledger/documents/",
+        "200"
+      ],
+      [
+        "GET /harness-ledger/events/",
+        "200"
+      ],
+      [
+        "GET /harness-ledger/holdings/",
+        "200"
+      ],
+      [
+        "GET /harness-ledger/holdings/by_currency/",
+        "200"
+      ],
+      [
+        "GET /harness-ledger/editor/",
+        "200"
+      ],
+      [
+        "GET /harness-ledger/errors/",
+        "200"
+      ],
+      [
+        "GET /harness-ledger/statistics/",
+        "200"
+      ],
+      [
+        "GET /harness-ledger/options/",
+        "200"
+      ],
+      [
+        "GET /harness-ledger/import/",
+        "200"
+      ],
+      [
+        "GET /harness-ledger/help/",
+        "200"
+      ],
+      [
+        "GET /harness-ledger/account/Assets:Cash/",
+        "200"
+      ],
+      [
+        "GET /harness-ledger/account/Nope:Nope/",
+        "200"
+      ],
+      [
+        "GET /harness-ledger/context/?entry_hash=none",
+        "404"
+      ],
+      [
+        "GET /harness-ledger/document/?filename=nope",
+        "404"
+      ],
+      [
+        "GET /harness-ledger/download-journal/",
+        "200"
+      ],
+      [
+        "GET /jump?time=year",
+        "302"
+      ],
+      [
+        "GET /jump?account=Assets:Cash",
+        "302"
+      ],
+      [
+        "GET /harness-ledger/api/changed",
+        "200"
+      ],
+      [
+        "GET /harness-ledger/api/errors",
+        "200"
+      ],
+      [
+        "GET /nonexistent",
+        "308"
+      ]
+    ],
+    "elapsed": 0.8
+  },
+  {
+    "app": "wger",
+    "verdict": "OK",
+    "ok": true,
+    "stage": "smoke",
+    "routes": 40,
+    "probed": 40,
+    "results": [
+      [
+        "GET /en/",
+        "302"
+      ],
+      [
+        "GET /en/user/login",
+        "302"
+      ],
+      [
+        "GET /en/user/registration",
+        "302"
+      ],
+      [
+        "GET /account/login/",
+        "302"
+      ],
+      [
+        "GET /en/dashboard",
+        "200"
+      ],
+      [
+        "GET /en/user/preferences",
+        "200"
+      ],
+      [
+        "GET /en/user/api-key",
+        "200"
+      ],
+      [
+        "GET /en/user/demo-entries",
+        "302"
+      ],
+      [
+        "GET /en/user/list",
+        "200"
+      ],
+      [
+        "GET /en/user/1/overview",
+        "200"
+      ],
+      [
+        "GET /en/routine/overview",
+        "200"
+      ],
+      [
+        "GET /en/routine/add",
+        "200"
+      ],
+      [
+        "GET /en/routine/1/view",
+        "200"
+      ],
+      [
+        "GET /en/routine/1/edit",
+        "200"
+      ],
+      [
+        "GET /en/routine/1/logs",
+        "200"
+      ],
+      [
+        "GET /en/routine/1/table",
+        "200"
+      ],
+      [
+        "GET /en/routine/1/statistics",
+        "200"
+      ],
+      [
+        "GET /en/routine/calendar",
+        "200"
+      ],
+      [
+        "GET /en/routine/templates/overview/private",
+        "200"
+      ],
+      [
+        "GET /en/routine/templates/overview/public",
+        "200"
+      ],
+      [
+        "GET /en/weight/overview",
+        "200"
+      ],
+      [
+        "GET /en/weight/export-csv/",
+        "200"
+      ],
+      [
+        "GET /en/weight/import-csv/",
+        "200"
+      ],
+      [
+        "GET /en/nutrition/overview/",
+        "200"
+      ],
+      [
+        "GET /en/nutrition/01a1cfc2-73cb-73e0-83a0-e492159f8fb5/view/",
+        "200"
+      ],
+      [
+        "GET /en/nutrition/01a1cfc2-73cb-73e0-83a0-e492159f8fb5/pdf",
+        "200"
+      ],
+      [
+        "GET /en/nutrition/ingredient/overview/",
+        "200"
+      ],
+      [
+        "GET /en/nutrition/calculator/bmi/",
+        "200"
+      ],
+      [
+        "GET /en/exercise/overview/",
+        "200"
+      ],
+      [
+        "GET /en/exercise/1/view",
+        "200"
+      ],
+      [
+        "GET /en/software/about-us",
+        "200"
+      ],
+      [
+        "GET /en/software/features",
+        "200"
+      ],
+      [
+        "GET /en/software/api",
+        "200"
+      ],
+      [
+        "GET /en/language/list",
+        "200"
+      ],
+      [
+        "GET /sitemap.xml",
+        "302"
+      ],
+      [
+        "GET /robots.txt",
+        "200"
+      ],
+      [
+        "GET /api/v2/",
+        "200"
+      ],
+      [
+        "GET /api/v2/routine/",
+        "200"
+      ],
+      [
+        "GET /api/v2/exercise/",
+        "200"
+      ],
+      [
+        "GET /en/user/logout",
+        "302"
+      ]
+    ],
+    "elapsed": 35.9
+  },
+  {
+    "app": "microblog",
+    "verdict": "PARTIAL",
+    "ok": true,
+    "stage": "smoke",
+    "routes": 28,
+    "probed": 28,
+    "results": [
+      [
+        "GET /",
+        "200"
+      ],
+      [
+        "GET /index",
+        "200"
+      ],
+      [
+        "GET /explore",
+        "200"
+      ],
+      [
+        "GET /user/probe",
+        "200"
+      ],
+      [
+        "GET /user/peer",
+        "200"
+      ],
+      [
+        "GET /user/probe/popup",
+        "200"
+      ],
+      [
+        "GET /user/ghost",
+        "404"
+      ],
+      [
+        "GET /edit_profile",
+        "200"
+      ],
+      [
+        "GET /messages",
+        "200"
+      ],
+      [
+        "GET /notifications",
+        "200"
+      ],
+      [
+        "GET /search?q=hello",
+        "200"
+      ],
+      [
+        "GET /search?q=",
+        "302"
+      ],
+      [
+        "GET /export_posts",
+        "302"
+      ],
+      [
+        "GET /auth/login",
+        "302"
+      ],
+      [
+        "GET /auth/register",
+        "302"
+      ],
+      [
+        "GET /auth/reset_password_request",
+        "302"
+      ],
+      [
+        "GET /api/users",
+        "200"
+      ],
+      [
+        "GET /api/users/1",
+        "200"
+      ],
+      [
+        "GET /api/users/1/followers",
+        "200"
+      ],
+      [
+        "GET /api/users/1/following",
+        "200"
+      ],
+      [
+        "GET /api/users",
+        "401"
+      ],
+      [
+        "POST /follow/peer",
+        "302"
+      ],
+      [
+        "POST /unfollow/peer",
+        "302"
+      ],
+      [
+        "POST /send_message/peer",
+        "302"
+      ],
+      [
+        "POST /edit_profile",
+        "302"
+      ],
+      [
+        "POST /auth/login",
+        "302"
+      ],
+      [
+        "GET /nonexistent",
+        "404"
+      ],
+      [
+        "GET /auth/logout",
+        "302"
+      ]
+    ],
+    "elapsed": 1.8
+  },
+  {
+    "app": "octoprint",
+    "verdict": "PARTIAL",
+    "ok": true,
+    "stage": "smoke",
+    "routes": 32,
+    "probed": 32,
+    "results": [
+      [
+        "GET /",
+        "200"
+      ],
+      [
+        "GET /login",
+        "302"
+      ],
+      [
+        "GET /recovery",
+        "302"
+      ],
+      [
+        "GET /robots.txt",
+        "200"
+      ],
+      [
+        "GET /cached.gif",
+        "200"
+      ],
+      [
+        "GET /api/version",
+        "200"
+      ],
+      [
+        "GET /api/server",
+        "200"
+      ],
+      [
+        "GET /api/printer",
+        "409"
+      ],
+      [
+        "GET /api/printer/tool",
+        "409"
+      ],
+      [
+        "GET /api/printer/bed",
+        "409"
+      ],
+      [
+        "GET /api/printer/sd",
+        "200"
+      ],
+      [
+        "GET /api/printer/command/custom",
+        "200"
+      ],
+      [
+        "GET /api/printer/error",
+        "200"
+      ],
+      [
+        "GET /api/job",
+        "200"
+      ],
+      [
+        "GET /api/connection",
+        "200"
+      ],
+      [
+        "GET /api/files",
+        "200"
+      ],
+      [
+        "GET /api/files/local",
+        "200"
+      ],
+      [
+        "GET /api/settings",
+        "200"
+      ],
+      [
+        "GET /api/settings/templates",
+        "200"
+      ],
+      [
+        "GET /api/settings/reauthReq",
+        "200"
+      ],
+      [
+        "GET /api/access/users",
+        "200"
+      ],
+      [
+        "GET /api/access/users/probe",
+        "200"
+      ],
+      [
+        "GET /api/access/groups",
+        "200"
+      ],
+      [
+        "GET /api/access/permissions",
+        "200"
+      ],
+      [
+        "GET /api/timelapse",
+        "200"
+      ],
+      [
+        "GET /api/languages",
+        "200"
+      ],
+      [
+        "GET /api/printerprofiles",
+        "200"
+      ],
+      [
+        "GET /api/slicing",
+        "200"
+      ],
+      [
+        "GET /api/system/commands",
+        "200"
+      ],
+      [
+        "GET /api/system/usage",
+        "200"
+      ],
+      [
+        "GET /api/setup/wizard",
+        "200"
+      ],
+      [
+        "GET /api/currentuser",
+        "200"
+      ]
+    ],
+    "elapsed": 5.4
+  },
+  {
+    "app": "spirit",
+    "verdict": "PARTIAL",
+    "ok": true,
+    "stage": "smoke",
+    "routes": 24,
+    "probed": 24,
+    "results": [
+      [
+        "GET /",
+        "200"
+      ],
+      [
+        "GET /category/",
+        "200"
+      ],
+      [
+        "GET /search/?q=probe",
+        "200"
+      ],
+      [
+        "GET /topic/active/",
+        "200"
+      ],
+      [
+        "GET /topic/unread/",
+        "200"
+      ],
+      [
+        "GET /topic/notification/",
+        "200"
+      ],
+      [
+        "GET /comment/upload/",
+        "405"
+      ],
+      [
+        "GET /user/",
+        "200"
+      ],
+      [
+        "GET /user/login/",
+        "302"
+      ],
+      [
+        "GET /user/register/",
+        "302"
+      ],
+      [
+        "GET /user/menu/",
+        "200"
+      ],
+      [
+        "GET /user/password-reset/",
+        "200"
+      ],
+      [
+        "GET /user/resend-activation/",
+        "302"
+      ],
+      [
+        "GET /user/topics/1/",
+        "301"
+      ],
+      [
+        "GET /user/likes/1/",
+        "301"
+      ],
+      [
+        "GET /st/admin/dashboard/",
+        "200"
+      ],
+      [
+        "GET /st/admin/category/",
+        "200"
+      ],
+      [
+        "GET /st/admin/topic/",
+        "200"
+      ],
+      [
+        "GET /st/admin/topic/closed/",
+        "200"
+      ],
+      [
+        "GET /st/admin/topic/pinned/",
+        "200"
+      ],
+      [
+        "GET /st/admin/user/",
+        "200"
+      ],
+      [
+        "GET /st/admin/user/admins/",
+        "200"
+      ],
+      [
+        "GET /st/admin/user/mods/",
+        "200"
+      ],
+      [
+        "GET /st/admin/config/",
+        "200"
+      ]
+    ],
+    "elapsed": 3.8
+  },
+  {
+    "app": "zinnia",
+    "verdict": "PARTIAL",
+    "ok": true,
+    "stage": "smoke",
+    "routes": 38,
+    "probed": 38,
+    "results": [
+      [
+        "GET /blog/",
+        "200"
+      ],
+      [
+        "GET /blog/page/1/",
+        "200"
+      ],
+      [
+        "GET /blog/2026/",
+        "200"
+      ],
+      [
+        "GET /blog/2026/11/",
+        "200"
+      ],
+      [
+        "GET /blog/2026/11/12/",
+        "200"
+      ],
+      [
+        "GET /blog/2026/week/42/",
+        "200"
+      ],
+      [
+        "GET /blog/today/",
+        "200"
+      ],
+      [
+        "GET /blog/2026/11/12/first-entry/",
+        "200"
+      ],
+      [
+        "GET /blog/1/",
+        "301"
+      ],
+      [
+        "GET /blog/authors/",
+        "200"
+      ],
+      [
+        "GET /blog/authors/probe/",
+        "200"
+      ],
+      [
+        "GET /blog/categories/",
+        "200"
+      ],
+      [
+        "GET /blog/categories/sfcat/",
+        "200"
+      ],
+      [
+        "GET /blog/tags/",
+        "200"
+      ],
+      [
+        "GET /blog/tags/sftag/",
+        "200"
+      ],
+      [
+        "GET /blog/search/?pattern=first",
+        "200"
+      ],
+      [
+        "GET /blog/random/",
+        "302"
+      ],
+      [
+        "GET /blog/sitemap/",
+        "200"
+      ],
+      [
+        "GET /blog/feeds/",
+        "200"
+      ],
+      [
+        "GET /blog/feeds/discussions/",
+        "200"
+      ],
+      [
+        "GET /blog/feeds/tags/sftag/",
+        "200"
+      ],
+      [
+        "GET /blog/feeds/authors/probe/",
+        "200"
+      ],
+      [
+        "GET /blog/feeds/categories/sfcat/",
+        "200"
+      ],
+      [
+        "GET /blog/feeds/comments/2026/11/12/first-entry/",
+        "200"
+      ],
+      [
+        "GET /blog/humans.txt",
+        "200"
+      ],
+      [
+        "GET /blog/rsd.xml",
+        "200"
+      ],
+      [
+        "GET /blog/opensearch.xml",
+        "200"
+      ],
+      [
+        "GET /blog/wlwmanifest.xml",
+        "200"
+      ],
+      [
+        "GET /blog/trackback/1/",
+        "301"
+      ],
+      [
+        "GET /blog/quick-entry/",
+        "302"
+      ],
+      [
+        "GET /blog/comments/success/",
+        "200"
+      ],
+      [
+        "GET /sitemap.xml",
+        "200"
+      ],
+      [
+        "GET /sitemap-blog.xml",
+        "200"
+      ],
+      [
+        "GET /admin/",
+        "200"
+      ],
+      [
+        "GET /admin/zinnia/entry/",
+        "200"
+      ],
+      [
+        "GET /admin/login/",
+        "302"
+      ],
+      [
+        "GET /comments/post/",
+        "405"
+      ],
+      [
+        "GET /blog/nonexistent/",
+        "404"
+      ]
+    ],
+    "elapsed": 5.4
+  },
+  {
+    "app": "mezzanine",
+    "verdict": "PARTIAL",
+    "ok": true,
+    "stage": "smoke",
+    "routes": 29,
+    "probed": 29,
+    "results": [
+      [
+        "GET /",
+        "200"
+      ],
+      [
+        "GET /about/",
+        "200"
+      ],
+      [
+        "GET /nonexistent-page/",
+        "404"
+      ],
+      [
+        "GET /blog/",
+        "200"
+      ],
+      [
+        "GET /blog/first-post/",
+        "200"
+      ],
+      [
+        "GET /blog/second-post/",
+        "200"
+      ],
+      [
+        "GET /blog/archive/2026/",
+        "200"
+      ],
+      [
+        "GET /blog/category/sfcat/",
+        "200"
+      ],
+      [
+        "GET /blog/tag/sftag/",
+        "200"
+      ],
+      [
+        "GET /blog/author/probe/",
+        "200"
+      ],
+      [
+        "GET /blog/feeds/rss/",
+        "200"
+      ],
+      [
+        "GET /gallery/",
+        "200"
+      ],
+      [
+        "GET /search/?q=post",
+        "200"
+      ],
+      [
+        "GET /sitemap.xml",
+        "200"
+      ],
+      [
+        "GET /comment/",
+        "400"
+      ],
+      [
+        "GET /rating/",
+        "400"
+      ],
+      [
+        "POST /edit/",
+        "200"
+      ],
+      [
+        "GET /set_site/?site_id=1",
+        "302"
+      ],
+      [
+        "GET /accounts/",
+        "302"
+      ],
+      [
+        "GET /accounts/login/",
+        "200"
+      ],
+      [
+        "GET /accounts/signup/",
+        "200"
+      ],
+      [
+        "GET /users/",
+        "302"
+      ],
+      [
+        "GET /users/probe/",
+        "200"
+      ],
+      [
+        "GET /password_reset/",
+        "200"
+      ],
+      [
+        "GET /password_reset/done/",
+        "200"
+      ],
+      [
+        "GET /admin/",
+        "200"
+      ],
+      [
+        "GET /admin/blog/blogpost/",
+        "200"
+      ],
+      [
+        "GET /admin/pages/page/",
+        "200"
+      ],
+      [
+        "GET /accounts/logout/",
+        "302"
+      ]
+    ],
+    "elapsed": 4.1
+  },
+  {
+    "app": "oscar",
+    "verdict": "PARTIAL",
+    "ok": true,
+    "stage": "smoke",
+    "routes": 24,
+    "probed": 24,
+    "results": [
+      [
+        "GET /",
+        "302"
+      ],
+      [
+        "GET /catalogue/",
+        "302"
+      ],
+      [
+        "GET /search/",
+        "302"
+      ],
+      [
+        "GET /basket/",
+        "302"
+      ],
+      [
+        "GET /accounts/",
+        "302"
+      ],
+      [
+        "GET /accounts/login/",
+        "302"
+      ],
+      [
+        "GET /accounts/register/",
+        "302"
+      ],
+      [
+        "GET /accounts/password-reset/",
+        "404"
+      ],
+      [
+        "GET /checkout/",
+        "302"
+      ],
+      [
+        "GET /shipping-address/",
+        "404"
+      ],
+      [
+        "GET /payment/",
+        "404"
+      ],
+      [
+        "GET /order-placement/",
+        "404"
+      ],
+      [
+        "GET /orders/",
+        "404"
+      ],
+      [
+        "GET /offers/",
+        "302"
+      ],
+      [
+        "GET /coupons/",
+        "404"
+      ],
+      [
+        "GET /dashboard/",
+        "302"
+      ],
+      [
+        "GET /dashboard/catalogue/",
+        "302"
+      ],
+      [
+        "GET /dashboard/orders/",
+        "302"
+      ],
+      [
+        "GET /dashboard/users/",
+        "302"
+      ],
+      [
+        "GET /dashboard/partners/",
+        "302"
+      ],
+      [
+        "GET /dashboard/reports/",
+        "302"
+      ],
+      [
+        "GET /dashboard/comms/",
+        "302"
+      ],
+      [
+        "GET /dashboard/reviews/",
+        "302"
+      ],
+      [
+        "GET /admin/",
+        "200"
+      ]
+    ],
+    "elapsed": 15.4
+  }
+]

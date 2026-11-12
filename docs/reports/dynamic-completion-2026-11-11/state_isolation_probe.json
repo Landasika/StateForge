@@ -1,0 +1,128 @@
+[
+  {
+    "app": "ctfd",
+    "verdict": "ISOLATED",
+    "kind": "STABLE",
+    "routes": 28,
+    "warm_diffs": [],
+    "cold_vs_warm_diffs": [],
+    "elapsed": 14.7
+  },
+  {
+    "app": "linkding",
+    "verdict": "VOLATILE_IDS",
+    "kind": "STABLE",
+    "routes": 39,
+    "warm_diffs": [],
+    "cold_vs_warm_diffs": [
+      "only in run1: ['GET /feeds/d7ad4800bd6c1cffb1fa35061d3cc3f195cbc39e/all', 'GET /feeds/d7ad4800bd6c1cffb1fa35061d3cc3f195cbc39e/shared', 'GET /feeds/d7ad4800bd6c1cffb1fa35061d3cc3f195cbc39e/unread']",
+      "only in run2: ['GET /feeds/509c559ca7919caac22055f4552c78428de1a075/all', 'GET /feeds/509c559ca7919caac22055f4552c78428de1a075/shared', 'GET /feeds/509c559ca7919caac22055f4552c78428de1a075/unread']"
+    ],
+    "elapsed": 9.9
+  },
+  {
+    "app": "fava",
+    "verdict": "ISOLATED",
+    "kind": "STABLE",
+    "routes": 30,
+    "warm_diffs": [],
+    "cold_vs_warm_diffs": [],
+    "elapsed": 1.1
+  },
+  {
+    "app": "wger",
+    "verdict": "SELF_DELETING_LOGOUT",
+    "kind": "DRIFT",
+    "routes": 40,
+    "warm_diffs": [
+      "GET /en/user/login 302 -> 200",
+      "GET /en/user/registration 302 -> 200",
+      "GET /account/login/ 302 -> 200",
+      "GET /en/user/demo-entries 302 -> EXC:IndexError",
+      "GET /en/user/list 200 -> 403",
+      "GET /en/user/1/overview 200 -> 403",
+      "GET /en/nutrition/01a1cfe9-786b-7c88-b8fd-3447d5cb84f2/pdf 200 -> 404",
+      "GET /en/language/list 200 -> 403",
+      "GET /en/user/logout 302 -> EXC:ValueError"
+    ],
+    "cold_vs_warm_diffs": [
+      "only in run1: ['GET /en/nutrition/01a1cfe9-786b-7c88-b8fd-3447d5cb84f2/pdf', 'GET /en/nutrition/01a1cfe9-786b-7c88-b8fd-3447d5cb84f2/view/']",
+      "only in run2: ['GET /en/nutrition/01a1cfea-bddf-7f77-94a8-15e47d16ee5e/pdf', 'GET /en/nutrition/01a1cfea-bddf-7f77-94a8-15e47d16ee5e/view/']"
+    ],
+    "elapsed": 119.2
+  },
+  {
+    "app": "microblog",
+    "verdict": "LOGOUT_BY_DESIGN",
+    "kind": "DRIFT",
+    "routes": 28,
+    "warm_diffs": [
+      "GET / 200 -> 302",
+      "GET /index 200 -> 302",
+      "GET /explore 200 -> 302",
+      "GET /user/probe 200 -> 302",
+      "GET /user/peer 200 -> 302",
+      "GET /user/probe/popup 200 -> 302",
+      "GET /user/ghost 404 -> 302",
+      "GET /edit_profile 200 -> 302",
+      "GET /messages 200 -> 302",
+      "GET /notifications 200 -> 302",
+      "GET /search?q=hello 200 -> 302",
+      "GET /auth/login 302 -> 200",
+      "GET /auth/register 302 -> 200",
+      "GET /auth/reset_password_request 302 -> 200"
+    ],
+    "cold_vs_warm_diffs": [],
+    "elapsed": 3.7
+  },
+  {
+    "app": "octoprint",
+    "verdict": "ISOLATED",
+    "kind": "STABLE",
+    "routes": 32,
+    "warm_diffs": [],
+    "cold_vs_warm_diffs": [],
+    "elapsed": 8.0
+  },
+  {
+    "app": "spirit",
+    "verdict": "ISOLATED",
+    "kind": "STABLE",
+    "routes": 24,
+    "warm_diffs": [],
+    "cold_vs_warm_diffs": [],
+    "elapsed": 7.6
+  },
+  {
+    "app": "zinnia",
+    "verdict": "ISOLATED",
+    "kind": "STABLE",
+    "routes": 38,
+    "warm_diffs": [],
+    "cold_vs_warm_diffs": [],
+    "elapsed": 9.2
+  },
+  {
+    "app": "mezzanine",
+    "verdict": "LOGOUT_BY_DESIGN",
+    "kind": "DRIFT",
+    "routes": 29,
+    "warm_diffs": [
+      "POST /edit/ 200 -> 302",
+      "GET /admin/ 200 -> 302",
+      "GET /admin/blog/blogpost/ 200 -> 302",
+      "GET /admin/pages/page/ 200 -> 302"
+    ],
+    "cold_vs_warm_diffs": [],
+    "elapsed": 9.0
+  },
+  {
+    "app": "oscar",
+    "verdict": "ISOLATED",
+    "kind": "STABLE",
+    "routes": 24,
+    "warm_diffs": [],
+    "cold_vs_warm_diffs": [],
+    "elapsed": 32.0
+  }
+]
