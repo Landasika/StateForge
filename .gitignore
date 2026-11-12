@@ -15,6 +15,14 @@ external/
 results/
 exp/results/
 
+# 图产物:dot/svg/png 都是可重新渲染的结果,入库只留生成脚本。
+# 复现靠脚本,不靠二进制快照——快照会随代码演进而失真,且体积无上限
+# (曾误提交 91 个文件共 20MB)。
+*.dot
+*.svg
+docs/reports/**/*.png
+*.log
+
 # 历史实验产物归档:从 artifacts/ 移出的未跟踪轮次输出(不入库,可随时删)
 archive/
 
