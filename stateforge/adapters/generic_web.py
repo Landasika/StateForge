@@ -49,6 +49,20 @@ class GenericWebAdapter:
                                        else django_request)
         self.suppress_errors = suppress_errors
 
+    @property
+    def codec(self):
+        """The input format this adapter consumes.
+
+        ``execute`` parses a JSON request envelope, so a structure-blind
+        mutator destroys the envelope and the adapter silently falls back to
+        ``GET /``. Exposing the codec lets the campaign mutate the parsed
+        request instead of its serialization, and keeps that knowledge here
+        rather than in the generic mutator.
+        """
+        from stateforge.fuzzing.guidance.mutator import JsonCodec
+
+        return JsonCodec()
+
     def prepare(self, atheris) -> None:
         from stateforge.fuzzing.instrumentation import Instrumenter
         instrumenter = Instrumenter()

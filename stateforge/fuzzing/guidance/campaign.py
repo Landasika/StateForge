@@ -171,6 +171,19 @@ class GuidedCampaign:
                 energy_policy=self.config.energy_policy,
                 fixed_energy=self.config.fixed_energy)
         self.scheduler = scheduler
+        # Structured mutation is opt-in: pass a codec (or a pre-built mutator)
+        # explicitly to enable it.
+        #
+        # It is not the default because the trade-off is unresolved. Mutating a
+        # parsed request keeps 92% of outputs parseable against 26% for byte
+        # mode, but on microblog the same 300-execution budget covered 115
+        # blocks instead of 255. The cause is that an unparseable input falls
+        # back to the adapter's default request, which repeatedly renders the
+        # heaviest page: byte mode is effectively a homepage hammer, and block
+        # count rewards that. Whether structured mode is better depends on
+        # measuring per-route depth rather than raw block totals, so switching
+        # the default before that measurement would trade one unvalidated
+        # behaviour for another.
         self.mutator = (mutator if mutator is not None
                         else BasicMutator(self.config.random_seed))
         root = ir.metadata.get("root")
